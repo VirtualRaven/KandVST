@@ -2,6 +2,7 @@
 
 cmake_minimum_required(VERSION 3.4)
 
+add_definitions(-DJUCE_WEB_BROWSER=0)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/../FRUT/cmake")
 include(Reprojucer)
@@ -224,7 +225,8 @@ jucer_export_target_configuration(
 
 jucer_export_target(
   "Linux Makefile"
-  VST3_SDK_FOLDER "../VST"
+  VST_SDK_FOLDER "../VST"
+  EXTRA_COMPILER_FLAGS "-fPIC"
 )
 
 jucer_export_target_configuration(
