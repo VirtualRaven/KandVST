@@ -1,0 +1,15 @@
+# Using clang-format 5.0.0
+
+AlignAfterOpenBracket: Align
+AllowShortFunctionsOnASingleLine: false
+AlwaysBreakTemplateDeclarations: true
+BinPackArguments: true
+BinPackParameters: false
+BreakBeforeBinaryOperators: NonAssignment
+BreakBeforeBraces: Allman
+BreakConstructorInitializersBeforeComma: true
+ColumnLimit: 90
+ConstructorInitializerIndentWidth: 2
+ContinuationIndentWidth: 2
+MaxEmptyLinesToKeep: 2
+PointerAlignment: Left
