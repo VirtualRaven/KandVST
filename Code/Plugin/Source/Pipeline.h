@@ -2,6 +2,7 @@
 #define PIPELINE_H
 
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "EnvelopeGenerator.h"
 class Pipeline
 {
 	double __rate;
@@ -12,6 +13,7 @@ class Pipeline
 	bool __active;
 	double prev_angle;
 	double amplitude;
+	EnvelopeGenerator __env;
 
 public:
 

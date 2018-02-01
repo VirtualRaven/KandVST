@@ -71,6 +71,8 @@ jucer_project_files("KandVST"
 #           Resource  Resource
   x         .         .         "Source/PluginEditor.cpp"
   .         .         .         "Source/PluginEditor.h"
+  x         .         .         "Source/EnvelopeGenerator.cpp"
+  .         .         .         "Source/EnvelopeGenerator.h"
   x         .         .         "Source/PluginProcessor.cpp"
   .         .         .         "Source/PluginProcessor.h"
   .         .         .         "Source/SinewaveSynth.h"
