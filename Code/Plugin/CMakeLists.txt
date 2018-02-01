@@ -17,6 +17,7 @@ get_filename_component(AudioPlugin_jucer_FILE
   BASE_DIR "${CMAKE_BINARY_DIR}"
 )
 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 jucer_project_begin(
   JUCER_VERSION "5.2.0"
@@ -73,6 +74,10 @@ jucer_project_files("KandVST"
   x         .         .         "Source/PluginProcessor.cpp"
   .         .         .         "Source/PluginProcessor.h"
   .         .         .         "Source/SinewaveSynth.h"
+  x         .         .         "Source/PipelineManager.cpp"
+  .         .         .         "Source/PipelineManager.h"
+  x         .         .         "Source/Pipeline.cpp"
+  .         .         .         "Source/Pipeline.h"
 )
 
 jucer_project_module(

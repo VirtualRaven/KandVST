@@ -27,7 +27,7 @@
 #pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"
-
+#include "PipelineManager.h"
 
 //==============================================================================
 /**
@@ -123,6 +123,8 @@ private:
     AudioBuffer<double> delayBufferDouble;
 
     int delayPosition = 0;
+
+	PipelineManager* pip;
 
     Synthesiser synth;
 

@@ -91,7 +91,7 @@ AudioProcessor::BusesProperties JuceDemoPluginAudioProcessor::getBusesProperties
 }
 
 //==============================================================================
-void JuceDemoPluginAudioProcessor::prepareToPlay (double newSampleRate, int /*samplesPerBlock*/)
+void JuceDemoPluginAudioProcessor::prepareToPlay (double newSampleRate, int fuck/*samplesPerBlock*/)
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
@@ -109,6 +109,8 @@ void JuceDemoPluginAudioProcessor::prepareToPlay (double newSampleRate, int /*sa
         delayBufferDouble.setSize (1, 1);
     }
 
+	pip = new PipelineManager(newSampleRate, fuck);
+
     reset();
 }
 
@@ -117,6 +119,7 @@ void JuceDemoPluginAudioProcessor::releaseResources()
     // When playback stops, you can use this as an opportunity to free up any
     // spare memory, etc.
     keyboardState.reset();
+	delete pip;
 }
 
 void JuceDemoPluginAudioProcessor::reset()
@@ -137,9 +140,10 @@ void JuceDemoPluginAudioProcessor::process (AudioBuffer<FloatType>& buffer,
     // Now pass any incoming midi messages to our keyboard state object, and let it
     // add messages to the buffer if the user is clicking on the on-screen keys
     keyboardState.processNextMidiBuffer (midiMessages, 0, numSamples, true);
+	pip->genSamples(buffer, midiMessages);
 
     // and now get our synth to process these midi events and generate its output.
-    synth.renderNextBlock (buffer, midiMessages, 0, numSamples);
+    //synth.renderNextBlock (buffer, midiMessages, 0, numSamples);
 
     // Apply our delay effect to the new output..
     applyDelay (buffer, delayBuffer);
