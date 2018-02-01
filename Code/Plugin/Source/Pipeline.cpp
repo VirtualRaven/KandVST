@@ -17,9 +17,23 @@ void Pipeline::noteCommand(int note, uint8 vel, bool isOn)
 	__vel = vel;
 	__pressed = isOn;
 	//Magic https://en.wikipedia.org/wiki/MIDI_tuning_standard
-	__freq = MidiMessage::getMidiNoteInHertz(note);
-	//__freq = pow(2.0, (note - 69) / 12)*440.0;
+	
 
+
+	/*
+		Knäppande ljud kan bero på plötsliga steg i ljud signalen, t.ex om en sinus börjar med vinkel pi/2 så sker
+		ett initial steg, detta steg inehåller en stor mängd frekvenser spridda i spektrumet, vilket uppfattas som et kort knäppande ljud.
+		därför prev_angle=0 vid en ny ton, detta garantera att tonen börjar i origo. Liknande så hindrar konturgeneratorn att liknande steg sker
+		vid note off genom att tona ut signalen långsamt.
+
+		För att sammanfatta en enkel läxa, undvik alla diskontinuitet, de orsakar obehagliga ljud . 
+	
+	*/
+	if (isOn) {
+		__freq = MidiMessage::getMidiNoteInHertz(note);
+		//__freq = pow(2.0, (note - 69) / 12)*440.0;
+		prev_angle = 0;
+	}
 }
 
 
