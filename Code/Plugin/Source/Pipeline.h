@@ -11,6 +11,7 @@ class Pipeline
 	bool __pressed;
 	bool __active;
 	double prev_angle;
+	double amplitude;
 
 public:
 

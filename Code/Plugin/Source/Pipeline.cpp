@@ -2,10 +2,12 @@
 #include <math.h>
 
 
-Pipeline::Pipeline(double rate):
-__rate(rate),
-__pressed(false),
-prev_angle(0)
+Pipeline::Pipeline(double rate) :
+	__rate(rate),
+	__freq(0),
+	__pressed(false),
+	prev_angle(0),
+	amplitude(0)
 {
 }
 
@@ -33,24 +35,26 @@ bool Pipeline::isActive() {
 template<typename T>
 juce::AudioBuffer<T> Pipeline::render_block(int samples) {
 	AudioBuffer<T> jbuff(2, samples);
+	T delta = __freq * 2 * 3.14 / __rate;
 	if (__pressed) {
-		T delta = __freq * 2 * 3.14 / __rate;
-		T* buff[] = {
-				new T[samples],
-				new T[samples] };
-
-
-		for (int i = 0; i < samples; i++) {
-			prev_angle = (delta + prev_angle);
-			//buff[0][i] = buff[1][i] = std::sin(prev_angle)*10;
-			jbuff.setSample(0, i, std::sin(prev_angle) * __vel*0.0075);
-			jbuff.setSample(1, i, std::sin(prev_angle) * __vel*0.0075);
-		}
+		amplitude = 1.0;
 		
-		//jbuff.addFrom(0, 0, buff[0], samples);
-		//jbuff.addFrom(1, 0, buff[1], samples);
-		delete[] buff[0];
-		delete[] buff[1];
+		for (int i = 0; i < samples; i++) {
+			prev_angle = fmod((delta + prev_angle),2*3.14);
+			jbuff.setSample(0, i, std::sin(prev_angle) * __vel*0.0075*amplitude);
+			jbuff.setSample(1, i, std::sin(prev_angle) * __vel*0.0075*amplitude);
+		}
+
+	} 
+	else
+	{
+		for (int i = 0; i < samples; i++) {
+			
+			prev_angle = fmod((delta + prev_angle), 2 * 3.14);
+			jbuff.setSample(0, i, std::sin(prev_angle) * 127*0.0075*amplitude);
+			jbuff.setSample(1, i, std::sin(prev_angle) * 127*0.0075*amplitude);
+			amplitude *= 0.9999;
+		}
 	}
 	__active = jbuff.getMagnitude(0, samples) < 0.2;
 	return jbuff;
