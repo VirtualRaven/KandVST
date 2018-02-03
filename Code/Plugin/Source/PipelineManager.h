@@ -6,6 +6,7 @@
 #include <iostream>
 #include <fstream>
 #include "Pipeline.h"
+#include "ParameterHandler.h"
 
 class PipelineManager
 {
@@ -14,8 +15,9 @@ private:
 	int   __maybeMaxBuff;
 	std::ofstream  __log;
 	Pipeline pip;
+	ParameterHandler* __paramHandler;
 public:
-	PipelineManager(double rate, int maxBuffHint);
+	PipelineManager(double rate, int maxBuffHint, ParameterHandler& paramHandler);
 	~PipelineManager();
 	
 

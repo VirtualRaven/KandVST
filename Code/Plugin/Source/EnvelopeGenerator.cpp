@@ -7,6 +7,8 @@
 
 double EnvelopeGenerator::GenerateNextStep(bool sustain)
 {
+	recalculateParameters();
+
 	switch (__state)
 	{
 	case 0:
@@ -36,6 +38,7 @@ double EnvelopeGenerator::GenerateNextStep(bool sustain)
 	case 2:
 		if (!sustain) {
 			__state = 3;
+			break;
 		}
 		if (((S_LEVEL > S_ENDLEVEL)&&(__amplitude > S_ENDLEVEL))||((S_LEVEL < S_ENDLEVEL) && (__amplitude < S_ENDLEVEL))) {
 			__amplitude += calculateSlope(S_LEVEL, S_ENDLEVEL,__sustain);
@@ -72,7 +75,16 @@ double EnvelopeGenerator::calculateSlope(double begin,double end, double time) {
 	return (end - begin) / time;
 }
 
-EnvelopeGenerator::EnvelopeGenerator(double sampleRate):
+void EnvelopeGenerator::recalculateParameters()
+{
+	__Attack = (int)(*__pattack * __sampleRate);
+	__Decay = (int)(*__pdecay * __sampleRate);
+	__sustain = (int)(*__psustain * __sampleRate);
+	__Release = (int)(*__prelease * __sampleRate);
+
+}
+
+EnvelopeGenerator::EnvelopeGenerator(double sampleRate,ParameterHandler& paramHandler):
 	__sampleRate(sampleRate),
 	__sAttack(0.05),
 	__sDecay(0.1),
@@ -80,11 +92,12 @@ EnvelopeGenerator::EnvelopeGenerator(double sampleRate):
 	__sSustain(1.0),
 	__amplitude(0)
 {
-	__Attack =	(int)(__sAttack * sampleRate);
-	__Decay =	(int)(__sDecay * sampleRate);
-	__Release = (int)(__sRelease * sampleRate);
-	__sustain = (int)(__sSustain * sampleRate);
-
+	__paramHandler = &paramHandler;
+	__pattack = __paramHandler->RegisterFloat("ENV_ATTACK", "Attack", 0.1f, 2.0f, 0.2f);
+	__pdecay = __paramHandler->RegisterFloat("ENV_DECAY", "Decay", 0.1f, 2.0f, 0.2f);
+	__psustain = __paramHandler->RegisterFloat("ENV_SUSTAIN", "Sustain", 0.0f, 2.0f, 0.2f);
+	__prelease = __paramHandler->RegisterFloat("ENV_RELEASE", "Release", 0.1f, 2.0f, 0.2f);
+	recalculateParameters();
 }
 
 

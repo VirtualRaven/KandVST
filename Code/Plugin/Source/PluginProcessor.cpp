@@ -26,17 +26,16 @@
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
-#include "SinewaveSynth.h"
 
 AudioProcessor* JUCE_CALLTYPE createPluginFilter();
 
 
 //==============================================================================
 JuceDemoPluginAudioProcessor::JuceDemoPluginAudioProcessor()
-    : AudioProcessor (getBusesProperties())
+    : AudioProcessor (getBusesProperties()),
+	__paramHandler(*this)
 {
     lastPosInfo.resetToDefault();
-
     // This creates our parameters. We'll keep some raw pointers to them in this class,
     // so that we can easily access them later, but the base class will take care of
     // deleting them for us.
@@ -52,6 +51,8 @@ void JuceDemoPluginAudioProcessor::reset()
 {
 
 }
+
+
 
 //==============================================================================
 bool JuceDemoPluginAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
@@ -97,7 +98,7 @@ void JuceDemoPluginAudioProcessor::prepareToPlay (double newSampleRate, int maxS
         delayBufferDouble.setSize (1, 1);
     }
 
-	pip = new PipelineManager(newSampleRate, maxSamplesPerBlock);
+	__pipManager = new PipelineManager(newSampleRate, maxSamplesPerBlock,__paramHandler);
 }
 
 void JuceDemoPluginAudioProcessor::releaseResources()
@@ -105,7 +106,7 @@ void JuceDemoPluginAudioProcessor::releaseResources()
     // When playback stops, you can use this as an opportunity to free up any
     // spare memory, etc.
     keyboardState.reset();
-	delete pip;
+	delete __pipManager;
 }
 
 template <typename FloatType>
@@ -118,7 +119,7 @@ void JuceDemoPluginAudioProcessor::process (AudioBuffer<FloatType>& buffer,
     // Now pass any incoming midi messages to our keyboard state object, and let it
     // add messages to the buffer if the user is clicking on the on-screen keys
     keyboardState.processNextMidiBuffer (midiMessages, 0, numSamples, true);
-	pip->genSamples(buffer, midiMessages);
+	__pipManager->genSamples(buffer, midiMessages);
 
     // and now get our synth to process these midi events and generate its output.
     //synth.renderNextBlock (buffer, midiMessages, 0, numSamples);
@@ -154,7 +155,7 @@ void JuceDemoPluginAudioProcessor::updateCurrentTimeInfoFromHost()
 //==============================================================================
 AudioProcessorEditor* JuceDemoPluginAudioProcessor::createEditor()
 {
-    return new JuceDemoPluginAudioProcessorEditor (*this);
+    return new JuceDemoPluginAudioProcessorEditor (*this,__paramHandler);
 }
 
 //==============================================================================

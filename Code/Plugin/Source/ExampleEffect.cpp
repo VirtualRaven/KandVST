@@ -2,11 +2,13 @@
 #define FADE 0.3
 
 
-ExampleEffect::ExampleEffect(double sampleRate):
-	IEffect(sampleRate),
+ExampleEffect::ExampleEffect(double sampleRate, ParameterHandler& paramHandler):
+	IEffect(sampleRate,paramHandler),
 	__delayBuffer(2,sampleRate/4), //1/6 sec echo 
 	__delayPos(0)
 {
+	__delayMultiplier =__paramHandler->RegisterFloat("EX_DELAYMULTI", "Delay", 0.0f, 1.0f, 0.2f);
+
 	for (size_t i = 0; i < __delayBuffer.getNumSamples(); i++)
 	{
 		__delayBuffer.setSample(0, i,0);
@@ -25,12 +27,14 @@ void ExampleEffect::__RenderBlock(AudioBuffer<T>& buffer)
 {
 	for (size_t i = 0; i < buffer.getNumSamples(); i++)
 	{
+
+		float multi = *__delayMultiplier;
 		
-		__delayBuffer.setSample(0, __delayPos, buffer.getSample(0, i)+__delayBuffer.getSample(0,__delayPos)*FADE);
-		__delayBuffer.setSample(1, __delayPos, buffer.getSample(1, i)+__delayBuffer.getSample(0, __delayPos)*FADE);
+		__delayBuffer.setSample(0, __delayPos, buffer.getSample(0, i)+__delayBuffer.getSample(0,__delayPos)*multi);
+		__delayBuffer.setSample(1, __delayPos, buffer.getSample(1, i)+__delayBuffer.getSample(0, __delayPos)*multi);
 		__delayPos = (__delayPos + 1) % __delayBuffer.getNumSamples();
-		buffer.addSample(0, i, __delayBuffer.getSample(0, __delayPos)*FADE);
-		buffer.addSample(1, i, __delayBuffer.getSample(1, __delayPos)*FADE);
+		buffer.addSample(0, i, __delayBuffer.getSample(0, __delayPos)*multi);
+		buffer.addSample(1, i, __delayBuffer.getSample(1, __delayPos)*multi);
 
 	}
 }

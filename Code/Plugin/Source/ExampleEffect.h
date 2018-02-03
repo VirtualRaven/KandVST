@@ -2,6 +2,7 @@
 #define EXAMPLE_EFFECT_H
 #include "IEffect.h"
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "ParameterHandler.h"
 class ExampleEffect :
 	public IEffect
 {
@@ -11,8 +12,11 @@ private:
 	void __RenderBlock(AudioBuffer<T>& buffer);
 	AudioBuffer<double> __delayBuffer;
 	int __delayPos;
+
+	AudioParameterFloat* __delayMultiplier;
+	
 public:
-	ExampleEffect(double sampleRate);
+	ExampleEffect(double sampleRate, ParameterHandler& paramHandler);
 	~ExampleEffect();
 
 	// Inherited via IEffect

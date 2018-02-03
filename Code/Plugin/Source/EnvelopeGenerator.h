@@ -1,5 +1,7 @@
 #ifndef ENVELOPE_GENERATOR_H
 #define ENVELOPE_GENERATOR_H
+
+#include "ParameterHandler.h"
 class EnvelopeGenerator
 {
 private:
@@ -14,15 +16,20 @@ private:
 	int __state;
 	int __sustain;
 	double __amplitude;
+	ParameterHandler* __paramHandler;
+	AudioParameterFloat* __pattack;
+	AudioParameterFloat* __pdecay;
+	AudioParameterFloat* __psustain;
+	AudioParameterFloat* __prelease;
 
 
 	double calculateSlope(double begin, double end, double time);
-
+	void recalculateParameters();
 
 public:
 	void Reset();
 	double GenerateNextStep(bool sustain);
-	EnvelopeGenerator(double sampleRate);
+	EnvelopeGenerator(double sampleRate, ParameterHandler& paramHandler);
 	~EnvelopeGenerator();
 };
 #endif //ENVELOPE_GENERATOR_H
