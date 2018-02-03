@@ -7,11 +7,12 @@ private:
 	double __sAttack;
 	double __sDecay;
 	double __sRelease;
+	double __sSustain;
 	int __Attack;
 	int __Decay;
 	int __Release;
 	int __state;
-	int __counter;
+	int __sustain;
 	double __amplitude;
 
 
