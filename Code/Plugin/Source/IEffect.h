@@ -4,7 +4,8 @@
 class IEffect
 {
 public:
-	//Add RenderBlock to interface
+	virtual void RenderBlock(AudioBuffer<float>& buffer) = 0;
+	virtual void RenderBlock(AudioBuffer<double>& buffer) = 0;
 	virtual void ProccessCommand(MidiMessage message) = 0;
 };
 

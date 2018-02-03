@@ -10,7 +10,9 @@ protected:
 	double __sampleRate;
 public:
 	IGenerator(double sampleRate) : __sampleRate(sampleRate) {};
-	//Need to add RenderBlock to interface
+	virtual void RenderBlock(AudioBuffer<float>& buffer) = 0;
+	virtual void RenderBlock(AudioBuffer<double>& buffer) = 0;
+
 	virtual void ProccesNoteCommand(int note, uint8 vel, bool isOn) = 0;
 	virtual void ProccessCommand(MidiMessage message) = 0;
 };

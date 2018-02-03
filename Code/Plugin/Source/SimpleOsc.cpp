@@ -37,7 +37,7 @@ void SimpleOsc::ProccessCommand(MidiMessage message)
 
 
 template<typename T>
-void SimpleOsc::RenderBlock(AudioBuffer<T>& buffer) {
+void SimpleOsc::__RenderBlock(AudioBuffer<T>& buffer) {
 	for (size_t i = 0; i < buffer.getNumSamples(); i++)
 	{
 		
@@ -49,5 +49,5 @@ void SimpleOsc::RenderBlock(AudioBuffer<T>& buffer) {
 	}
 }
 
-template void SimpleOsc::RenderBlock(AudioBuffer<double>& buffer);
-template void SimpleOsc::RenderBlock(AudioBuffer<float>& buffer);
+template void SimpleOsc::__RenderBlock(AudioBuffer<double>& buffer);
+template void SimpleOsc::__RenderBlock(AudioBuffer<float>& buffer);
