@@ -3,17 +3,11 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "EnvelopeGenerator.h"
+#include "SimpleOsc.h"
 class Pipeline
 {
 	double __rate;
-	int __note; 
-	double __freq;
-	uint8 __vel;
-	bool __pressed;
-	bool __active;
-	double prev_angle;
-	double amplitude;
-	EnvelopeGenerator __env;
+	SimpleOsc __osc;
 
 public:
 
@@ -28,7 +22,7 @@ public:
 	Pipeline(double rate);
 
 	template<typename T>
-	AudioBuffer<T> render_block(int sampels);
+	void render_block(AudioBuffer<T>& buffer);
 
 	~Pipeline();
 };

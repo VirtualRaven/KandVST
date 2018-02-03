@@ -40,9 +40,12 @@ void PipelineManager::genSamples(AudioBuffer<T>& buff, MidiBuffer & midiMessages
 			__log <<tmp.getDescription() << std::endl;
 		}
 	}
-	auto tmp_buff = pip.render_block<T>(buff.getNumSamples());
-	buff.addFrom(0, 0, tmp_buff, 0, 0, buff.getNumSamples());
-	buff.addFrom(1, 0, tmp_buff, 1, 0, buff.getNumSamples());
+
+	AudioBuffer<T> pipBuff = AudioBuffer<T>(2, buff.getNumSamples());
+
+	pip.render_block<T>(pipBuff);
+	buff.addFrom(0, 0, pipBuff, 0, 0, buff.getNumSamples());
+	buff.addFrom(1, 0, pipBuff, 1, 0, buff.getNumSamples());
 }
 
 template void PipelineManager::genSamples(AudioBuffer<double>& buff, MidiBuffer & midiMessages);

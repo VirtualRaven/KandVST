@@ -80,6 +80,10 @@ jucer_project_files("KandVST"
   .         .         .         "Source/PipelineManager.h"
   x         .         .         "Source/Pipeline.cpp"
   .         .         .         "Source/Pipeline.h"
+  .         .         .         "Source/IGenerator.h"
+  .         .         .         "Source/IEffect.h"
+  x         .         .         "Source/SimpleOsc.cpp"
+  .         .         .         "Source/SimpleOsc.h"
 )
 
 jucer_project_module(
