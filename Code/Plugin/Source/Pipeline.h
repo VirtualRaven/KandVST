@@ -4,10 +4,12 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "EnvelopeGenerator.h"
 #include "SimpleOsc.h"
+#include "ExampleEffect.h"
 class Pipeline
 {
 	double __rate;
 	SimpleOsc __osc;
+	ExampleEffect __delay;
 
 public:
 

@@ -4,7 +4,8 @@
 
 Pipeline::Pipeline(double rate) :
 	__rate(rate),
-	__osc(rate)
+	__osc(rate),
+	__delay(rate)
 {
 }
 
@@ -27,6 +28,8 @@ bool Pipeline::isActive() {
 template<typename T>
 void Pipeline::render_block(AudioBuffer<T>& buffer) {
 	__osc.RenderBlock(buffer);
+	__delay.RenderBlock(buffer);
+
 }
 
 template void Pipeline::render_block(AudioBuffer<double>& buffer);

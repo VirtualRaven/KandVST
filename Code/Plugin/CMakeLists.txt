@@ -84,6 +84,8 @@ jucer_project_files("KandVST"
   .         .         .         "Source/IEffect.h"
   x         .         .         "Source/SimpleOsc.cpp"
   .         .         .         "Source/SimpleOsc.h"
+  x         .         .         "Source/ExampleEffect.cpp"
+  .         .         .         "Source/ExampleEffect.h"
 )
 
 jucer_project_module(
