@@ -80,10 +80,10 @@ EnvelopeGenerator::EnvelopeGenerator(double sampleRate):
 	__sSustain(1.0),
 	__amplitude(0)
 {
-	__Attack = __sAttack * sampleRate;
-	__Decay = __sDecay * sampleRate;
-	__Release = __sRelease * sampleRate;
-	__sustain = __sSustain * sampleRate;
+	__Attack =	(int)(__sAttack * sampleRate);
+	__Decay =	(int)(__sDecay * sampleRate);
+	__Release = (int)(__sRelease * sampleRate);
+	__sustain = (int)(__sSustain * sampleRate);
 
 }
 
