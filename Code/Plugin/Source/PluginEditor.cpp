@@ -66,23 +66,42 @@ public:
 };
 
 //==============================================================================
-JuceDemoPluginAudioProcessorEditor::JuceDemoPluginAudioProcessorEditor (JuceDemoPluginAudioProcessor& owner)
+JuceDemoPluginAudioProcessorEditor::JuceDemoPluginAudioProcessorEditor (JuceDemoPluginAudioProcessor& owner,ParameterHandler& paramHandler)
     : AudioProcessorEditor (owner),
       midiKeyboard (owner.keyboardState, MidiKeyboardComponent::horizontalKeyboard),
       timecodeDisplayLabel (String()),
-      gainLabel (String(), "Throughput level:"),
+      attackLabel (String(), "Attack:"),
+	  decayLabel(String(), "Decay:"),
+ 	  sustainLabel(String(), "Sustain:"),
+	  releaseLabel(String(), "Release:"),
       delayLabel (String(), "Delay:")
 {
-    // add some sliders..
-    addAndMakeVisible (gainSlider = new ParameterSlider (*owner.gainParam));
-    gainSlider->setSliderStyle (Slider::Rotary);
 
-    addAndMakeVisible (delaySlider = new ParameterSlider (*owner.delayParam));
+	__paramHandler = &paramHandler;
+
+
+    // add some sliders..
+    addAndMakeVisible (attack = new ParameterSlider (*__paramHandler->GetFloat("ENV_ATTACK")));
+	attack->setSliderStyle (Slider::Rotary);
+	addAndMakeVisible(decay = new ParameterSlider(*__paramHandler->GetFloat("ENV_DECAY")));
+	decay->setSliderStyle(Slider::Rotary);
+	addAndMakeVisible(sustain = new ParameterSlider(*__paramHandler->GetFloat("ENV_SUSTAIN")));
+	sustain->setSliderStyle(Slider::Rotary);
+	addAndMakeVisible(release = new ParameterSlider(*__paramHandler->GetFloat("ENV_RELEASE")));
+	release->setSliderStyle(Slider::Rotary);
+
+    addAndMakeVisible (delaySlider = new ParameterSlider (*__paramHandler->GetFloat("EX_DELAYMULTI")));
     delaySlider->setSliderStyle (Slider::Rotary);
 
     // add some labels for the sliders..
-    gainLabel.attachToComponent (gainSlider, false);
-    gainLabel.setFont (Font (11.0f));
+    attackLabel.attachToComponent (attack, false);
+	attackLabel.setFont (Font (11.0f));
+	decayLabel.attachToComponent(decay, false);
+	decayLabel.setFont(Font(11.0f));
+	sustainLabel.attachToComponent(sustain, false);
+	sustainLabel.setFont(Font(11.0f));
+	releaseLabel.attachToComponent(release, false);
+	releaseLabel.setFont(Font(11.0f));
 
     delayLabel.attachToComponent (delaySlider, false);
     delayLabel.setFont (Font (11.0f));
@@ -95,7 +114,7 @@ JuceDemoPluginAudioProcessorEditor::JuceDemoPluginAudioProcessorEditor (JuceDemo
     timecodeDisplayLabel.setFont (Font (Font::getDefaultMonospacedFontName(), 15.0f, Font::plain));
 
     // set resize limits for this plug-in
-    setResizeLimits (400, 200, 1024, 700);
+    setResizeLimits (180*4, 330, 1024, 700);
 
     // set our component's initial size to be the last one that was stored in the filter's settings
     setSize (owner.lastUIWidth,
@@ -129,8 +148,14 @@ void JuceDemoPluginAudioProcessorEditor::resized()
 
     r.removeFromTop (20);
     Rectangle<int> sliderArea (r.removeFromTop (60));
-    gainSlider->setBounds (sliderArea.removeFromLeft (jmin (180, sliderArea.getWidth() / 2)));
-    delaySlider->setBounds (sliderArea.removeFromLeft (jmin (180, sliderArea.getWidth())));
+    attack->setBounds (sliderArea.removeFromLeft (jmin (180, sliderArea.getWidth())));
+    decay->setBounds (sliderArea.removeFromLeft (jmin (180, sliderArea.getWidth())));
+	sustain->setBounds(sliderArea.removeFromLeft(jmin(180, sliderArea.getWidth())));
+
+	release->setBounds(sliderArea.removeFromLeft(jmin(180, sliderArea.getWidth())));
+	Rectangle<int> sliderArea2(r.removeFromTop(130));
+	delaySlider->setBounds(sliderArea2.removeFromLeft(jmin(180, sliderArea2.getWidth())));
+
 
     getProcessor().lastUIWidth = getWidth();
     getProcessor().lastUIHeight = getHeight();

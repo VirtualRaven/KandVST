@@ -26,41 +26,33 @@
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
-#include "SinewaveSynth.h"
 
 AudioProcessor* JUCE_CALLTYPE createPluginFilter();
 
 
 //==============================================================================
 JuceDemoPluginAudioProcessor::JuceDemoPluginAudioProcessor()
-    : AudioProcessor (getBusesProperties())
+    : AudioProcessor (getBusesProperties()),
+	__paramHandler(*this)
 {
     lastPosInfo.resetToDefault();
-
     // This creates our parameters. We'll keep some raw pointers to them in this class,
     // so that we can easily access them later, but the base class will take care of
     // deleting them for us.
     addParameter (gainParam  = new AudioParameterFloat ("gain",  "Gain",           0.0f, 1.0f, 0.9f));
     addParameter (delayParam = new AudioParameterFloat ("delay", "Delay Feedback", 0.0f, 1.0f, 0.5f));
-
-    initialiseSynth();
 }
 
 JuceDemoPluginAudioProcessor::~JuceDemoPluginAudioProcessor()
 {
 }
 
-void JuceDemoPluginAudioProcessor::initialiseSynth()
+void JuceDemoPluginAudioProcessor::reset()
 {
-    const int numVoices = 8;
 
-    // Add some voices...
-    for (int i = numVoices; --i >= 0;)
-        synth.addVoice (new SineWaveVoice());
-
-    // ..and give the synth a sound to play
-    synth.addSound (new SineWaveSound());
 }
+
+
 
 //==============================================================================
 bool JuceDemoPluginAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
@@ -91,11 +83,8 @@ AudioProcessor::BusesProperties JuceDemoPluginAudioProcessor::getBusesProperties
 }
 
 //==============================================================================
-void JuceDemoPluginAudioProcessor::prepareToPlay (double newSampleRate, int /*samplesPerBlock*/)
+void JuceDemoPluginAudioProcessor::prepareToPlay (double newSampleRate, int maxSamplesPerBlock)
 {
-    // Use this method as the place to do any pre-playback
-    // initialisation that you need..
-    synth.setCurrentPlaybackSampleRate (newSampleRate);
     keyboardState.reset();
 
     if (isUsingDoublePrecision())
@@ -109,7 +98,7 @@ void JuceDemoPluginAudioProcessor::prepareToPlay (double newSampleRate, int /*sa
         delayBufferDouble.setSize (1, 1);
     }
 
-    reset();
+	__pipManager = new PipelineManager(newSampleRate, maxSamplesPerBlock,__paramHandler);
 }
 
 void JuceDemoPluginAudioProcessor::releaseResources()
@@ -117,14 +106,7 @@ void JuceDemoPluginAudioProcessor::releaseResources()
     // When playback stops, you can use this as an opportunity to free up any
     // spare memory, etc.
     keyboardState.reset();
-}
-
-void JuceDemoPluginAudioProcessor::reset()
-{
-    // Use this method as the place to clear any delay lines, buffers, etc, as it
-    // means there's been a break in the audio's continuity.
-    delayBufferFloat.clear();
-    delayBufferDouble.clear();
+	delete __pipManager;
 }
 
 template <typename FloatType>
@@ -137,12 +119,10 @@ void JuceDemoPluginAudioProcessor::process (AudioBuffer<FloatType>& buffer,
     // Now pass any incoming midi messages to our keyboard state object, and let it
     // add messages to the buffer if the user is clicking on the on-screen keys
     keyboardState.processNextMidiBuffer (midiMessages, 0, numSamples, true);
+	__pipManager->genSamples(buffer, midiMessages);
 
     // and now get our synth to process these midi events and generate its output.
-    synth.renderNextBlock (buffer, midiMessages, 0, numSamples);
-
-    // Apply our delay effect to the new output..
-    applyDelay (buffer, delayBuffer);
+    //synth.renderNextBlock (buffer, midiMessages, 0, numSamples);
 
     // In case we have more outputs than inputs, we'll clear any output
     // channels that didn't contain input data, (because these aren't
@@ -150,49 +130,10 @@ void JuceDemoPluginAudioProcessor::process (AudioBuffer<FloatType>& buffer,
     for (int i = getTotalNumInputChannels(); i < getTotalNumOutputChannels(); ++i)
         buffer.clear (i, 0, numSamples);
 
-    applyGain (buffer, delayBuffer); // apply our gain-change to the outgoing data..
-
     // Now ask the host for the current time so we can store it to be displayed later...
     updateCurrentTimeInfoFromHost();
 }
 
-template <typename FloatType>
-void JuceDemoPluginAudioProcessor::applyGain (AudioBuffer<FloatType>& buffer, AudioBuffer<FloatType>& delayBuffer)
-{
-    ignoreUnused (delayBuffer);
-    const float gainLevel = *gainParam;
-
-    for (int channel = 0; channel < getTotalNumOutputChannels(); ++channel)
-        buffer.applyGain (channel, 0, buffer.getNumSamples(), gainLevel);
-}
-
-template <typename FloatType>
-void JuceDemoPluginAudioProcessor::applyDelay (AudioBuffer<FloatType>& buffer, AudioBuffer<FloatType>& delayBuffer)
-{
-    const int numSamples = buffer.getNumSamples();
-    const float delayLevel = *delayParam;
-
-    int delayPos = 0;
-
-    for (int channel = 0; channel < getTotalNumOutputChannels(); ++channel)
-    {
-        auto channelData = buffer.getWritePointer (channel);
-        auto delayData = delayBuffer.getWritePointer (jmin (channel, delayBuffer.getNumChannels() - 1));
-        delayPos = delayPosition;
-
-        for (int i = 0; i < numSamples; ++i)
-        {
-            auto in = channelData[i];
-            channelData[i] += delayData[delayPos];
-            delayData[delayPos] = (delayData[delayPos] + in) * delayLevel;
-
-            if (++delayPos >= delayBuffer.getNumSamples())
-                delayPos = 0;
-        }
-    }
-
-    delayPosition = delayPos;
-}
 
 void JuceDemoPluginAudioProcessor::updateCurrentTimeInfoFromHost()
 {
@@ -214,7 +155,7 @@ void JuceDemoPluginAudioProcessor::updateCurrentTimeInfoFromHost()
 //==============================================================================
 AudioProcessorEditor* JuceDemoPluginAudioProcessor::createEditor()
 {
-    return new JuceDemoPluginAudioProcessorEditor (*this);
+    return new JuceDemoPluginAudioProcessorEditor (*this,__paramHandler);
 }
 
 //==============================================================================

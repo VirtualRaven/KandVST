@@ -28,6 +28,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "PluginProcessor.h"
+#include "ParameterHandler.h"
 
 
 //==============================================================================
@@ -37,7 +38,7 @@ class JuceDemoPluginAudioProcessorEditor  : public AudioProcessorEditor,
                                             private Timer
 {
 public:
-    JuceDemoPluginAudioProcessorEditor (JuceDemoPluginAudioProcessor&);
+    JuceDemoPluginAudioProcessorEditor (JuceDemoPluginAudioProcessor&,ParameterHandler& paramHandler);
     ~JuceDemoPluginAudioProcessorEditor();
 
     //==============================================================================
@@ -51,9 +52,10 @@ private:
     class ParameterSlider;
 
     MidiKeyboardComponent midiKeyboard;
-    Label timecodeDisplayLabel, gainLabel, delayLabel;
-    ScopedPointer<ParameterSlider> gainSlider, delaySlider;
+    Label timecodeDisplayLabel, attackLabel, decayLabel, sustainLabel, releaseLabel, delayLabel;
+    ScopedPointer<ParameterSlider> attack,decay,release,sustain, delaySlider;
     Colour backgroundColour;
+	ParameterHandler* __paramHandler;
 
     //==============================================================================
     JuceDemoPluginAudioProcessor& getProcessor() const
