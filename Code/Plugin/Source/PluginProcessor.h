@@ -24,10 +24,13 @@
   ==============================================================================
 */
 
-#pragma once
+#ifndef PLUGIN_PROCESSOR_H
+#define PLUGIN_PROCESSOR_H
+
+
 
 #include "../JuceLibraryCode/JuceHeader.h"
-
+#include "PipelineManager.h"
 
 //==============================================================================
 /**
@@ -114,15 +117,14 @@ private:
     //==============================================================================
     template <typename FloatType>
     void process (AudioBuffer<FloatType>& buffer, MidiBuffer& midiMessages, AudioBuffer<FloatType>& delayBuffer);
-    template <typename FloatType>
-    void applyGain (AudioBuffer<FloatType>&, AudioBuffer<FloatType>& delayBuffer);
-    template <typename FloatType>
-    void applyDelay (AudioBuffer<FloatType>&, AudioBuffer<FloatType>& delayBuffer);
 
     AudioBuffer<float> delayBufferFloat;
     AudioBuffer<double> delayBufferDouble;
 
-    int delayPosition = 0;
+
+
+	PipelineManager* __pipManager;
+	ParameterHandler __paramHandler;
 
     Synthesiser synth;
 
@@ -132,3 +134,5 @@ private:
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (JuceDemoPluginAudioProcessor)
 };
+
+#endif // !PLUGIN_PROCESSOR_H
