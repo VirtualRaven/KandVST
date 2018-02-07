@@ -2,14 +2,12 @@
 
 
 
-PipelineManager::PipelineManager(double rate, int maxBuffHint, ParameterHandler& paramHandler) :
+PipelineManager::PipelineManager(double rate, int maxBuffHint) :
  __sampleRate(rate),
  __maybeMaxBuff(maxBuffHint),
 __log(),
-pip(rate,paramHandler)
+pip(rate)
 {
-
-	__paramHandler = &paramHandler;
 #ifdef  PIPE_MIDI_LOG
 	__log.open(PIPE_MIDI_LOG, std::ofstream::trunc);
 	__log << "Midi log (" << rate << " : " << maxBuffHint << ")" << std::endl;

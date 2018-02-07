@@ -2,12 +2,11 @@
 #include <math.h>
 
 
-Pipeline::Pipeline(double rate, ParameterHandler& paramHandler) :
+Pipeline::Pipeline(double rate) :
 	__rate(rate),
-	__osc(rate,paramHandler),
-	__delay(rate,paramHandler)
+	__osc(rate),
+	__delay(rate)
 {
-	//__paramHandler = &paramHandler;
 }
 
 void Pipeline::noteCommand(int note, uint8 vel, bool isOn) 

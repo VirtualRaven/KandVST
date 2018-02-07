@@ -31,6 +31,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "PipelineManager.h"
+#include "Global.h"
 
 //==============================================================================
 /**
@@ -42,7 +43,6 @@ public:
     //==============================================================================
     JuceDemoPluginAudioProcessor();
     ~JuceDemoPluginAudioProcessor();
-
     //==============================================================================
     bool isBusesLayoutSupported (const BusesLayout& layouts) const override;
     void prepareToPlay (double sampleRate, int samplesPerBlock) override;

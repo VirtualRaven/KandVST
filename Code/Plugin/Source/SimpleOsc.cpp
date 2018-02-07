@@ -2,9 +2,9 @@
 
 
 
-SimpleOsc::SimpleOsc(double sampleRate, ParameterHandler& paramHandler) :
-	IGenerator(sampleRate,paramHandler),
-	__envelope(sampleRate,paramHandler),
+SimpleOsc::SimpleOsc(double sampleRate) :
+	IGenerator(sampleRate),
+	__envelope(sampleRate),
 	__note(0),
 	__delta(0),
 	__angle(0)

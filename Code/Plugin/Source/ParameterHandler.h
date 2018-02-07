@@ -2,6 +2,8 @@
 #define PARAMETER_HANDLER_H
 #include "../JuceLibraryCode/JuceHeader.h"
 #include <map>
+#include "Global.h"
+#include "Log.h"
 class ParameterHandler
 {
 private:
