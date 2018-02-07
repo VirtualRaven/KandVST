@@ -26,6 +26,7 @@
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
+#include "IWavetable.h"
 
 AudioProcessor* JUCE_CALLTYPE createPluginFilter();
 
@@ -85,6 +86,8 @@ AudioProcessor::BusesProperties JuceDemoPluginAudioProcessor::getBusesProperties
 //==============================================================================
 void JuceDemoPluginAudioProcessor::prepareToPlay (double newSampleRate, int maxSamplesPerBlock)
 {
+	populateWavetable(newSampleRate);
+
     keyboardState.reset();
 
     if (isUsingDoublePrecision())
@@ -107,6 +110,7 @@ void JuceDemoPluginAudioProcessor::releaseResources()
     // spare memory, etc.
     keyboardState.reset();
 	delete __pipManager;
+	freeWavetable();
 }
 
 template <typename FloatType>

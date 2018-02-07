@@ -88,6 +88,11 @@ jucer_project_files("KandVST"
   .         .         .         "Source/ExampleEffect.h"
   x         .         .         "Source/ParameterHandler.cpp"
   .         .         .         "Source/ParameterHandler.h"
+  .         .         .         "Source/IWavetable.h"
+  .         .         .         "Source/Wavetable.h"
+  x         .         .         "Source/Wavetable.cpp"
+  x         .         .         "Source/WavetableOsc.cpp"
+  .         .         .         "Source/WavetableOsc.h"
 )
 
 jucer_project_module(
