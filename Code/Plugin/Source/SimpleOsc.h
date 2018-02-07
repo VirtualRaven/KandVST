@@ -18,7 +18,7 @@ private:
 	void __RenderBlock(AudioBuffer<T>& buffer);
 
 public:
-	SimpleOsc(double sampleRate, ParameterHandler& paramHandler);
+	SimpleOsc(double sampleRate);
 	~SimpleOsc();
 
 	// Inherited via Generator

@@ -84,7 +84,7 @@ void EnvelopeGenerator::recalculateParameters()
 
 }
 
-EnvelopeGenerator::EnvelopeGenerator(double sampleRate,ParameterHandler& paramHandler):
+EnvelopeGenerator::EnvelopeGenerator(double sampleRate):
 	__sampleRate(sampleRate),
 	__sAttack(0.05),
 	__sDecay(0.1),
@@ -92,11 +92,10 @@ EnvelopeGenerator::EnvelopeGenerator(double sampleRate,ParameterHandler& paramHa
 	__sSustain(1.0),
 	__amplitude(0)
 {
-	__paramHandler = &paramHandler;
-	__pattack = __paramHandler->RegisterFloat("ENV_ATTACK", "Attack", 0.1f, 2.0f, 0.2f);
-	__pdecay = __paramHandler->RegisterFloat("ENV_DECAY", "Decay", 0.1f, 2.0f, 0.2f);
-	__psustain = __paramHandler->RegisterFloat("ENV_SUSTAIN", "Sustain", 0.0f, 2.0f, 0.2f);
-	__prelease = __paramHandler->RegisterFloat("ENV_RELEASE", "Release", 0.1f, 2.0f, 0.2f);
+	__pattack =	 Global->paramHandler->RegisterFloat("ENV_ATTACK", "Attack", 0.1f, 2.0f, 0.2f);
+	__pdecay =	 Global->paramHandler->RegisterFloat("ENV_DECAY", "Decay", 0.1f, 2.0f, 0.2f);
+	__psustain = Global->paramHandler->RegisterFloat("ENV_SUSTAIN", "Sustain", 0.0f, 2.0f, 0.2f);
+	__prelease = Global->paramHandler->RegisterFloat("ENV_RELEASE", "Release", 0.1f, 2.0f, 0.2f);
 	recalculateParameters();
 }
 

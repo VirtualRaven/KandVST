@@ -31,6 +31,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "PipelineManager.h"
+#include "Global.h"
 
 //==============================================================================
 /**

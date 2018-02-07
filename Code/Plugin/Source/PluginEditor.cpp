@@ -66,7 +66,7 @@ public:
 };
 
 //==============================================================================
-JuceDemoPluginAudioProcessorEditor::JuceDemoPluginAudioProcessorEditor (JuceDemoPluginAudioProcessor& owner,ParameterHandler& paramHandler)
+JuceDemoPluginAudioProcessorEditor::JuceDemoPluginAudioProcessorEditor (JuceDemoPluginAudioProcessor& owner)
     : AudioProcessorEditor (owner),
       midiKeyboard (owner.keyboardState, MidiKeyboardComponent::horizontalKeyboard),
       timecodeDisplayLabel (String()),
@@ -77,20 +77,19 @@ JuceDemoPluginAudioProcessorEditor::JuceDemoPluginAudioProcessorEditor (JuceDemo
       delayLabel (String(), "Delay:")
 {
 
-	__paramHandler = &paramHandler;
 
 
     // add some sliders..
-    addAndMakeVisible (attack = new ParameterSlider (*__paramHandler->GetFloat("ENV_ATTACK")));
+    addAndMakeVisible (attack = new ParameterSlider (*Global->paramHandler->GetFloat("ENV_ATTACK")));
 	attack->setSliderStyle (Slider::Rotary);
-	addAndMakeVisible(decay = new ParameterSlider(*__paramHandler->GetFloat("ENV_DECAY")));
+	addAndMakeVisible(decay = new ParameterSlider(*Global->paramHandler->GetFloat("ENV_DECAY")));
 	decay->setSliderStyle(Slider::Rotary);
-	addAndMakeVisible(sustain = new ParameterSlider(*__paramHandler->GetFloat("ENV_SUSTAIN")));
+	addAndMakeVisible(sustain = new ParameterSlider(*Global->paramHandler->GetFloat("ENV_SUSTAIN")));
 	sustain->setSliderStyle(Slider::Rotary);
-	addAndMakeVisible(release = new ParameterSlider(*__paramHandler->GetFloat("ENV_RELEASE")));
+	addAndMakeVisible(release = new ParameterSlider(*Global->paramHandler->GetFloat("ENV_RELEASE")));
 	release->setSliderStyle(Slider::Rotary);
 
-    addAndMakeVisible (delaySlider = new ParameterSlider (*__paramHandler->GetFloat("EX_DELAYMULTI")));
+    addAndMakeVisible (delaySlider = new ParameterSlider (*Global->paramHandler->GetFloat("EX_DELAYMULTI")));
     delaySlider->setSliderStyle (Slider::Rotary);
 
     // add some labels for the sliders..

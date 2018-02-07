@@ -29,7 +29,7 @@
 
 AudioProcessor* JUCE_CALLTYPE createPluginFilter();
 
-
+GLOBAL* Global;
 //==============================================================================
 JuceDemoPluginAudioProcessor::JuceDemoPluginAudioProcessor()
     : AudioProcessor (getBusesProperties()),
@@ -41,6 +41,9 @@ JuceDemoPluginAudioProcessor::JuceDemoPluginAudioProcessor()
     // deleting them for us.
     addParameter (gainParam  = new AudioParameterFloat ("gain",  "Gain",           0.0f, 1.0f, 0.9f));
     addParameter (delayParam = new AudioParameterFloat ("delay", "Delay Feedback", 0.0f, 1.0f, 0.5f));
+
+	Global = new GLOBAL();
+	(*Global).paramHandler = &__paramHandler;
 }
 
 JuceDemoPluginAudioProcessor::~JuceDemoPluginAudioProcessor()
@@ -98,7 +101,7 @@ void JuceDemoPluginAudioProcessor::prepareToPlay (double newSampleRate, int maxS
         delayBufferDouble.setSize (1, 1);
     }
 
-	__pipManager = new PipelineManager(newSampleRate, maxSamplesPerBlock,__paramHandler);
+	__pipManager = new PipelineManager(newSampleRate, maxSamplesPerBlock);
 }
 
 void JuceDemoPluginAudioProcessor::releaseResources()
@@ -155,7 +158,7 @@ void JuceDemoPluginAudioProcessor::updateCurrentTimeInfoFromHost()
 //==============================================================================
 AudioProcessorEditor* JuceDemoPluginAudioProcessor::createEditor()
 {
-    return new JuceDemoPluginAudioProcessorEditor (*this,__paramHandler);
+    return new JuceDemoPluginAudioProcessorEditor (*this);
 }
 
 //==============================================================================

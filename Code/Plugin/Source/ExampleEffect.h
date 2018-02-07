@@ -2,7 +2,7 @@
 #define EXAMPLE_EFFECT_H
 #include "IEffect.h"
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "ParameterHandler.h"
+#include "Global.h"
 class ExampleEffect :
 	public IEffect
 {
@@ -16,7 +16,7 @@ private:
 	AudioParameterFloat* __delayMultiplier;
 	
 public:
-	ExampleEffect(double sampleRate, ParameterHandler& paramHandler);
+	ExampleEffect(double sampleRate);
 	~ExampleEffect();
 
 	// Inherited via IEffect
