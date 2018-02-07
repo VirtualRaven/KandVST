@@ -1,5 +1,6 @@
 #ifndef ENVELOPE_GENERATOR_H
 #define ENVELOPE_GENERATOR_H
+#include "ParameterHandler.h"
 
 #include "Global.h"
 class EnvelopeGenerator

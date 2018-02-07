@@ -3,6 +3,8 @@
 #include "IEffect.h"
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "Global.h"
+#include "ParameterHandler.h"
+
 class ExampleEffect :
 	public IEffect
 {

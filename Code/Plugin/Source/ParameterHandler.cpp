@@ -15,9 +15,16 @@ ParameterHandler::~ParameterHandler()
 
 AudioParameterFloat * ParameterHandler::RegisterFloat(String id, String label, float minValue, float maxValue, float defaultvalue)
 {
+	if (__floatParams[id] != nullptr)
+		return __floatParams[id];
+
 	auto tmp = new AudioParameterFloat(id, label, minValue, maxValue, defaultvalue);
 	__owner->addParameter(tmp);
 	__floatParams.insert_or_assign(id,tmp);
+
+	Global.log->Write(id);
+	Global.log->Write("\n");
+
 	return tmp;
 }
 

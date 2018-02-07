@@ -29,7 +29,7 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "PluginProcessor.h"
 #include "Global.h"
-
+#include "ParameterHandler.h"
 
 //==============================================================================
 /** This is the editor component that our filter will display.

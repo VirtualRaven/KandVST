@@ -1,10 +1,14 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
-#include "ParameterHandler.h"
+class ParameterHandler;
+class Log;
 struct GLOBAL {
 	ParameterHandler* paramHandler;
+	Log* log;
+
+	//Fix destructor
 };
-extern GLOBAL* Global;
+extern GLOBAL Global;
 
 #endif // !GLOBAL_H
