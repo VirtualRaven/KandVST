@@ -21,7 +21,7 @@ private:
 	void __RenderBlock(AudioBuffer<T>& buffer);
 
 public:
-	WavetableOsc(double sampleRate, ParameterHandler& paramHandler);
+	WavetableOsc(double sampleRate);
 	~WavetableOsc();
 
 	// Inherited via Generator

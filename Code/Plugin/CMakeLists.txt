@@ -93,6 +93,9 @@ jucer_project_files("KandVST"
   x         .         .         "Source/Wavetable.cpp"
   x         .         .         "Source/WavetableOsc.cpp"
   .         .         .         "Source/WavetableOsc.h"
+  x         .         .         "Source/Log.cpp"
+  .         .         .         "Source/Log.h"
+  .         .         .         "Source/Global.h"
 )
 
 jucer_project_module(
