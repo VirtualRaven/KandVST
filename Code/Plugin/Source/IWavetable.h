@@ -22,6 +22,22 @@ enum WAVE_TYPE : unsigned int {
 	__COUNT
 };
 
+inline WAVE_TYPE toWAVE_TYPE(int a) {
+	switch (a)
+	{
+		case SINE:
+			return SINE;
+		case SQUARE:
+			return SQUARE;
+		case SAW:
+			return SAW;
+		case TRI:
+			return TRI;
+		default:
+			return SINE;
+	}
+}
+
 extern const IWavetable* tables[WAVE_TYPE::__COUNT];
 extern void populateWavetable(double sampleRate);
 extern void freeWavetable();
