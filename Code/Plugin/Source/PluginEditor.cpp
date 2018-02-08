@@ -28,80 +28,25 @@
 #include "PluginEditor.h"
 
 //==============================================================================
-// This is a handy slider subclass that controls an AudioProcessorParameter
-// (may move this class into the library itself at some point in the future..)
-class JuceDemoPluginAudioProcessorEditor::ParameterSlider   : public Slider,
-                                                              private Timer
-{
-public:
-    ParameterSlider (AudioProcessorParameter& p)
-        : Slider (p.getName (256)), param (p)
-    {
-        setRange (0.0, 1.0, 0.0);
-        startTimerHz (30);
-        updateSliderPos();
-    }
-
-    void valueChanged() override        { param.setValueNotifyingHost ((float) Slider::getValue()); }
-
-    void timerCallback() override       { updateSliderPos(); }
-
-    void startedDragging() override     { param.beginChangeGesture(); }
-    void stoppedDragging() override     { param.endChangeGesture();   }
-
-    double getValueFromText (const String& text) override   { return param.getValueForText (text); }
-    String getTextFromValue (double value) override         { return param.getText ((float) value, 1024); }
-
-    void updateSliderPos()
-    {
-        const float newValue = param.getValue();
-
-        if (newValue != (float) Slider::getValue() && ! isMouseButtonDown())
-            Slider::setValue (newValue, NotificationType::dontSendNotification);
-    }
-
-    AudioProcessorParameter& param;
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ParameterSlider)
-};
-
-//==============================================================================
-JuceDemoPluginAudioProcessorEditor::JuceDemoPluginAudioProcessorEditor (JuceDemoPluginAudioProcessor& owner,ParameterHandler& paramHandler)
+JuceDemoPluginAudioProcessorEditor::JuceDemoPluginAudioProcessorEditor (JuceDemoPluginAudioProcessor& owner)
     : AudioProcessorEditor (owner),
+	  envelopeComponent(0),
       midiKeyboard (owner.keyboardState, MidiKeyboardComponent::horizontalKeyboard),
       timecodeDisplayLabel (String()),
-      attackLabel (String(), "Attack:"),
-	  decayLabel(String(), "Decay:"),
- 	  sustainLabel(String(), "Sustain:"),
-	  releaseLabel(String(), "Release:"),
-      delayLabel (String(), "Delay:")
+      delayLabel (String(), "Delay:"),
+	  cc()
 {
-
-	__paramHandler = &paramHandler;
-
-
     // add some sliders..
-    addAndMakeVisible (attack = new ParameterSlider (*__paramHandler->GetFloat("ENV_ATTACK")));
-	attack->setSliderStyle (Slider::Rotary);
-	addAndMakeVisible(decay = new ParameterSlider(*__paramHandler->GetFloat("ENV_DECAY")));
-	decay->setSliderStyle(Slider::Rotary);
-	addAndMakeVisible(sustain = new ParameterSlider(*__paramHandler->GetFloat("ENV_SUSTAIN")));
-	sustain->setSliderStyle(Slider::Rotary);
-	addAndMakeVisible(release = new ParameterSlider(*__paramHandler->GetFloat("ENV_RELEASE")));
-	release->setSliderStyle(Slider::Rotary);
 
-    addAndMakeVisible (delaySlider = new ParameterSlider (*__paramHandler->GetFloat("EX_DELAYMULTI")));
+	addAndMakeVisible(cc);
+
+	addAndMakeVisible(envelopeComponent);
+   
+
+    addAndMakeVisible (delaySlider = new ParameterSlider (*Global.paramHandler->Get<AudioParameterFloat>(0,"ENV_ATTACK")));
     delaySlider->setSliderStyle (Slider::Rotary);
 
-    // add some labels for the sliders..
-    attackLabel.attachToComponent (attack, false);
-	attackLabel.setFont (Font (11.0f));
-	decayLabel.attachToComponent(decay, false);
-	decayLabel.setFont(Font(11.0f));
-	sustainLabel.attachToComponent(sustain, false);
-	sustainLabel.setFont(Font(11.0f));
-	releaseLabel.attachToComponent(release, false);
-	releaseLabel.setFont(Font(11.0f));
+   
 
     delayLabel.attachToComponent (delaySlider, false);
     delayLabel.setFont (Font (11.0f));
@@ -147,16 +92,13 @@ void JuceDemoPluginAudioProcessorEditor::resized()
     midiKeyboard.setBounds (r.removeFromBottom (70));
 
     r.removeFromTop (20);
-    Rectangle<int> sliderArea (r.removeFromTop (60));
-    attack->setBounds (sliderArea.removeFromLeft (jmin (180, sliderArea.getWidth())));
-    decay->setBounds (sliderArea.removeFromLeft (jmin (180, sliderArea.getWidth())));
-	sustain->setBounds(sliderArea.removeFromLeft(jmin(180, sliderArea.getWidth())));
 
-	release->setBounds(sliderArea.removeFromLeft(jmin(180, sliderArea.getWidth())));
+	envelopeComponent.setBounds(r.removeFromTop(100).removeFromRight(200));
+
 	Rectangle<int> sliderArea2(r.removeFromTop(130));
 	delaySlider->setBounds(sliderArea2.removeFromLeft(jmin(180, sliderArea2.getWidth())));
-
-
+	cc.setBounds(r.removeFromTop(300));
+	
     getProcessor().lastUIWidth = getWidth();
     getProcessor().lastUIHeight = getHeight();
 }

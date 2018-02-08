@@ -26,10 +26,11 @@
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
+#include "IWavetable.h"
 
 AudioProcessor* JUCE_CALLTYPE createPluginFilter();
 
-
+GLOBAL Global;
 //==============================================================================
 JuceDemoPluginAudioProcessor::JuceDemoPluginAudioProcessor()
     : AudioProcessor (getBusesProperties()),
@@ -39,17 +40,27 @@ JuceDemoPluginAudioProcessor::JuceDemoPluginAudioProcessor()
     // This creates our parameters. We'll keep some raw pointers to them in this class,
     // so that we can easily access them later, but the base class will take care of
     // deleting them for us.
-    addParameter (gainParam  = new AudioParameterFloat ("gain",  "Gain",           0.0f, 1.0f, 0.9f));
-    addParameter (delayParam = new AudioParameterFloat ("delay", "Delay Feedback", 0.0f, 1.0f, 0.5f));
+	
+
+	Global = GLOBAL();
+	Global.paramHandler = &__paramHandler;
+	Global.log = new Log("log.txt");
+
+	setParameters<int, EnvelopeGenerator, ExampleEffect>({ {0},{0} });
 }
+
 
 JuceDemoPluginAudioProcessor::~JuceDemoPluginAudioProcessor()
 {
+	//delete Global.log;
+	//delete Global.paramHandler;
+	
+
 }
 
 void JuceDemoPluginAudioProcessor::reset()
 {
-
+	Global.log->Write("Reset\n");
 }
 
 
@@ -85,6 +96,8 @@ AudioProcessor::BusesProperties JuceDemoPluginAudioProcessor::getBusesProperties
 //==============================================================================
 void JuceDemoPluginAudioProcessor::prepareToPlay (double newSampleRate, int maxSamplesPerBlock)
 {
+	populateWavetable(newSampleRate);
+
     keyboardState.reset();
 
     if (isUsingDoublePrecision())
@@ -98,7 +111,9 @@ void JuceDemoPluginAudioProcessor::prepareToPlay (double newSampleRate, int maxS
         delayBufferDouble.setSize (1, 1);
     }
 
-	__pipManager = new PipelineManager(newSampleRate, maxSamplesPerBlock,__paramHandler);
+	__pipManager = new PipelineManager(newSampleRate, maxSamplesPerBlock);
+
+
 }
 
 void JuceDemoPluginAudioProcessor::releaseResources()
@@ -107,6 +122,7 @@ void JuceDemoPluginAudioProcessor::releaseResources()
     // spare memory, etc.
     keyboardState.reset();
 	delete __pipManager;
+	freeWavetable();
 }
 
 template <typename FloatType>
@@ -155,7 +171,7 @@ void JuceDemoPluginAudioProcessor::updateCurrentTimeInfoFromHost()
 //==============================================================================
 AudioProcessorEditor* JuceDemoPluginAudioProcessor::createEditor()
 {
-    return new JuceDemoPluginAudioProcessorEditor (*this,__paramHandler);
+    return new JuceDemoPluginAudioProcessorEditor (*this);
 }
 
 //==============================================================================

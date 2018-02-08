@@ -1,25 +1,28 @@
-#ifndef SIMPLE_OSC_H
-#define SIMPLE_OSC_H
+#ifndef WAVETABLEOSC_H
+#define WAVETABLEOSC_H
 
-
-#include "../JuceLibraryCode/JuceHeader.h"
 #include "IGenerator.h"
 #include "EnvelopeGenerator.h"
-class SimpleOsc : public IGenerator
+#include "IWavetable.h"
+#include "IVSTParameters.h"
+
+class WavetableOsc : public IGenerator, public IVSTParameters
 {
 private:
 	EnvelopeGenerator __envelope;
 	int __note;
-	double __angle;
-	double __delta;
-	bool __sustain; 
+	double __frequency;
+	double __phase;
+	double __inc;
+	bool __sustain;
+	const IWavetable* __wavetable;
 
 	template<typename T>
 	void __RenderBlock(AudioBuffer<T>& buffer);
 
 public:
-	SimpleOsc(double sampleRate);
-	~SimpleOsc();
+	WavetableOsc(int ID,double sampleRate);
+	~WavetableOsc();
 
 	// Inherited via Generator
 	virtual void ProccesNoteCommand(int note, uint8 vel, bool isOn) override;
@@ -33,7 +36,8 @@ public:
 	{
 		__RenderBlock(buffer);
 	}
-	
+	void setWaveform(WAVE_TYPE t);
 };
 
-#endif //SIMPLE_OSC_H
+#endif //!WAVETABLEOSC_H
+

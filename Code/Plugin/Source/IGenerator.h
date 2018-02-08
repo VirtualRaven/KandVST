@@ -1,7 +1,6 @@
 #ifndef IGENERATOR_H
 #define IGENERATOR_H
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "ParameterHandler.h"
 class IGenerator
 {
 
@@ -9,9 +8,8 @@ private:
 	IGenerator();
 protected:
 	double __sampleRate;
-	ParameterHandler* __paramHandler;
 public:
-	IGenerator(double sampleRate, ParameterHandler& paramHandler) : __sampleRate(sampleRate) { __paramHandler = &paramHandler; };
+	IGenerator(double sampleRate) : __sampleRate(sampleRate) {};
 	virtual void RenderBlock(AudioBuffer<float>& buffer) = 0;
 	virtual void RenderBlock(AudioBuffer<double>& buffer) = 0;
 

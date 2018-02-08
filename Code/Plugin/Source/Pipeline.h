@@ -3,17 +3,14 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "EnvelopeGenerator.h"
-#include "SimpleOsc.h"
+#include "WavetableOsc.h"
 #include "ExampleEffect.h"
-#include "ParameterHandler.h"
 class Pipeline
 {
 private:
 	double __rate;
-	SimpleOsc __osc;
+	WavetableOsc __osc;
 	ExampleEffect __delay;
-	ParameterHandler* __paramHandler;
-
 public:
 
 
@@ -24,7 +21,7 @@ public:
 
 
 
-	Pipeline(double rate,ParameterHandler& paramHandler);
+	Pipeline(double rate);
 
 	template<typename T>
 	void render_block(AudioBuffer<T>& buffer);

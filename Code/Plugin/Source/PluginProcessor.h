@@ -31,7 +31,8 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "PipelineManager.h"
-
+#include "Global.h"
+#include "TemplateHelper.h"
 //==============================================================================
 /**
     As the name suggest, this class does the actual audio processing.
@@ -42,7 +43,6 @@ public:
     //==============================================================================
     JuceDemoPluginAudioProcessor();
     ~JuceDemoPluginAudioProcessor();
-
     //==============================================================================
     bool isBusesLayoutSupported (const BusesLayout& layouts) const override;
     void prepareToPlay (double sampleRate, int samplesPerBlock) override;

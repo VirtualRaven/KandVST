@@ -1,8 +1,9 @@
 #ifndef ENVELOPE_GENERATOR_H
 #define ENVELOPE_GENERATOR_H
-
 #include "ParameterHandler.h"
-class EnvelopeGenerator
+#include "IVSTParameters.h"
+#include "Global.h"
+class EnvelopeGenerator: public IVSTParameters
 {
 private:
 	double __sampleRate;
@@ -16,7 +17,6 @@ private:
 	int __state;
 	int __sustain;
 	double __amplitude;
-	ParameterHandler* __paramHandler;
 	AudioParameterFloat* __pattack;
 	AudioParameterFloat* __pdecay;
 	AudioParameterFloat* __psustain;
@@ -29,7 +29,8 @@ private:
 public:
 	void Reset();
 	double GenerateNextStep(bool sustain);
-	EnvelopeGenerator(double sampleRate, ParameterHandler& paramHandler);
+	static void RegisterParameters(int ID);
+	EnvelopeGenerator(int ID,double sampleRate);
 	~EnvelopeGenerator();
 };
 #endif //ENVELOPE_GENERATOR_H
