@@ -34,12 +34,20 @@ JuceDemoPluginAudioProcessorEditor::JuceDemoPluginAudioProcessorEditor (JuceDemo
       midiKeyboard (owner.keyboardState, MidiKeyboardComponent::horizontalKeyboard),
       timecodeDisplayLabel (String()),
       delayLabel (String(), "Delay:"),
-	  cc()
+	  cc(),
+	  waveType()
 {
     // add some sliders..
 
 	addAndMakeVisible(cc);
 
+	addAndMakeVisible(waveType);
+	waveType.addItem("Sine", 1);
+	waveType.addItem("Square", 2);
+	waveType.addItem("Saw", 3);
+	waveType.addItem("Triangle", 4);
+	waveType.setSelectedId(1);
+	waveType.addListener(this);
 	addAndMakeVisible(envelopeComponent);
    
 
@@ -94,9 +102,9 @@ void JuceDemoPluginAudioProcessorEditor::resized()
     r.removeFromTop (20);
 
 	envelopeComponent.setBounds(r.removeFromTop(100).removeFromRight(200));
-
+	waveType.setBounds(r.removeFromTop(100));
 	Rectangle<int> sliderArea2(r.removeFromTop(130));
-	delaySlider->setBounds(sliderArea2.removeFromLeft(jmin(180, sliderArea2.getWidth())));
+	/*delaySlider->setBounds(sliderArea2.removeFromLeft(jmin(180, sliderArea2.getWidth())));*/
 	cc.setBounds(r.removeFromTop(300));
 	
     getProcessor().lastUIWidth = getWidth();
@@ -106,9 +114,10 @@ void JuceDemoPluginAudioProcessorEditor::resized()
 //==============================================================================
 void JuceDemoPluginAudioProcessorEditor::timerCallback()
 {
+	AudioParameterInt* wt = Global.paramHandler->Get<AudioParameterInt>(0, "WAVE_TYPE");
+	waveType.setSelectedId(*wt+1);
     updateTimecodeDisplay (getProcessor().lastPosInfo);
 }
-
 void JuceDemoPluginAudioProcessorEditor::hostMIDIControllerIsAvailable (bool controllerIsAvailable)
 {
     midiKeyboard.setVisible (! controllerIsAvailable);
@@ -173,4 +182,12 @@ void JuceDemoPluginAudioProcessorEditor::updateTimecodeDisplay (AudioPlayHead::C
         displayText << "  (playing)";
 
     timecodeDisplayLabel.setText (displayText.toString(), dontSendNotification);
+}
+
+void JuceDemoPluginAudioProcessorEditor::comboBoxChanged(ComboBox * comboBoxThatHasChanged)
+{
+	//Race with timer
+	AudioParameterInt* wt = Global.paramHandler->Get<AudioParameterInt>(0, "WAVE_TYPE");
+	if (waveType.getSelectedId() != 0)
+		*wt = waveType.getSelectedId() - 1;
 }

@@ -38,7 +38,9 @@
 /** This is the editor component that our filter will display.
 */
 class JuceDemoPluginAudioProcessorEditor  : public AudioProcessorEditor,
-                                            private Timer
+                                            private Timer,
+											private ComboBox::Listener
+											
 {
 public:
     JuceDemoPluginAudioProcessorEditor (JuceDemoPluginAudioProcessor&);
@@ -57,7 +59,7 @@ private:
     Label timecodeDisplayLabel, delayLabel;
     ScopedPointer<ParameterSlider>delaySlider;
     Colour backgroundColour;
-
+	ComboBox waveType;
 	ConsoleComponent cc;
 
     //==============================================================================
@@ -67,4 +69,7 @@ private:
     }
 
     void updateTimecodeDisplay (AudioPlayHead::CurrentPositionInfo);
+
+	// Inherited via Listener
+	virtual void comboBoxChanged(ComboBox * comboBoxThatHasChanged) override;
 };
