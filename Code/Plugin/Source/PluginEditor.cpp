@@ -36,13 +36,12 @@ JuceDemoPluginAudioProcessorEditor::JuceDemoPluginAudioProcessorEditor (JuceDemo
       delayLabel (String(), "Delay:"),
 	  cc()
 {
-    // add some sliders..
-
-	addAndMakeVisible(cc);
+    
+	//addAndMakeVisible(cc);
 
 	addAndMakeVisible(envelopeComponent);
    
-
+    // add some sliders..
     addAndMakeVisible (delaySlider = new ParameterSlider (*Global.paramHandler->Get<AudioParameterFloat>(0,"ENV_ATTACK")));
     delaySlider->setSliderStyle (Slider::Rotary);
 
@@ -59,12 +58,16 @@ JuceDemoPluginAudioProcessorEditor::JuceDemoPluginAudioProcessorEditor (JuceDemo
     timecodeDisplayLabel.setFont (Font (Font::getDefaultMonospacedFontName(), 15.0f, Font::plain));
 
     // set resize limits for this plug-in
-    setResizeLimits (180*4, 330, 1024, 700);
+    //setResizeLimits (180*4, 330, 1024, 700);
+    //========================================================
+
+    setResizable(false,false);
 
     // set our component's initial size to be the last one that was stored in the filter's settings
-    setSize (owner.lastUIWidth,
-             owner.lastUIHeight);
+    setSize (1280,720);
 
+    addAndMakeVisible(infoWindow);
+    //========================================================
     updateTrackProperties();
 
     // start a timer which will keep our timecode display updated
@@ -78,13 +81,15 @@ JuceDemoPluginAudioProcessorEditor::~JuceDemoPluginAudioProcessorEditor()
 //==============================================================================
 void JuceDemoPluginAudioProcessorEditor::paint (Graphics& g)
 {
-    g.setColour (backgroundColour);
+    g.setColour (Colour::fromRGB(20,20,30));
     g.fillAll();
 }
 
 void JuceDemoPluginAudioProcessorEditor::resized()
 {
     // This lays out our child components...
+    
+    infoWindow.setBounds(getLocalBounds());
 
     Rectangle<int> r (getLocalBounds().reduced (8));
 

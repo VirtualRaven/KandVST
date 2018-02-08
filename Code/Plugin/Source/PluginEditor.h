@@ -30,9 +30,10 @@
 #include "PluginProcessor.h"
 #include "Global.h"
 #include "ParameterHandler.h"
-#include "Components\ConsoleComponent.h"
-#include "Components\ParameterSlider.h"
-#include "Components\EnvelopeComponent.h"
+#include "Components/ConsoleComponent.h"
+#include "Components/ParameterSlider.h"
+#include "Components/EnvelopeComponent.h"
+#include "Components/InformationComponent.h"
 
 //==============================================================================
 /** This is the editor component that our filter will display.
@@ -59,6 +60,7 @@ private:
     Colour backgroundColour;
 
 	ConsoleComponent cc;
+    InformationComponent infoWindow;
 
     //==============================================================================
     JuceDemoPluginAudioProcessor& getProcessor() const
