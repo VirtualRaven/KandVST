@@ -5,6 +5,7 @@
 #include "EnvelopeGenerator.h"
 #include "WavetableOsc.h"
 #include "ExampleEffect.h"
+#include <mutex>
 class Pipeline
 {
 private:
@@ -12,7 +13,7 @@ private:
 	WavetableOsc __osc;
 	ExampleEffect __delay;
 public:
-
+	std::mutex mtx;
 
 	bool isActive();
 	void noteCommand(int note, 

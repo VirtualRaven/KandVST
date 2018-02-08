@@ -6,7 +6,11 @@ PipelineManager::PipelineManager(double rate, int maxBuffHint) :
  __sampleRate(rate),
  __maybeMaxBuff(maxBuffHint),
 __log(),
-pip(rate)
+pip(rate),
+pip2(rate),
+pip3(rate),
+pipList = {pip, pip2, pip3}
+
 {
 #ifdef  PIPE_MIDI_LOG
 	__log.open(PIPE_MIDI_LOG, std::ofstream::trunc);

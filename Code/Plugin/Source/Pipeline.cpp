@@ -1,11 +1,13 @@
 #include "Pipeline.h"
 #include <math.h>
+#include <mutex>
 
 
 Pipeline::Pipeline(double rate) :
 	__rate(rate),
 	__osc(rate),
-	__delay(rate)
+	__delay(rate),
+	std::mutex mtx;
 {
 }
 
