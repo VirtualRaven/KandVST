@@ -30,6 +30,7 @@
 #include "PluginProcessor.h"
 #include "Global.h"
 #include "ParameterHandler.h"
+#include "Components\ConsoleComponent.h"
 
 //==============================================================================
 /** This is the editor component that our filter will display.
@@ -51,10 +52,13 @@ public:
 private:
     class ParameterSlider;
 
+
     MidiKeyboardComponent midiKeyboard;
     Label timecodeDisplayLabel, attackLabel, decayLabel, sustainLabel, releaseLabel, delayLabel;
     ScopedPointer<ParameterSlider> attack,decay,release,sustain, delaySlider;
     Colour backgroundColour;
+
+	ConsoleComponent cc;
 
     //==============================================================================
     JuceDemoPluginAudioProcessor& getProcessor() const
