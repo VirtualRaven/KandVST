@@ -43,7 +43,7 @@ JuceDemoPluginAudioProcessorEditor::JuceDemoPluginAudioProcessorEditor (JuceDemo
 	addAndMakeVisible(envelopeComponent);
    
 
-    addAndMakeVisible (delaySlider = new ParameterSlider (*Global.paramHandler->GetFloat(0,"ENV_ATTACK")));
+    addAndMakeVisible (delaySlider = new ParameterSlider (*Global.paramHandler->Get<AudioParameterFloat>(0,"ENV_ATTACK")));
     delaySlider->setSliderStyle (Slider::Rotary);
 
    
@@ -98,8 +98,6 @@ void JuceDemoPluginAudioProcessorEditor::resized()
 	Rectangle<int> sliderArea2(r.removeFromTop(130));
 	delaySlider->setBounds(sliderArea2.removeFromLeft(jmin(180, sliderArea2.getWidth())));
 	cc.setBounds(r.removeFromTop(300));
-
-
 	
     getProcessor().lastUIWidth = getWidth();
     getProcessor().lastUIHeight = getHeight();

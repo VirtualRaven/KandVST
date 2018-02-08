@@ -65,7 +65,7 @@ bool ConsoleComponent::keyPressed(const KeyPress & key, Component * originatingC
 			__output.setText(__buffer.str());
 		}
 		if (s == "list parameters") {
-			auto floats = Global.paramHandler->GetFloats();
+			auto floats = Global.paramHandler->GetAll<AudioParameterFloat>();
 			for (std::map<String, AudioParameterFloat* >::iterator it = (*floats).begin(); it != (*floats).end(); ++it) {
 				__buffer << it->first << " = " << *(it->second) << "\n";
 			}

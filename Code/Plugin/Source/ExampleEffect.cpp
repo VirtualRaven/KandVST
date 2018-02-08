@@ -8,7 +8,7 @@ ExampleEffect::ExampleEffect(int ID,double sampleRate):
 	__delayBuffer(2,sampleRate/4), //1/6 sec echo 
 	__delayPos(0)
 {
-	__delayMultiplier = Global.paramHandler->GetFloat(ID, "EX_DELAYMULTI");
+	__delayMultiplier = Global.paramHandler->Get<AudioParameterFloat>(ID, "EX_DELAYMULTI");
 
 	for (size_t i = 0; i < __delayBuffer.getNumSamples(); i++)
 	{

@@ -101,10 +101,10 @@ EnvelopeGenerator::EnvelopeGenerator(int ID,double sampleRate):
 	__sSustain(1.0),
 	__amplitude(0)
 {
-	__pattack =	 Global.paramHandler->GetFloat(__ID,"ENV_ATTACK");
-	__pdecay =	 Global.paramHandler->GetFloat(__ID,"ENV_DECAY");
-	__psustain = Global.paramHandler->GetFloat(__ID,"ENV_SUSTAIN");
-	__prelease = Global.paramHandler->GetFloat(__ID,"ENV_RELEASE");
+	__pattack =	 Global.paramHandler->Get<AudioParameterFloat>(__ID,"ENV_ATTACK");
+	__pdecay =	 Global.paramHandler->Get<AudioParameterFloat>(__ID,"ENV_DECAY");
+	__psustain = Global.paramHandler->Get<AudioParameterFloat>(__ID,"ENV_SUSTAIN");
+	__prelease = Global.paramHandler->Get<AudioParameterFloat>(__ID,"ENV_RELEASE");
 	recalculateParameters();
 }
 
