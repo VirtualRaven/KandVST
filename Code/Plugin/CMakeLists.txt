@@ -96,6 +96,7 @@ jucer_project_files("KandVST"
   x         .         .         "Source/Log.cpp"
   .         .         .         "Source/Log.h"
   .         .         .         "Source/Global.h"
+  .         .         .         "Source/TemplateHelper.h"
 )
 
 jucer_project_module(
