@@ -46,7 +46,7 @@ JuceDemoPluginAudioProcessor::JuceDemoPluginAudioProcessor()
 	Global.paramHandler = &__paramHandler;
 	Global.log = new Log("log.txt");
 
-	setParameters<int, EnvelopeGenerator, ExampleEffect>({ {0},{0} });
+	setParameters<int, EnvelopeGenerator, ExampleEffect,WavetableOsc>({ {0},{0},{0} });
 }
 
 

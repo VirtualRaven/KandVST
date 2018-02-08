@@ -5,6 +5,7 @@
 #include "EnvelopeGenerator.h"
 #include "IWavetable.h"
 #include "IVSTParameters.h"
+#include "../JuceLibraryCode/JuceHeader.h"
 
 class WavetableOsc : public IGenerator, public IVSTParameters
 {
@@ -16,7 +17,7 @@ private:
 	double __inc;
 	bool __sustain;
 	const IWavetable* __wavetable;
-
+	AudioParameterInt* __waveType;
 	template<typename T>
 	void __RenderBlock(AudioBuffer<T>& buffer);
 
@@ -27,7 +28,7 @@ public:
 	// Inherited via Generator
 	virtual void ProccesNoteCommand(int note, uint8 vel, bool isOn) override;
 	virtual void ProccessCommand(MidiMessage message) override;
-
+	static void RegisterParameters(int ID);
 	virtual void RenderBlock(AudioBuffer<float>& buffer) override
 	{
 		__RenderBlock(buffer);

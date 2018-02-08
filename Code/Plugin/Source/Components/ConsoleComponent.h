@@ -15,7 +15,7 @@ private:
 	std::vector<std::string> split(const std::string& s, char seperator);
 	std::vector<std::string> __lastCommands;
 	int __lastCounter;
-	void setParam(String id, float value);
+	void setParam(String id, std::string value);
 public:
 	ConsoleComponent();
 	~ConsoleComponent();
