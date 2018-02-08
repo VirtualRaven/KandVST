@@ -17,12 +17,15 @@ void PipeSched::assign(std::list<Pipeline> pipList) {
 		if (*it->isActive()) {
 			continue;
 		}
-		else
-			it->mtx.try_lock();
-			//do stuff
-					
-			
-		}
+		else 
+			if(it->mtx.try_lock()){
+				//do stuff 
+				it->mtx.unlock();
+				break;
+			}
+			else {
+				continue;	
+			}
 	}
 
 }
