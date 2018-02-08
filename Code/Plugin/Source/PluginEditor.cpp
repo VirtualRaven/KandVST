@@ -74,9 +74,13 @@ JuceDemoPluginAudioProcessorEditor::JuceDemoPluginAudioProcessorEditor (JuceDemo
 	  decayLabel(String(), "Decay:"),
  	  sustainLabel(String(), "Sustain:"),
 	  releaseLabel(String(), "Release:"),
-      delayLabel (String(), "Delay:")
+      delayLabel (String(), "Delay:"),
+	  cc()
 {
     // add some sliders..
+
+	addAndMakeVisible(cc);
+
     addAndMakeVisible (attack = new ParameterSlider (*Global.paramHandler->GetFloat("ENV_ATTACK")));
 	attack->setSliderStyle (Slider::Rotary);
 	addAndMakeVisible(decay = new ParameterSlider(*Global.paramHandler->GetFloat("ENV_DECAY")));
@@ -151,8 +155,10 @@ void JuceDemoPluginAudioProcessorEditor::resized()
 	release->setBounds(sliderArea.removeFromLeft(jmin(180, sliderArea.getWidth())));
 	Rectangle<int> sliderArea2(r.removeFromTop(130));
 	delaySlider->setBounds(sliderArea2.removeFromLeft(jmin(180, sliderArea2.getWidth())));
+	cc.setBounds(r.removeFromTop(300));
 
 
+	
     getProcessor().lastUIWidth = getWidth();
     getProcessor().lastUIHeight = getHeight();
 }

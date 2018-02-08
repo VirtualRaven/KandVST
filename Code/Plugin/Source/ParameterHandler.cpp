@@ -32,3 +32,8 @@ AudioParameterFloat * ParameterHandler::GetFloat(String id)
 {
 	return __floatParams[id];
 }
+
+std::map<String, AudioParameterFloat*>* ParameterHandler::GetFloats()
+{
+	return &__floatParams;
+}
