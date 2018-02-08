@@ -99,6 +99,11 @@ jucer_project_files("KandVST"
   .         .         .         "Source/TemplateHelper.h"
   x         .         .         "Source/Components/ConsoleComponent.cpp"
   .         .         .         "Source/Components/ConsoleComponent.h"
+  .         .         .         "Source/IVSTParameters.h"
+  x         .         .         "Source/Components/ParameterSlider.cpp"
+  .         .         .         "Source/Components/ParameterSlider.h"
+  x         .         .         "Source/Components/EnvelopeComponent.cpp"
+  .         .         .         "Source/Components/EnvelopeComponent.h"
 )
 
 jucer_project_module(

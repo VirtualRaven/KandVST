@@ -13,21 +13,26 @@ ParameterHandler::~ParameterHandler()
 
 }
 
-AudioParameterFloat * ParameterHandler::RegisterFloat(String id, String label, float minValue, float maxValue, float defaultvalue)
+AudioParameterFloat * ParameterHandler::RegisterFloat(int iid, String id, String label, float minValue, float maxValue, float defaultvalue)
 {
-	if (__floatParams[id] != nullptr)
-		return __floatParams[id];
+	std::string idString = std::to_string(iid) + std::string("_") + id.toStdString();
+	if (__floatParams[idString] != nullptr)
+		return __floatParams[idString];
 
 	auto tmp = new AudioParameterFloat(id, label, minValue, maxValue, defaultvalue);
 	__owner->addParameter(tmp);
-	__floatParams.insert_or_assign(id,tmp);
+	__floatParams[idString]=tmp;
 
-	Global.log->Write(id);
+	Global.log->Write(idString);
 	Global.log->Write("\n");
 
 	return tmp;
 }
 
+AudioParameterFloat * ParameterHandler::GetFloat(int iid, String id)
+{
+	return __floatParams[std::to_string(iid) + std::string("_") + id];
+}
 AudioParameterFloat * ParameterHandler::GetFloat(String id)
 {
 	return __floatParams[id];

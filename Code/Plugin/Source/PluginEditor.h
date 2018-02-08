@@ -31,6 +31,8 @@
 #include "Global.h"
 #include "ParameterHandler.h"
 #include "Components\ConsoleComponent.h"
+#include "Components\ParameterSlider.h"
+#include "Components\EnvelopeComponent.h"
 
 //==============================================================================
 /** This is the editor component that our filter will display.
@@ -50,12 +52,10 @@ public:
     void updateTrackProperties();
 
 private:
-    class ParameterSlider;
-
-
+	EnvelopeComponent envelopeComponent;
     MidiKeyboardComponent midiKeyboard;
-    Label timecodeDisplayLabel, attackLabel, decayLabel, sustainLabel, releaseLabel, delayLabel;
-    ScopedPointer<ParameterSlider> attack,decay,release,sustain, delaySlider;
+    Label timecodeDisplayLabel, delayLabel;
+    ScopedPointer<ParameterSlider>delaySlider;
     Colour backgroundColour;
 
 	ConsoleComponent cc;

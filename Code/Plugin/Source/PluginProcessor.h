@@ -32,7 +32,7 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "PipelineManager.h"
 #include "Global.h"
-
+#include "TemplateHelper.h"
 //==============================================================================
 /**
     As the name suggest, this class does the actual audio processing.

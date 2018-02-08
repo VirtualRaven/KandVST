@@ -1,8 +1,9 @@
 #include "WavetableOsc.h"
 
-WavetableOsc::WavetableOsc(double sampleRate) :
+WavetableOsc::WavetableOsc(int ID,double sampleRate) :
 	IGenerator(sampleRate),
-	__envelope(sampleRate),
+	IVSTParameters(ID),
+	__envelope(__ID,sampleRate),
 	__note(0),
 	__wavetable(tables[WAVE_TYPE::SAW]),
 	__phase(0),

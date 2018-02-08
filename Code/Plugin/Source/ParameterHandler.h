@@ -13,7 +13,8 @@ private:
 public:
 	ParameterHandler(AudioProcessor& owner);
 	~ParameterHandler();
-	AudioParameterFloat* RegisterFloat(String id, String label, float minValue, float maxValue, float defaultvalue);
+	AudioParameterFloat* RegisterFloat(int iid, String id, String label, float minValue, float maxValue, float defaultvalue);
+	AudioParameterFloat* GetFloat(int iid, String id);
 	AudioParameterFloat* GetFloat(String id);
 	std::map<String, AudioParameterFloat*>* GetFloats();
 

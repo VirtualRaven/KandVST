@@ -1,9 +1,9 @@
 #ifndef ENVELOPE_GENERATOR_H
 #define ENVELOPE_GENERATOR_H
 #include "ParameterHandler.h"
-
+#include "IVSTParameters.h"
 #include "Global.h"
-class EnvelopeGenerator
+class EnvelopeGenerator: public IVSTParameters
 {
 private:
 	double __sampleRate;
@@ -29,7 +29,8 @@ private:
 public:
 	void Reset();
 	double GenerateNextStep(bool sustain);
-	EnvelopeGenerator(double sampleRate);
+	static void RegisterParameters(int ID);
+	EnvelopeGenerator(int ID,double sampleRate);
 	~EnvelopeGenerator();
 };
 #endif //ENVELOPE_GENERATOR_H

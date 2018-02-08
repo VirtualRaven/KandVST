@@ -4,8 +4,8 @@
 
 Pipeline::Pipeline(double rate) :
 	__rate(rate),
-	__osc(rate),
-	__delay(rate)
+	__osc(0,rate),
+	__delay(0,rate)
 {
 }
 

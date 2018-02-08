@@ -64,6 +64,14 @@ double EnvelopeGenerator::GenerateNextStep(bool sustain)
 	return __amplitude;
 }
 
+void EnvelopeGenerator::RegisterParameters(int ID)
+{
+	Global.paramHandler->RegisterFloat(ID, "ENV_ATTACK", "Attack", 0.1f, 2.0f, 0.2f);
+	Global.paramHandler->RegisterFloat(ID, "ENV_DECAY", "Decay", 0.1f, 2.0f, 0.2f);
+	Global.paramHandler->RegisterFloat(ID, "ENV_SUSTAIN", "Sustain", 0.0f, 2.0f, 0.2f);
+	Global.paramHandler->RegisterFloat(ID, "ENV_RELEASE", "Release", 0.1f, 2.0f, 0.2f);
+}
+
 void EnvelopeGenerator::Reset() {
 	__state = 0;
 }
@@ -84,7 +92,8 @@ void EnvelopeGenerator::recalculateParameters()
 
 }
 
-EnvelopeGenerator::EnvelopeGenerator(double sampleRate):
+EnvelopeGenerator::EnvelopeGenerator(int ID,double sampleRate):
+	IVSTParameters(ID),
 	__sampleRate(sampleRate),
 	__sAttack(0.05),
 	__sDecay(0.1),
@@ -92,10 +101,10 @@ EnvelopeGenerator::EnvelopeGenerator(double sampleRate):
 	__sSustain(1.0),
 	__amplitude(0)
 {
-	__pattack =	 Global.paramHandler->RegisterFloat("ENV_ATTACK", "Attack", 0.1f, 2.0f, 0.2f);
-	__pdecay =	 Global.paramHandler->RegisterFloat("ENV_DECAY", "Decay", 0.1f, 2.0f, 0.2f);
-	__psustain = Global.paramHandler->RegisterFloat("ENV_SUSTAIN", "Sustain", 0.0f, 2.0f, 0.2f);
-	__prelease = Global.paramHandler->RegisterFloat("ENV_RELEASE", "Release", 0.1f, 2.0f, 0.2f);
+	__pattack =	 Global.paramHandler->GetFloat(__ID,"ENV_ATTACK");
+	__pdecay =	 Global.paramHandler->GetFloat(__ID,"ENV_DECAY");
+	__psustain = Global.paramHandler->GetFloat(__ID,"ENV_SUSTAIN");
+	__prelease = Global.paramHandler->GetFloat(__ID,"ENV_RELEASE");
 	recalculateParameters();
 }
 

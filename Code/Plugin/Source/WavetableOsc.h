@@ -4,9 +4,9 @@
 #include "IGenerator.h"
 #include "EnvelopeGenerator.h"
 #include "IWavetable.h"
+#include "IVSTParameters.h"
 
-
-class WavetableOsc : public IGenerator
+class WavetableOsc : public IGenerator, public IVSTParameters
 {
 private:
 	EnvelopeGenerator __envelope;
@@ -21,7 +21,7 @@ private:
 	void __RenderBlock(AudioBuffer<T>& buffer);
 
 public:
-	WavetableOsc(double sampleRate);
+	WavetableOsc(int ID,double sampleRate);
 	~WavetableOsc();
 
 	// Inherited via Generator

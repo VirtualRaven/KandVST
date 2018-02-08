@@ -28,5 +28,6 @@ bool Log::Write(T text)
 
 template bool Log::Write(char const *);
 template bool Log::Write(String);
+template bool Log::Write(std::string);
 template bool Log::Write(int);
 template bool Log::Write(float);

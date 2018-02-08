@@ -4,7 +4,7 @@
 
 SimpleOsc::SimpleOsc(double sampleRate) :
 	IGenerator(sampleRate),
-	__envelope(sampleRate),
+	__envelope(0,sampleRate),
 	__note(0),
 	__delta(0),
 	__angle(0)

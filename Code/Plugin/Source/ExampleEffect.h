@@ -4,9 +4,10 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "Global.h"
 #include "ParameterHandler.h"
-
+#include "IVSTParameters.h"
 class ExampleEffect :
-	public IEffect
+	public IEffect,
+	public IVSTParameters
 {
 
 private:
@@ -18,8 +19,10 @@ private:
 	AudioParameterFloat* __delayMultiplier;
 	
 public:
-	ExampleEffect(double sampleRate);
+	ExampleEffect(int ID,double sampleRate);
 	~ExampleEffect();
+
+	static void RegisterParameters(int ID);
 
 	// Inherited via IEffect
 	virtual void RenderBlock(AudioBuffer<float>& buffer) override 
