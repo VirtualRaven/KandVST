@@ -36,11 +36,7 @@ void WavetableOsc::ProccesNoteCommand(int note, uint8 vel, bool isOn)
 	if (isOn)
 	{
 		__frequency = MidiMessage::getMidiNoteInHertz(note);
-		__frequency *= pow(2.0,*__octave);
-		__frequency *= (*__offset) == 0 ? 1 : pow(2.0, (*__offset) / 12.0);
-		__frequency *= pow(2.0, (*__detune) / 12.0);
 		__phase = 0.0;
-		__inc = __wavetable->getLength() * __frequency / __sampleRate;
 		__note = note;
 		__envelope.Reset();
 
@@ -67,10 +63,15 @@ void WavetableOsc::RegisterParameters(int ID)
 
 template<typename T>
 void WavetableOsc::__RenderBlock(AudioBuffer<T>& buffer) {
+	double tmpFreq = __frequency * pow(2.0, *__octave);
+	tmpFreq *= (*__offset) == 0 ? 1 : pow(2.0, (*__offset) / 12.0);
+	tmpFreq *= pow(2.0, (*__detune) / 12.0);
 	setWaveform(toWAVE_TYPE(*__waveType));
+	__inc = __wavetable->getLength() * tmpFreq / __sampleRate;
+
 	for (size_t i = 0; i < buffer.getNumSamples(); i++)
 	{
-		T samp = __wavetable->getSample(__phase, __frequency)* __envelope.GenerateNextStep(__sustain);
+		T samp = __wavetable->getSample(__phase, tmpFreq)* __envelope.GenerateNextStep(__sustain);
 		__phase += __inc;
 
 		for(int j = 0; j < buffer.getNumChannels(); j++)
