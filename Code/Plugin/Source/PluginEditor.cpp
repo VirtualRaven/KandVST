@@ -27,6 +27,10 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
+// variables
+int startY = 150;
+Label title;
+
 //==============================================================================
 JuceDemoPluginAudioProcessorEditor::JuceDemoPluginAudioProcessorEditor (JuceDemoPluginAudioProcessor& owner)
     : AudioProcessorEditor (owner),
@@ -40,6 +44,12 @@ JuceDemoPluginAudioProcessorEditor::JuceDemoPluginAudioProcessorEditor (JuceDemo
 {
     
 	//addAndMakeVisible(cc);
+
+    // add the title 
+    addAndMakeVisible(title);
+    title.setFont(Font("Quantum",80, Font::plain));
+    title.setText("KANDVST", NotificationType::dontSendNotification);
+    title.setJustificationType(Justification::centred);
 
     /*
 	addAndMakeVisible(waveType);
@@ -56,6 +66,7 @@ JuceDemoPluginAudioProcessorEditor::JuceDemoPluginAudioProcessorEditor (JuceDemo
     addAndMakeVisible (delaySlider = new ParameterSlider (*Global.paramHandler->Get<AudioParameterFloat>(0,"ENV_ATTACK")));
     delaySlider->setSliderStyle (Slider::Rotary);
 
+    // add the info component..
     addAndMakeVisible(infoWindow);
 
     delayLabel.attachToComponent (delaySlider, false);
@@ -67,6 +78,7 @@ JuceDemoPluginAudioProcessorEditor::JuceDemoPluginAudioProcessorEditor (JuceDemo
     // add a label that will display the current timecode and status..
     addAndMakeVisible (timecodeDisplayLabel);
     timecodeDisplayLabel.setFont (Font (Font::getDefaultMonospacedFontName(), 15.0f, Font::plain));
+
 
     // set resize limits for this plug-in
     //setResizeLimits (180*4, 330, 1024, 700);
@@ -97,8 +109,14 @@ void JuceDemoPluginAudioProcessorEditor::paint (Graphics& g)
 
 void JuceDemoPluginAudioProcessorEditor::resized()
 {
+
     // This lays out our child components...
     Rectangle<int> r (getLocalBounds().reduced (8));
+    Rectangle<int> lb(getLocalBounds());
+    // TITLE
+    title.setBounds(getLocalBounds());
+    title.setCentrePosition(lb.getCentre().getX(), 50);
+
     infoWindow.setBounds(getLocalBounds());
     infoWindow.setCentrePosition(getLocalBounds().getCentre());
 
@@ -106,7 +124,9 @@ void JuceDemoPluginAudioProcessorEditor::resized()
 
     midiKeyboard.setBounds (r.removeFromBottom(70).removeFromRight(getLocalBounds().getWidth()-100).removeFromLeft(getLocalBounds().getWidth()-100));
     r.removeFromTop (20);
-	envelopeComponent.setBounds(r.removeFromTop(100).removeFromRight(200));
+	//envelopeComponent.setBounds(r.removeFromTop(100).removeFromRight(200));
+    
+    envelopeComponent.setBounds(getLocalBounds().getWidth()-200, startY, getLocalBounds().getWidth(), startY);
 	//waveType.setBounds(r.removeFromTop(100));
 	//Rectangle<int> sliderArea2(r.removeFromTop(130));
 	/*delaySlider->setBounds(sliderArea2.removeFromLeft(jmin(180, sliderArea2.getWidth())));*/
