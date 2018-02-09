@@ -34,6 +34,9 @@ JuceDemoPluginAudioProcessorEditor::JuceDemoPluginAudioProcessorEditor (JuceDemo
       midiKeyboard (owner.keyboardState, MidiKeyboardComponent::horizontalKeyboard),
       timecodeDisplayLabel (String()),
       delayLabel (String(), "Delay:"),
+	  octaveLabel(String(), "Octave:"),
+	  offsetLabel(String(), "Offset:"),
+	  detuneLabel(String(), "Detune:"),
 	  cc(),
 	  waveType(), oscOctave()
 {
@@ -54,10 +57,13 @@ JuceDemoPluginAudioProcessorEditor::JuceDemoPluginAudioProcessorEditor (JuceDemo
 	
     addAndMakeVisible (octaveSlider = new ParameterSlider (*Global.paramHandler->Get<AudioParameterInt>(0,"OSC_OCTAVE")));
 	octaveSlider->setSliderStyle (Slider::Rotary);
+	octaveLabel.attachToComponent(octaveSlider, false);
 	addAndMakeVisible(offsetSlider = new ParameterSlider(*Global.paramHandler->Get<AudioParameterInt>(0, "OSC_OFFSET")));
 	offsetSlider->setSliderStyle(Slider::Rotary);
+	offsetLabel.attachToComponent(offsetSlider,false);
 	addAndMakeVisible(detuneSlider = new ParameterSlider(*Global.paramHandler->Get<AudioParameterFloat>(0, "OSC_DETUNE")));
 	detuneSlider->setSliderStyle(Slider::Rotary);
+	detuneLabel.attachToComponent(detuneSlider, false);
 
    
 
