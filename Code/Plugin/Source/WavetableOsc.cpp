@@ -67,12 +67,12 @@ void WavetableOsc::__RenderBlock(AudioBuffer<T>& buffer) {
 	tmpFreq *= (*__offset) == 0 ? 1 : pow(2.0, (*__offset) / 12.0);
 	tmpFreq *= pow(2.0, (*__detune) / 12.0);
 	setWaveform(toWAVE_TYPE(*__waveType));
-	__inc = __wavetable->getLength() * tmpFreq / __sampleRate;
+	double inc = __wavetable->getLength() * tmpFreq / __sampleRate;
 
 	for (size_t i = 0; i < buffer.getNumSamples(); i++)
 	{
 		T samp = __wavetable->getSample(__phase, tmpFreq)* __envelope.GenerateNextStep(__sustain);
-		__phase += __inc;
+		__phase += inc;
 
 		for(int j = 0; j < buffer.getNumChannels(); j++)
 			buffer.setSample(j, i, samp);

@@ -14,7 +14,7 @@ private:
 	int __note;
 	double __frequency;
 	double __phase;
-	double __inc;
+	//double __inc;
 	bool __sustain;
 	const IWavetable* __wavetable;
 	AudioParameterInt* __waveType;
