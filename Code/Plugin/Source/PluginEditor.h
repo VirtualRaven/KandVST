@@ -57,9 +57,9 @@ private:
 	EnvelopeComponent envelopeComponent;
     MidiKeyboardComponent midiKeyboard;
     Label timecodeDisplayLabel, delayLabel;
-    ScopedPointer<ParameterSlider>delaySlider;
+    ScopedPointer<ParameterSlider>delaySlider, octaveSlider, detuneSlider, offsetSlider;
     Colour backgroundColour;
-	ComboBox waveType;
+	ComboBox waveType, oscOctave;
 	ConsoleComponent cc;
 
     //==============================================================================

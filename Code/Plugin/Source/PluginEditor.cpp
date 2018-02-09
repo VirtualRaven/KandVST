@@ -35,7 +35,7 @@ JuceDemoPluginAudioProcessorEditor::JuceDemoPluginAudioProcessorEditor (JuceDemo
       timecodeDisplayLabel (String()),
       delayLabel (String(), "Delay:"),
 	  cc(),
-	  waveType()
+	  waveType(), oscOctave()
 {
     // add some sliders..
 
@@ -48,11 +48,16 @@ JuceDemoPluginAudioProcessorEditor::JuceDemoPluginAudioProcessorEditor (JuceDemo
 	waveType.addItem("Triangle", 4);
 	waveType.setSelectedId(1);
 	waveType.addListener(this);
-	addAndMakeVisible(envelopeComponent);
-   
 
-    addAndMakeVisible (delaySlider = new ParameterSlider (*Global.paramHandler->Get<AudioParameterFloat>(0,"ENV_ATTACK")));
-    delaySlider->setSliderStyle (Slider::Rotary);
+	addAndMakeVisible(envelopeComponent);
+ 
+	
+    addAndMakeVisible (octaveSlider = new ParameterSlider (*Global.paramHandler->Get<AudioParameterInt>(0,"OSC_OCTAVE")));
+	octaveSlider->setSliderStyle (Slider::Rotary);
+	addAndMakeVisible(offsetSlider = new ParameterSlider(*Global.paramHandler->Get<AudioParameterInt>(0, "OSC_OFFSET")));
+	offsetSlider->setSliderStyle(Slider::Rotary);
+	addAndMakeVisible(detuneSlider = new ParameterSlider(*Global.paramHandler->Get<AudioParameterFloat>(0, "OSC_DETUNE")));
+	detuneSlider->setSliderStyle(Slider::Rotary);
 
    
 
@@ -102,9 +107,11 @@ void JuceDemoPluginAudioProcessorEditor::resized()
     r.removeFromTop (20);
 
 	envelopeComponent.setBounds(r.removeFromTop(100).removeFromRight(200));
+	Rectangle<int> sliderArea2(r.removeFromTop(50));
+	octaveSlider->setBounds(sliderArea2.removeFromLeft(jmin(150, sliderArea2.getWidth())));
+	offsetSlider->setBounds(sliderArea2.removeFromLeft(jmin(150, sliderArea2.getWidth())));
+	detuneSlider->setBounds(sliderArea2.removeFromLeft(jmin(150, sliderArea2.getWidth())));
 	waveType.setBounds(r.removeFromTop(100));
-	Rectangle<int> sliderArea2(r.removeFromTop(130));
-	/*delaySlider->setBounds(sliderArea2.removeFromLeft(jmin(180, sliderArea2.getWidth())));*/
 	cc.setBounds(r.removeFromTop(300));
 	
     getProcessor().lastUIWidth = getWidth();
