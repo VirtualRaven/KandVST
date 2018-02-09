@@ -18,7 +18,6 @@ public:
     void resized() override;
 private:
     //==============================================================================
-    InformationComponent infoWindow;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (InformationComponent)
