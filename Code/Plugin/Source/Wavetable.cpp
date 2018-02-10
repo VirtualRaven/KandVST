@@ -65,7 +65,8 @@ SquareWavetable::~SquareWavetable()
 template<typename T>
 T SquareWavetable::__getSample(int idx, T frequency) const
 {
-	int tableNr = floor(log2(frequency/20)); // 20 = minimum frequency
+	int tableNr = floor(log2(frequency / 20)); // 20 = minimum frequency
+	if (tableNr > __nrOfTables) tableNr = __nrOfTables-1;
 	return __tables[tableNr][idx % __length];
 }
 template double SquareWavetable::__getSample(int idx, double frequency) const;
@@ -108,6 +109,7 @@ template<typename T>
 T SawWavetable::__getSample(int idx, T frequency) const
 {
 	int tableNr = floor(log2(frequency / 20)); // 20 = minimum frequency
+	if (tableNr > __nrOfTables) tableNr = __nrOfTables-1;
 	return __tables[tableNr][idx % __length];
 }
 
@@ -152,6 +154,7 @@ template<typename T>
 T TriangleWavetable::__getSample(int idx, T frequency) const
 {
 	int tableNr = floor(log2(frequency / 20)); // 20 = minimum frequency
+	if (tableNr > __nrOfTables) tableNr = __nrOfTables-1;
 	return __tables[tableNr][idx % __length];
 }
 

@@ -10,6 +10,9 @@ WavetableOsc::WavetableOsc(int ID,double sampleRate) :
 	__frequency(0)
 {
 	__waveType = Global.paramHandler->Get<AudioParameterInt>(__ID, "WAVE_TYPE");
+	__octave = Global.paramHandler->Get<AudioParameterInt>(__ID, "OSC_OCTAVE");
+	__offset = Global.paramHandler->Get<AudioParameterInt>(__ID, "OSC_OFFSET");
+	__detune = Global.paramHandler->Get<AudioParameterFloat>(__ID, "OSC_DETUNE");
 }
 
 
@@ -22,6 +25,11 @@ void WavetableOsc::setWaveform(WAVE_TYPE t)
 	if (t == WAVE_TYPE::__COUNT) return;
 	__wavetable = tables[t];
 }
+/*void WavetableOsc::setOctave(int o)
+{
+	if (o > 3 || o < -3) return;
+	__octave = o;
+}*/
 
 void WavetableOsc::ProccesNoteCommand(int note, uint8 vel, bool isOn)
 {
@@ -29,7 +37,6 @@ void WavetableOsc::ProccesNoteCommand(int note, uint8 vel, bool isOn)
 	{
 		__frequency = MidiMessage::getMidiNoteInHertz(note);
 		__phase = 0.0;
-		__inc = __wavetable->getLength() * __frequency / __sampleRate;
 		__note = note;
 		__envelope.Reset();
 
@@ -46,20 +53,29 @@ void WavetableOsc::ProccessCommand(MidiMessage message)
 void WavetableOsc::RegisterParameters(int ID)
 {
 	Global.paramHandler->RegisterInt(ID, "WAVE_TYPE", "Wave type", 0, 3, 0);
-	Global.paramHandler->RegisterBool(ID, "WAVE_TYPEs", "Wave types", true);
+	Global.paramHandler->RegisterInt(ID, "OSC_OCTAVE", "Octave", -3, 3, 0);
+	Global.paramHandler->RegisterInt(ID, "OSC_OFFSET", "Offset", -11, 11, 0);
+	Global.paramHandler->RegisterFloat(ID, "OSC_DETUNE", "Detune", -1.0f, 1.0f, 0.0f);
+
+
 }
 
 
 template<typename T>
 void WavetableOsc::__RenderBlock(AudioBuffer<T>& buffer) {
+	double tmpFreq = __frequency * pow(2.0, *__octave);
+	tmpFreq *= (*__offset) == 0 ? 1 : pow(2.0, (*__offset) / 12.0);
+	tmpFreq *= pow(2.0, (*__detune) / 12.0);
 	setWaveform(toWAVE_TYPE(*__waveType));
+	double inc = __wavetable->getLength() * tmpFreq / __sampleRate;
+
 	for (size_t i = 0; i < buffer.getNumSamples(); i++)
 	{
-		T samp = __wavetable->getSample(__phase, __frequency)*__envelope.GenerateNextStep(__sustain);
-		__phase += __inc;
+		T samp = __wavetable->getSample(__phase, tmpFreq)* __envelope.GenerateNextStep(__sustain);
+		__phase += inc;
 
-		buffer.setSample(0, i, samp);
-		buffer.setSample(1, i, samp);
+		for(int j = 0; j < buffer.getNumChannels(); j++)
+			buffer.setSample(j, i, samp);
 	}
 }
 
