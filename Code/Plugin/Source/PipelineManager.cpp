@@ -30,9 +30,8 @@ void PipelineManager::genSamples(AudioBuffer<T>& buff, MidiBuffer & midiMessages
 	while (it.getNextEvent(tmp, pos)) {
 		if (tmp.isNoteOnOrOff()) {
 			// finds or create pipeline
-			tmp.getNoteNumber();
 			__log << tmp.getNoteNumber() << ": " << tmp.getVelocity() << std::endl;
-			pip.noteCommand(tmp.getNoteNumber(), tmp.getVelocity(), tmp.isNoteOn());
+			pip.noteCommand(pos,tmp.getNoteNumber(), tmp.getVelocity(), tmp.isNoteOn());
 		}
 	
 		else {

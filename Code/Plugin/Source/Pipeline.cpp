@@ -9,9 +9,9 @@ Pipeline::Pipeline(double rate) :
 {
 }
 
-void Pipeline::noteCommand(int note, uint8 vel, bool isOn) 
+void Pipeline::noteCommand(int offset, int note, uint8 vel, bool isOn) 
 {
-	__osc.ProccesNoteCommand(note, vel, isOn);
+	__osc.AddNoteCommand(offset,note, vel, isOn);
 }
 
 

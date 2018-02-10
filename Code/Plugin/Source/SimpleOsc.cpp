@@ -38,8 +38,13 @@ void SimpleOsc::ProccessCommand(MidiMessage message)
 
 template<typename T>
 void SimpleOsc::__RenderBlock(AudioBuffer<T>& buffer) {
+	auto nextEvent = this->getNextEventOffset();
 	for (size_t i = 0; i < buffer.getNumSamples(); i++)
 	{
+		
+		if (i == nextEvent) {
+			nextEvent= this->HandleEvent();
+		}
 		
 		__angle =fmod(__angle + __delta,2*juce::MathConstants<T>().pi);
 		T samp = sin(__angle)*__envelope.GenerateNextStep(__sustain);

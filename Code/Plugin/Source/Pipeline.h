@@ -7,6 +7,8 @@
 #include "ExampleEffect.h"
 class Pipeline
 {
+
+
 private:
 	double __rate;
 	WavetableOsc __osc;
@@ -15,7 +17,8 @@ public:
 
 
 	bool isActive();
-	void noteCommand(int note, 
+	void noteCommand(int offset,
+					int note, 
 					uint8 vel, 
 					bool isOn =true );
 
