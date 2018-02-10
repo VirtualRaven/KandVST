@@ -25,8 +25,8 @@ public:
 		__RenderBlock(buffer);
 	}
 	virtual void ProccesNoteCommand(int note, uint8 vel, bool isOn) override;
+	virtual void AddNoteCommand(int offset, int note, uint8 vel, bool isOn) override;
 	virtual void ProccessCommand(MidiMessage message) override;
-
 
 	static void RegisterParameters(int ID);
 };
