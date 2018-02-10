@@ -22,7 +22,7 @@ AudioParameterFloat * ParameterHandler::RegisterFloat(int iid, String id, String
 	if (__floatParams[idString] != nullptr)
 		return __floatParams[idString];
 
-	auto tmp = new AudioParameterFloat(id, label, minValue, maxValue, defaultvalue);
+	auto tmp = new AudioParameterFloat(idString, label, minValue, maxValue, defaultvalue);
 	__owner->addParameter(tmp);
 	__floatParams[idString]=tmp;
 
@@ -38,7 +38,7 @@ AudioParameterInt * ParameterHandler::RegisterInt(int iid, String id, String lab
 	if (__intParams[idString] != nullptr)
 		return __intParams[idString];
 
-	auto tmp = new AudioParameterInt(id, label, minValue, maxValue, defaultvalue);
+	auto tmp = new AudioParameterInt(idString, label, minValue, maxValue, defaultvalue);
 	__owner->addParameter(tmp);
 	__intParams[idString] = tmp;
 
@@ -54,7 +54,7 @@ AudioParameterBool * ParameterHandler::RegisterBool(int iid, String id, String l
 	if (__boolParams[idString] != nullptr)
 		return __boolParams[idString];
 
-	auto tmp = new AudioParameterBool(id, label, defaultvalue);
+	auto tmp = new AudioParameterBool(idString, label, defaultvalue);
 	__owner->addParameter(tmp);
 	__boolParams[idString] = tmp;
 
@@ -71,7 +71,7 @@ AudioParameterChoice * ParameterHandler::RegisterChoice(int iid, String id, Stri
 	if (__choiceParams[idString] != nullptr)
 		return __choiceParams[idString];
 
-	auto tmp = new AudioParameterChoice(id, label, choices, defaultItemIndex);
+	auto tmp = new AudioParameterChoice(idString, label, choices, defaultItemIndex);
 	__owner->addParameter(tmp);
 	__choiceParams[idString] = tmp;
 
