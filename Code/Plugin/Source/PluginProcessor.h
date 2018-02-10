@@ -33,6 +33,7 @@
 #include "PipelineManager.h"
 #include "Global.h"
 #include "TemplateHelper.h"
+#include "OscillatorMixer.h"
 //==============================================================================
 /**
     As the name suggest, this class does the actual audio processing.

@@ -5,13 +5,16 @@
 #include "EnvelopeGenerator.h"
 #include "WavetableOsc.h"
 #include "ExampleEffect.h"
+#include "OscillatorMixer.h"
 class Pipeline
 {
 
 
 private:
 	double __rate;
-	WavetableOsc __osc;
+	//WavetableOsc __osc;
+	OscillatorMixer __osc;
+
 	ExampleEffect __delay;
 public:
 

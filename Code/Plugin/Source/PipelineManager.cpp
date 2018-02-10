@@ -41,7 +41,7 @@ void PipelineManager::genSamples(AudioBuffer<T>& buff, MidiBuffer & midiMessages
 	}
 
 	AudioBuffer<T> pipBuff = AudioBuffer<T>(2, buff.getNumSamples());
-
+	pipBuff.applyGain(0.0f);
 	pip.render_block<T>(pipBuff);
 	buff.addFrom(0, 0, pipBuff, 0, 0, buff.getNumSamples());
 	buff.addFrom(1, 0, pipBuff, 1, 0, buff.getNumSamples());
