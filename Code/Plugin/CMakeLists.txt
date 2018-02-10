@@ -104,6 +104,9 @@ jucer_project_files("KandVST"
   .         .         .         "Source/Components/ParameterSlider.h"
   x         .         .         "Source/Components/EnvelopeComponent.cpp"
   .         .         .         "Source/Components/EnvelopeComponent.h"
+  x         .         .         "Source/OscillatorMixer.cpp"
+  .         .         .         "Source/OscillatorMixer.h"
+
 )
 
 jucer_project_module(

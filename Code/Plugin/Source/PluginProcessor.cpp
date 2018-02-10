@@ -46,7 +46,10 @@ JuceDemoPluginAudioProcessor::JuceDemoPluginAudioProcessor()
 	Global.paramHandler = &__paramHandler;
 	Global.log = new Log("log.txt");
 
-	setParameters<int, EnvelopeGenerator, ExampleEffect,WavetableOsc>({ {0},{0},{0} });
+	setParameters<int, EnvelopeGenerator, ExampleEffect, WavetableOsc, OscillatorMixer>({ {0,1,2,3},{0},{0,1,2,3},{ 0 } });
+
+
+	*(Global.paramHandler->Get<AudioParameterBool>(0, "OSC_MIX_EN")) = 1; //Enable default oscillator
 }
 
 
