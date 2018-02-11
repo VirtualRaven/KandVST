@@ -38,7 +38,9 @@ void OscillatorMixer::__RenderBlock(AudioBuffer<T>& buffer)
 void OscillatorMixer::AddNoteCommand(int offset, int note, uint8 vel, bool isOn) {
 	for (auto&& elem : __oscillators)
 	{
-		std::get<0>(elem).AddNoteCommand(offset, note, vel, isOn);
+		if (*(std::get<2>(elem))) {
+			std::get<0>(elem).AddNoteCommand(offset, note, vel, isOn);
+		}
 	}
 }
 
@@ -51,7 +53,9 @@ void OscillatorMixer::ProccessCommand(MidiMessage message)
 {
 	for (auto&& elem : __oscillators)
 	{
-		std::get<0>(elem).ProccessCommand(message);
+		if (*(std::get<2>(elem))) {
+			std::get<0>(elem).ProccessCommand(message);
+		}
 	}
 }
 
