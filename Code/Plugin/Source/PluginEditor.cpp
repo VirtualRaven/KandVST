@@ -30,13 +30,13 @@
 // variables
 int startY = 150;
 Label title;
+TabbedButtonBar buttonBar(TabbedButtonBar::Orientation::TabsAtTop);
 
 //==============================================================================
 JuceDemoPluginAudioProcessorEditor::JuceDemoPluginAudioProcessorEditor (JuceDemoPluginAudioProcessor& owner)
     : AudioProcessorEditor (owner),
 	  envelopeComponent(0),
       midiKeyboard (owner.keyboardState, MidiKeyboardComponent::horizontalKeyboard),
-      timecodeDisplayLabel (String()),
       delayLabel (String(), "Delay:"),
 	  cc(),
 	  waveType(),
@@ -45,13 +45,24 @@ JuceDemoPluginAudioProcessorEditor::JuceDemoPluginAudioProcessorEditor (JuceDemo
     
 	//addAndMakeVisible(cc);
 
+    /*
     // add the title 
     addAndMakeVisible(title);
     title.setFont(Font("Quantum",80, Font::plain));
     title.setText("KANDVST", NotificationType::dontSendNotification);
     title.setJustificationType(Justification::centred);
+*/
 
-    /*
+    // add button bar
+    addAndMakeVisible(buttonBar);
+    buttonBar.addTab("M", Colours::darkgreen, 0);
+    for(int i = 1; i < 4; i++){
+        buttonBar.addTab(std::to_string(i), Colours::darkgrey, i);
+    }
+    
+
+/*
+    // add the wavetable
 	addAndMakeVisible(waveType);
 	waveType.addItem("Sine", 1);
 	waveType.addItem("Square", 2);
@@ -59,7 +70,9 @@ JuceDemoPluginAudioProcessorEditor::JuceDemoPluginAudioProcessorEditor (JuceDemo
 	waveType.addItem("Triangle", 4);
 	waveType.setSelectedId(1);
 	waveType.addListener(this);
-    */
+*/
+
+    // add envelope components
 	addAndMakeVisible(envelopeComponent);
    
     // add some sliders..
@@ -75,15 +88,7 @@ JuceDemoPluginAudioProcessorEditor::JuceDemoPluginAudioProcessorEditor (JuceDemo
     // add the midi keyboard component..
     addAndMakeVisible (midiKeyboard);
 
-    // add a label that will display the current timecode and status..
-    addAndMakeVisible (timecodeDisplayLabel);
-    timecodeDisplayLabel.setFont (Font (Font::getDefaultMonospacedFontName(), 15.0f, Font::plain));
-
-
-    // set resize limits for this plug-in
-    //setResizeLimits (180*4, 330, 1024, 700);
-    //========================================================
-    
+    // fixed plugin size
     setResizable(false,false);
 
     // set our component's initial size to be the last one that was stored in the filter's settings
@@ -113,14 +118,19 @@ void JuceDemoPluginAudioProcessorEditor::resized()
     // This lays out our child components...
     Rectangle<int> r (getLocalBounds().reduced (8));
     Rectangle<int> lb(getLocalBounds());
+    
+    /*
     // TITLE
     title.setBounds(getLocalBounds());
     title.setCentrePosition(lb.getCentre().getX(), 50);
+    */
+
+    // buttonBar
+    Rectangle<int> buttonBounds(getLocalBounds());
+    buttonBar.setBounds(r.removeFromTop(50));
 
     infoWindow.setBounds(getLocalBounds());
     infoWindow.setCentrePosition(getLocalBounds().getCentre());
-
-    timecodeDisplayLabel.setBounds (r.removeFromTop (26));
 
     midiKeyboard.setBounds (r.removeFromBottom(70).removeFromRight(getLocalBounds().getWidth()-100).removeFromLeft(getLocalBounds().getWidth()-100));
     r.removeFromTop (20);

@@ -106,6 +106,8 @@ jucer_project_files("KandVST"
   .         .         .         "Source/Components/EnvelopeComponent.h"
   x         .         .         "Source/Components/InformationComponent.cpp"
   .         .         .         "Source/Components/InformationComponent.h"
+  x         .         .         "Source/Components/CollectionComponent.cpp"
+  .         .         .         "Source/Components/CollectionComponent.h"
 )
 
 jucer_project_module(
