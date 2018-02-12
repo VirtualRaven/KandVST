@@ -7,7 +7,8 @@ WavetableOsc::WavetableOsc(int ID,double sampleRate) :
 	__note(0),
 	__wavetable(tables[WAVE_TYPE::SAW]),
 	__phase(0),
-	__frequency(0)
+	__frequency(0),
+	__lfo(120,&__frequency,sampleRate)
 {
 	__waveType = Global.paramHandler->Get<AudioParameterInt>(__ID, "WAVE_TYPE");
 	__octave = Global.paramHandler->Get<AudioParameterInt>(__ID, "OSC_OCTAVE");
@@ -65,11 +66,10 @@ void WavetableOsc::RegisterParameters(int ID)
 
 template<typename T>
 void WavetableOsc::__RenderBlock(AudioBuffer<T>& buffer) {
-	double tmpFreq = __frequency * pow(2.0, *__octave);
-	tmpFreq *= (*__offset) == 0 ? 1 : pow(2.0, (*__offset) / 12.0);
-	tmpFreq *= pow(2.0, (*__detune) / 12.0);
+	
+	
 	setWaveform(toWAVE_TYPE(*__waveType));
-	double inc = __wavetable->getLength() * tmpFreq / __sampleRate;
+
 
 	auto nextEvent = this->getNextEventOffset();
 	for (size_t i = 0; i < buffer.getNumSamples(); i++)
@@ -77,6 +77,12 @@ void WavetableOsc::__RenderBlock(AudioBuffer<T>& buffer) {
 		if (i == nextEvent) {
 			nextEvent = this->HandleEvent();
 		}
+		double tmpFreq = __frequency * pow(2.0, *__octave + (((*__offset) + (*__detune))/12.0));
+		//tmpFreq *= pow(2.0, (*__offset) / 12.0);
+		//tmpFreq *= pow(2.0, (*__detune) / 12.0);
+		__lfo.apply(tmpFreq);
+		double inc = __wavetable->getLength() * tmpFreq / __sampleRate;
+
 		T samp = __wavetable->getSample(__phase, tmpFreq)* __envelope.GenerateNextStep(__sustain);
 		__phase += inc;
 

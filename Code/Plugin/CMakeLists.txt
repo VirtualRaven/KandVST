@@ -107,7 +107,8 @@ jucer_project_files("KandVST"
   .         .         .         "Source/Components/EnvelopeComponent.h"
   x         .         .         "Source/OscillatorMixer.cpp"
   .         .         .         "Source/OscillatorMixer.h"
-
+  x         .         .         "Source/LFOsc.cpp"
+  .         .         .         "Source/LFOsc.h"
 )
 
 jucer_project_module(
