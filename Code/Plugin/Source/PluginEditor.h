@@ -34,6 +34,7 @@
 #include "Components/ParameterSlider.h"
 #include "Components/EnvelopeComponent.h"
 #include "Components/InformationComponent.h"
+#include "Components/CollectionComponent.h"
 
 //==============================================================================
 /** This is the editor component that our filter will display.
@@ -62,7 +63,7 @@ private:
     Colour backgroundColour;
 	ComboBox waveType;
 	ConsoleComponent cc;
-    InformationComponent infoWindow;
+    CollectionComponent collection;
 
     //==============================================================================
     JuceDemoPluginAudioProcessor& getProcessor() const
