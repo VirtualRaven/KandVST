@@ -16,8 +16,8 @@ private:
 	std::ofstream  __log;
 	Pipeline pip;
 	Pipeline pip2;
-	Pipeline pip3;
 	std::list<Pipeline> pipList;
+	ThreadPool pool;
 public:
 	PipelineManager(double rate, int maxBuffHint);
 	~PipelineManager();	

@@ -5,15 +5,15 @@
 #include "EnvelopeGenerator.h"
 #include "WavetableOsc.h"
 #include "ExampleEffect.h"
-#include <mutex>
-class Pipeline
+class Pipeline //public ThreadPoolJob
 {
+	
 private:
 	double __rate;
 	WavetableOsc __osc;
 	ExampleEffect __delay;
+	bool _active;
 public:
-	std::mutex mtx;
 
 	bool isActive();
 	void noteCommand(int note, 

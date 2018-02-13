@@ -7,13 +7,15 @@ Pipeline::Pipeline(double rate) :
 	__rate(rate),
 	__osc(rate),
 	__delay(rate),
-	std::mutex mtx;
+	_active(false)
+
 {
 }
 
 void Pipeline::noteCommand(int note, uint8 vel, bool isOn) 
 {
 	__osc.ProccesNoteCommand(note, vel, isOn);
+	_active = isOn;
 }
 
 
@@ -24,7 +26,7 @@ Pipeline::~Pipeline()
 
 
 bool Pipeline::isActive() {
-	return true;
+	return _active;
 }
 
 template<typename T>
