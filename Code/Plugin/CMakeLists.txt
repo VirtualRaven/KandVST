@@ -113,10 +113,10 @@ jucer_project_files("KandVST"
   .         .         .         "Source/Components/InformationComponent.h"
   x         .         .         "Source/Components/CollectionComponent.cpp"
   .         .         .         "Source/Components/CollectionComponent.h"
-  x         .         .         "Source/Components/MasterComponent.cpp"
-  .         .         .         "Source/Components/MasterComponent.h"
-  x         .         .         "Source/Components/OscillatorComponent.cpp"
-  .         .         .         "Source/Components/OscillatorComponent.h"
+  x         .         .         "Source/Components/MasterPageComponent.cpp"
+  .         .         .         "Source/Components/MasterPageComponent.h"
+  x         .         .         "Source/Components/OscillatorPageComponent.cpp"
+  .         .         .         "Source/Components/OscillatorPageComponent.h"
 )
 
 jucer_project_module(

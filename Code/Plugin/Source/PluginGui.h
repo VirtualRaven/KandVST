@@ -3,8 +3,8 @@
 
 #include "PluginProcessor.h"
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "Components\MasterComponent.h"
-#include "Components\OscillatorComponent.h"
+#include "Components\MasterPageComponent.h"
+#include "Components\OscillatorPageComponent.h"
 
 class PluginGUI  : public AudioProcessorEditor                    
 {

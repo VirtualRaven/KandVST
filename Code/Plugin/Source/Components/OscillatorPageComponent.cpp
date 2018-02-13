@@ -1,5 +1,5 @@
 
-#include "OscillatorComponent.h"
+#include "OscillatorPageComponent.h"
 
 OscillatorComponent::~OscillatorComponent()
 {
