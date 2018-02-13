@@ -12,9 +12,9 @@ CollectionComponent::CollectionComponent(){
 
 }
 
-void paint(Graphics& g){
+void CollectionComponent::paint(Graphics& g){
 }
 
-void resized(){
+void CollectionComponent::resized(){
 
 }

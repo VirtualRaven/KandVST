@@ -64,6 +64,7 @@ private:
 	ComboBox waveType;
 	ConsoleComponent cc;
     CollectionComponent collection;
+	InformationComponent infoWindow;
 
     //==============================================================================
     JuceDemoPluginAudioProcessor& getProcessor() const
