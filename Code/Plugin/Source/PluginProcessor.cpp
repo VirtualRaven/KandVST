@@ -25,7 +25,7 @@
 */
 
 #include "PluginProcessor.h"
-#include "PluginEditor.h"
+#include "PluginGUI.h"
 #include "IWavetable.h"
 
 AudioProcessor* JUCE_CALLTYPE createPluginFilter();
@@ -171,7 +171,7 @@ void JuceDemoPluginAudioProcessor::updateCurrentTimeInfoFromHost()
 //==============================================================================
 AudioProcessorEditor* JuceDemoPluginAudioProcessor::createEditor()
 {
-    return new JuceDemoPluginAudioProcessorEditor (*this);
+    return new PluginGUI (*this);
 }
 
 //==============================================================================
@@ -225,8 +225,8 @@ void JuceDemoPluginAudioProcessor::updateTrackProperties (const TrackProperties&
 {
     trackProperties = properties;
 
-    if (auto* editor = dynamic_cast<JuceDemoPluginAudioProcessorEditor*> (getActiveEditor()))
-        editor->updateTrackProperties ();
+    //if (auto* editor = dynamic_cast<PluginGUI*> (getActiveEditor()))
+        //editor->updateTrackProperties ();
 }
 
 //==============================================================================

@@ -1,15 +1,14 @@
-#pragma once
-
-#include "../Global.h"
-#include "../ParameterHandler.h"
+#ifndef OSCILLATOR_COMPONENT_H
+#define OSCILLATOR_COMPONENT_H
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "../JuceLibraryCode/JuceHeader.h"
+#include "../IVSTParameters.h"
+#include "EnvelopeComponent.h"
 
-class OscillatorComponent  : public Component
+class OscillatorComponent  : public Component, private IVSTParameters
 {
 public:
     //==============================================================================
-    OscillatorComponent ();
+    OscillatorComponent (int ID);
     ~OscillatorComponent();
 
     //==============================================================================
@@ -19,8 +18,9 @@ public:
 
 private:
     //==============================================================================
-
+	EnvelopeComponent __envComponent;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OscillatorComponent)
 };
+#endif
