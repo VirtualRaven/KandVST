@@ -10,7 +10,7 @@ PluginGUI::PluginGUI(JuceDemoPluginAudioProcessor& owner)
 {
 	__tabComponent.addTab("M", Colours::darkgreen, new MasterComponent(), true);
 
-	for (int i = 0; i < 1; i++)
+	for (int i = 0; i < 4; i++)
 	{
 		__tabComponent.addTab(std::to_string(i+1), Colours::darkgrey, new OscillatorComponent(i), true);
 	}
