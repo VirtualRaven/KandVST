@@ -10,6 +10,7 @@ PluginProcessor::PluginProcessor()
     : AudioProcessor (getBusesProperties()),
 	__paramHandler(*this)
 {
+	__pipManager = nullptr;
 	Global = GLOBAL();
 	Global.paramHandler = &__paramHandler;
 	Global.log = new Log("log.txt");
@@ -18,6 +19,7 @@ PluginProcessor::PluginProcessor()
 
 
 	*(Global.paramHandler->Get<AudioParameterBool>(0, "OSC_MIX_EN")) = 1; //Enable default oscillator
+
 }
 
 
@@ -66,11 +68,31 @@ AudioProcessor::BusesProperties PluginProcessor::getBusesProperties()
 
 void PluginProcessor::getStateInformation(juce::MemoryBlock & destData)
 {
+	//this needs rewrite
+	XmlElement xml("MYPLUGINSETTINGS");
 
+	for (auto* param : getParameters())
+		if (auto* p = dynamic_cast<AudioProcessorParameterWithID*> (param))
+			xml.setAttribute(p->paramID, p->getValue());
+
+	copyXmlToBinary(xml, destData);
 }
 
 void PluginProcessor::setStateInformation(const void * data, int sizeInBytes)
 {
+	//this needs rewrite
+
+	ScopedPointer<XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
+
+	if (xmlState != nullptr)
+	{
+		if (xmlState->hasTagName("MYPLUGINSETTINGS"))
+		{
+			for (auto* param : getParameters())
+				if (auto* p = dynamic_cast<AudioProcessorParameterWithID*> (param))
+					p->setValue((float)xmlState->getDoubleAttribute(p->paramID, p->getValue()));
+		}
+	}
 
 }
 
