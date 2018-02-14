@@ -1,21 +1,25 @@
 #ifndef LFO_H
 #define LFO_H
 #include "Wavetable.h"
+#include "IVSTParameters.h"
 
 class LFO
 {
 private:
-	bool __isActive;
 	double __phase;
 	double __sampleRate;
-	double* __parameter;
-	int __ratio;
-	int __bpm; // TEMPORARY
+	//double* __parameter;; // TEMPORARY
 	const IWavetable* __wavetable;
 public:
-	LFO(int bpm, double* parameter, double sampleRate);
+	AudioParameterFloat* amount;
+	AudioParameterBool* isActive;
+	AudioParameterInt* ratio;
+	AudioParameterInt* bpm;
+	LFO(int bpm, double sampleRate, int ID);
 	void apply(double& tmp);
-	void setRatio();
+	//void setRatio(int ratio);
+	//void setAmount(double amount);
+	//void setBpm(int bpm);
 };
 
 #endif //!LFO_H
