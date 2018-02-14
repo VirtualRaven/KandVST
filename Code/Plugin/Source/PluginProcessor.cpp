@@ -73,7 +73,7 @@ void PluginProcessor::getStateInformation(juce::MemoryBlock & destData)
 
 	for (auto* param : getParameters())
 		if (auto* p = dynamic_cast<AudioProcessorParameterWithID*> (param))
-			xml.setAttribute(p->paramID, p->getValue());
+			xml.setAttribute(String("_") + p->paramID, p->getValue());
 
 	copyXmlToBinary(xml, destData);
 }
@@ -90,7 +90,7 @@ void PluginProcessor::setStateInformation(const void * data, int sizeInBytes)
 		{
 			for (auto* param : getParameters())
 				if (auto* p = dynamic_cast<AudioProcessorParameterWithID*> (param))
-					p->setValue((float)xmlState->getDoubleAttribute(p->paramID, p->getValue()));
+					p->setValue((float)xmlState->getDoubleAttribute(String("_") + p->paramID, p->getValue()));
 		}
 	}
 
