@@ -28,7 +28,7 @@ DISCLAIMED.
 #include "PluginEditor.h"
 
 //==============================================================================
-JuceDemoPluginAudioProcessorEditor::JuceDemoPluginAudioProcessorEditor(JuceDemoPluginAudioProcessor& owner)
+JuceDemoPluginAudioProcessorEditor::JuceDemoPluginAudioProcessorEditor(PluginProcessor& owner)
 	: AudioProcessorEditor(owner),
 	envelopeComponent(0),
 	midiKeyboard(owner.keyboardState, MidiKeyboardComponent::horizontalKeyboard),
@@ -81,10 +81,7 @@ JuceDemoPluginAudioProcessorEditor::JuceDemoPluginAudioProcessorEditor(JuceDemoP
 	setResizeLimits(180 * 4, 330, 1024, 700);
 
 	// set our component's initial size to be the last one that was stored in the filter's settings
-	setSize(owner.lastUIWidth,
-		owner.lastUIHeight);
-
-	updateTrackProperties();
+	setSize(720,330);
 
 	// start a timer which will keep our timecode display updated
 	startTimerHz(30);
@@ -120,8 +117,6 @@ void JuceDemoPluginAudioProcessorEditor::resized()
 	waveType.setBounds(r.removeFromTop(100));
 	cc.setBounds(r.removeFromTop(300));
 
-	getProcessor().lastUIWidth = getWidth();
-	getProcessor().lastUIHeight = getHeight();
 }
 
 //==============================================================================
@@ -129,21 +124,15 @@ void JuceDemoPluginAudioProcessorEditor::timerCallback()
 {
 	AudioParameterInt* wt = Global.paramHandler->Get<AudioParameterInt>(0, "WAVE_TYPE");
 	waveType.setSelectedId(*wt + 1);
-	updateTimecodeDisplay(getProcessor().lastPosInfo);
+	
 }
 void JuceDemoPluginAudioProcessorEditor::hostMIDIControllerIsAvailable(bool controllerIsAvailable)
 {
 	midiKeyboard.setVisible(!controllerIsAvailable);
 }
 
-void JuceDemoPluginAudioProcessorEditor::updateTrackProperties()
-{
-	auto trackColour = getProcessor().trackProperties.colour;
-	auto& lf = getLookAndFeel();
+void JuceDemoPluginAudioProcessorEditor::updateTrackProperties(){
 
-	backgroundColour = (trackColour == Colour() ? lf.findColour(ResizableWindow::backgroundColourId)
-		: trackColour.withAlpha(1.0f).withBrightness(0.266f));
-	repaint();
 }
 
 //==============================================================================
