@@ -18,24 +18,24 @@ private:
 	void __RenderBlock(AudioBuffer<T>& buffer);
 	virtual void CalculateCoefficients() = 0;
 
-	double prevFc;
+	double __prevFc;
 
-	double prevX1[2] = { 0, 0 };
-	double prevX2[2] = { 0, 0 };
+	double __prevX1[2] = { 0, 0 };
+	double __prevX2[2] = { 0, 0 };
 
-	double prevY1[2] = { 0, 0 };
-	double prevY2[2] = { 0, 0 };
+	double __prevY1[2] = { 0, 0 };
+	double __prevY2[2] = { 0, 0 };
 
-	double currentLeft = 0;
-	double currentRight = 0;
+	double __currentLeft = 0;
+	double __currentRight = 0;
 
 protected:
-	double a[3] = { 1, 0, 0 };
-	double b[3] = { 0, 0, 0 };
+	double __a[3] = { 1, 0, 0 };
+	double __b[3] = { 0, 0, 0 };
 
-	float fc;
-	float fs;
-	double sqrt2;
+	float __fc;
+	float __fs;
+	double __sqrt2;
 
 	AudioParameterFloat* lpFrequency;
 	

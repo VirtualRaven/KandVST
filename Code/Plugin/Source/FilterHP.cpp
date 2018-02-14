@@ -15,13 +15,15 @@ FilterHP::~FilterHP()
 void FilterHP::__calculateCoefficients()
 {
 	// Calculate coefficients based on the current cut-off frequency
-	double wc = 2 * double_Pi * fc;
+	double wc = 2 * double_Pi * __fc;
+	double fs2 = __fs * __fs;
+	double wc2 = wc * wc;
 
-	a[0] = 4 * (fs * fs) + 2 * fs*wc*sqrt2 + (wc * wc);
-	a[1] = (2 * (wc * wc) - 8 * (fs * fs)) / a[0];
-	a[2] = ((wc * wc) - 2 * sqrt2*wc*fs + 4 * (fs * fs)) / a[0];
+	__a[0] = 4 * (fs2) + 2 * __fs*wc*__sqrt2 + (wc2);
+	__a[1] = (2 * (wc2) - 8 * (fs2)) / __a[0];
+	__a[2] = ((wc2) - 2 * __sqrt2*wc*__fs + 4 * (fs2)) / __a[0];
 
-	b[0] = (4 * fs * fs) / a[0];
-	b[1] = b[0] * -2;
-	b[2] = b[0];
+	__b[0] = (4 * fs2) / __a[0];
+	__b[1] = __b[0] * -2;
+	__b[2] = __b[0];
 }
