@@ -1,7 +1,7 @@
 #include "FilterLP.h"
 
-FilterLP::FilterLP(double sampleRate, ParameterHandler& paramHandler, String parameterId) :
-	FilterButterworth(sampleRate, paramHandler, parameterId, "LP Frequency")
+FilterLP::FilterLP(int ID, double sampleRate, String parameterId) :
+	FilterButterworth(ID, sampleRate, "LP Frequency", parameterId)
 {
 	
 }

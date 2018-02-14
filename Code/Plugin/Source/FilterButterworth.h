@@ -3,10 +3,14 @@
 #include "IEffect.h"
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "ParameterHandler.h"
+#include "Global.h"
+#include "IVSTParameters.h"
+
 
 // Generic 2:nd order Butterwroth filter class
 class FilterButterworth :
-	public IEffect
+	public IEffect,
+	public IVSTParameters
 {
 
 private:
@@ -36,7 +40,7 @@ protected:
 	AudioParameterFloat* lpFrequency;
 	
 public:
-	FilterButterworth(double sampleRate, ParameterHandler& paramHandler, String parameterId, String parameterLabel);
+	FilterButterworth(int ID, double sampleRate, String parameterLabel, String parameterId);
 	~FilterButterworth();
 
 	// Inherited via IEffect

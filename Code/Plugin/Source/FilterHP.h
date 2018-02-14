@@ -18,7 +18,7 @@ private:
 	}
 	
 public:
-	FilterHP(double sampleRate, ParameterHandler& paramHandler, String parameterId);
+	FilterHP(int ID, double sampleRate, String parameterId);
 	~FilterHP();
 };
 

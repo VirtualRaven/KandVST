@@ -18,7 +18,7 @@ private:
 	}
 	
 public:
-	FilterLP(double sampleRate, ParameterHandler& paramHandler, String parameterId);
+	FilterLP(int ID, double sampleRate, String parameterId);
 	~FilterLP();
 };
 

@@ -1,7 +1,7 @@
 #include "FilterHP.h"
 
-FilterHP::FilterHP(double sampleRate, ParameterHandler& paramHandler, String parameterId) :
-	FilterButterworth(sampleRate, paramHandler, parameterId, "HP Frequency")
+FilterHP::FilterHP(int ID, double sampleRate, String parameterId) :
+	FilterButterworth(ID, sampleRate, "HP Frequency", parameterId)
 {
 	
 }
