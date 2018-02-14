@@ -17,6 +17,7 @@ PluginGUI::PluginGUI(JuceDemoPluginAudioProcessor& owner)
 
 	addAndMakeVisible(__tabComponent);
 	addAndMakeVisible(__keyboard);
+	__keyboard.setKeyWidth(__keyboard.getKeyWidth()+10.0f);
 
 
 	setResizable(false, false);
@@ -38,7 +39,8 @@ void PluginGUI::resized()
 {
 	Rectangle<int> localBounds (getLocalBounds().reduced(8));
 
-	__keyboard.setBounds(localBounds.removeFromBottom(70).removeFromRight(getLocalBounds().getWidth() - 100).removeFromLeft(getLocalBounds().getWidth() - 100));
+	__keyboard.setBounds(localBounds.removeFromBottom(70).removeFromRight(getLocalBounds().getWidth() - 150).removeFromLeft(getLocalBounds().getWidth() - 150));
+	__keyboard.setCentrePosition(localBounds.getCentreX(), __keyboard.getBounds().getBottom()-(__keyboard.getHeight()/2));	
 	localBounds.removeFromBottom(8); //Padding
 	__tabComponent.setBounds(localBounds);
 
