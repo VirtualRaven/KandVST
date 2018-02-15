@@ -11,15 +11,16 @@ PluginGUI::PluginGUI(PluginProcessor& owner)
 {
 	__tabComponent.addTab("M", Colours::darkgreen, new MasterComponent(), true);
 
-	for (int i = 0; i < 1; i++)
+	for (int i = 0; i < 4; i++)
 	{
-		__tabComponent.addTab(std::to_string(i+1), Colours::darkgrey, new OscillatorComponent(i), true);
+		__tabComponent.addTab(std::to_string(i+1), Colours::darkgrey, new OscillatorPageComponent(i), true);
 	}
 
 	__tabComponent.addTab("Console", Colours::darkgrey, &__cc,true);
 
 	addAndMakeVisible(__tabComponent);
 	addAndMakeVisible(__keyboard);
+	__keyboard.setKeyWidth(__keyboard.getKeyWidth()+10.0f);
 
 
 	setResizable(false, false);
@@ -41,8 +42,9 @@ void PluginGUI::resized()
 {
 	Rectangle<int> localBounds (getLocalBounds().reduced(8));
 
-	__keyboard.setBounds(localBounds.removeFromBottom(70).removeFromRight(getLocalBounds().getWidth() - 100).removeFromLeft(getLocalBounds().getWidth() - 100));
+	__keyboard.setBounds(localBounds.removeFromBottom(100).removeFromRight(getLocalBounds().getWidth() - 150).removeFromLeft(getLocalBounds().getWidth() - 150));
+	__keyboard.setCentrePosition(localBounds.getCentreX(), __keyboard.getBounds().getBottom()-(__keyboard.getHeight()/2));	
 	localBounds.removeFromBottom(8); //Padding
-	__tabComponent.setBounds(localBounds);
+	__tabComponent.setBounds(getLocalBounds());
 
 }

@@ -18,11 +18,9 @@ private:
 	//double __inc;
 	bool __sustain;
 	const IWavetable* __wavetable;
-	AudioParameterInt* __waveType;
-	AudioParameterInt* __octave;
-	AudioParameterInt* __offset;
-	AudioParameterFloat* __detune;
 	LFO __lfo;
+	AudioParameterInt* __waveType, *__octave,* __offset;
+	AudioParameterFloat* __detune, *__sinAmp,* __sqAmp, *__sawAmp, *__triAmp;
 	template<typename T>
 	void __RenderBlock(AudioBuffer<T>& buffer);
 

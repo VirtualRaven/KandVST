@@ -18,7 +18,7 @@ public:
     void resized() override;
 private:
     //==============================================================================
-
+    Label __version, __authors;
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (InformationComponent)
 };

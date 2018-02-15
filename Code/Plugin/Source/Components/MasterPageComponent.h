@@ -19,6 +19,7 @@ public:
 
 private:
 	InformationComponent __infoComponent;
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MasterComponent)
 };
 #endif

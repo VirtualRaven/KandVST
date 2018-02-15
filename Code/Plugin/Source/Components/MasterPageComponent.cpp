@@ -1,5 +1,5 @@
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "MasterComponent.h"
+#include "MasterPageComponent.h"
 
 MasterComponent::~MasterComponent()
 {

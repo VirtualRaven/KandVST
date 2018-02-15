@@ -14,6 +14,11 @@ WavetableOsc::WavetableOsc(int ID,double sampleRate) :
 	__octave = Global->paramHandler->Get<AudioParameterInt>(__ID, "OSC_OCTAVE");
 	__offset = Global->paramHandler->Get<AudioParameterInt>(__ID, "OSC_OFFSET");
 	__detune = Global->paramHandler->Get<AudioParameterFloat>(__ID, "OSC_DETUNE");
+
+	__sinAmp = Global->paramHandler->Get<AudioParameterFloat>(__ID, "OSC_SINE");
+	__sqAmp = Global->paramHandler->Get<AudioParameterFloat>(__ID, "OSC_SQUARE");
+	__sawAmp = Global->paramHandler->Get<AudioParameterFloat>(__ID, "OSC_SAW");
+	__triAmp = Global->paramHandler->Get<AudioParameterFloat>(__ID, "OSC_TRI");
 }
 
 
@@ -59,6 +64,12 @@ void WavetableOsc::RegisterParameters(int ID)
 	Global->paramHandler->RegisterInt(ID, "OSC_OCTAVE", "Octave", -3, 3, 0);
 	Global->paramHandler->RegisterInt(ID, "OSC_OFFSET", "Offset", -11, 11, 0);
 	Global->paramHandler->RegisterFloat(ID, "OSC_DETUNE", "Detune", -1.0f, 1.0f, 0.0f);
+
+	Global->paramHandler->RegisterFloat(ID, "OSC_SINE", "Sine", 0.0f, 1.0f, 1.0f);
+	Global->paramHandler->RegisterFloat(ID, "OSC_SQUARE", "Square", 0.0f, 1.0f, 0.0f);
+	Global->paramHandler->RegisterFloat(ID, "OSC_SAW", "Saw", 0.0f, 1.0f, 0.0f);
+	Global->paramHandler->RegisterFloat(ID, "OSC_TRI", "Tri", 0.0f, 1.0f, 0.0f);
+
 }
 
 
@@ -75,12 +86,19 @@ void WavetableOsc::__RenderBlock(AudioBuffer<T>& buffer) {
 		if (i == nextEvent) {
 			nextEvent = this->HandleEvent();
 		}
+
 		double tmpFreq = __frequency * pow(2.0, *__octave + (((*__offset) + (*__detune))/12.0));
 
 		__lfo.apply(tmpFreq);
 		double inc = __wavetable->getLength() * tmpFreq / __sampleRate;
 
-		T samp = __wavetable->getSample(__phase, tmpFreq) *__envelope.GenerateNextStep(__sustain);
+		T envStep = __envelope.GenerateNextStep(__sustain);;
+
+		T samp = tables[WAVE_TYPE::SINE]->getSample(__phase, tmpFreq)*envStep* (*__sinAmp);
+		samp += tables[WAVE_TYPE::SQUARE]->getSample(__phase, tmpFreq)*envStep* (*__sqAmp);
+		samp += tables[WAVE_TYPE::SAW]->getSample(__phase, tmpFreq)*envStep* (*__sawAmp);
+		samp += tables[WAVE_TYPE::TRI]->getSample(__phase, tmpFreq)*envStep* (*__triAmp);
+
 		__phase += inc;
 
 		for(int j = 0; j < buffer.getNumChannels(); j++)
