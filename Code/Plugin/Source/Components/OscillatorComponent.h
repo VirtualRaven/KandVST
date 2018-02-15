@@ -6,12 +6,13 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "InformationComponent.h"
 #include "ParameterSlider.h"
+#include "../IVSTParameters.h"
 
-class OscillatorComponent : public Component
+class OscillatorComponent : public Component, private IVSTParameters
 {
 public:
     //==============================================================================
-    OscillatorComponent ();
+    OscillatorComponent (int ID);
     ~OscillatorComponent();
 
     //==============================================================================

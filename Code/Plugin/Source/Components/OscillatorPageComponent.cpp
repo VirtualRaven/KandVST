@@ -7,8 +7,8 @@ OscillatorPageComponent::~OscillatorPageComponent()
 
 OscillatorPageComponent::OscillatorPageComponent(int ID):
 IVSTParameters(ID),
-__envComponent(ID)
-
+__envComponent(ID),
+__oscillator(ID)
 {
 	addAndMakeVisible(__envComponent);
 	addAndMakeVisible(__oscillator);
@@ -20,9 +20,9 @@ void OscillatorPageComponent::paint(Graphics& g){
 }
 
 void OscillatorPageComponent::resized(){
-	Rectangle<int> env(320,50,300, 200);
+	Rectangle<int> env(340,50,300, 200);
 	__envComponent.setBounds(env);
 
-	__oscillator.setBounds(getLocalBounds());
+	__oscillator.setBounds(getLocalBounds().removeFromLeft(320));
 
 }

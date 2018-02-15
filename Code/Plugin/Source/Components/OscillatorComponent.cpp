@@ -5,29 +5,31 @@ OscillatorComponent::~OscillatorComponent()
 {
 }
 
-OscillatorComponent::OscillatorComponent() {
+OscillatorComponent::OscillatorComponent(int ID):
+IVSTParameters(ID)
+{
 	//=====================================
 	// add and make visible wave sliders
 	//=====================================
-	addAndMakeVisible(__sineSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(0, "ENV_ATTACK")));
+	addAndMakeVisible(__sineSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "OSC_SINE")));
 	__sineSlider->setSliderStyle(Slider::Rotary);
 	__sineSlider->setTextBoxStyle(__sineSlider->NoTextBox, true, 10, 10);
 	__sineLabel.setText("SINE", NotificationType::dontSendNotification);
 	__sineLabel.attachToComponent(__sineSlider,false);
 
-	addAndMakeVisible(__squareSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(0, "ENV_ATTACK")));
+	addAndMakeVisible(__squareSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "OSC_SQUARE")));
 	__squareSlider->setSliderStyle(Slider::Rotary);
 	__squareSlider->setTextBoxStyle(__squareSlider->NoTextBox, true, 10, 10);
 	__squareLabel.setText("SQUARE", NotificationType::dontSendNotification);
 	__squareLabel.attachToComponent(__squareSlider, false);
 
-	addAndMakeVisible(__sawSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(0, "ENV_ATTACK")));
+	addAndMakeVisible(__sawSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "OSC_SAW")));
 	__sawSlider->setSliderStyle(Slider::Rotary);
 	__sawSlider->setTextBoxStyle(__sawSlider->NoTextBox, true, 10, 10);
 	__sawLabel.setText("SAW", NotificationType::dontSendNotification);
 	__sawLabel.attachToComponent(__sawSlider, false);
 
-	addAndMakeVisible(__triangleSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(0, "ENV_ATTACK")));
+	addAndMakeVisible(__triangleSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "OSC_TRI")));
 	__triangleSlider->setSliderStyle(Slider::Rotary);
 	__triangleSlider->setTextBoxStyle(__triangleSlider->NoTextBox, true, 10, 10);
 	__triangleLabel.setText("TRIANGLE", NotificationType::dontSendNotification);
@@ -36,22 +38,22 @@ OscillatorComponent::OscillatorComponent() {
 	//=========================================================================
 	// add and make visible detune, octaves, etc
 	//===============================
-	addAndMakeVisible(__octaveSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(0, "ENV_SUSTAIN")));
+	addAndMakeVisible(__octaveSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterInt>(__ID, "OSC_OCTAVE")));
 	__octaveSlider->setSliderStyle(Slider::RotaryVerticalDrag);
 	__octaveSlider->setTextBoxStyle(__octaveSlider->NoTextBox, true, 0, 0);
 	__octaveLabel.setText("OCTAVE", NotificationType::dontSendNotification);
 	__octaveLabel.attachToComponent(__octaveSlider, false);
 
-	addAndMakeVisible(__detuneSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(0, "ENV_SUSTAIN")));
+	addAndMakeVisible(__detuneSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "OSC_DETUNE")));
 	__detuneSlider->setSliderStyle(Slider::RotaryVerticalDrag);
 	__detuneSlider->setTextBoxStyle(__detuneSlider->NoTextBox, true, 0, 0);
-	__detuneLabel.setText("OCTAVE", NotificationType::dontSendNotification);
+	__detuneLabel.setText("DETUNE", NotificationType::dontSendNotification);
 	__detuneLabel.attachToComponent(__detuneSlider, false);
 
-	addAndMakeVisible(__offsetSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(0, "ENV_SUSTAIN")));
+	addAndMakeVisible(__offsetSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterInt>(__ID, "OSC_OFFSET")));
 	__offsetSlider->setSliderStyle(Slider::RotaryVerticalDrag);
 	__offsetSlider->setTextBoxStyle(__offsetSlider->NoTextBox, true, 0, 0);
-	__offsetLabel.setText("OCTAVE", NotificationType::dontSendNotification);
+	__offsetLabel.setText("OFFSET", NotificationType::dontSendNotification);
 	__offsetLabel.attachToComponent(__offsetSlider, false);
 	//============================================================================
 }
