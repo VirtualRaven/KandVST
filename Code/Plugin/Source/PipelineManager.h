@@ -14,8 +14,6 @@ private:
 	double __sampleRate;
 	int   __maybeMaxBuff;
 	std::ofstream  __log;
-	Pipeline pip;
-	Pipeline pip2;
 	std::list<Pipeline> pipList;
 	ThreadPool pool;
 public:

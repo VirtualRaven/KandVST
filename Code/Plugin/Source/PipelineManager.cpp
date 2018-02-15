@@ -9,9 +9,7 @@
 PipelineManager::PipelineManager(double rate, int maxBuffHint) :
 	__sampleRate(rate),
 	__maybeMaxBuff(maxBuffHint),
-	__log(),
-	pip(rate),
-	pip2(rate)
+	__log()
 	
 
 {
@@ -58,6 +56,7 @@ void PipelineManager::genSamples(AudioBuffer<T>& buff, MidiBuffer & midiMessages
 					tmp.getNoteNumber();
 					__log << tmp.getNoteNumber() << ": " << tmp.getVelocity() << std::endl;
 					pipIt->noteCommand(tmp.getNoteNumber(), tmp.getVelocity(), tmp.isNoteOn());
+					break;
 				}
 			}
 		}
@@ -85,7 +84,7 @@ void PipelineManager::genSamples(AudioBuffer<T>& buff, MidiBuffer & midiMessages
 		buffCount++;
 		
 	}
-	while (pool.getNumJobs());
+	while (pool.getNumJobs()>0);
 	for (auto b : pipBuff)
 	{	
 		
