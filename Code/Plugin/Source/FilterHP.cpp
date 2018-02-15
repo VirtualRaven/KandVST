@@ -1,7 +1,8 @@
 #include "FilterHP.h"
+#include "FilterButterworth.h"
 
 FilterHP::FilterHP(int ID, double sampleRate, String parameterId) :
-	FilterButterworth(ID, sampleRate, "HP Frequency", parameterId)
+	FilterButterworth(ID, sampleRate, parameterId)
 {
 	
 }
@@ -10,6 +11,11 @@ FilterHP::FilterHP(int ID, double sampleRate, String parameterId) :
 FilterHP::~FilterHP()
 {
 
+}
+
+void FilterHP::RegisterParameters(int ID)
+{
+	FilterButterworth::RegisterParameters(ID, "HP Frequency", "EX_FILTER_HP");
 }
 
 void FilterHP::__calculateCoefficients()

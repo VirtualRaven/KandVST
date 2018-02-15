@@ -1,6 +1,6 @@
 #include "FilterButterworth.h"
 
-FilterButterworth::FilterButterworth(int ID, double sampleRate, String parameterLabel, String parameterId) :
+FilterButterworth::FilterButterworth(int ID, double sampleRate, String parameterId) :
 	IEffect(sampleRate),
 	IVSTParameters(ID)
 {
@@ -8,12 +8,16 @@ FilterButterworth::FilterButterworth(int ID, double sampleRate, String parameter
 	__prevFc = -1;
 	__sqrt2 = sqrt(2);
 	lpFrequency = Global->paramHandler->Get<AudioParameterFloat>(ID, parameterId);
-	Global->paramHandler->RegisterFloat(ID, parameterId, parameterLabel, 1.0f, 20000.0f, 400.0f);
 }
 
 
 FilterButterworth::~FilterButterworth()
 {
+}
+
+void FilterButterworth::RegisterParameters(int ID, String parameterLabel, String parameterId)
+{
+	Global->paramHandler->RegisterFloat(ID, parameterId, parameterLabel, 1.0f, 20000.0f, 400.0f);
 }
 
 template<typename T>
