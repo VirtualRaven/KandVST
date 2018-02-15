@@ -10,10 +10,10 @@ WavetableOsc::WavetableOsc(int ID,double sampleRate) :
 	__frequency(0),
 	__lfo(120,sampleRate, __ID)
 {
-	__waveType = Global.paramHandler->Get<AudioParameterInt>(__ID, "WAVE_TYPE");
-	__octave = Global.paramHandler->Get<AudioParameterInt>(__ID, "OSC_OCTAVE");
-	__offset = Global.paramHandler->Get<AudioParameterInt>(__ID, "OSC_OFFSET");
-	__detune = Global.paramHandler->Get<AudioParameterFloat>(__ID, "OSC_DETUNE");
+	__waveType = Global->paramHandler->Get<AudioParameterInt>(__ID, "WAVE_TYPE");
+	__octave = Global->paramHandler->Get<AudioParameterInt>(__ID, "OSC_OCTAVE");
+	__offset = Global->paramHandler->Get<AudioParameterInt>(__ID, "OSC_OFFSET");
+	__detune = Global->paramHandler->Get<AudioParameterFloat>(__ID, "OSC_DETUNE");
 }
 
 
@@ -55,10 +55,10 @@ void WavetableOsc::ProccessCommand(MidiMessage message)
 
 void WavetableOsc::RegisterParameters(int ID)
 {
-	Global.paramHandler->RegisterInt(ID, "WAVE_TYPE", "Wave type", 0, 3, 0);
-	Global.paramHandler->RegisterInt(ID, "OSC_OCTAVE", "Octave", -3, 3, 0);
-	Global.paramHandler->RegisterInt(ID, "OSC_OFFSET", "Offset", -11, 11, 0);
-	Global.paramHandler->RegisterFloat(ID, "OSC_DETUNE", "Detune", -1.0f, 1.0f, 0.0f);
+	Global->paramHandler->RegisterInt(ID, "WAVE_TYPE", "Wave type", 0, 3, 0);
+	Global->paramHandler->RegisterInt(ID, "OSC_OCTAVE", "Octave", -3, 3, 0);
+	Global->paramHandler->RegisterInt(ID, "OSC_OFFSET", "Offset", -11, 11, 0);
+	Global->paramHandler->RegisterFloat(ID, "OSC_DETUNE", "Detune", -1.0f, 1.0f, 0.0f);
 }
 
 

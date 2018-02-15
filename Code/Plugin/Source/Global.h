@@ -1,14 +1,22 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
-class ParameterHandler;
-class Log;
-struct GLOBAL {
+#include "ParameterHandler.h"
+#include "Log.h"
+#include "../JuceLibraryCode/JuceHeader.h"
+class GLOBAL {
+public:
 	ParameterHandler* paramHandler;
 	Log* log;
-
-	//Fix destructor
+	JUCE_LEAK_DETECTOR(GLOBAL);
+	~GLOBAL()
+	{
+		delete paramHandler;
+		delete log;
+		paramHandler = nullptr;
+		log = nullptr;
+	}
 };
-extern GLOBAL Global;
+extern GLOBAL* Global;
 
 #endif // !GLOBAL_H

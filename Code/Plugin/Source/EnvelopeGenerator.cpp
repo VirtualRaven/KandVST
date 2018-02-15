@@ -66,10 +66,10 @@ double EnvelopeGenerator::GenerateNextStep(bool sustain)
 
 void EnvelopeGenerator::RegisterParameters(int ID)
 {
-	Global.paramHandler->RegisterFloat(ID, "ENV_ATTACK", "Attack", 0.1f, 2.0f, 0.2f);
-	Global.paramHandler->RegisterFloat(ID, "ENV_DECAY", "Decay", 0.1f, 2.0f, 0.2f);
-	Global.paramHandler->RegisterFloat(ID, "ENV_SUSTAIN", "Sustain", 0.0f, 2.0f, 0.2f);
-	Global.paramHandler->RegisterFloat(ID, "ENV_RELEASE", "Release", 0.1f, 2.0f, 0.2f);
+	Global->paramHandler->RegisterFloat(ID, "ENV_ATTACK", "Attack", 0.1f, 2.0f, 0.2f);
+	Global->paramHandler->RegisterFloat(ID, "ENV_DECAY", "Decay", 0.1f, 2.0f, 0.2f);
+	Global->paramHandler->RegisterFloat(ID, "ENV_SUSTAIN", "Sustain", 0.0f, 2.0f, 0.2f);
+	Global->paramHandler->RegisterFloat(ID, "ENV_RELEASE", "Release", 0.1f, 2.0f, 0.2f);
 }
 
 void EnvelopeGenerator::Reset() {
@@ -101,10 +101,10 @@ EnvelopeGenerator::EnvelopeGenerator(int ID,double sampleRate):
 	__sSustain(1.0),
 	__amplitude(0)
 {
-	__pattack =	 Global.paramHandler->Get<AudioParameterFloat>(__ID,"ENV_ATTACK");
-	__pdecay =	 Global.paramHandler->Get<AudioParameterFloat>(__ID,"ENV_DECAY");
-	__psustain = Global.paramHandler->Get<AudioParameterFloat>(__ID,"ENV_SUSTAIN");
-	__prelease = Global.paramHandler->Get<AudioParameterFloat>(__ID,"ENV_RELEASE");
+	__pattack =	 Global->paramHandler->Get<AudioParameterFloat>(__ID,"ENV_ATTACK");
+	__pdecay =	 Global->paramHandler->Get<AudioParameterFloat>(__ID,"ENV_DECAY");
+	__psustain = Global->paramHandler->Get<AudioParameterFloat>(__ID,"ENV_SUSTAIN");
+	__prelease = Global->paramHandler->Get<AudioParameterFloat>(__ID,"ENV_RELEASE");
 	recalculateParameters();
 }
 

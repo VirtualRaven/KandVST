@@ -9,7 +9,7 @@
 class PluginGUI  : public AudioProcessorEditor                    
 {
 public:
-	PluginGUI(JuceDemoPluginAudioProcessor& owner);
+	PluginGUI(PluginProcessor& owner);
 	~PluginGUI();
 
 	void paint(Graphics& g);
@@ -20,9 +20,9 @@ private:
 	TabbedComponent __tabComponent;
 	MidiKeyboardComponent __keyboard;
     //==============================================================================
-    JuceDemoPluginAudioProcessor& getProcessor() const
+	PluginProcessor& getProcessor() const
     {
-        return static_cast<JuceDemoPluginAudioProcessor&> (processor);
+        return static_cast<PluginProcessor&> (processor);
     }
 
   

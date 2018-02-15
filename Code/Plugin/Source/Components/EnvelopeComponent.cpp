@@ -9,16 +9,16 @@ EnvelopeComponent::EnvelopeComponent(int ID):
 	sustainLabel(String(), "Sustain:"),
 	releaseLabel(String(), "Release:")
 {
-	addAndMakeVisible(attack = new ParameterSlider(*Global.paramHandler->Get<AudioParameterFloat>(__ID, "ENV_ATTACK")));
+	addAndMakeVisible(attack = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "ENV_ATTACK")));
 	attack->setSliderStyle(Slider::LinearVertical);
 	attack->setTextBoxStyle(Slider::TextEntryBoxPosition::TextBoxBelow, true, 50, 15);
-	addAndMakeVisible(decay = new ParameterSlider(*Global.paramHandler->Get<AudioParameterFloat>(__ID, "ENV_DECAY")));
+	addAndMakeVisible(decay = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "ENV_DECAY")));
 	decay->setSliderStyle(Slider::LinearVertical);
 	decay->setTextBoxStyle(Slider::TextEntryBoxPosition::TextBoxBelow, true, 50, 15);
-	addAndMakeVisible(sustain = new ParameterSlider(*Global.paramHandler->Get<AudioParameterFloat>(__ID, "ENV_SUSTAIN")));
+	addAndMakeVisible(sustain = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "ENV_SUSTAIN")));
 	sustain->setSliderStyle(Slider::LinearVertical);
 	sustain->setTextBoxStyle(Slider::TextEntryBoxPosition::TextBoxBelow, true, 50, 15);
-	addAndMakeVisible(release = new ParameterSlider(*Global.paramHandler->Get<AudioParameterFloat>(__ID, "ENV_RELEASE")));
+	addAndMakeVisible(release = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "ENV_RELEASE")));
 	release->setSliderStyle(Slider::LinearVertical);
 	release->setTextBoxStyle(Slider::TextEntryBoxPosition::TextBoxBelow, true, 50, 15);
 

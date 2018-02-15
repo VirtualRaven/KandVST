@@ -43,7 +43,7 @@ class JuceDemoPluginAudioProcessorEditor : public AudioProcessorEditor,
 
 {
 public:
-	JuceDemoPluginAudioProcessorEditor(JuceDemoPluginAudioProcessor&);
+	JuceDemoPluginAudioProcessorEditor(PluginProcessor&);
 	~JuceDemoPluginAudioProcessorEditor();
 
 	//==============================================================================
@@ -63,9 +63,9 @@ private:
 	ConsoleComponent cc;
 
 	//==============================================================================
-	JuceDemoPluginAudioProcessor& getProcessor() const
+	PluginProcessor& getProcessor() const
 	{
-		return static_cast<JuceDemoPluginAudioProcessor&> (processor);
+		return static_cast<PluginProcessor&> (processor);
 	}
 
 	void updateTimecodeDisplay(AudioPlayHead::CurrentPositionInfo);

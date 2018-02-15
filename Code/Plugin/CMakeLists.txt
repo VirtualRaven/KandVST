@@ -119,6 +119,12 @@ jucer_project_files("KandVST"
   .         .         .         "Source/Components/MasterComponent.h"
   x         .         .         "Source/Components/OscillatorComponent.cpp"
   .         .         .         "Source/Components/OscillatorComponent.h"
+  x         .         .         "Source/FilterButterworth.cpp"
+  .         .         .         "Source/FilterButterworth.h"
+  x         .         .         "Source/FilterLP.cpp"
+  .         .         .         "Source/FilterLP.h"
+  x         .         .         "Source/FilterHP.cpp"
+  .         .         .         "Source/FilterHP.h"
 )
 
 jucer_project_module(

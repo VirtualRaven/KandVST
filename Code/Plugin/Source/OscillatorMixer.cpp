@@ -9,7 +9,7 @@ OscillatorMixer::OscillatorMixer(int ID, double sampleRate):
 {
 	for (size_t i = 0; i < 4; i++)
 	{
-		__oscillators.push_back(std::make_tuple(WavetableOsc(i, sampleRate), Global.paramHandler->Get<AudioParameterFloat>(i, "OSC_MIX_AMP"), Global.paramHandler->Get<AudioParameterBool>(i, "OSC_MIX_EN")));	
+		__oscillators.push_back(std::make_tuple(WavetableOsc(i, sampleRate), Global->paramHandler->Get<AudioParameterFloat>(i, "OSC_MIX_AMP"), Global->paramHandler->Get<AudioParameterBool>(i, "OSC_MIX_EN")));	
 	}
 }
 
@@ -64,8 +64,8 @@ void OscillatorMixer::RegisterParameters(int ID)
 {
 	for (size_t i = 0; i < 4; i++)
 	{
-		Global.paramHandler->RegisterBool(i, "OSC_MIX_EN", "Enable Oscillator", false);
-		Global.paramHandler->RegisterFloat(i, "OSC_MIX_AMP", "Oscillator Amplitude", 0.0f, 1.0f, 0.5f);
+		Global->paramHandler->RegisterBool(i, "OSC_MIX_EN", "Enable Oscillator", false);
+		Global->paramHandler->RegisterFloat(i, "OSC_MIX_AMP", "Oscillator Amplitude", 0.0f, 1.0f, 0.5f);
 	}
 
 
