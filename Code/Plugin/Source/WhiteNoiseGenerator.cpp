@@ -10,7 +10,7 @@ WhiteNoiseGenerator::WhiteNoiseGenerator(double sampleRate) :
 	__angle(0),
 	__size(sampleRate),
 	__noiseBuffer(1, __size),
-	__rand(Time::currentTimeMillis()),
+	__rand(174594158), // Very random number
 	__sampleIndex(0)
 {
 	// Generate wavetable
