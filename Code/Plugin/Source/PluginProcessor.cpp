@@ -14,7 +14,7 @@ PluginProcessor::PluginProcessor()
 	Global->paramHandler=  new ParameterHandler(*this);
 	Global->log = new Log("log.txt");
 
-	setParameters<int, EnvelopeGenerator, ExampleEffect, WavetableOsc, OscillatorMixer>({ {0,1,2,3},{0},{0,1,2,3},{ 0 } });
+	setParameters<int, EnvelopeGenerator, ExampleEffect, WavetableOsc, OscillatorMixer, LFO>({ {0,1,2,3},{0},{0,1,2,3},{ 0 },{0,1,2,3} });
 
 
 	*(Global->paramHandler->Get<AudioParameterBool>(0, "OSC_MIX_EN")) = 1; //Enable default oscillator
