@@ -25,7 +25,7 @@ private:
 
 
 public:
-	WhiteNoiseGenerator(double sampleRate);
+	WhiteNoiseGenerator(int ID, double sampleRate);
 	~WhiteNoiseGenerator();
 
 	// Inherited via Generator

@@ -24,6 +24,8 @@ PluginProcessor::PluginProcessor()
 
 PluginProcessor::~PluginProcessor()
 {
+	delete __pipManager;
+	freeWavetable();
 	delete Global;
 }
 
@@ -105,8 +107,7 @@ void PluginProcessor::prepareToPlay (double newSampleRate, int maxSamplesPerBloc
 void PluginProcessor::releaseResources()
 {
     keyboardState.reset();
-	delete __pipManager;
-	freeWavetable();
+
 }
 
 template <typename FloatType>

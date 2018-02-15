@@ -10,9 +10,10 @@ class OscillatorMixer: public IGenerator, private IVSTParameters
 private:
 	template<typename T>
 	void __RenderBlock(AudioBuffer<T>& buffer);
-	std::vector<std::tuple<WavetableOsc, AudioParameterFloat*,AudioParameterBool*>>  __oscillators;
+	std::vector<std::tuple<IGenerator*, AudioParameterFloat*,AudioParameterBool*>>  __oscillators;
 public:
 	OscillatorMixer(int ID,double sampleRate);
+	OscillatorMixer(const OscillatorMixer& ref)=delete;
 	~OscillatorMixer();
 
 	// Inherited via IGenerator

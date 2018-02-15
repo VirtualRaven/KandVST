@@ -2,7 +2,7 @@
 
 
 
-WhiteNoiseGenerator::WhiteNoiseGenerator(double sampleRate) :
+WhiteNoiseGenerator::WhiteNoiseGenerator(int ID, double sampleRate) :
 	IGenerator(sampleRate),
 	__envelope(0, sampleRate),
 	__note(0),
