@@ -37,7 +37,7 @@ void WavetableOsc::ProccesNoteCommand(int note, uint8 vel, bool isOn)
 	if (isOn)
 	{
 		__frequency = MidiMessage::getMidiNoteInHertz(note);
-		__phase = 0.0;
+		//__phase = 0.0;
 		__note = note;
 		__envelope.Reset();
 		__sustain = true; //Right now we ignore sustain pedal
@@ -80,7 +80,7 @@ void WavetableOsc::__RenderBlock(AudioBuffer<T>& buffer) {
 		__lfo.apply(tmpFreq);
 		double inc = __wavetable->getLength() * tmpFreq / __sampleRate;
 
-		T samp = __wavetable->getSample(__phase, tmpFreq)* __envelope.GenerateNextStep(__sustain);
+		T samp = __wavetable->getSample(__phase, tmpFreq) *__envelope.GenerateNextStep(__sustain);
 		__phase += inc;
 
 		for(int j = 0; j < buffer.getNumChannels(); j++)
