@@ -28,7 +28,7 @@ DISCLAIMED.
 #include "PluginEditor.h"
 
 //==============================================================================
-JuceDemoPluginAudioProcessorEditor::JuceDemoPluginAudioProcessorEditor(JuceDemoPluginAudioProcessor& owner)
+JuceDemoPluginAudioProcessorEditor::JuceDemoPluginAudioProcessorEditor(PluginProcessor& owner)
 	: AudioProcessorEditor(owner),
 	envelopeComponent(0),
 	midiKeyboard(owner.keyboardState, MidiKeyboardComponent::horizontalKeyboard),
@@ -55,13 +55,13 @@ JuceDemoPluginAudioProcessorEditor::JuceDemoPluginAudioProcessorEditor(JuceDemoP
 
 
 
-	addAndMakeVisible(octaveSlider = new ParameterSlider(*Global.paramHandler->Get<AudioParameterInt>(0, "OSC_OCTAVE")));
+	addAndMakeVisible(octaveSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterInt>(0, "OSC_OCTAVE")));
 	octaveSlider->setSliderStyle(Slider::Rotary);
 	octaveLabel.attachToComponent(octaveSlider, false);
-	addAndMakeVisible(offsetSlider = new ParameterSlider(*Global.paramHandler->Get<AudioParameterInt>(0, "OSC_OFFSET")));
+	addAndMakeVisible(offsetSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterInt>(0, "OSC_OFFSET")));
 	offsetSlider->setSliderStyle(Slider::Rotary);
 	offsetLabel.attachToComponent(offsetSlider, false);
-	addAndMakeVisible(detuneSlider = new ParameterSlider(*Global.paramHandler->Get<AudioParameterFloat>(0, "OSC_DETUNE")));
+	addAndMakeVisible(detuneSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(0, "OSC_DETUNE")));
 	detuneSlider->setSliderStyle(Slider::Rotary);
 	detuneLabel.attachToComponent(detuneSlider, false);
 
@@ -81,10 +81,7 @@ JuceDemoPluginAudioProcessorEditor::JuceDemoPluginAudioProcessorEditor(JuceDemoP
 	setResizeLimits(180 * 4, 330, 1024, 700);
 
 	// set our component's initial size to be the last one that was stored in the filter's settings
-	setSize(owner.lastUIWidth,
-		owner.lastUIHeight);
-
-	updateTrackProperties();
+	setSize(720,330);
 
 	// start a timer which will keep our timecode display updated
 	startTimerHz(30);
@@ -120,30 +117,22 @@ void JuceDemoPluginAudioProcessorEditor::resized()
 	waveType.setBounds(r.removeFromTop(100));
 	cc.setBounds(r.removeFromTop(300));
 
-	getProcessor().lastUIWidth = getWidth();
-	getProcessor().lastUIHeight = getHeight();
 }
 
 //==============================================================================
 void JuceDemoPluginAudioProcessorEditor::timerCallback()
 {
-	AudioParameterInt* wt = Global.paramHandler->Get<AudioParameterInt>(0, "WAVE_TYPE");
+	AudioParameterInt* wt = Global->paramHandler->Get<AudioParameterInt>(0, "WAVE_TYPE");
 	waveType.setSelectedId(*wt + 1);
-	updateTimecodeDisplay(getProcessor().lastPosInfo);
+	
 }
 void JuceDemoPluginAudioProcessorEditor::hostMIDIControllerIsAvailable(bool controllerIsAvailable)
 {
 	midiKeyboard.setVisible(!controllerIsAvailable);
 }
 
-void JuceDemoPluginAudioProcessorEditor::updateTrackProperties()
-{
-	auto trackColour = getProcessor().trackProperties.colour;
-	auto& lf = getLookAndFeel();
+void JuceDemoPluginAudioProcessorEditor::updateTrackProperties(){
 
-	backgroundColour = (trackColour == Colour() ? lf.findColour(ResizableWindow::backgroundColourId)
-		: trackColour.withAlpha(1.0f).withBrightness(0.266f));
-	repaint();
 }
 
 //==============================================================================
@@ -200,7 +189,7 @@ void JuceDemoPluginAudioProcessorEditor::updateTimecodeDisplay(AudioPlayHead::Cu
 void JuceDemoPluginAudioProcessorEditor::comboBoxChanged(ComboBox * comboBoxThatHasChanged)
 {
 	//Race with timer
-	AudioParameterInt* wt = Global.paramHandler->Get<AudioParameterInt>(0, "WAVE_TYPE");
+	AudioParameterInt* wt = Global->paramHandler->Get<AudioParameterInt>(0, "WAVE_TYPE");
 	if (waveType.getSelectedId() != 0)
 		*wt = waveType.getSelectedId() - 1;
 }

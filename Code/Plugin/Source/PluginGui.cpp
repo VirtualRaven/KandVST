@@ -1,9 +1,9 @@
 
 
 #include "PluginProcessor.h"
-#include "PluginGui.h";
+#include "PluginGui.h"
 //==============================================================================
-PluginGUI::PluginGUI(JuceDemoPluginAudioProcessor& owner)
+PluginGUI::PluginGUI(PluginProcessor& owner)
     : AudioProcessorEditor (owner),
 	__tabComponent(TabbedButtonBar::Orientation::TabsAtTop),
 	__keyboard(owner.keyboardState,MidiKeyboardComponent::Orientation::horizontalKeyboard)

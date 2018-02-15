@@ -8,7 +8,7 @@ ExampleEffect::ExampleEffect(int ID,double sampleRate):
 	__delayBuffer(2,sampleRate/4), //1/6 sec echo 
 	__delayPos(0)
 {
-	__delayMultiplier = Global.paramHandler->Get<AudioParameterFloat>(ID, "EX_DELAYMULTI");
+	__delayMultiplier = Global->paramHandler->Get<AudioParameterFloat>(ID, "EX_DELAYMULTI");
 
 	for (size_t i = 0; i < __delayBuffer.getNumSamples(); i++)
 	{
@@ -25,7 +25,7 @@ ExampleEffect::~ExampleEffect()
 
 void ExampleEffect::RegisterParameters(int ID)
 {
-	Global.paramHandler->RegisterFloat(ID, "EX_DELAYMULTI", "Delay", 0.0f, 1.0f, 0.2f);
+	Global->paramHandler->RegisterFloat(ID, "EX_DELAYMULTI", "Delay", 0.0f, 1.0f, 0.2f);
 }
 
 template<typename T>

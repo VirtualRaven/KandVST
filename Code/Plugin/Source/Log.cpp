@@ -11,7 +11,7 @@ Log::Log(std::string filename):
 
 Log::~Log()
 {
-	__file.close();
+	//__file.close();
 }
 
 template<typename T>
