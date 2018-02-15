@@ -6,9 +6,9 @@
 #include "WavetableOsc.h"
 #include "ExampleEffect.h"
 #include "OscillatorMixer.h"
-class Pipeline
-{
 
+class Pipeline 
+{
 
 private:
 	double __rate;
@@ -16,8 +16,8 @@ private:
 	OscillatorMixer __osc;
 
 	ExampleEffect __delay;
+	bool _active;
 public:
-
 
 	bool isActive();
 	void noteCommand(int offset,

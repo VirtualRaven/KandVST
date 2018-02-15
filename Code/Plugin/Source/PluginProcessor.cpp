@@ -1,7 +1,7 @@
 #include "PluginProcessor.h"
 #include "PluginGUI.h"
 #include "IWavetable.h"
-
+#include "OscillatorMixer.h"
 AudioProcessor* JUCE_CALLTYPE createPluginFilter();
 
 GLOBAL * Global;
@@ -120,7 +120,6 @@ void PluginProcessor::process (AudioBuffer<FloatType>& buffer,
 
     for (int i = getTotalNumInputChannels(); i < getTotalNumOutputChannels(); ++i)
         buffer.clear (i, 0, numSamples);
-
 }
 
 AudioProcessorEditor* PluginProcessor::createEditor()
