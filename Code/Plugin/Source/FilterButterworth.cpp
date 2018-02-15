@@ -7,8 +7,8 @@ FilterButterworth::FilterButterworth(int ID, double sampleRate, String parameter
 	__fs = sampleRate;
 	__prevFc = -1;
 	__sqrt2 = sqrt(2);
-	lpFrequency = Global.paramHandler->Get<AudioParameterFloat>(ID, parameterId);
-	Global.paramHandler->RegisterFloat(ID, parameterId, parameterLabel, 1.0f, 20000.0f, 400.0f);
+	lpFrequency = Global->paramHandler->Get<AudioParameterFloat>(ID, parameterId);
+	Global->paramHandler->RegisterFloat(ID, parameterId, parameterLabel, 1.0f, 20000.0f, 400.0f);
 }
 
 

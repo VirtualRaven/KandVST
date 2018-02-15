@@ -8,6 +8,7 @@
 #include "Global.h"
 #include "TemplateHelper.h"
 #include "OscillatorMixer.h"
+#include "ParameterHandler.h"
 
 class PluginProcessor  : public AudioProcessor
 {
@@ -59,7 +60,6 @@ private:
     void process (AudioBuffer<FloatType>& buffer, MidiBuffer& midiMessages);
 
 	PipelineManager* __pipManager;
-	ParameterHandler __paramHandler;
 
     Synthesiser synth;
     static BusesProperties getBusesProperties();

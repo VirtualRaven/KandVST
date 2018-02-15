@@ -26,8 +26,6 @@ AudioParameterFloat * ParameterHandler::RegisterFloat(int iid, String id, String
 	__owner->addParameter(tmp);
 	__floatParams[idString]=tmp;
 
-	Global.log->Write(idString);
-	Global.log->Write("\n");
 
 	return tmp;
 }
@@ -41,10 +39,6 @@ AudioParameterInt * ParameterHandler::RegisterInt(int iid, String id, String lab
 	auto tmp = new AudioParameterInt(idString, label, minValue, maxValue, defaultvalue);
 	__owner->addParameter(tmp);
 	__intParams[idString] = tmp;
-
-	Global.log->Write(idString);
-	Global.log->Write("\n");
-
 	return tmp;
 }
 
@@ -57,10 +51,6 @@ AudioParameterBool * ParameterHandler::RegisterBool(int iid, String id, String l
 	auto tmp = new AudioParameterBool(idString, label, defaultvalue);
 	__owner->addParameter(tmp);
 	__boolParams[idString] = tmp;
-
-	Global.log->Write(idString);
-	Global.log->Write("\n");
-
 	return tmp;
 }
 
@@ -74,10 +64,6 @@ AudioParameterChoice * ParameterHandler::RegisterChoice(int iid, String id, Stri
 	auto tmp = new AudioParameterChoice(idString, label, choices, defaultItemIndex);
 	__owner->addParameter(tmp);
 	__choiceParams[idString] = tmp;
-
-	Global.log->Write(idString);
-	Global.log->Write("\n");
-
 	return tmp;
 }
 AudioParameterFloat * ParameterHandler::GetFloat(String id)

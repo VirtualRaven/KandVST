@@ -8,7 +8,7 @@
 class Log 
 {
 private:
-	JUCE_LEAK_DETECTOR(Log);
+	
 	std::mutex __fileLock;
 	std::ofstream __file;
 public:
@@ -17,6 +17,7 @@ public:
 
 	Log(std::string filename);
 	~Log();
+	JUCE_LEAK_DETECTOR(Log);
 };
 
 #endif

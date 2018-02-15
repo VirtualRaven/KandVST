@@ -2,7 +2,6 @@
 #define PARAMETER_HANDLER_H
 #include "../JuceLibraryCode/JuceHeader.h"
 #include <map>
-#include "Global.h"
 #include "Log.h"
 class ParameterHandler
 {
@@ -28,8 +27,9 @@ public:
 	std::map<String,T*>* GetAll();
 	AudioParameterFloat* GetFloat(String id);
 	std::map<String, AudioProcessorParameterWithID*>* GetParameters();
-
+	JUCE_LEAK_DETECTOR(ParameterHandler);
 };
+
 
 #endif //PARAMETER_HANDLER_H
 

@@ -4,36 +4,32 @@
 
 AudioProcessor* JUCE_CALLTYPE createPluginFilter();
 
-GLOBAL Global;
+GLOBAL * Global;
 //==============================================================================
 PluginProcessor::PluginProcessor()
-    : AudioProcessor (getBusesProperties()),
-	__paramHandler(*this)
+    : AudioProcessor (getBusesProperties())
 {
 	__pipManager = nullptr;
-	Global = GLOBAL();
-	Global.paramHandler = &__paramHandler;
-	Global.log = new Log("log.txt");
+	Global = new GLOBAL();
+	Global->paramHandler=  new ParameterHandler(*this);
+	Global->log = new Log("log.txt");
 
 	setParameters<int, EnvelopeGenerator, ExampleEffect, WavetableOsc, OscillatorMixer>({ {0,1,2,3},{0},{0,1,2,3},{ 0 } });
 
 
-	*(Global.paramHandler->Get<AudioParameterBool>(0, "OSC_MIX_EN")) = 1; //Enable default oscillator
+	*(Global->paramHandler->Get<AudioParameterBool>(0, "OSC_MIX_EN")) = 1; //Enable default oscillator
 
 }
 
 
 PluginProcessor::~PluginProcessor()
 {
-	//delete Global.log;
-	//delete Global.paramHandler;
-	
-
+	delete Global;
 }
 
 void PluginProcessor::reset()
 {
-	Global.log->Write("Reset\n");
+	Global->log->Write("Reset\n");
 }
 
 

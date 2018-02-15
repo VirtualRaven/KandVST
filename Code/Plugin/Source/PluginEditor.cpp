@@ -55,13 +55,13 @@ JuceDemoPluginAudioProcessorEditor::JuceDemoPluginAudioProcessorEditor(PluginPro
 
 
 
-	addAndMakeVisible(octaveSlider = new ParameterSlider(*Global.paramHandler->Get<AudioParameterInt>(0, "OSC_OCTAVE")));
+	addAndMakeVisible(octaveSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterInt>(0, "OSC_OCTAVE")));
 	octaveSlider->setSliderStyle(Slider::Rotary);
 	octaveLabel.attachToComponent(octaveSlider, false);
-	addAndMakeVisible(offsetSlider = new ParameterSlider(*Global.paramHandler->Get<AudioParameterInt>(0, "OSC_OFFSET")));
+	addAndMakeVisible(offsetSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterInt>(0, "OSC_OFFSET")));
 	offsetSlider->setSliderStyle(Slider::Rotary);
 	offsetLabel.attachToComponent(offsetSlider, false);
-	addAndMakeVisible(detuneSlider = new ParameterSlider(*Global.paramHandler->Get<AudioParameterFloat>(0, "OSC_DETUNE")));
+	addAndMakeVisible(detuneSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(0, "OSC_DETUNE")));
 	detuneSlider->setSliderStyle(Slider::Rotary);
 	detuneLabel.attachToComponent(detuneSlider, false);
 
@@ -122,7 +122,7 @@ void JuceDemoPluginAudioProcessorEditor::resized()
 //==============================================================================
 void JuceDemoPluginAudioProcessorEditor::timerCallback()
 {
-	AudioParameterInt* wt = Global.paramHandler->Get<AudioParameterInt>(0, "WAVE_TYPE");
+	AudioParameterInt* wt = Global->paramHandler->Get<AudioParameterInt>(0, "WAVE_TYPE");
 	waveType.setSelectedId(*wt + 1);
 	
 }
@@ -189,7 +189,7 @@ void JuceDemoPluginAudioProcessorEditor::updateTimecodeDisplay(AudioPlayHead::Cu
 void JuceDemoPluginAudioProcessorEditor::comboBoxChanged(ComboBox * comboBoxThatHasChanged)
 {
 	//Race with timer
-	AudioParameterInt* wt = Global.paramHandler->Get<AudioParameterInt>(0, "WAVE_TYPE");
+	AudioParameterInt* wt = Global->paramHandler->Get<AudioParameterInt>(0, "WAVE_TYPE");
 	if (waveType.getSelectedId() != 0)
 		*wt = waveType.getSelectedId() - 1;
 }

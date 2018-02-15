@@ -65,15 +65,15 @@ bool ConsoleComponent::keyPressed(const KeyPress & key, Component * originatingC
 			__output.setText(__buffer.str());
 		}
 		if (s == "list parameters") {
-			auto floats = Global.paramHandler->GetAll<AudioParameterFloat>();
+			auto floats = Global->paramHandler->GetAll<AudioParameterFloat>();
 			for (std::map<String, AudioParameterFloat* >::iterator it = (*floats).begin(); it != (*floats).end(); ++it) {
 				__buffer << it->first << " = " << *(it->second) << "\n";
 			}
-			auto ints = Global.paramHandler->GetAll<AudioParameterInt>();
+			auto ints = Global->paramHandler->GetAll<AudioParameterInt>();
 			for (std::map<String, AudioParameterInt* >::iterator it = (*ints).begin(); it != (*ints).end(); ++it) {
 				__buffer << it->first << " = " << *(it->second) << "\n";
 			}
-			auto bools= Global.paramHandler->GetAll<AudioParameterBool>();
+			auto bools= Global->paramHandler->GetAll<AudioParameterBool>();
 			for (std::map<String, AudioParameterBool* >::iterator it = (*bools).begin(); it != (*bools).end(); ++it) {
 				__buffer << it->first << " = " << *(it->second) << "\n";
 			}
@@ -96,8 +96,8 @@ void setParam(String id, bool value) {
 
 }
 void ConsoleComponent::setParam(String id, std::string value) {
-	if (Global.paramHandler->GetAll<AudioParameterFloat>()->operator[](id) != nullptr) {
-		AudioParameterFloat* fp = Global.paramHandler->GetAll<AudioParameterFloat>()->operator[](id);
+	if (Global->paramHandler->GetAll<AudioParameterFloat>()->operator[](id) != nullptr) {
+		AudioParameterFloat* fp = Global->paramHandler->GetAll<AudioParameterFloat>()->operator[](id);
 		if (fp == nullptr)
 			return;
 		(*fp) = stof(value);
@@ -105,19 +105,19 @@ void ConsoleComponent::setParam(String id, std::string value) {
 		__output.setText(__buffer.str());
 		
 	}
-	else if (Global.paramHandler->GetAll<AudioParameterInt>()->operator[](id) != nullptr) {
-		Global.paramHandler->GetAll<AudioParameterFloat>()->erase(id);
-		AudioParameterInt* fp= Global.paramHandler->GetAll<AudioParameterInt>()->operator[](id);
+	else if (Global->paramHandler->GetAll<AudioParameterInt>()->operator[](id) != nullptr) {
+		Global->paramHandler->GetAll<AudioParameterFloat>()->erase(id);
+		AudioParameterInt* fp= Global->paramHandler->GetAll<AudioParameterInt>()->operator[](id);
 		if (fp == nullptr)
 			return;
 		(*fp) = stoi(value);
 		__buffer << id << " = " << (*fp) << "\n";
 		__output.setText(__buffer.str());
 	}
-	else if (Global.paramHandler->GetAll<AudioParameterBool>()->operator[](id) != nullptr) {
-		Global.paramHandler->GetAll<AudioParameterFloat>()->erase(id);
-		Global.paramHandler->GetAll<AudioParameterInt>()->erase(id);
-		AudioParameterBool* fp = Global.paramHandler->GetAll<AudioParameterBool>()->operator[](id);
+	else if (Global->paramHandler->GetAll<AudioParameterBool>()->operator[](id) != nullptr) {
+		Global->paramHandler->GetAll<AudioParameterFloat>()->erase(id);
+		Global->paramHandler->GetAll<AudioParameterInt>()->erase(id);
+		AudioParameterBool* fp = Global->paramHandler->GetAll<AudioParameterBool>()->operator[](id);
 		if (fp == nullptr)
 			return;
 		(*fp) = stoi(value);
