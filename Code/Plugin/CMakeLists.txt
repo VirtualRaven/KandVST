@@ -123,6 +123,8 @@ jucer_project_files("KandVST"
   .         .         .         "Source/FilterLP.h"
   x         .         .         "Source/FilterHP.cpp"
   .         .         .         "Source/FilterHP.h"
+  x         .         .         "Source/WhiteNoiseGenerator.cpp"
+  .         .         .         "Source/WhiteNoiseGenerator.h"
 )
 
 jucer_project_module(
