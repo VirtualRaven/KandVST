@@ -61,7 +61,7 @@ double EnvelopeGenerator::GenerateNextStep(bool sustain)
 		__state = 0;
 		break;
 	}
-	return __amplitude;
+	return __amplitude*__velMulti;
 }
 
 void EnvelopeGenerator::RegisterParameters(int ID)
@@ -72,8 +72,10 @@ void EnvelopeGenerator::RegisterParameters(int ID)
 	Global->paramHandler->RegisterFloat(ID, "ENV_RELEASE", "Release", 0.1f, 2.0f, 0.2f);
 }
 
-void EnvelopeGenerator::Reset() {
+void EnvelopeGenerator::Reset(uint8 vel) {
 	__state = 0;
+	__vel = vel;
+	__velMulti = vel / 127.0;
 }
 
 
@@ -99,7 +101,9 @@ EnvelopeGenerator::EnvelopeGenerator(int ID,double sampleRate):
 	__sDecay(0.1),
 	__sRelease(0.3),
 	__sSustain(1.0),
-	__amplitude(0)
+	__amplitude(0),
+	__vel(127),
+	__velMulti(1.0)
 {
 	__pattack =	 Global->paramHandler->Get<AudioParameterFloat>(__ID,"ENV_ATTACK");
 	__pdecay =	 Global->paramHandler->Get<AudioParameterFloat>(__ID,"ENV_DECAY");

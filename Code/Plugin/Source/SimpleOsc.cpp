@@ -24,7 +24,7 @@ void SimpleOsc::ProccesNoteCommand(int note, uint8 vel, bool isOn)
 		__angle = 0;
 		__delta = MidiMessage::getMidiNoteInHertz(note) * 2 * juce::MathConstants<double>().pi  / __sampleRate;
 		__note = note;
-		__envelope.Reset();
+		__envelope.Reset(vel);
 	}
 
 	__sustain = isOn; //Right now we ignore sustain pedal

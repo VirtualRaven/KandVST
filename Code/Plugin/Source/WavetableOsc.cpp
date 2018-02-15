@@ -44,7 +44,7 @@ void WavetableOsc::ProccesNoteCommand(int note, uint8 vel, bool isOn)
 		__frequency = MidiMessage::getMidiNoteInHertz(note);
 		//__phase = 0.0;
 		__note = note;
-		__envelope.Reset();
+		__envelope.Reset(vel);
 		__sustain = true; //Right now we ignore sustain pedal
 	}
 	else if (!isOn && note == __note) {
