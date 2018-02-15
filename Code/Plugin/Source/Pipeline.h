@@ -14,7 +14,7 @@ private:
 	double __rate;
 	//WavetableOsc __osc;
 	OscillatorMixer __osc;
-
+	int __note;
 	ExampleEffect __delay;
 	bool _active;
 public:
@@ -28,7 +28,7 @@ public:
 
 
 	Pipeline(double rate);
-
+	int getNoteNumber();
 	template<typename T>
 	void render_block(AudioBuffer<T>& buffer);
 

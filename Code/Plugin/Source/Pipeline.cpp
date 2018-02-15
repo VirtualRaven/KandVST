@@ -10,8 +10,16 @@ Pipeline::Pipeline(double rate) :
 {
 }
 
+int Pipeline::getNoteNumber()
+{
+	return __note;
+}
+
 void Pipeline::noteCommand(int offset, int note, uint8 vel, bool isOn) 
 {
+	if (isOn)
+		__note = note;
+
 	__osc.AddNoteCommand(offset,note, vel, isOn);
 	_active = isOn;
 }
@@ -24,7 +32,7 @@ Pipeline::~Pipeline()
 
 
 bool Pipeline::isActive() {
-	return _active;
+	return __osc.isActive();
 }
 
 template<typename T>

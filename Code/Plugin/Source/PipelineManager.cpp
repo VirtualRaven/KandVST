@@ -32,31 +32,48 @@ void PipelineManager::genSamples(AudioBuffer<T>& buff, MidiBuffer & midiMessages
 		pipBuff.push_back(AudioBuffer<T>(2, buff.getNumSamples()));
 		pipBuff[i].applyGain(0.0);
 	}
-	std::list<Pipeline>::iterator pipIt;
+	std::vector<Pipeline>::iterator pipIt;
 	auto it = juce::MidiBuffer::Iterator(midiMessages);
 	int pos;
 	juce::MidiMessage tmp;
+	it.setNextSamplePosition(0);
 	while (it.getNextEvent(tmp, pos)) {
+
+		if (tmp.isNoteOnOrOff() && tmp.getNoteNumber() == 65) {
+			if (tmp.isNoteOn())
+				Global->log->Write("-----------------------------------------------------\n");
+		}
+		else
+			Global->log->Write(String(pos) + String(" : ") + tmp.getDescription() + String("\n"));
+	
+
+	
 		if (tmp.isNoteOnOrOff()) {
 			// finds or create pipeline
 
-			
+			bool foundPip = false;
 			for (pipIt = pipList.begin(); pipIt != pipList.end(); pipIt++) {
-				if (pipIt->isActive()) {
-					continue;
+				if (pipIt->getNoteNumber() == tmp.getNoteNumber()) {
+						pipIt->noteCommand(pos, tmp.getNoteNumber(), tmp.getVelocity(), tmp.isNoteOn());
+						foundPip = true;
+						break;
 				}
-				else {	
-					tmp.getNoteNumber();
-					pipIt->noteCommand(pos,tmp.getNoteNumber(), tmp.getVelocity(), tmp.isNoteOn());
-					break;
+			}
+			
+			if (foundPip)
+				continue;
+
+			for (pipIt = pipList.begin(); pipIt != pipList.end(); pipIt++) {
+				if (!pipIt->isActive()) {
+						pipIt->noteCommand(pos, tmp.getNoteNumber(), tmp.getVelocity(), tmp.isNoteOn());
+						break;
 				}
 			}
 		}
-	
+
 		else {
 		}
 	}
-
 	//AudioBuffer<T> tmpBuff = AudioBuffer<T>(2, buff.getNumSamples());
 	
 	int buffCount = 0;

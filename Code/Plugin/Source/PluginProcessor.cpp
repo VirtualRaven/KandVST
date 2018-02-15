@@ -114,7 +114,6 @@ void PluginProcessor::process (AudioBuffer<FloatType>& buffer,
                                             MidiBuffer& midiMessages)
 {
     const int numSamples = buffer.getNumSamples();
-
     keyboardState.processNextMidiBuffer (midiMessages, 0, numSamples, true);
 	__pipManager->genSamples(buffer, midiMessages);
 

@@ -12,7 +12,7 @@ class PipelineManager
 private:
 	double __sampleRate;
 	int   __maybeMaxBuff;
-	std::list<Pipeline> pipList;
+	std::vector<Pipeline> pipList;
 	ThreadPool pool;
 public:
 	PipelineManager(double rate, int maxBuffHint);
