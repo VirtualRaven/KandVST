@@ -1,24 +1,28 @@
-
 #include "OscillatorPageComponent.h"
 
-OscillatorComponent::~OscillatorComponent()
+OscillatorPageComponent::~OscillatorPageComponent()
 {
 }
 
 
-OscillatorComponent::OscillatorComponent(int ID):
+OscillatorPageComponent::OscillatorPageComponent(int ID):
 IVSTParameters(ID),
 __envComponent(ID)
+
 {
 	addAndMakeVisible(__envComponent);
+	addAndMakeVisible(__oscillator);
 }
 
-void OscillatorComponent::paint(Graphics& g){
+void OscillatorPageComponent::paint(Graphics& g){
 	g.setColour(Colour::fromRGB(56, 56, 56));
 	g.fillAll();
 }
 
-void OscillatorComponent::resized(){
-	__envComponent.setBounds(getLocalBounds());
+void OscillatorPageComponent::resized(){
+	Rectangle<int> env(320,50,300, 200);
+	__envComponent.setBounds(env);
+
+	__oscillator.setBounds(getLocalBounds());
 
 }

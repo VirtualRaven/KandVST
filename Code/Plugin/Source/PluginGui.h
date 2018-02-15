@@ -19,6 +19,7 @@ private:
 	
 	TabbedComponent __tabComponent;
 	MidiKeyboardComponent __keyboard;
+
     //==============================================================================
 	PluginProcessor& getProcessor() const
     {

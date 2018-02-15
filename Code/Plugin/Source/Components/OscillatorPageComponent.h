@@ -1,15 +1,18 @@
-#ifndef OSCILLATOR_COMPONENT_H
-#define OSCILLATOR_COMPONENT_H
+#ifndef OSCILLATOR_PAGE_COMPONENT_H
+#define OSCILLATOR_PAGE_COMPONENT_H
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "../IVSTParameters.h"
 #include "EnvelopeComponent.h"
+#include "ParameterSlider.h"
+#include "../Global.h"
+#include "OscillatorComponent.h"
 
-class OscillatorComponent  : public Component, private IVSTParameters
+class OscillatorPageComponent  : public Component, private IVSTParameters
 {
 public:
     //==============================================================================
-    OscillatorComponent (int ID);
-    ~OscillatorComponent();
+    OscillatorPageComponent (int ID);
+    ~OscillatorPageComponent();
 
     //==============================================================================
 
@@ -19,8 +22,10 @@ public:
 private:
     //==============================================================================
 	EnvelopeComponent __envComponent;
-
+	OscillatorComponent __oscillator;
+    ComboBox __oscOctave;
+        
     //==============================================================================
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OscillatorComponent)
+    
 };
 #endif

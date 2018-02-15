@@ -6,7 +6,14 @@ InformationComponent::~InformationComponent()
 }
 
 InformationComponent::InformationComponent(){
-
+    addAndMakeVisible(__version);
+    Font f;
+    f.setHeight(20.0f);
+    __version.setFont(f);
+    __version.setText("Version 0.1  2018", NotificationType::dontSendNotification);
+    addAndMakeVisible(__authors);
+    __authors.setFont(f);
+    __authors.setText("Anton, Andreas, Klas \nLukhas, Sarosh, Stas", NotificationType::dontSendNotification);
 }
 
 // variables
@@ -60,8 +67,21 @@ void InformationComponent::paint (Graphics& g){
     g.setColour(Colours::black);
     g.strokePath(myPath,PathStrokeType (0.8f));
 
+    // TEXT
+    // == Title
+    g.setColour(Colours::silver);
+    g.setFont(30.0f);
+    g.drawText("KANDVST",Rectangle<int>(x+10,y,w,50),Justification::centred,false);
+
 
 }
 void InformationComponent::resized(){
     //set the bounds of any child components here.
+    Rectangle<int> r (x,y,w,h);
+    r.removeFromTop(60);
+    __version.setBounds(r);
+    __version.setCentrePosition(midX,r.getY()+5.0f);
+    r.removeFromTop(40);
+    __authors.setBounds(r);
+    __authors.setCentrePosition(midX,r.getY()+5.0f);
 }
