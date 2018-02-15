@@ -10,7 +10,6 @@ PipelineManager::PipelineManager(double rate, int maxBuffHint) :
 	__sampleRate(rate),
 	__maybeMaxBuff(maxBuffHint)
 {
-	ThreadPool &pool = ThreadPool();
 	for (size_t i = 0; i < 16; i++)
 	{
 		pipList.push_back(Pipeline(rate));
