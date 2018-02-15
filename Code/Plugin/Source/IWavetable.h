@@ -10,8 +10,8 @@ public:
 	{
 		return __length;
 	}
-	virtual double getSample(int phase, double frequency) const = 0;
-	virtual float getSample(int phase, float frequency) const = 0 ;
+	virtual double getSample(double phase, double frequency) const = 0;
+	virtual float getSample(double phase, float frequency) const = 0 ;
 };
 
 enum WAVE_TYPE : unsigned int {

@@ -8,6 +8,7 @@
 class OscillatorMixer: public IGenerator, private IVSTParameters
 {
 private:
+	bool __active;
 	template<typename T>
 	void __RenderBlock(AudioBuffer<T>& buffer);
 	std::vector<std::tuple<WavetableOsc, AudioParameterFloat*,AudioParameterBool*>>  __oscillators;
@@ -15,6 +16,7 @@ public:
 	OscillatorMixer(int ID,double sampleRate);
 	~OscillatorMixer();
 
+	bool isActive();
 	// Inherited via IGenerator
 	virtual void RenderBlock(AudioBuffer<float>& buffer) override
 	{

@@ -1,7 +1,7 @@
 #include "PluginProcessor.h"
 #include "PluginGUI.h"
 #include "IWavetable.h"
-
+#include "OscillatorMixer.h"
 AudioProcessor* JUCE_CALLTYPE createPluginFilter();
 
 GLOBAL * Global;
@@ -14,7 +14,7 @@ PluginProcessor::PluginProcessor()
 	Global->paramHandler=  new ParameterHandler(*this);
 	Global->log = new Log("log.txt");
 
-	setParameters<int, EnvelopeGenerator, ExampleEffect, WavetableOsc, OscillatorMixer>({ {0,1,2,3},{0},{0,1,2,3},{ 0 } });
+	setParameters<int, EnvelopeGenerator, ExampleEffect, WavetableOsc, OscillatorMixer, LFO>({ {0,1,2,3},{0},{0,1,2,3},{ 0 },{0,1,2,3} });
 
 
 	*(Global->paramHandler->Get<AudioParameterBool>(0, "OSC_MIX_EN")) = 1; //Enable default oscillator
@@ -114,13 +114,11 @@ void PluginProcessor::process (AudioBuffer<FloatType>& buffer,
                                             MidiBuffer& midiMessages)
 {
     const int numSamples = buffer.getNumSamples();
-
     keyboardState.processNextMidiBuffer (midiMessages, 0, numSamples, true);
 	__pipManager->genSamples(buffer, midiMessages);
 
     for (int i = getTotalNumInputChannels(); i < getTotalNumOutputChannels(); ++i)
         buffer.clear (i, 0, numSamples);
-
 }
 
 AudioProcessorEditor* PluginProcessor::createEditor()

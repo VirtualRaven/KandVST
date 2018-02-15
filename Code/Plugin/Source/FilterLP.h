@@ -20,6 +20,9 @@ private:
 public:
 	FilterLP(int ID, double sampleRate, String parameterId);
 	~FilterLP();
+
+	static void RegisterParameters(int ID);
+
 };
 
 

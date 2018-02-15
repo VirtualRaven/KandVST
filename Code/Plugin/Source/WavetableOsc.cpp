@@ -7,7 +7,8 @@ WavetableOsc::WavetableOsc(int ID,double sampleRate) :
 	__note(0),
 	__wavetable(tables[WAVE_TYPE::SAW]),
 	__phase(0),
-	__frequency(0)
+	__frequency(0),
+	__lfo(120,sampleRate, __ID)
 {
 	__waveType = Global->paramHandler->Get<AudioParameterInt>(__ID, "WAVE_TYPE");
 	__octave = Global->paramHandler->Get<AudioParameterInt>(__ID, "OSC_OCTAVE");
@@ -41,7 +42,7 @@ void WavetableOsc::ProccesNoteCommand(int note, uint8 vel, bool isOn)
 	if (isOn)
 	{
 		__frequency = MidiMessage::getMidiNoteInHertz(note);
-		__phase = 0.0;
+		//__phase = 0.0;
 		__note = note;
 		__envelope.Reset();
 		__sustain = true; //Right now we ignore sustain pedal
@@ -69,17 +70,15 @@ void WavetableOsc::RegisterParameters(int ID)
 	Global->paramHandler->RegisterFloat(ID, "OSC_SAW", "Saw", 0.0f, 1.0f, 0.0f);
 	Global->paramHandler->RegisterFloat(ID, "OSC_TRI", "Tri", 0.0f, 1.0f, 0.0f);
 
-
 }
 
 
 template<typename T>
 void WavetableOsc::__RenderBlock(AudioBuffer<T>& buffer) {
-	double tmpFreq = __frequency * pow(2.0, *__octave);
-	tmpFreq *= (*__offset) == 0 ? 1 : pow(2.0, (*__offset) / 12.0);
-	tmpFreq *= pow(2.0, (*__detune) / 12.0);
+	
+	
 	setWaveform(toWAVE_TYPE(*__waveType));
-	double inc = __wavetable->getLength() * tmpFreq / __sampleRate;
+
 
 	auto nextEvent = this->getNextEventOffset();
 	for (size_t i = 0; i < buffer.getNumSamples(); i++)
@@ -88,12 +87,18 @@ void WavetableOsc::__RenderBlock(AudioBuffer<T>& buffer) {
 			nextEvent = this->HandleEvent();
 		}
 
+		double tmpFreq = __frequency * pow(2.0, *__octave + (((*__offset) + (*__detune))/12.0));
+
+		__lfo.apply(tmpFreq);
+		double inc = __wavetable->getLength() * tmpFreq / __sampleRate;
+
 		T envStep = __envelope.GenerateNextStep(__sustain);;
 
 		T samp = tables[WAVE_TYPE::SINE]->getSample(__phase, tmpFreq)*envStep* (*__sinAmp);
 		samp += tables[WAVE_TYPE::SQUARE]->getSample(__phase, tmpFreq)*envStep* (*__sqAmp);
 		samp += tables[WAVE_TYPE::SAW]->getSample(__phase, tmpFreq)*envStep* (*__sawAmp);
 		samp += tables[WAVE_TYPE::TRI]->getSample(__phase, tmpFreq)*envStep* (*__triAmp);
+
 		__phase += inc;
 
 		for(int j = 0; j < buffer.getNumChannels(); j++)

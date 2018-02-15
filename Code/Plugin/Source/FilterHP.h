@@ -20,6 +20,8 @@ private:
 public:
 	FilterHP(int ID, double sampleRate, String parameterId);
 	~FilterHP();
+
+	static void RegisterParameters(int ID);
 };
 
 

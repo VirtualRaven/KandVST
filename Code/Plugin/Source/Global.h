@@ -1,9 +1,9 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
+#include "ParameterHandler.h"
 #include "Log.h"
 #include "../JuceLibraryCode/JuceHeader.h"
-class ParameterHandler;
 class GLOBAL {
 public:
 	ParameterHandler* paramHandler;

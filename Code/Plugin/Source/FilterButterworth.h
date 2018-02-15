@@ -40,8 +40,10 @@ protected:
 	AudioParameterFloat* lpFrequency;
 	
 public:
-	FilterButterworth(int ID, double sampleRate, String parameterLabel, String parameterId);
+	FilterButterworth(int ID, double sampleRate, String parameterId);
 	~FilterButterworth();
+
+	static void RegisterParameters(int ID, String parameterLabel, String parameterId);
 
 	// Inherited via IEffect
 	virtual void RenderBlock(AudioBuffer<float>& buffer) override 

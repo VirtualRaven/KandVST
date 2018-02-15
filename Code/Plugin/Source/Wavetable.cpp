@@ -19,14 +19,16 @@ SinWavetable::~SinWavetable()
 
 }
 template<typename T>
-T SinWavetable::__getSample(int idx, T frequency) const
+T SinWavetable::__getSample(double idx, T frequency) const
 {
-	return __table[idx % __length];
+	double diff = floor(idx) -idx;
+	int i = static_cast<int>(idx);
+	return __table[i % __length] * (1-diff) + __table[(i+1) % __length] * diff;
 }
 
 
-template double SinWavetable::__getSample(int idx, double frequency) const;
-template float SinWavetable::__getSample(int idx, float frequency) const;
+template double SinWavetable::__getSample(double idx, double frequency) const;
+template float SinWavetable::__getSample(double idx, float frequency) const;
 
 /*
 * Squarewave
@@ -63,14 +65,16 @@ SquareWavetable::~SquareWavetable()
 
 }
 template<typename T>
-T SquareWavetable::__getSample(int idx, T frequency) const
+T SquareWavetable::__getSample(double idx, T frequency) const
 {
-	int tableNr = floor(log2(frequency / 20)); // 20 = minimum frequency
+	int tableNr = frequency < 20 ? 0 : floor(log2(frequency / 20)); 
 	if (tableNr > __nrOfTables) tableNr = __nrOfTables-1;
-	return __tables[tableNr][idx % __length];
+	double diff = floor(idx) - idx;
+	int i = static_cast<int>(idx);
+	return __tables[tableNr][i % __length] * (1.0-diff) + __tables[tableNr][(i+1) % __length] * diff;
 }
-template double SquareWavetable::__getSample(int idx, double frequency) const;
-template float SquareWavetable::__getSample(int idx, float frequency) const;
+template double SquareWavetable::__getSample(double idx, double frequency) const;
+template float SquareWavetable::__getSample(double idx, float frequency) const;
 
 /*
  * Sawtoothwave
@@ -106,15 +110,17 @@ SawWavetable::~SawWavetable()
 
 }
 template<typename T>
-T SawWavetable::__getSample(int idx, T frequency) const
+T SawWavetable::__getSample(double idx, T frequency) const
 {
-	int tableNr = floor(log2(frequency / 20)); // 20 = minimum frequency
+	int tableNr = frequency < 20 ? 0 : floor(log2(frequency / 20));
 	if (tableNr > __nrOfTables) tableNr = __nrOfTables-1;
-	return __tables[tableNr][idx % __length];
+	double diff = floor(idx) - idx;
+	int i = static_cast<int>(idx);
+	return __tables[tableNr][i % __length] * (1.0 - diff) + __tables[tableNr][(i + 1) % __length] * diff;
 }
 
-template double SawWavetable::__getSample(int idx, double frequency) const;
-template float SawWavetable::__getSample(int idx, float frequency) const;
+template double SawWavetable::__getSample(double idx, double frequency) const;
+template float SawWavetable::__getSample(double idx, float frequency) const;
 
 /*
 * Trianglewave
@@ -151,15 +157,17 @@ TriangleWavetable::~TriangleWavetable()
 
 }
 template<typename T>
-T TriangleWavetable::__getSample(int idx, T frequency) const
+T TriangleWavetable::__getSample(double idx, T frequency) const
 {
-	int tableNr = floor(log2(frequency / 20)); // 20 = minimum frequency
+	int tableNr = frequency < 20 ? 0 : floor(log2(frequency / 20));
 	if (tableNr > __nrOfTables) tableNr = __nrOfTables-1;
-	return __tables[tableNr][idx % __length];
+	double diff = floor(idx) - idx;
+	int i = static_cast<int>(idx);
+	return __tables[tableNr][i % __length] * (1.0 - diff) + __tables[tableNr][(i + 1) % __length] * diff;
 }
 
-template double TriangleWavetable::__getSample(int idx, double frequency) const;
-template float TriangleWavetable::__getSample(int idx, float frequency) const;
+template double TriangleWavetable::__getSample(double idx, double frequency) const;
+template float TriangleWavetable::__getSample(double idx, float frequency) const;
 
 
 

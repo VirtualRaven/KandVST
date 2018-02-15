@@ -1,50 +1,98 @@
 #include "PipelineManager.h"
-
+#include "Pipeline.h"
+#include <iostream>     
+#include <iterator>     
+#include <list>         
+#include <thread>
 
 
 PipelineManager::PipelineManager(double rate, int maxBuffHint) :
- __sampleRate(rate),
- __maybeMaxBuff(maxBuffHint),
-__log(),
-pip(rate)
+	__sampleRate(rate),
+	__maybeMaxBuff(maxBuffHint)
 {
-#ifdef  PIPE_MIDI_LOG
-	__log.open(PIPE_MIDI_LOG, std::ofstream::trunc);
-	__log << "Midi log (" << rate << " : " << maxBuffHint << ")" << std::endl;
-#endif
-
+	ThreadPool &pool = ThreadPool();
+	for (size_t i = 0; i < 16; i++)
+	{
+		pipList.push_back(Pipeline(rate));
+	}
+	
 }
 
 
 PipelineManager::~PipelineManager()
 {
-	__log.close();
 }
 
 template<typename T>
 void PipelineManager::genSamples(AudioBuffer<T>& buff, MidiBuffer & midiMessages)
 {
+	std::vector<AudioBuffer<T>> pipBuff = std::vector<AudioBuffer<T>>();
+	for (size_t i = 0; i < 16; i++)
+	{
+		pipBuff.push_back(AudioBuffer<T>(2, buff.getNumSamples()));
+		pipBuff[i].applyGain(0.0);
+	}
+	std::vector<Pipeline>::iterator pipIt;
 	auto it = juce::MidiBuffer::Iterator(midiMessages);
 	int pos;
 	juce::MidiMessage tmp;
+	it.setNextSamplePosition(0);
 	while (it.getNextEvent(tmp, pos)) {
+
+		if (tmp.isNoteOnOrOff() && tmp.getNoteNumber() == 65) {
+			if (tmp.isNoteOn())
+				Global->log->Write("-----------------------------------------------------\n");
+		}
+		else
+			Global->log->Write(String(pos) + String(" : ") + tmp.getDescription() + String("\n"));
+	
+
+	
 		if (tmp.isNoteOnOrOff()) {
 			// finds or create pipeline
-			__log << tmp.getNoteNumber() << ": " << tmp.getVelocity() << std::endl;
-			pip.noteCommand(pos,tmp.getNoteNumber(), tmp.getVelocity(), tmp.isNoteOn());
+
+			bool foundPip = false;
+			for (pipIt = pipList.begin(); pipIt != pipList.end(); pipIt++) {
+				if (pipIt->getNoteNumber() == tmp.getNoteNumber()) {
+						pipIt->noteCommand(pos, tmp.getNoteNumber(), tmp.getVelocity(), tmp.isNoteOn());
+						foundPip = true;
+						break;
+				}
+			}
+			
+			if (foundPip)
+				continue;
+
+			for (pipIt = pipList.begin(); pipIt != pipList.end(); pipIt++) {
+				if (!pipIt->isActive()) {
+						pipIt->noteCommand(pos, tmp.getNoteNumber(), tmp.getVelocity(), tmp.isNoteOn());
+						break;
+				}
+			}
 		}
-	
+
 		else {
-		// broadcast
-			__log <<tmp.getDescription() << std::endl;
 		}
 	}
+	//AudioBuffer<T> tmpBuff = AudioBuffer<T>(2, buff.getNumSamples());
+	
+	int buffCount = 0;
+	for (pipIt = pipList.begin(); pipIt != pipList.end(); pipIt++) {
+		std::function<void()> f = [pipIt, &pipBuff,buffCount]() {
+				pipIt->render_block(pipBuff[buffCount]);
+		};
 
-	AudioBuffer<T> pipBuff = AudioBuffer<T>(2, buff.getNumSamples());
-	pipBuff.applyGain(0.0f);
-	pip.render_block<T>(pipBuff);
-	buff.addFrom(0, 0, pipBuff, 0, 0, buff.getNumSamples());
-	buff.addFrom(1, 0, pipBuff, 1, 0, buff.getNumSamples());
+		pool.addJob(f);
+		buffCount++;
+		
+	}
+	while (pool.getNumJobs()>0);
+	for (auto b : pipBuff)
+	{	
+		buff.addFrom(0, 0, b, 0, 0, buff.getNumSamples());
+		buff.addFrom(1, 0, b, 1, 0, buff.getNumSamples());
+	}
+	
 }
 
 template void PipelineManager::genSamples(AudioBuffer<double>& buff, MidiBuffer & midiMessages);

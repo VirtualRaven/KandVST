@@ -5,7 +5,8 @@
 OscillatorMixer::OscillatorMixer(int ID, double sampleRate):
 	IGenerator(sampleRate),
 	IVSTParameters(ID),
-	__oscillators()
+	__oscillators(),
+	__active(false)
 {
 	for (size_t i = 0; i < 4; i++)
 	{
@@ -18,6 +19,10 @@ OscillatorMixer::~OscillatorMixer()
 {
 }
 
+bool OscillatorMixer::isActive()
+{
+	return __active;
+}
 template<typename T>
 void OscillatorMixer::__RenderBlock(AudioBuffer<T>& buffer)
 {
@@ -32,10 +37,18 @@ void OscillatorMixer::__RenderBlock(AudioBuffer<T>& buffer)
 			}
 		}
 	}
+
+	if (buffer.getMagnitude(0,buffer.getNumSamples()) < 0.0001)
+		__active = false;
+	else
+		__active = true;
 }
 
 
 void OscillatorMixer::AddNoteCommand(int offset, int note, uint8 vel, bool isOn) {
+	if (isOn)
+		__active = true;
+
 	for (auto&& elem : __oscillators)
 	{
 		if (*(std::get<2>(elem))) {

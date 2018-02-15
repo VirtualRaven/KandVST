@@ -31,5 +31,13 @@
 *.out
 *.app
 
+*.db
+*.ipch
+*.sln
+*.vcxproj
+*.filters
+
+.vs/
+
 Code/Plugin/build
 Code/.vscode/c_cpp_properties.json
