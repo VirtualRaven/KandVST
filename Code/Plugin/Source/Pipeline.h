@@ -5,7 +5,7 @@
 #include "EnvelopeGenerator.h"
 #include "WavetableOsc.h"
 #include "ExampleEffect.h"
-class Pipeline //public ThreadPoolJob
+class Pipeline 
 {
 	
 private:

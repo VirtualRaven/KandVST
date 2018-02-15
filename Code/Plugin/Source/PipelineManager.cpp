@@ -22,6 +22,7 @@ PipelineManager::PipelineManager(double rate, int maxBuffHint) :
 	ThreadPool &pool = ThreadPool();
 	for (size_t i = 0; i < 16; i++)
 	{
+
 		pipList.push_back(Pipeline(rate));
 	}
 	
@@ -36,6 +37,11 @@ PipelineManager::~PipelineManager()
 template<typename T>
 void PipelineManager::genSamples(AudioBuffer<T>& buff, MidiBuffer & midiMessages)
 {
+	std::vector<AudioBuffer<T>> pipBuff = std::vector<AudioBuffer<T>>();
+	for (size_t i = 0; i < 16; i++)
+	{
+		pipBuff.push_back(AudioBuffer<T>(2, buff.getNumSamples()));
+	}
 	std::list<Pipeline>::iterator pipIt;
 	auto it = juce::MidiBuffer::Iterator(midiMessages);
 	int pos;
@@ -62,18 +68,33 @@ void PipelineManager::genSamples(AudioBuffer<T>& buff, MidiBuffer & midiMessages
 		}
 	}
 
-	AudioBuffer<T> tmpBuff = AudioBuffer<T>(2, buff.getNumSamples());
+	//AudioBuffer<T> tmpBuff = AudioBuffer<T>(2, buff.getNumSamples());
 	
-
+	int buffCount = 0;
 	for (pipIt = pipList.begin(); pipIt != pipList.end(); pipIt++) {
-		std::function<void()> f = [&pipIt,&tmpBuff]() {pipIt->render_block(tmpBuff); };
+		std::function<void()> f = [pipIt, &pipBuff,buffCount]() {
+			try {
+				pipIt->render_block(pipBuff[buffCount]);
+			}
+			catch (...) {
+				// We're fucked
+				Global.log->Write("We're fucked!!!");
+			}
+	};
 		pool.addJob(f);
+		buffCount++;
+		
+	}
+	while (pool.getNumJobs());
+	for (auto b : pipBuff)
+	{	
+		
+		buff.addFrom(0, 0, b, 0, 0, buff.getNumSamples());
+		buff.addFrom(1, 0, b, 1, 0, buff.getNumSamples());
 	}
 	
-	buff.addFrom(0, 0, tmpBuff, 0, 0, buff.getNumSamples());
-	buff.addFrom(1, 0, tmpBuff, 1, 0, buff.getNumSamples());
-	//buff.addFrom(0, 0, pipBuff, 0, 0, buff.getNumSamples());
-	//buff.addFrom(1, 0, pipBuff, 1, 0, buff.getNumSamples());
+	
+	
 }
 
 template void PipelineManager::genSamples(AudioBuffer<double>& buff, MidiBuffer & midiMessages);

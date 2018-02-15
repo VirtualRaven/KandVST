@@ -1,6 +1,5 @@
 #include "Pipeline.h"
 #include <math.h>
-#include <mutex>
 
 
 Pipeline::Pipeline(double rate) :
@@ -33,7 +32,6 @@ template<typename T>
 void Pipeline::render_block(AudioBuffer<T>& buffer) {
 	__osc.RenderBlock(buffer);
 	__delay.RenderBlock(buffer);
-
 }
 
 template void Pipeline::render_block(AudioBuffer<double>& buffer);

@@ -180,19 +180,19 @@ void JuceDemoPluginAudioProcessor::getStateInformation (MemoryBlock& destData)
     // Here's an example of how you can use XML to make it easy and more robust:
 
     // Create an outer XML element..
-    XmlElement xml ("MYPLUGINSETTINGS");
+    //XmlElement xml ("MYPLUGINSETTINGS");
 
     // add some attributes to it..
-    xml.setAttribute ("uiWidth", lastUIWidth);
-    xml.setAttribute ("uiHeight", lastUIHeight);
+    //xml.setAttribute ("uiWidth", lastUIWidth);
+    //xml.setAttribute ("uiHeight", lastUIHeight);
 
     // Store the values of all our parameters, using their param ID as the XML attribute
-    for (auto* param : getParameters())
-        if (auto* p = dynamic_cast<AudioProcessorParameterWithID*> (param))
-            xml.setAttribute (p->paramID, p->getValue());
+    //for (auto* param : getParameters())
+      //  if (auto* p = dynamic_cast<AudioProcessorParameterWithID*> (param))
+      //      xml.setAttribute (p->paramID, p->getValue());
 
     // then use this helper function to stuff it into the binary blob and return it..
-    copyXmlToBinary (xml, destData);
+    //copyXmlToBinary (xml, destData);
 }
 
 void JuceDemoPluginAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
@@ -201,23 +201,23 @@ void JuceDemoPluginAudioProcessor::setStateInformation (const void* data, int si
     // whose contents will have been created by the getStateInformation() call.
 
     // This getXmlFromBinary() helper function retrieves our XML from the binary blob..
-    ScopedPointer<XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
+   // ScopedPointer<XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
 
-    if (xmlState != nullptr)
-    {
+    //if (false) // // xmlState != nullptr)
+   // {
         // make sure that it's actually our type of XML object..
-        if (xmlState->hasTagName ("MYPLUGINSETTINGS"))
-        {
+       // if (xmlState->hasTagName ("MYPLUGINSETTINGS"))
+        //{
             // ok, now pull out our last window size..
-            lastUIWidth  = jmax (xmlState->getIntAttribute ("uiWidth", lastUIWidth), 400);
-            lastUIHeight = jmax (xmlState->getIntAttribute ("uiHeight", lastUIHeight), 200);
+           // lastUIWidth  = jmax (xmlState->getIntAttribute ("uiWidth", lastUIWidth), 400);
+            //lastUIHeight = jmax (xmlState->getIntAttribute ("uiHeight", lastUIHeight), 200);
 
             // Now reload our parameters..
-            for (auto* param : getParameters())
-                if (auto* p = dynamic_cast<AudioProcessorParameterWithID*> (param))
-                    p->setValue ((float) xmlState->getDoubleAttribute (p->paramID, p->getValue()));
-        }
-    }
+            //for (auto* param : getParameters())
+               // if (auto* p = dynamic_cast<AudioProcessorParameterWithID*> (param))
+                  //  p->setValue ((float) xmlState->getDoubleAttribute (p->paramID, p->getValue()));
+        //}
+    //}
 }
 
 void JuceDemoPluginAudioProcessor::updateTrackProperties (const TrackProperties& properties)
