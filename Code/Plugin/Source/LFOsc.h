@@ -13,11 +13,11 @@ private:
 	AudioParameterFloat* __amount;
 	AudioParameterBool* __isActive;
 	AudioParameterInt* __ratio;
-	AudioParameterInt* __bpm;
+	double __bpm;
 	double calcRatio();
 public:
 
-	LFO(int bpm, double sampleRate, int ID);
+	LFO(double bpm, double sampleRate, int ID);
 	void apply(double& tmp);
 	static void RegisterParameters(int ID);
 	void setWavetable(int t);

@@ -71,6 +71,8 @@ jucer_project_files("KandVST"
 #           Resource  Resource
   x         .         .         "Source/PluginEditor.cpp"
   .         .         .         "Source/PluginEditor.h"
+  x         .         .         "Source/PluginGui.cpp"
+  .         .         .         "Source/PluginGui.h"
   x         .         .         "Source/EnvelopeGenerator.cpp"
   .         .         .         "Source/EnvelopeGenerator.h"
   x         .         .         "Source/PluginProcessor.cpp"
@@ -109,6 +111,14 @@ jucer_project_files("KandVST"
   .         .         .         "Source/OscillatorMixer.h"
   x         .         .         "Source/LFOsc.cpp"
   .         .         .         "Source/LFOsc.h"
+  x         .         .         "Source/Components/InformationComponent.cpp"
+  .         .         .         "Source/Components/InformationComponent.h"
+  x         .         .         "Source/Components/CollectionComponent.cpp"
+  .         .         .         "Source/Components/CollectionComponent.h"
+  x         .         .         "Source/Components/MasterComponent.cpp"
+  .         .         .         "Source/Components/MasterComponent.h"
+  x         .         .         "Source/Components/OscillatorComponent.cpp"
+  .         .         .         "Source/Components/OscillatorComponent.h"
 )
 
 jucer_project_module(

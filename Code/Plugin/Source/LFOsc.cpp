@@ -4,16 +4,16 @@
 #include "ParameterHandler.h"
 
 
-LFO::LFO(int bpm, double sampleRate, int ID) :
+LFO::LFO(double bpm, double sampleRate, int ID) :
 	__isActive(false),
 	__phase(0.0),
 	__wavetable(tables[WAVE_TYPE::SAW]),
-	__sampleRate(sampleRate)
+	__sampleRate(sampleRate),
+	__bpm(bpm)
 {
 	__amount = Global.paramHandler->Get<AudioParameterFloat>(ID, "LFO_AMOUNT");
 	__ratio = Global.paramHandler->Get<AudioParameterInt>(ID, "LFO_RATIO");
 	__isActive = Global.paramHandler->Get<AudioParameterBool>(ID, "LFO_EN");
-	__bpm = Global.paramHandler->Get<AudioParameterInt>(ID, "LFO_BPM");
 }
 double LFO::calcRatio()
 {
@@ -26,7 +26,7 @@ double LFO::calcRatio()
 void LFO::apply(double& tmp)
 {
 	if (!*__isActive) return;
-	double freq = (*__bpm) * calcRatio() / 60.0;
+	double freq = (__bpm) * calcRatio() / 60.0;
 	double samp = __wavetable->getSample(__phase, freq);
 	tmp *= pow(2.0, samp*(*__amount) / 12.0);
 	__phase += __wavetable->getLength() * freq / __sampleRate;
