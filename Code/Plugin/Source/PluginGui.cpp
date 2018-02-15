@@ -45,6 +45,6 @@ void PluginGUI::resized()
 	__keyboard.setBounds(localBounds.removeFromBottom(100).removeFromRight(getLocalBounds().getWidth() - 150).removeFromLeft(getLocalBounds().getWidth() - 150));
 	__keyboard.setCentrePosition(localBounds.getCentreX(), __keyboard.getBounds().getBottom()-(__keyboard.getHeight()/2));	
 	localBounds.removeFromBottom(8); //Padding
-	__tabComponent.setBounds(getLocalBounds());
+	__tabComponent.setBounds(localBounds);
 
 }

@@ -1,5 +1,5 @@
-#ifndef OSCILLATOR_COMPONENT_H
-#define OSCILLATOR_COMPONENT_H
+#ifndef LFO_COMPONENT_H
+#define LFO_COMPONENT_H
 
 #include "../Global.h"
 #include "../ParameterHandler.h"
@@ -22,7 +22,7 @@ public:
 
 private:
 	//==============================================================================
-
+	ScopedPointer<ParameterSlider> __ratio, __type, __amp;
 	
 
 	//==============================================================================

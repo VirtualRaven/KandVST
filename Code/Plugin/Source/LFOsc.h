@@ -13,6 +13,8 @@ private:
 	AudioParameterFloat* __amount;
 	AudioParameterBool* __isActive;
 	AudioParameterInt* __ratio;
+	AudioParameterInt* __waveType;
+
 	double __bpm;
 	double calcRatio();
 public:

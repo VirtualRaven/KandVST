@@ -6,7 +6,7 @@
 #include "ParameterSlider.h"
 #include "../Global.h"
 #include "OscillatorComponent.h"
-
+#include "LFOComponent.h"
 class OscillatorPageComponent  : public Component, private IVSTParameters
 {
 public:
@@ -23,7 +23,9 @@ private:
     //==============================================================================
 	EnvelopeComponent __envComponent;
 	OscillatorComponent __oscillator;
-    ComboBox __oscOctave;
+	LFOComponent		__lfo;
+	ComboBox __oscOctave;
+
         
     //==============================================================================
     
