@@ -8,18 +8,19 @@ class LFO
 private:
 	double __phase;
 	double __sampleRate;
-	//double* __parameter;; // TEMPORARY
+	//double* __parameter; // TEMPORARY
 	const IWavetable* __wavetable;
+	AudioParameterFloat* __amount;
+	AudioParameterBool* __isActive;
+	AudioParameterInt* __ratio;
+	AudioParameterInt* __bpm;
+	double calcRatio();
 public:
-	AudioParameterFloat* amount;
-	AudioParameterBool* isActive;
-	AudioParameterInt* ratio;
-	AudioParameterInt* bpm;
+
 	LFO(int bpm, double sampleRate, int ID);
 	void apply(double& tmp);
-	//void setRatio(int ratio);
-	//void setAmount(double amount);
-	//void setBpm(int bpm);
+	static void RegisterParameters(int ID);
+	void setWavetable(int t);
 };
 
 #endif //!LFO_H
