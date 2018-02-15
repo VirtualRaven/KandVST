@@ -6,7 +6,8 @@
 PluginGUI::PluginGUI(PluginProcessor& owner)
     : AudioProcessorEditor (owner),
 	__tabComponent(TabbedButtonBar::Orientation::TabsAtTop),
-	__keyboard(owner.keyboardState,MidiKeyboardComponent::Orientation::horizontalKeyboard)
+	__keyboard(owner.keyboardState,MidiKeyboardComponent::Orientation::horizontalKeyboard),
+	__cc()
 {
 	__tabComponent.addTab("M", Colours::darkgreen, new MasterComponent(), true);
 
@@ -14,6 +15,8 @@ PluginGUI::PluginGUI(PluginProcessor& owner)
 	{
 		__tabComponent.addTab(std::to_string(i+1), Colours::darkgrey, new OscillatorComponent(i), true);
 	}
+
+	__tabComponent.addTab("Console", Colours::darkgrey, &__cc,true);
 
 	addAndMakeVisible(__tabComponent);
 	addAndMakeVisible(__keyboard);
