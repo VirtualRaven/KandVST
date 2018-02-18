@@ -3,6 +3,7 @@
 
 OscillatorComponent::~OscillatorComponent()
 {
+	delete __oscWaveform;
 }
 
 OscillatorComponent::OscillatorComponent(int ID):
