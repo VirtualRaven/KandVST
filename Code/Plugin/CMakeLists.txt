@@ -6,7 +6,7 @@ find_program (PYT  NAMES "python")
 message(${PYT})
 
 if(NOT PYT)
-    message(FATAL_ERROR "Python not found! Install python 3")
+    message(STATUS "Python not found! Install python 3")
 endif()
 
 #Build Resources
