@@ -7,8 +7,8 @@
 #include "InformationComponent.h"
 #include "ParameterSlider.h"
 #include "../IVSTParameters.h"
-
-class OscillatorComponent : public Component, private IVSTParameters
+#include "../WavetableOsc.h"
+class OscillatorComponent : public Component, private IVSTParameters, private Timer
 {
 public:
     //==============================================================================
@@ -28,8 +28,12 @@ private:
 
 	Label __delayLabel, __octaveLabel, __detuneLabel, __offsetLabel;
 	ScopedPointer<ParameterSlider> __delaySlider, __octaveSlider, __detuneSlider, __offsetSlider;
-
+	float s, sq, sa, tr;
+	Image* __oscWaveform;
 	//==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OscillatorComponent)
+
+		// Inherited via Timer
+		virtual void timerCallback() override;
 };
 #endif

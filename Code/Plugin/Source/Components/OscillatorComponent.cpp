@@ -56,10 +56,15 @@ IVSTParameters(ID)
 	__offsetLabel.setText("OFFSET", NotificationType::dontSendNotification);
 	__offsetLabel.attachToComponent(__offsetSlider, false);
 	//============================================================================
+	__oscWaveform = new Image(Image::PixelFormat::RGB, 300, 200, true);
+	startTimer(50);
+	timerCallback();
 }
 
 void OscillatorComponent::paint(Graphics& g){
-	Path oscPath;
+	if (__oscWaveform != nullptr)
+		g.drawImageAt(*__oscWaveform, 10, 50, false);
+	/*Path oscPath;
 	oscPath.addRectangle(Rectangle<int>(10, 50, 300, 200));
 	g.setColour(Colour::fromRGB(20, 20, 20));
 	g.fillPath(oscPath);
@@ -67,7 +72,7 @@ void OscillatorComponent::paint(Graphics& g){
 	g.strokePath(oscPath, PathStrokeType(0.5f));
 
 	g.setColour(Colours::white);
-	g.drawText("OSC", oscPath.getBounds(), Justification::centred, false);
+	g.drawText("OSC", oscPath.getBounds(), Justification::centred, false);*/
 }
 
 void OscillatorComponent::resized(){
@@ -81,4 +86,21 @@ void OscillatorComponent::resized(){
 	__octaveSlider->setBounds(Rectangle<int>(0,375,100,75));
 	__detuneSlider->setBounds(Rectangle<int>(75,375,100,75));
 	__offsetSlider->setBounds(Rectangle<int>(150,375,100,75));
+}
+
+
+
+void OscillatorComponent::timerCallback()
+{
+	if (s != __sineSlider->getValue() || sq != __squareSlider->getValue() || sa != __sawSlider->getValue() || tr != __triangleSlider->getValue()) {
+
+		s = __sineSlider->getValue();
+		sq = __squareSlider->getValue();
+		sa = __sawSlider->getValue();
+		tr = __triangleSlider->getValue();
+
+		WavetableOsc os = WavetableOsc(__ID, 0);
+		os.renderImage(__oscWaveform, 300, 200);
+		repaint();
+	}
 }
