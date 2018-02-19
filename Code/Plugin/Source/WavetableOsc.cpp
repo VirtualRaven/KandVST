@@ -1,6 +1,6 @@
 #include "WavetableOsc.h"
 
-WavetableOsc::WavetableOsc(int ID,double sampleRate) :
+WavetableOsc::WavetableOsc(int ID, double sampleRate) :
 	IGenerator(sampleRate),
 	IVSTParameters(ID),
 	__envelope(__ID,sampleRate),
@@ -31,6 +31,49 @@ void WavetableOsc::setWaveform(WAVE_TYPE t)
 	if (t == WAVE_TYPE::__COUNT) return;
 	__wavetable = tables[t];
 }
+void WavetableOsc::renderImage(Image* image,int width, int height)
+{
+
+	image->clear(Rectangle<int>(width, height));
+
+	double max = 0.0;
+	double* data = new double[width];
+
+	for (size_t i = 0; i < width; i++)
+	{
+		double inc = 2.0*3.14*1.1;
+
+		double samp = tables[WAVE_TYPE::SINE]->getSample(i*inc, 440.0)* (*__sinAmp);
+		samp += tables[WAVE_TYPE::SQUARE]->getSample(i*inc, 440.0)* (*__sqAmp);
+		samp += tables[WAVE_TYPE::SAW]->getSample(i*inc, 440.0)* (*__sawAmp);
+		samp += tables[WAVE_TYPE::TRI]->getSample(i*inc, 440.0)* (*__triAmp);
+
+		data[i] = samp;
+
+		max = jmax<double>(max, samp);
+		max = jmax<double>(max, samp*-1);
+	}
+
+	Graphics g(*image);
+	g.setColour(Colours::teal);
+	g.setImageResamplingQuality(Graphics::highResamplingQuality);
+	double hMul = (static_cast<double>(height)/2.0) / (max);
+	if (max < 0.0001 || max < 1.00)
+		hMul =100.0;
+
+	double lastx = 0, lasty=height/2;
+	for (size_t i = 0; i < width; i++)
+	{
+		if (i > 0)
+			g.drawLine(lastx, lasty, i, height / 2 - hMul*data[i], 3);
+		lastx = i;
+		lasty = height / 2 - hMul*data[i];
+	}
+
+
+	delete data;
+
+}
 /*void WavetableOsc::setOctave(int o)
 {
 	if (o > 3 || o < -3) return;
@@ -44,7 +87,7 @@ void WavetableOsc::ProccesNoteCommand(int note, uint8 vel, bool isOn)
 		__frequency = MidiMessage::getMidiNoteInHertz(note);
 		//__phase = 0.0;
 		__note = note;
-		__envelope.Reset();
+		__envelope.Reset(vel);
 		__sustain = true; //Right now we ignore sustain pedal
 	}
 	else if (!isOn && note == __note) {

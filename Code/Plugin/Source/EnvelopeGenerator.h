@@ -17,6 +17,8 @@ private:
 	int __state;
 	int __sustain;
 	double __amplitude;
+	uint8 __vel;
+	double __velMulti;
 	AudioParameterFloat* __pattack;
 	AudioParameterFloat* __pdecay;
 	AudioParameterFloat* __psustain;
@@ -27,7 +29,7 @@ private:
 	void recalculateParameters();
 
 public:
-	void Reset();
+	void Reset(uint8 vel);
 	double GenerateNextStep(bool sustain);
 	static void RegisterParameters(int ID);
 	EnvelopeGenerator(int ID,double sampleRate);

@@ -1247,7 +1247,7 @@ public:
 private:
     //==============================================================================
     ArrayAllocationBase <ElementType, TypeOfCriticalSectionToUse> data;
-    int numUsed = 0;
+    volatile int numUsed = 0;
 
     void removeInternal (const int indexToRemove)
     {

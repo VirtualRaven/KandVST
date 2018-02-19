@@ -2,6 +2,19 @@
 
 cmake_minimum_required(VERSION 3.4)
 
+find_program (PYT  NAMES "python")
+message(${PYT})
+
+if(NOT PYT)
+    message(STATUS "Python not found! Install python 3")
+endif()
+
+#Build Resources
+execute_process(
+  WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
+  COMMAND ${PYT} "buildResc.py" "Resources"
+  )
+  
 add_definitions(-DJUCE_WEB_BROWSER=0)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/../FRUT/cmake")
@@ -18,6 +31,7 @@ get_filename_component(AudioPlugin_jucer_FILE
 )
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+include_directories("${CMAKE_CURRENT_LIST_DIR}/Resources_h")
 
 jucer_project_begin(
   JUCER_VERSION "5.2.0"

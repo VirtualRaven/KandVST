@@ -41,6 +41,7 @@ public:
 		__RenderBlock(buffer);
 	}
 	void setWaveform(WAVE_TYPE t);
+	void renderImage(Image* image,int width, int height);
 };
 
 #endif //!WAVETABLEOSC_H
