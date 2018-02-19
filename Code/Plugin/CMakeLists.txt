@@ -143,6 +143,8 @@ jucer_project_files("KandVST"
   .         .         .         "Source/FilterLP.h"
   x         .         .         "Source/FilterHP.cpp"
   .         .         .         "Source/FilterHP.h"
+  x         .         .         "Source/Components/ParameterButton.cpp"
+  .         .         .         "Source/Components/ParameterButton.h"
 )
 
 jucer_project_module(

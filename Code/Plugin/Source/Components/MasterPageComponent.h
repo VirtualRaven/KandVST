@@ -5,6 +5,7 @@
 #include "../ParameterHandler.h"
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "InformationComponent.h"
+
 class MasterComponent : public Component
 {
 public:

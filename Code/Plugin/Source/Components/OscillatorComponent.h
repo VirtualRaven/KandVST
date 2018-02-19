@@ -6,9 +6,11 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "InformationComponent.h"
 #include "ParameterSlider.h"
+#include "ParameterButton.h"
 #include "../IVSTParameters.h"
 #include "../WavetableOsc.h"
-class OscillatorComponent : public Component, private IVSTParameters, private Timer
+
+class OscillatorComponent : public Component, private IVSTParameters, private Timer, private Button::Listener
 {
 public:
     //==============================================================================
@@ -19,6 +21,7 @@ public:
 
     void paint (Graphics& g) override;
     void resized() override;
+	void buttonClicked(Button* button) override;
 
 private:
 	//==============================================================================
@@ -30,6 +33,9 @@ private:
 	ScopedPointer<ParameterSlider> __delaySlider, __octaveSlider, __detuneSlider, __offsetSlider;
 	float s, sq, sa, tr;
 	Image* __oscWaveform;
+	ScopedPointer<ParameterButton> __toggleOsc;
+	int __ID;
+
 	//==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OscillatorComponent)
 

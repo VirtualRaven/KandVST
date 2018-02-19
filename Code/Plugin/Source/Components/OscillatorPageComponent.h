@@ -25,6 +25,7 @@ private:
 	OscillatorComponent __oscillator;
 	LFOComponent		__lfo;
 	ComboBox __oscOctave;
+	
 
         
     //==============================================================================
