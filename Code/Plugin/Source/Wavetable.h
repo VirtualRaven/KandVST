@@ -88,7 +88,7 @@ inline double getSampleFromLoc(const IWavetable::tableSampleLocation& t, const I
 }
 
 template<> inline double getSampleFromLoc<false>(const IWavetable::tableSampleLocation& t, const IWavetable*  w) {
-	return w->__tables[0][t.i_1] * (1.0 - t.diff) + w->__tables[t.tableNr][t.i_2] * t.diff;
+	return w->__tables[0][t.i_1] * (1.0 - t.diff) + w->__tables[0][t.i_2] * t.diff;
 }
 
 template<WAVE_TYPE T> inline double getSampleFromLoc(const IWavetable::tableSampleLocation& t) {
