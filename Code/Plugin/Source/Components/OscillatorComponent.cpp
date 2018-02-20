@@ -4,11 +4,13 @@
 OscillatorComponent::~OscillatorComponent()
 {
 	delete __oscWaveform;
+	//__toggleOsc.removeListener(this);
 }
 
 OscillatorComponent::OscillatorComponent(int ID):
 IVSTParameters(ID)
 {
+	__ID = ID;
 	//=====================================
 	// add and make visible wave sliders
 	//=====================================
@@ -57,6 +59,12 @@ IVSTParameters(ID)
 	__offsetLabel.setText("OFFSET", NotificationType::dontSendNotification);
 	__offsetLabel.attachToComponent(__offsetSlider, false);
 	//============================================================================
+
+	addAndMakeVisible(__toggleOsc = new ParameterButton(*Global->paramHandler->Get<AudioParameterBool>(__ID, "OSC_MIX_EN")));
+	__toggleOsc->setButtonText("Oscillator");
+	
+	
+	//=======
 	__oscWaveform = new Image(Image::PixelFormat::RGB, 300, 200, true);
 	startTimer(50);
 	timerCallback();
@@ -65,6 +73,7 @@ IVSTParameters(ID)
 void OscillatorComponent::paint(Graphics& g){
 	if (__oscWaveform != nullptr)
 		g.drawImageAt(*__oscWaveform, 10, 50, false);
+
 	/*Path oscPath;
 	oscPath.addRectangle(Rectangle<int>(10, 50, 300, 200));
 	g.setColour(Colour::fromRGB(20, 20, 20));
@@ -76,7 +85,10 @@ void OscillatorComponent::paint(Graphics& g){
 	g.drawText("OSC", oscPath.getBounds(), Justification::centred, false);*/
 }
 
+
 void OscillatorComponent::resized(){
+	// toggle button
+	__toggleOsc->setBounds(Rectangle<int>(10, 0, 200, 75));
 	// waves
 	__sineSlider->setBounds(Rectangle<int>(0, 275, 100, 75));
 	__squareSlider->setBounds(Rectangle<int>(75, 275, 100, 75));
@@ -91,14 +103,16 @@ void OscillatorComponent::resized(){
 
 
 
+
+
 void OscillatorComponent::timerCallback()
 {
 	if (s != __sineSlider->getValue() || sq != __squareSlider->getValue() || sa != __sawSlider->getValue() || tr != __triangleSlider->getValue()) {
 
-		s = __sineSlider->getValue();
-		sq = __squareSlider->getValue();
-		sa = __sawSlider->getValue();
-		tr = __triangleSlider->getValue();
+		s =  (float) __sineSlider->getValue();
+		sq = (float) __squareSlider->getValue();
+		sa = (float) __sawSlider->getValue();
+		tr = (float) __triangleSlider->getValue();
 
 		WavetableOsc os = WavetableOsc(__ID, 0);
 		os.renderImage(__oscWaveform, 300, 200);

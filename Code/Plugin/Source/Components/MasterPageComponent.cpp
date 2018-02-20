@@ -10,6 +10,7 @@ MasterComponent::MasterComponent():
 	__infoComponent()
 {
 	addAndMakeVisible(__infoComponent);
+	addAndMakeVisible(__presetComponent);
 }
 
 void MasterComponent::paint(Graphics& g){
@@ -18,6 +19,7 @@ void MasterComponent::paint(Graphics& g){
 }
 
 void MasterComponent::resized(){
-	__infoComponent.setBounds(getLocalBounds());
-	__infoComponent.setCentrePosition(getLocalBounds().getCentre());
+	__presetComponent.setCentrePosition(getLocalBounds().getCentre());
+	//__infoComponent.setBounds(getLocalBounds());
+	//__infoComponent.setCentrePosition(getLocalBounds().getCentre());
 }

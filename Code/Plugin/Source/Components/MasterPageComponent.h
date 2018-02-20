@@ -5,6 +5,7 @@
 #include "../ParameterHandler.h"
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "InformationComponent.h"
+#include "PresetsComponent.h"
 class MasterComponent : public Component
 {
 public:
@@ -19,6 +20,7 @@ public:
 
 private:
 	InformationComponent __infoComponent;
+	PresetsComponent __presetComponent;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MasterComponent)
 };

@@ -22,7 +22,6 @@ private:
 	TabbedComponent __tabComponent;
 	MidiKeyboardComponent __keyboard;
 	ConsoleComponent __cc;
-
     //==============================================================================
 	PluginProcessor& getProcessor() const
     {

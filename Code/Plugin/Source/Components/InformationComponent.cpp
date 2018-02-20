@@ -6,34 +6,39 @@ InformationComponent::~InformationComponent()
 }
 
 InformationComponent::InformationComponent(){
-    addAndMakeVisible(__version);
-    Font f;
-    f.setHeight(20.0f);
+    
+	Font f;
+	f.setHeight(20.0f);
+
+	addAndMakeVisible(__version);
     __version.setFont(f);
     __version.setText("Version 0.1  2018", NotificationType::dontSendNotification);
+
     addAndMakeVisible(__authors);
     __authors.setFont(f);
-    __authors.setText("Anton, Andreas, Klas \nLukhas, Sarosh, Stas", NotificationType::dontSendNotification);
+    __authors.setText("Anton, Andreas, Klas \nLukas, Sarosh, Stas", NotificationType::dontSendNotification);
+
+	// variables
+	x = 450; //starting x position
+	y = 150; //starting y position
+	midX = 640;
+	midY = 225;
+	w = 380; //width of component
+	h = 200; //height of component
+
+	// shadow stuff
+	startAlpha = 0.3f;
+	endAlpha = 0.05f;
+	offset = 10;
 }
 
-// variables
-int x = 490; //starting x position
-int y = 150; //starting y position
-int midX = 640;
-int midY = 225;
-int w = 300; //width of component
-int h = 150; //height of component
-
-float startAlpha = 0.3f;
-float endAlpha = 0.05f;
-int offset = 10;
 
 void InformationComponent::paint (Graphics& g){
     
     //Path to draw the rectangle
     Path myPath;
     Rectangle<int> infoWindow(x,y,w,h);
-    myPath.addRoundedRectangle(infoWindow,5.0f);
+	myPath.addRectangle(infoWindow);
     g.setColour(Colour::fromRGB(43,68,78));
     g.fillPath(myPath);
 
