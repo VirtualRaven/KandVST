@@ -13,7 +13,7 @@ PresetsComponent::PresetsComponent()
 	addAndMakeVisible(__presets);
 	addAndMakeVisible(__refresh);
 
-	setSize(200, 300);
+	setSize(200, 200);
 	__presets.setModel(&__rowModel);
 
 }
