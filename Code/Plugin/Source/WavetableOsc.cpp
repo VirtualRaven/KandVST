@@ -36,6 +36,7 @@ void WavetableOsc::renderImage(Image* image,int width, int height)
 
 	image->clear(Rectangle<int>(width, height));
 
+
 	double max = 0.0;
 	double* data = new double[width];
 
@@ -55,13 +56,16 @@ void WavetableOsc::renderImage(Image* image,int width, int height)
 	}
 
 	Graphics g(*image);
-	g.setColour(Colours::teal);
+	g.setColour(Colour::fromRGB(36, 36, 36));
+	g.fillAll();
+	g.setColour(Colour::fromRGB(26,105,180));
 	g.setImageResamplingQuality(Graphics::highResamplingQuality);
-	double hMul = (static_cast<double>(height)/2.0) / (max);
-	if (max < 0.0001 || max < 1.00)
-		hMul =100.0;
 
-	double lastx = 0, lasty=height/2;
+	double hMul = (static_cast<double>(height - 16)/2.0) / (max);
+	if (max < 0.0001 || max < 1.00)
+		hMul = (height - 16) / 2.0;
+
+	double lastx = 0, lasty=(height - 16)/2;
 	for (size_t i = 0; i < width; i++)
 	{
 		if (i > 0)
@@ -70,7 +74,8 @@ void WavetableOsc::renderImage(Image* image,int width, int height)
 		lasty = height / 2 - hMul*data[i];
 	}
 
-
+	g.setColour(Colour::fromRGB(16, 16, 16));
+	g.drawRect(0, 0, width, height, 3);
 	delete data;
 
 }
