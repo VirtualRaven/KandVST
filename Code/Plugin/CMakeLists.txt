@@ -31,7 +31,6 @@ get_filename_component(AudioPlugin_jucer_FILE
 )
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-include_directories("${CMAKE_CURRENT_LIST_DIR}/Resources_h")
 
 jucer_project_begin(
   JUCER_VERSION "5.2.0"
@@ -145,6 +144,15 @@ jucer_project_files("KandVST"
   .         .         .         "Source/FilterHP.h"
   x         .         .         "Source/Components/ParameterButton.cpp"
   .         .         .         "Source/Components/ParameterButton.h"
+  x         .         .         "Source/PresetManager.cpp"
+  .         .         .         "Source/PresetManager.h"
+  x         .         .         "Source/Components/PresetsComponent.cpp"
+  .         .         .         "Source/Components/PresetsComponent.h"
+  x         .         .         "Source/Components/PresetRow.cpp"
+  .         .         .         "Source/Components/PresetRow.h"
+
+  x         .         .         "Source/Resources_files.cpp"
+  .         .         .         "Source/Resources_files.h"
 )
 
 jucer_project_module(

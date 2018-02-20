@@ -2,6 +2,7 @@
 #include "PluginGUI.h"
 #include "IWavetable.h"
 #include "OscillatorMixer.h"
+#include "PresetManager.h"
 AudioProcessor* JUCE_CALLTYPE createPluginFilter();
 
 GLOBAL * Global;
@@ -13,10 +14,9 @@ PluginProcessor::PluginProcessor()
 	Global = new GLOBAL();
 	Global->paramHandler =  new ParameterHandler(*this);
 	Global->log = new Log("log.txt");
-
 	setParameters<int, EnvelopeGenerator, ExampleEffect, WavetableOsc, OscillatorMixer, LFO>({ {0,1,2,3},{0},{0,1,2,3},{ 0 },{0,1,2,3} });
-
-
+	Global->presetManager = new PresetManager(this);
+	Global->presetManager->RefreshPresets();
 	//*(Global->paramHandler->Get<AudioParameterBool>(0, "OSC_MIX_EN")) = 1; //Enable default oscillator
 
 }

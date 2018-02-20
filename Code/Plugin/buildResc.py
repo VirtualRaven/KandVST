@@ -3,16 +3,20 @@ from os import walk
 import os
 from os import path
 
-writeDir='Resources_h'
+writeDir='Source'
 if not os.path.exists(writeDir):
     os.makedirs(writeDir)
-__writeFile = open (writeDir+"/Resources_files.h",'w')
-rowBreak =0
+__writeFile_h = open (writeDir+"/Resources_files.h",'w')
+__writeFile_cpp = open (writeDir+"/Resources_files.cpp",'w')
+__writeFile_h.write("#ifndef RESOURCES_FILES_H\n#define RESOURCES_FILES_H\n")
+__writeFile_cpp.write("#include \"Resources_files.h\"\n")
+rowBreak =30
 
 
 
 
-def createResourceFile(fullDir,__fileList,__name):
+def createResourceFile(fullDir,__fileList,__name,__namespace):
+    __namespace += "::" + __name
     if (len(__fileList)==0):
         return
     print (__name+"\n")
@@ -23,40 +27,45 @@ def createResourceFile(fullDir,__fileList,__name):
         data = __file.read()
         #WriteHeader
         filename,ext= os.path.splitext(__fileName)
-        __writeFile.write("char " + filename+"_"+ext[1:] +"[] = {")
+        __writeFile_h.write("extern char " + filename+"_"+ext[1:] +"[" + str(os.path.getsize(os.path.join(fullDir,__fileName))) +"];\n")
+        
+        __writeFile_cpp.write("char " + __namespace+"::"+filename+"_"+ext[1:] +"[] = {")
         count = 0
         for byte in data:
             if (count == len(data)-1):
-                __writeFile.write(hex(byte))
+                __writeFile_cpp.write(hex(byte))
                 break
-            __writeFile.write(hex(byte)+",")
+            __writeFile_cpp.write(hex(byte)+",")
             count +=1
             if (rowBreak > 0):
                 if (count % rowBreak == 0):
-                    __writeFile.write("\n")
+                    __writeFile_cpp.write("\n")
         #WriteFooter
-        __writeFile.write("};\n\n")
+        __writeFile_cpp.write("};\n\n")
         print (__fileName + " : " + str(count) + " bytes\n")
         
         
     return
 
 
-def walkDir(dir):
+def walkDir(dir,namespace):
     files = [f for f in os.listdir(dir) if path.isfile(path.join(dir,f))]
     dirs = [f for f in os.listdir(dir) if (not f in files)]
     print (dirs)
     print (files)
     name= os.path.basename(dir)
-    __writeFile.write("namespace " + name + "{\n")
+    __writeFile_h.write("namespace " + name + "{\n")
     for _dir in dirs:
 
         print(_dir)
-        walkDir(path.join(dir,_dir))
+        ns = ""
+        if (namespace !=""):
+            ns = namespace + "::"
+        walkDir(path.join(dir,_dir),ns+dir)
     
     name= os.path.basename(dir)
-    createResourceFile(dir,files,name)
-    __writeFile.write("}\n")
+    createResourceFile(dir,files,name,namespace)
+    __writeFile_h.write("}\n")
 
 
     return
@@ -66,7 +75,10 @@ def walkDir(dir):
 
 print(sys.argv)
 
-walkDir(sys.argv[1])
+walkDir(sys.argv[1],"")
+
+__writeFile_h.write("#endif")
+
 
 
 
