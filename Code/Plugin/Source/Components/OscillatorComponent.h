@@ -31,8 +31,7 @@ private:
 	ScopedPointer<ParameterSlider> __delaySlider, __octaveSlider, __detuneSlider, __offsetSlider;
 	float s, sq, sa, tr;
 	Image* __oscWaveform;
-	ScopedPointer<ParameterButton> __toggleOsc;
-	int __ID;
+
 
 	//==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OscillatorComponent)

@@ -6,12 +6,14 @@ ParameterButton::~ParameterButton()
 }
 
 ParameterButton::ParameterButton(AudioProcessorParameter& p)
-	: ToggleButton(p.getName(256)), param(p)
+	: TextButton(p.getName(256)), param(p)
 {
 	setValue(param.getValue()); //Set Default value
 	param.setValueNotifyingHost(__value);
-	setColour(ToggleButton::tickDisabledColourId, Colours::darkgrey);
-	setColour(ToggleButton::tickColourId, Colours::skyblue);
+	setColour(TextButton::ColourIds::buttonOnColourId, Colours::green);
+	setColour(TextButton::ColourIds::buttonColourId, Colours::darkgrey);
+	//setColour(ToggleButton::tickDisabledColourId, Colours::darkgrey);
+	//setColour(ToggleButton::tickColourId, Colours::skyblue);
 	startTimer(30);
 	addListener(this);
 
