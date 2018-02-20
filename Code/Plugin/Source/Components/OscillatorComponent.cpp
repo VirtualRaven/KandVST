@@ -61,8 +61,7 @@ IVSTParameters(ID)
 	//============================================================================
 
 	addAndMakeVisible(__toggleOsc = new ParameterButton(*Global->paramHandler->Get<AudioParameterBool>(__ID, "OSC_MIX_EN")));
-	__toggleOsc->setButtonText("Oscillator: Disabled");
-	__toggleOsc->addListener(this);
+	__toggleOsc->setButtonText("Oscillator");
 	
 	
 	//=======
@@ -103,15 +102,7 @@ void OscillatorComponent::resized(){
 }
 
 
-void OscillatorComponent::buttonClicked(Button* button) {
-	__toggleOsc->buttonClicked(__toggleOsc);
-	if (__toggleOsc->getValue()) {
-		__toggleOsc->setButtonText("Oscillator: Enabled");
-	}
-	else {
-		__toggleOsc->setButtonText("Oscillator: Disabled");
-	}
-}
+
 
 
 void OscillatorComponent::timerCallback()

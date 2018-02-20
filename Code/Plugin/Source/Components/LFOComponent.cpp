@@ -22,8 +22,7 @@ IVSTParameters(ID)
 	__amp->setTextBoxStyle(Slider::TextEntryBoxPosition::TextBoxBelow, true, 50, 15);
 
 	addAndMakeVisible(__toggleLfo = new ParameterButton(*Global->paramHandler->Get<AudioParameterBool>(__ID, "LFO_EN")));
-	__toggleLfo->addListener(this);
-	__toggleLfo->setButtonText("LFO: Disabled");
+	__toggleLfo->setButtonText("LFO");
 
 	setSize(300,200);
 }
@@ -39,14 +38,4 @@ void LFOComponent::resized(){
 	__type->setBounds(r.removeFromLeft(50));
 	__amp->setBounds(r.removeFromLeft(50));
 
-}
-
-void LFOComponent::buttonClicked(Button* button) {
-	__toggleLfo->buttonClicked(__toggleLfo);
-	if (__toggleLfo->getValue()) {
-		__toggleLfo->setButtonText("LFO: Enabled");
-	} 
-	else {
-			__toggleLfo->setButtonText("LFO: Disabled");
-		}
 }

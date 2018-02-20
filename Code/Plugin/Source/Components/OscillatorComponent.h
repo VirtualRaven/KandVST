@@ -10,7 +10,7 @@
 #include "../IVSTParameters.h"
 #include "../WavetableOsc.h"
 
-class OscillatorComponent : public Component, private IVSTParameters, private Timer, private Button::Listener
+class OscillatorComponent : public Component, private IVSTParameters, private Timer
 {
 public:
     //==============================================================================
@@ -21,8 +21,6 @@ public:
 
     void paint (Graphics& g) override;
     void resized() override;
-	void buttonClicked(Button* button) override;
-
 private:
 	//==============================================================================
 
