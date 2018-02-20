@@ -44,7 +44,7 @@ void PresetManager::RefreshPresets()
 
 void PresetManager::LoadPreset(std::string name)
 {
-	ScopedPointer<XmlElement> xmlState(__presets[name]);
+	XmlElement* xmlState(__presets[name]);
 	if (xmlState != nullptr)
 	{
 		if (xmlState->hasTagName("KandVSTPreset"))
