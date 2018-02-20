@@ -44,11 +44,12 @@ void WavetableOsc::renderImage(Image* image,int width, int height)
 	for (size_t i = 0; i < width; i++)
 	{
 		double inc = 2.0*3.14*1.1;
+		int ind = (i * 2048 / width);
 
-		double samp = tables[WAVE_TYPE::SINE]->getSample(i*inc, 440.0)* (*__sinAmp);
-		samp += tables[WAVE_TYPE::SQUARE]->getSample(i*inc, 440.0)* (*__sqAmp);
-		samp += tables[WAVE_TYPE::SAW]->getSample(i*inc, 440.0)* (*__sawAmp);
-		samp += tables[WAVE_TYPE::TRI]->getSample(i*inc, 440.0)* (*__triAmp);
+		double samp = tables[WAVE_TYPE::SINE]->__tables[0][ind] * (*__sinAmp);
+		samp += tables[WAVE_TYPE::SQUARE]->__tables[0][ind] * (*__sqAmp);
+		samp += tables[WAVE_TYPE::SAW]->__tables[0][ind] * (*__sawAmp);
+		samp += tables[WAVE_TYPE::TRI]->__tables[0][ind] * (*__triAmp);
 
 		data[i] = samp;
 
@@ -75,7 +76,7 @@ void WavetableOsc::renderImage(Image* image,int width, int height)
 		lasty = height / 2 - hMul*data[i];
 	}
 
-	g.setColour(Colour::fromRGB(16, 16, 16));
+	g.setColour(Colour::fromRGB(26, 26, 26));
 	g.drawRect(0, 0, width, height, 3);
 	delete data;
 
