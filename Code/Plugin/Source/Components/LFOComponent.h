@@ -6,6 +6,7 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "InformationComponent.h"
 #include "ParameterSlider.h"
+#include "ParameterButton.h"
 #include "../IVSTParameters.h"
 
 class LFOComponent : public Component, private IVSTParameters, private Button::Listener
@@ -24,9 +25,8 @@ public:
 private:
 	//==============================================================================
 	ScopedPointer<ParameterSlider> __ratio, __type, __amp;
-	ToggleButton __toggleLfo;
+	ScopedPointer<ParameterButton> __toggleLfo;
 	int __ID;
-	bool lfoEnabled;
 	//==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LFOComponent)
 };

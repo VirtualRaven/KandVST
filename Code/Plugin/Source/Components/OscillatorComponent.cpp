@@ -64,6 +64,7 @@ IVSTParameters(ID)
 	__toggleOsc->setButtonText("Oscillator: Disabled");
 	__toggleOsc->addListener(this);
 	
+	
 	//=======
 	__oscWaveform = new Image(Image::PixelFormat::RGB, 300, 200, true);
 	startTimer(50);
@@ -103,22 +104,12 @@ void OscillatorComponent::resized(){
 
 
 void OscillatorComponent::buttonClicked(Button* button) {
-	if (button == __toggleOsc) {
-		__toggleOsc->clicked();
-		if (*(Global->paramHandler->Get<AudioParameterBool>(__ID, "OSC_MIX_EN")) == 0) {
-			__toggleOsc->setColour(ToggleButton::tickColourId, Colours::skyblue);
-			__toggleOsc->setButtonText("Oscillator: Enabled");
-
-			*(Global->paramHandler->Get<AudioParameterBool>(__ID, "OSC_MIX_EN")) = 1; //Enable oscillator
-			
-		}
-		else {
-			__toggleOsc->setColour(ToggleButton::tickDisabledColourId, Colours::darkgrey);
-			__toggleOsc->setButtonText("Oscillator: Disabled");
-
-			*(Global->paramHandler->Get<AudioParameterBool>(__ID, "OSC_MIX_EN")) = 0; //Disable oscillator
-
-		}
+	__toggleOsc->buttonClicked(__toggleOsc);
+	if (__toggleOsc->getValue()) {
+		__toggleOsc->setButtonText("Oscillator: Enabled");
+	}
+	else {
+		__toggleOsc->setButtonText("Oscillator: Disabled");
 	}
 }
 
@@ -127,10 +118,10 @@ void OscillatorComponent::timerCallback()
 {
 	if (s != __sineSlider->getValue() || sq != __squareSlider->getValue() || sa != __sawSlider->getValue() || tr != __triangleSlider->getValue()) {
 
-		s = __sineSlider->getValue();
-		sq = __squareSlider->getValue();
-		sa = __sawSlider->getValue();
-		tr = __triangleSlider->getValue();
+		s =  (float) __sineSlider->getValue();
+		sq = (float) __squareSlider->getValue();
+		sa = (float) __sawSlider->getValue();
+		tr = (float) __triangleSlider->getValue();
 
 		WavetableOsc os = WavetableOsc(__ID, 0);
 		os.renderImage(__oscWaveform, 300, 200);

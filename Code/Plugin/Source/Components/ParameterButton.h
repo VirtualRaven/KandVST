@@ -30,13 +30,17 @@ DISCLAIMED.
 #define PARAMETER_BUTTON_H
 
 #include "../JuceLibraryCode/JuceHeader.h"
-class ParameterButton : public ToggleButton
+class ParameterButton : public ToggleButton, private Button::Listener
 {
 public:
 	ParameterButton(AudioProcessorParameter& p);
 	~ParameterButton();
 
-	void clicked() override;
+	void buttonClicked(Button* button) override;
+	int getValue();
+	void setValue(int value);
 	AudioProcessorParameter& param;
+private:
+	int __value; // 1 = on, 0 = off
 };
 #endif

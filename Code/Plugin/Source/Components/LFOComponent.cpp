@@ -21,11 +21,9 @@ IVSTParameters(ID)
 	__amp->setSliderStyle(Slider::LinearVertical);
 	__amp->setTextBoxStyle(Slider::TextEntryBoxPosition::TextBoxBelow, true, 50, 15);
 
-	addAndMakeVisible(__toggleLfo);
-	__toggleLfo.addListener(this);
-	__toggleLfo.setButtonText("LFO: Disabled");
-	__toggleLfo.setColour(ToggleButton::tickDisabledColourId, Colours::darkgrey);
-	lfoEnabled = false;
+	addAndMakeVisible(__toggleLfo = new ParameterButton(*Global->paramHandler->Get<AudioParameterBool>(__ID, "LFO_EN")));
+	__toggleLfo->addListener(this);
+	__toggleLfo->setButtonText("LFO: Disabled");
 
 	setSize(300,200);
 }
@@ -36,7 +34,7 @@ void LFOComponent::paint(Graphics& g){
 
 void LFOComponent::resized(){
 	Rectangle<int> r = getLocalBounds();
-	__toggleLfo.setBounds(r.removeFromTop(50));
+	__toggleLfo->setBounds(r.removeFromTop(50));
 	__ratio->setBounds(r.removeFromLeft(50));
 	__type->setBounds(r.removeFromLeft(50));
 	__amp->setBounds(r.removeFromLeft(50));
@@ -44,21 +42,11 @@ void LFOComponent::resized(){
 }
 
 void LFOComponent::buttonClicked(Button* button) {
-	if (button == &__toggleLfo) {
-		if (!lfoEnabled) {
-			__toggleLfo.setColour(ToggleButton::tickColourId, Colours::skyblue);
-			__toggleLfo.setButtonText("LFO: Enabled");
-			
-			//*(Global->paramHandler->Get<AudioParameterBool>(__ID, "LFO_EN")) = 1; //Enable LFO
-
+	__toggleLfo->buttonClicked(__toggleLfo);
+	if (__toggleLfo->getValue()) {
+		__toggleLfo->setButtonText("LFO: Enabled");
+	} 
+	else {
+			__toggleLfo->setButtonText("LFO: Disabled");
 		}
-		else {
-			__toggleLfo.setColour(ToggleButton::tickDisabledColourId, Colours::darkgrey);
-			__toggleLfo.setButtonText("LFO: Disabled");
-			
-			//*(Global->paramHandler->Get<AudioParameterBool>(__ID, "LFO_EN")) = 0; //Disable LFO
-
-		}
-		lfoEnabled = !lfoEnabled;
-	}
 }

@@ -17,19 +17,21 @@ InformationComponent::InformationComponent(){
     addAndMakeVisible(__authors);
     __authors.setFont(f);
     __authors.setText("Anton, Andreas, Klas \nLukas, Sarosh, Stas", NotificationType::dontSendNotification);
+
+	// variables
+	x = 450; //starting x position
+	y = 150; //starting y position
+	midX = 640;
+	midY = 225;
+	w = 380; //width of component
+	h = 200; //height of component
+
+	// shadow stuff
+	startAlpha = 0.3f;
+	endAlpha = 0.05f;
+	offset = 10;
 }
 
-// variables
-int x = 450; //starting x position
-int y = 150; //starting y position
-int midX = 640;
-int midY = 225;
-int w = 380; //width of component
-int h = 200; //height of component
-
-float startAlpha = 0.3f;
-float endAlpha = 0.05f;
-int offset = 10;
 
 void InformationComponent::paint (Graphics& g){
     

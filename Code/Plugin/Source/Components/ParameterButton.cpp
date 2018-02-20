@@ -35,9 +35,26 @@ ParameterButton::~ParameterButton()
 ParameterButton::ParameterButton(AudioProcessorParameter& p)
 	: ToggleButton(p.getName(256)), param(p)
 {
+	__value = 0;
+	param.setValueNotifyingHost((bool)__value);
 	setColour(ToggleButton::tickDisabledColourId, Colours::darkgrey);
 }
 
-void ParameterButton::clicked() {
-	param.setValueNotifyingHost((bool)ToggleButton::getToggleState);
+void ParameterButton::setValue(int value) {
+	__value = value;
+}
+
+int ParameterButton::getValue() {
+	return __value;
+}
+
+void ParameterButton::buttonClicked(Button* button) {
+	if (param.getValue()) { // if value = 1 (enabled)
+		setValue(0);
+		setColour(ToggleButton::tickDisabledColourId, Colours::darkgrey);
+	} else { //disabled
+		setValue(1);
+		setColour(ToggleButton::tickColourId, Colours::skyblue);
+	}
+	param.setValueNotifyingHost((bool)__value);
 }
