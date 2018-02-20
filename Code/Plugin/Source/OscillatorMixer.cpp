@@ -29,12 +29,7 @@ void OscillatorMixer::__RenderBlock(AudioBuffer<T>& buffer)
 	for (auto&& elem : __oscillators)
 	{
 		if (*(std::get<2>(elem))) {
-			AudioBuffer<T> tmp(buffer.getNumChannels(), buffer.getNumSamples());
-			std::get<0>(elem).RenderBlock(tmp);
-			for (size_t i = 0; i < tmp.getNumChannels(); i++)
-			{
-				buffer.addFrom(i, 0, tmp, i, 0, tmp.getNumSamples(), *(std::get<1>(elem)));
-			}
+			std::get<0>(elem).RenderBlock(buffer);
 		}
 	}
 

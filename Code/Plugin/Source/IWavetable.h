@@ -4,7 +4,9 @@
 class IWavetable
 {
 protected:
-	int __length;
+	static const int __length = 2048;
+	static const int __NrTables = 10;
+	double __tables[__NrTables][__length];
 public:
 	int getLength() const
 	{
@@ -12,7 +14,32 @@ public:
 	}
 	virtual double getSample(double phase, double frequency) const = 0;
 	virtual float getSample(double phase, float frequency) const = 0 ;
+	
+
+
+	struct tableSampleLocation{
+		int tableNr;
+		double diff;
+		int i_1;
+		int i_2;
+	};
+
+	template<bool B> friend  double getSampleFromLoc(const tableSampleLocation& t, const IWavetable* w);
+
+	inline static tableSampleLocation getLoc(double idx, double freq) {
+		int tableNr = freq < 20 ? 0 : floor(log2(freq / 20));
+		if (tableNr > __NrTables) tableNr = __NrTables - 1;
+		double diff = floor(idx) - idx;
+		int i = static_cast<int>(idx);
+		return { tableNr,
+				diff,
+				i%__length, 
+				i%__length 
+		};
+	}
 };
+
+
 
 enum WAVE_TYPE : unsigned int {
 	SINE = 0,
