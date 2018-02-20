@@ -1,5 +1,6 @@
 #include "WavetableOsc.h"
-
+#include "Wavetable.h"
+ 
 WavetableOsc::WavetableOsc(int ID, double sampleRate) :
 	IGenerator(sampleRate),
 	IVSTParameters(ID),
@@ -126,31 +127,48 @@ void WavetableOsc::__RenderBlock(AudioBuffer<T>& buffer) {
 	
 	
 	setWaveform(toWAVE_TYPE(*__waveType));
-
+	auto buffs = buffer.getArrayOfWritePointers();
 
 	auto nextEvent = this->getNextEventOffset();
-	for (size_t i = 0; i < buffer.getNumSamples(); i++)
+	auto numSampels = buffer.getNumSamples();
+
+	float gains[4] = { *__sinAmp , *__sqAmp,*__sawAmp,*__triAmp };
+	double calcFreq = __frequency * pow(2.0, *__octave + (((*__offset) + (*__detune)) / 12.0));
+	double tmpInc = __wavetable->getLength() / __sampleRate;
+
+	for (size_t i = 0; i < numSampels; i++)
 	{
 		if (i == nextEvent) {
 			nextEvent = this->HandleEvent();
+			calcFreq = __frequency * pow(2.0, *__octave + (((*__offset) + (*__detune)) / 12.0));
+			
 		}
 
-		double tmpFreq = __frequency * pow(2.0, *__octave + (((*__offset) + (*__detune))/12.0));
-
+		
+		double tmpFreq = calcFreq;
 		__lfo.apply(tmpFreq);
-		double inc = __wavetable->getLength() * tmpFreq / __sampleRate;
+		double inc = tmpInc * tmpFreq;
 
-		T envStep = __envelope.GenerateNextStep(__sustain);;
+		auto tgt = IWavetable::getLoc(__phase, tmpFreq);
 
-		T samp = tables[WAVE_TYPE::SINE]->getSample(__phase, tmpFreq)*envStep* (*__sinAmp);
-		samp += tables[WAVE_TYPE::SQUARE]->getSample(__phase, tmpFreq)*envStep* (*__sqAmp);
-		samp += tables[WAVE_TYPE::SAW]->getSample(__phase, tmpFreq)*envStep* (*__sawAmp);
-		samp += tables[WAVE_TYPE::TRI]->getSample(__phase, tmpFreq)*envStep* (*__triAmp);
+
+		T samp = getSampleFromLoc<SINE>(tgt) *gains[0];
+		samp += getSampleFromLoc<SQUARE>(tgt) *gains[1];
+		samp += getSampleFromLoc<SAW>(tgt) *gains[2];
+		samp += getSampleFromLoc<TRI>(tgt) *gains[3];
+		samp *= __envelope.GenerateNextStep(__sustain);
 
 		__phase += inc;
 
-		for(int j = 0; j < buffer.getNumChannels(); j++)
-			buffer.setSample(j, i, samp);
+		if (buffer.getNumChannels() == 2) {
+			buffs[0][i] += samp;
+			buffs[1][i] += samp;
+		}
+		else{
+			for (int j = 0; j < buffer.getNumChannels(); j++)
+				buffs[j][i]+= samp;
+		}
+		
 	}
 }
 

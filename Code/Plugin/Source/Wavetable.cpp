@@ -6,12 +6,11 @@
 * Sinewave
 */
 
-SinWavetable::SinWavetable(int size)
+SinWavetable::SinWavetable()
 {
-	__length = size;
-	for (int i = 0; i < size; i++)
+	for (int i = 0; i < __length; i++)
 	{
-		__table[i] = sin(double_Pi * 2 * i / size);
+		__tables[0][i] = sin(double_Pi * 2 * i / __length);
 	}
 }
 SinWavetable::~SinWavetable()
@@ -23,7 +22,7 @@ T SinWavetable::__getSample(double idx, T frequency) const
 {
 	double diff = floor(idx) -idx;
 	int i = static_cast<int>(idx);
-	return __table[i % __length] * (1-diff) + __table[(i+1) % __length] * diff;
+	return __tables[0][i % __length] * (1-diff) + __tables[0][(i+1) % __length] * diff;
 }
 
 
@@ -34,13 +33,11 @@ template float SinWavetable::__getSample(double idx, float frequency) const;
 * Squarewave
 */
 
-SquareWavetable::SquareWavetable(int size, double sampleRate)
+SquareWavetable::SquareWavetable(double sampleRate)
 {
-
-	__length = size;
 	double omega = double_Pi * 2 / __length;
 	//int nrOfharms = sampleRate / 2 / 20 * j;
-	for (int k = 0; k < __nrOfTables; k++)
+	for (int k = 0; k < __NrTables; k++)
 	{
 		for (int i = 0; i < __length; i++)
 		{
@@ -68,7 +65,7 @@ template<typename T>
 T SquareWavetable::__getSample(double idx, T frequency) const
 {
 	int tableNr = frequency < 20 ? 0 : floor(log2(frequency / 20)); 
-	if (tableNr > __nrOfTables) tableNr = __nrOfTables-1;
+	if (tableNr > __NrTables) tableNr = __NrTables-1;
 	double diff = floor(idx) - idx;
 	int i = static_cast<int>(idx);
 	return __tables[tableNr][i % __length] * (1.0-diff) + __tables[tableNr][(i+1) % __length] * diff;
@@ -80,13 +77,13 @@ template float SquareWavetable::__getSample(double idx, float frequency) const;
  * Sawtoothwave
  */
 
-SawWavetable::SawWavetable(int size, double sampleRate)
+SawWavetable::SawWavetable( double sampleRate)
 {
 
-	__length = size;
+
 	double omega = double_Pi * 2 / __length;
 	//int nrOfharms = sampleRate / 2 / 20 * j;
-	for (int k = 0; k < __nrOfTables; k++)
+	for (int k = 0; k < __NrTables; k++)
 	{
 		for (int i = 0; i < __length; i++)
 		{
@@ -113,7 +110,7 @@ template<typename T>
 T SawWavetable::__getSample(double idx, T frequency) const
 {
 	int tableNr = frequency < 20 ? 0 : floor(log2(frequency / 20));
-	if (tableNr > __nrOfTables) tableNr = __nrOfTables-1;
+	if (tableNr > __NrTables) tableNr = __NrTables-1;
 	double diff = floor(idx) - idx;
 	int i = static_cast<int>(idx);
 	return __tables[tableNr][i % __length] * (1.0 - diff) + __tables[tableNr][(i + 1) % __length] * diff;
@@ -126,13 +123,13 @@ template float SawWavetable::__getSample(double idx, float frequency) const;
 * Trianglewave
 */
 
-TriangleWavetable::TriangleWavetable(int size, double sampleRate)
+TriangleWavetable::TriangleWavetable( double sampleRate)
 {
 
-	__length = size;
+	
 	double omega = double_Pi * 2 / __length;
 	//int nrOfharms = sampleRate / 2 / 20 * j;
-	for (int k = 0; k < __nrOfTables; k++)
+	for (int k = 0; k < __NrTables; k++)
 	{
 		for (int i = 0; i < __length; i++)
 		{
@@ -160,7 +157,7 @@ template<typename T>
 T TriangleWavetable::__getSample(double idx, T frequency) const
 {
 	int tableNr = frequency < 20 ? 0 : floor(log2(frequency / 20));
-	if (tableNr > __nrOfTables) tableNr = __nrOfTables-1;
+	if (tableNr > __NrTables) tableNr = __NrTables-1;
 	double diff = floor(idx) - idx;
 	int i = static_cast<int>(idx);
 	return __tables[tableNr][i % __length] * (1.0 - diff) + __tables[tableNr][(i + 1) % __length] * diff;
@@ -175,11 +172,10 @@ const IWavetable* tables[WAVE_TYPE::__COUNT] = { nullptr,nullptr,nullptr,nullptr
 void populateWavetable(double sampleRate)
 {
 	freeWavetable();
-	int tmpSize = 2048;
-	tables[WAVE_TYPE::SINE] = new SinWavetable(tmpSize);
-	tables[WAVE_TYPE::SQUARE] = new SquareWavetable(tmpSize, sampleRate);
-	tables[WAVE_TYPE::SAW] = new SawWavetable(tmpSize, sampleRate);
-	tables[WAVE_TYPE::TRI] = new TriangleWavetable(tmpSize, sampleRate);
+	tables[WAVE_TYPE::SINE] = new SinWavetable();
+	tables[WAVE_TYPE::SQUARE] = new SquareWavetable(sampleRate);
+	tables[WAVE_TYPE::SAW] = new SawWavetable(sampleRate);
+	tables[WAVE_TYPE::TRI] = new TriangleWavetable(sampleRate);
 }
 
 void freeWavetable() {
