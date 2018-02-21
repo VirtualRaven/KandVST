@@ -44,11 +44,11 @@ public:
     double getTailLengthSeconds() const override                                { return 0.0; }
 
   
-    int getNumPrograms() override                                               { return 0; }
-    int getCurrentProgram() override                                            { return 0; }
-    void setCurrentProgram (int /*index*/) override                             {}
-    const String getProgramName (int /*index*/) override                        { return String(); }
-    void changeProgramName (int /*index*/, const String& /*name*/) override     {}
+	int getNumPrograms() override;
+	int getCurrentProgram() override;
+	void setCurrentProgram(int index) override;
+	const String getProgramName(int index) override;
+	void changeProgramName(int index, const String& name) override;
 
 	// Inherited via AudioProcessor
 	virtual void getStateInformation(juce::MemoryBlock & destData) override;
@@ -60,6 +60,7 @@ private:
     void process (AudioBuffer<FloatType>& buffer, MidiBuffer& midiMessages);
 
 	PipelineManager* __pipManager;
+	int __currentPreset = 0;
 
     Synthesiser synth;
     static BusesProperties getBusesProperties();

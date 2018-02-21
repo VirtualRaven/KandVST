@@ -62,6 +62,31 @@ AudioProcessor::BusesProperties PluginProcessor::getBusesProperties()
                             .withOutput ("Output", AudioChannelSet::stereo(), true);
 }
 
+int PluginProcessor::getNumPrograms()
+{
+	return Global->presetManager->GetPresetCount();
+}
+
+int PluginProcessor::getCurrentProgram()
+{
+	return Global->presetManager->GetCurrentPreset();
+}
+
+void PluginProcessor::setCurrentProgram(int index)
+{
+	Global->presetManager->LoadPreset(index);
+}
+
+const String PluginProcessor::getProgramName(int index)
+{
+	return Global->presetManager->GetPresetNames().at(index);
+}
+
+void PluginProcessor::changeProgramName(int index, const String & name)
+{
+	//TODO
+}
+
 void PluginProcessor::getStateInformation(juce::MemoryBlock & destData)
 {
 	//this needs rewrite
