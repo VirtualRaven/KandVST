@@ -16,7 +16,7 @@ __owner(owner)
 PresetManager::~PresetManager()
 {
 	for (auto a : __presets) {
-		delete (a.second);
+		delete (std::get<1>(a));
 	}
 }
 
@@ -35,7 +35,7 @@ void PresetManager::RefreshPresets()
 			continue;
 		if (el->hasTagName("KandVSTPreset")&& el->hasAttribute("name"))
 		{
-					__presets[el->getStringAttribute("name").toStdString()] = el;
+			__presets.push_back(std::make_tuple(el->getStringAttribute("name").toStdString(), el));
 		}
 		
 	}
@@ -44,7 +44,21 @@ void PresetManager::RefreshPresets()
 
 void PresetManager::LoadPreset(std::string name)
 {
-	XmlElement* xmlState(__presets[name]);
+	for (int i = 0; i < __presets.size(); i++)
+	{
+		if (std::get<0>(__presets.at(i)) == name)
+		{
+			LoadPreset(i);
+			return;
+		}
+	}
+}
+
+void PresetManager::LoadPreset(int index)
+{
+	XmlElement *xmlState;
+	xmlState = std::get<1>(__presets.at(index)); 
+
 	if (xmlState != nullptr)
 	{
 		if (xmlState->hasTagName("KandVSTPreset"))
@@ -57,11 +71,21 @@ void PresetManager::LoadPreset(std::string name)
 				}
 		}
 	}
+
+	__currentPreset = index;
 }
 
 void PresetManager::SavePreset(std::string name)
 {	
-	delete __presets[name];
+	for (int i = 0; i < __presets.size(); i++)
+	{
+		if (std::get<0>(__presets.at(i)) == name)
+		{
+			delete std::get<1>(__presets.at(i));
+			__presets.erase(__presets.begin() + i);
+		}
+	}
+
 	XmlElement* el = new XmlElement("KandVSTPreset");
 	el->setAttribute("name", name);
 	for (auto&& param : __owner->getParameters())
@@ -74,21 +98,66 @@ void PresetManager::SavePreset(std::string name)
 	}
 
 	el->writeToFile(File(getPresetPath() + String("/") + name + String(".xml")), "");
-	__presets[name] = el;
+	
+	if (PresetExists(name))
+	{
+		for (auto preset : __presets)
+		{
+			if (std::get<0>(preset) == name)
+			{
+				std::get<1>(preset) = el;
+				continue;
+			}
+		}
+	}
+	else
+	{
+		std::make_tuple(name, el);
+	}
+}
+
+int PresetManager::GetPresetCount()
+{
+	return __presets.size();
+}
+
+int PresetManager::GetPresetIndex(std::string name)
+{
+	for (int i = 0; i < __presets.size(); i++)
+	{
+		if (std::get<0>(__presets.at(i)) == name)
+		{
+			return i;
+		}
+	}
+
+	return 0;
+}
+
+int PresetManager::GetCurrentPreset()
+{
+	return __currentPreset;
 }
 
 bool PresetManager::PresetExists(std::string name)
 {
-	return __presets.count(name) == 1;
+	for (auto preset : __presets)
+	{
+		if (std::get<0>(preset) == name)
+		{
+			return true;
+		}
+	}
+	return false;
 }
 
 std::vector<std::string> PresetManager::GetPresetNames()
 {
 	std::vector<std::string> presets;
 
-	for (auto p : __presets)
+	for (auto preset : __presets)
 	{
-		presets.push_back(p.first);
+		presets.push_back(std::get<0>(preset));
 	}
 
 	return presets;
