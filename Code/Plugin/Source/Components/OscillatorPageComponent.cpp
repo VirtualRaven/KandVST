@@ -29,7 +29,7 @@ __lfo(ID)
 }
 
 void OscillatorPageComponent::paint(Graphics& g){
-	g.setColour(Colour::fromRGB(56, 56, 56));
+	g.setColour(Colour::fromRGB(40, 40, 40));
 	g.fillAll();
 }
 
