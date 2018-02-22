@@ -22,7 +22,6 @@ PluginGUI::PluginGUI(PluginProcessor& owner)
 	addAndMakeVisible(__keyboard);
 	__keyboard.setKeyWidth(__keyboard.getKeyWidth()+10.0f);
 
-
 	setResizable(false, false);
 	setSize(1280, 720);
 }
@@ -36,6 +35,10 @@ void PluginGUI::paint (Graphics& g)
 {
     g.setColour (Colour::fromRGB(36,36,36));
     g.fillAll();
+
+	Image titleImage = ImageFileFormat::loadFrom(Resources::Images::Title3_png, sizeof(Resources::Images::Title3_png));
+	g.setOpacity(1.0f);
+	g.drawImageAt(titleImage, 1000, 0, false);
 }
 
 void PluginGUI::resized()

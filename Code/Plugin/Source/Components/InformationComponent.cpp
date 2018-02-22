@@ -78,7 +78,7 @@ void InformationComponent::resized(){
     Rectangle<int> r (x,y,w,h);
 	r.removeFromTop(60);
     __version.setBounds(r);
-	__version.setCentrePosition(midX + 10.f, r.getY());
+	__version.setCentrePosition(midX + 10.0f, r.getY());
     r.removeFromTop(40);
     __authors.setBounds(r);
     __authors.setCentrePosition(midX + 10.0f, r.getY());
