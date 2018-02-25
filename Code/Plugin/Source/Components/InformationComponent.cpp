@@ -20,7 +20,7 @@ InformationComponent::InformationComponent(){
 
 	// variables
 	x = 310; //starting x position
-	y = 150; //starting y position
+	y = 50; //starting y position
 	midX = 500;
 	midY = 225;
 	w = 380; //width of component
@@ -39,7 +39,7 @@ void InformationComponent::paint (Graphics& g){
     Path myPath;
     Rectangle<int> infoWindow(x,y,w,h);
 	myPath.addRectangle(infoWindow);
-    g.setColour(Colour::fromRGB(43,68,78));
+    g.setColour(Colour::fromRGB(40,60,90));
     g.fillPath(myPath);
 
     // == adding inner shadows using gradients == 

@@ -19,5 +19,5 @@ void MasterComponent::paint(Graphics& g){
 
 void MasterComponent::resized() {
 	//__presetComponent.setCentrePosition(getLocalBounds().getCentre());
-	__infoComponent.setBounds(getLocalBounds());
+	__infoComponent.setBounds(getLocalBounds().removeFromTop(400));
 }
