@@ -66,10 +66,10 @@ double EnvelopeGenerator::GenerateNextStep(bool sustain)
 
 void EnvelopeGenerator::RegisterParameters(int ID)
 {
-	Global->paramHandler->RegisterFloat(ID, "ENV_ATTACK", "Attack", 0.1f, 2.0f, 0.2f);
-	Global->paramHandler->RegisterFloat(ID, "ENV_DECAY", "Decay", 0.1f, 2.0f, 0.2f);
+	Global->paramHandler->RegisterFloat(ID, "ENV_ATTACK", "Attack", 0.01f, 2.0f, 0.2f);
+	Global->paramHandler->RegisterFloat(ID, "ENV_DECAY", "Decay", 0.01f, 2.0f, 0.2f);
 	Global->paramHandler->RegisterFloat(ID, "ENV_SUSTAIN", "Sustain", 0.0f, 2.0f, 0.2f);
-	Global->paramHandler->RegisterFloat(ID, "ENV_RELEASE", "Release", 0.1f, 2.0f, 0.2f);
+	Global->paramHandler->RegisterFloat(ID, "ENV_RELEASE", "Release", 0.01f, 2.0f, 0.2f);
 }
 
 void EnvelopeGenerator::Reset(uint8 vel) {
