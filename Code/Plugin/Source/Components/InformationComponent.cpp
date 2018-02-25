@@ -19,9 +19,9 @@ InformationComponent::InformationComponent(){
     __authors.setText("Anton, Andreas, Klas, Lukas, Sarosh, Stas", NotificationType::dontSendNotification);
 
 	// variables
-	x = 450; //starting x position
+	x = 310; //starting x position
 	y = 150; //starting y position
-	midX = 640;
+	midX = 500;
 	midY = 225;
 	w = 380; //width of component
 	h = 200; //height of component

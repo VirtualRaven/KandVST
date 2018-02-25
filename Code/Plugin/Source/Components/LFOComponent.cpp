@@ -32,10 +32,12 @@ void LFOComponent::paint(Graphics& g){
 }
 
 void LFOComponent::resized(){
-	Rectangle<int> r = getLocalBounds().reduced(16);
-	__toggleLfo->setBounds(r.removeFromTop(25));
-	__ratio->setBounds(r.removeFromLeft(50));
-	__type->setBounds(r.removeFromLeft(50));
-	__amp->setBounds(r.removeFromLeft(50));
+	Rectangle<int> r = getLocalBounds();
+	__toggleLfo->setBounds(r.removeFromTop(25).removeFromRight(150));
+	Rectangle<int> sliders(r);
+	sliders.removeFromLeft(50);
+	__ratio->setBounds(sliders.removeFromLeft(50));
+	__type->setBounds(sliders.removeFromLeft(50));
+	__amp->setBounds(sliders.removeFromLeft(50));
 
 }

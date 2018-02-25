@@ -7,6 +7,7 @@
 #include "Components\ConsoleComponent.h"
 #include "Components\MasterPageComponent.h"
 #include "Components\OscillatorPageComponent.h"
+#include "OurLookAndFeel.h"
 
 class PluginGUI  : public AudioProcessorEditor                    
 {
@@ -22,6 +23,7 @@ private:
 	TabbedComponent __tabComponent;
 	MidiKeyboardComponent __keyboard;
 	ConsoleComponent __cc;
+	OurLookAndFeel ourLookAndFeel;
     //==============================================================================
 	PluginProcessor& getProcessor() const
     {

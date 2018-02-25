@@ -9,6 +9,8 @@ PluginGUI::PluginGUI(PluginProcessor& owner)
 	__keyboard(owner.keyboardState,MidiKeyboardComponent::Orientation::horizontalKeyboard),
 	__cc()
 {
+	setLookAndFeel(&ourLookAndFeel);
+
 	__tabComponent.addTab("M", Colours::darkgreen, new MasterComponent(), true);
 
 	for (int i = 0; i < 4; i++)
@@ -23,7 +25,7 @@ PluginGUI::PluginGUI(PluginProcessor& owner)
 	__keyboard.setKeyWidth(__keyboard.getKeyWidth()+10.0f);
 
 	setResizable(false, false);
-	setSize(1280, 720);
+	setSize(1000, 720);
 }
 
 PluginGUI::~PluginGUI()

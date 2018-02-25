@@ -86,23 +86,17 @@ IVSTParameters(ID)
 }
 
 void OscillatorComponent::paint(Graphics& g){
-	/*Path oscPath;
-	oscPath.addRectangle(Rectangle<int>(10, 50, 300, 200));
-	g.setColour(Colour::fromRGB(20, 20, 20));
-	g.fillPath(oscPath);
-	g.setColour(Colours::silver);
-	g.strokePath(oscPath, PathStrokeType(0.5f));
-
-	g.setColour(Colours::white);
-	g.drawText("OSC", oscPath.getBounds(), Justification::centred, false);*/
+	
 }
 
 
 void OscillatorComponent::resized(){
-	Rectangle<int> bounds(getLocalBounds().reduced(16));
-	__waveformComp.setBounds(bounds.removeFromTop(300));
-	Rectangle<int> waveforms(bounds.removeFromTop(jmax<int>(bounds.getWidth() / 5, 100)));
-	int sliderw = bounds.getWidth() / 5;
+	Rectangle<int> bounds(getLocalBounds());
+		__waveformComp.setBounds(bounds.removeFromTop(280));
+	//Rectangle<int> waveforms(bounds.removeFromTop(jmax<int>(bounds.getWidth() / 5, 100)));
+	Rectangle<int> waveforms(bounds.getX()+50, bounds.getY()+15, 300, 60);
+	int sliderw = waveforms.getWidth() / 5;
+
 	// waves
 	__sineSlider->setBounds(waveforms.removeFromLeft(sliderw));
 	__squareSlider->setBounds(waveforms.removeFromLeft(sliderw));
@@ -111,17 +105,15 @@ void OscillatorComponent::resized(){
 	__noiseSlider->setBounds(waveforms.removeFromLeft(sliderw));
 
 	bounds.removeFromTop(15);
-	Rectangle<int> atrSliders(bounds.removeFromTop(jmax<int>(bounds.getWidth() / 3,100)));
-	sliderw = bounds.getWidth() / 3;
+	//Rectangle<int> atrSliders(bounds.removeFromTop(jmax<int>(bounds.getWidth() / 3,100)));
+	Rectangle<int> atrSliders(bounds.getX()+50, waveforms.getY()+100, 300, 100);
+	sliderw = atrSliders.getWidth() / 3;
 
 	// detune, offset, octave
 	__octaveSlider->setBounds(atrSliders.removeFromLeft(sliderw));
 	__detuneSlider->setBounds(atrSliders.removeFromLeft(sliderw));
 	__offsetSlider->setBounds(atrSliders.removeFromLeft(sliderw));
 }
-
-
-
 
 
 void OscillatorComponent::timerCallback()
