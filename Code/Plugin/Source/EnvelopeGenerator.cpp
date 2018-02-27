@@ -100,6 +100,7 @@ EnvelopeGenerator::EnvelopeGenerator(int ID,double sampleRate):
 	__sAttack(0.05),
 	__sDecay(0.1),
 	__sRelease(0.3),
+	__state(4),
 	__sSustain(1.0),
 	__amplitude(0),
 	__vel(127),
@@ -115,4 +116,8 @@ EnvelopeGenerator::EnvelopeGenerator(int ID,double sampleRate):
 
 EnvelopeGenerator::~EnvelopeGenerator()
 {
+}
+
+bool EnvelopeGenerator::isActive() const {
+	return __state != 4;
 }

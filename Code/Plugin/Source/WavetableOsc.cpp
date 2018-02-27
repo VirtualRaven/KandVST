@@ -6,6 +6,7 @@ WavetableOsc::WavetableOsc(int ID, double sampleRate) :
 	IVSTParameters(ID),
 	__envelope(__ID,sampleRate),
 	__note(0),
+	__sustain(false),
 	__wavetable(tables[WAVE_TYPE::SAW]),
 	__phase(0),
 	__frequency(0),
@@ -13,6 +14,7 @@ WavetableOsc::WavetableOsc(int ID, double sampleRate) :
 	__noiseBuffer(static_cast<int>(sampleRate)),
 	__rand(174594158),
 	__rand_index(0)
+
 {
 	__waveType = Global->paramHandler->Get<AudioParameterInt>(__ID, "WAVE_TYPE");
 	__octave = Global->paramHandler->Get<AudioParameterInt>(__ID, "OSC_OCTAVE");
@@ -148,13 +150,26 @@ void WavetableOsc::__RenderBlock(AudioBuffer<T>& buffer,double gain) {
 	double calcFreq = __frequency * pow(2.0, *__octave + (((*__offset) + (*__detune)) / 12.0));
 	double tmpInc = __wavetable->getLength() / __sampleRate;
 
-	for (size_t i = 0; i < numSampels; i++)
+	for (int i = 0; i < numSampels; i++)
 	{
 		if (i == nextEvent) {
 			nextEvent = this->HandleEvent();
 			calcFreq = __frequency * pow(2.0, *__octave + (((*__offset) + (*__detune)) / 12.0));
 			
 		}
+
+		//This code makes sure that we do not render anything
+		//If the envelope isn't active we skip forward to the next midi event
+		//or if no other midi event exists we exit the function 
+		if (!__envelope.isActive()) {
+			if (nextEvent < numSampels && nextEvent  > i) {
+				i = nextEvent;
+				nextEvent = this->HandleEvent();
+				calcFreq = __frequency * pow(2.0, *__octave + (((*__offset) + (*__detune)) / 12.0));
+			}
+			else break; 
+		}
+	
 
 		
 		double tmpFreq = calcFreq;

@@ -33,6 +33,7 @@ public:
 	double GenerateNextStep(bool sustain);
 	static void RegisterParameters(int ID);
 	EnvelopeGenerator(int ID,double sampleRate);
+	bool isActive() const;
 	~EnvelopeGenerator();
 };
 #endif //ENVELOPE_GENERATOR_H
