@@ -82,7 +82,12 @@ void WavetableOsc::renderImage(Image* image,int width, int height)
 	{
 		if (i > 0)
 			
-			g.drawLine(lastx, lasty, i, height / 2 - hMul*data[i], 3);
+			g.drawLine(
+				static_cast<float>(lastx),
+				static_cast<float>(lasty),
+				static_cast<float>(i),
+				static_cast<float>(height / 2 - hMul*data[i]),
+				3);
 		lastx = i;
 		lasty = height / 2 - hMul*data[i];
 	}

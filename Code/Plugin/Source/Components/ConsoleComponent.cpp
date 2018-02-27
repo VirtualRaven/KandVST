@@ -34,7 +34,7 @@ void ConsoleComponent::resized()
 
 }
 
-bool ConsoleComponent::keyPressed(const KeyPress & key, Component * originatingComponent)
+bool ConsoleComponent::keyPressed(const KeyPress & key, Component * /*originatingComponent*/)
 {
 	if (key == KeyPress::upKey) {
 		if (__lastCommands.size() == 0)
@@ -92,7 +92,7 @@ bool ConsoleComponent::keyPressed(const KeyPress & key, Component * originatingC
 	return false;
 }
 
-void setParam(String id, bool value) {
+void setParam(String id, bool /*value*/) {
 
 }
 void ConsoleComponent::setParam(String id, std::string value) {

@@ -9,7 +9,7 @@ PresetsComponent::PresetsComponent()
 { 
 	__refresh.addListener(this);
 	Image refImage = ImageFileFormat::loadFrom(Resources::Icons::refresh_png, sizeof(Resources::Icons::refresh_png));
-	__refresh.setImages(false, true, true, refImage, 1.0, Colours::transparentBlack, refImage, 0.7, Colours::transparentBlack, refImage, 0.5, Colours::transparentBlack);
+	__refresh.setImages(false, true, true, refImage, 1.0f, Colours::transparentBlack, refImage, 0.7f, Colours::transparentBlack, refImage, 0.5f, Colours::transparentBlack);
 	addAndMakeVisible(__presets);
 	addAndMakeVisible(__refresh);
 
