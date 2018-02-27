@@ -19,11 +19,10 @@ public:
 	void resized();
 
 private:
-	
+	OurLookAndFeel ourLookAndFeel;
 	TabbedComponent __tabComponent;
 	MidiKeyboardComponent __keyboard;
 	ConsoleComponent __cc;
-	OurLookAndFeel ourLookAndFeel;
     //==============================================================================
 	PluginProcessor& getProcessor() const
     {

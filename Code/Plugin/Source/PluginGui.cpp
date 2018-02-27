@@ -4,7 +4,8 @@
 #include "PluginGui.h"
 //==============================================================================
 PluginGUI::PluginGUI(PluginProcessor& owner)
-    : AudioProcessorEditor (owner),
+	: AudioProcessorEditor(owner),
+	ourLookAndFeel(),
 	__tabComponent(TabbedButtonBar::Orientation::TabsAtTop),
 	__keyboard(owner.keyboardState,MidiKeyboardComponent::Orientation::horizontalKeyboard),
 	__cc()
@@ -30,6 +31,8 @@ PluginGUI::PluginGUI(PluginProcessor& owner)
 
 PluginGUI::~PluginGUI()
 {
+	//Has to unset our lookAndFeel before it is destroyed
+	this->setLookAndFeel(nullptr);
 }
 
 //==============================================================================
