@@ -9,7 +9,7 @@ PresetRow::~PresetRow()
 {
 }
 
-void PresetRow::paintListBoxItem(int rowNumber, Graphics & g, int width, int height, bool rowIsSelected)
+void PresetRow::paintListBoxItem(int /*rowNumber*/, Graphics & /*g*/, int /*width*/, int /*height*/, bool /*rowIsSelected*/)
 {
 }
 

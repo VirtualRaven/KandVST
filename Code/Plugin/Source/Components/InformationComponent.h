@@ -19,7 +19,7 @@ public:
 private:
     //==============================================================================
     Label __version, __authors;
-	int x, y, midX, midY, w, h, offset;
+	float x, y, midX, midY, w, h, offset;
 	float startAlpha, endAlpha;
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (InformationComponent)

@@ -8,8 +8,8 @@ ParameterButton::~ParameterButton()
 ParameterButton::ParameterButton(AudioProcessorParameter& p)
 	: TextButton(p.getName(256)), param(p)
 {
-	setValue(param.getValue()); //Set Default value
-	param.setValueNotifyingHost(__value);
+	setValue(static_cast<int>(param.getValue())); //Set Default value
+	param.setValueNotifyingHost(static_cast<float>(__value));
 	setColour(TextButton::ColourIds::buttonOnColourId, Colours::green);
 	setColour(TextButton::ColourIds::buttonColourId, Colours::darkgrey);
 	//setColour(ToggleButton::tickDisabledColourId, Colours::darkgrey);
@@ -21,9 +21,9 @@ ParameterButton::ParameterButton(AudioProcessorParameter& p)
 
 void ParameterButton::setValue(int value) {
 	__value = value;
-	param.setValue(__value);
+	param.setValue(static_cast<float>(__value));
 	setToggleState(__value, juce::NotificationType::dontSendNotification);
-	param.setValueNotifyingHost(__value);
+	param.setValueNotifyingHost(static_cast<float>(__value));
 }
 
 void ParameterButton::timerCallback()
@@ -33,7 +33,7 @@ void ParameterButton::timerCallback()
 	else
 	{
 		if (__value != param.getValue()) {
-			setValue(param.getValue());
+			setValue(static_cast<int>(param.getValue()));
 		}
 		lock.unlock();
 	}
