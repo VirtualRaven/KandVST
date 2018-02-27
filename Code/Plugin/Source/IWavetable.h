@@ -1,13 +1,13 @@
 #ifndef IWAVETABLE_H
 #define IWAVETABLE_H
 
-#define NO_ASYNC_GEN //Comment to enable async generation of wavetabels
+//#define NO_ASYNC_GEN //Comment to enable async generation of wavetabels
 
 class IWavetable
 {
 	friend class WavetableOsc;
 protected:
-	static const int __length = 2048;
+	static const int __length = 4096;
 	static const int __NrTables = 10;
 	double __tables[__NrTables][__length];
 public:

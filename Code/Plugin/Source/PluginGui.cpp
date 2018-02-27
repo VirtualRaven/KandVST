@@ -10,24 +10,40 @@ PluginGUI::PluginGUI(PluginProcessor& owner)
 	__keyboard(owner.keyboardState,MidiKeyboardComponent::Orientation::horizontalKeyboard),
 	__cc()
 {
+	setResizable(false, false);
+	setSize(1000, 720);
+	__loadingImage.setImage(ImageFileFormat::loadFrom(Resources::Images::loading_png,sizeof(Resources::Images::loading_png)));
+
+	addAndMakeVisible(__loadingImage);
+	__loadingImage.setBounds(getLocalBounds());
+
+
+
+}
+
+
+void PluginGUI::InitializeGui()
+{
+	removeAllChildren();
 	setLookAndFeel(&ourLookAndFeel);
 
 	__tabComponent.addTab("M", Colours::darkgreen, new MasterComponent(), true);
 
 	for (int i = 0; i < 4; i++)
 	{
-		__tabComponent.addTab(std::to_string(i+1), Colours::darkgrey, new OscillatorPageComponent(i), true);
+		__tabComponent.addTab(std::to_string(i + 1), Colours::darkgrey, new OscillatorPageComponent(i), true);
 	}
 
-	__tabComponent.addTab("Console", Colours::darkgrey, &__cc,true);
+	__tabComponent.addTab("Console", Colours::darkgrey, &__cc, true);
 
 	addAndMakeVisible(__tabComponent);
 	addAndMakeVisible(__keyboard);
-	__keyboard.setKeyWidth(__keyboard.getKeyWidth()+10.0f);
+	__keyboard.setKeyWidth(__keyboard.getKeyWidth() + 10.0f);
 
-	setResizable(false, false);
-	setSize(1000, 720);
+
 }
+
+
 
 PluginGUI::~PluginGUI()
 {
@@ -56,3 +72,4 @@ void PluginGUI::resized()
 	__tabComponent.setBounds(localBounds);
 
 }
+

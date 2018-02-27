@@ -54,7 +54,7 @@ void WavetableOsc::renderImage(Image* image,int width, int height)
 
 	for (int i = 0; i < width; i++)
 	{
-		int ind = (i * 2048 / width);
+		int ind = (i * tables[0]->getLength() / width);
 
 		double samp = tables[WAVE_TYPE::SINE]->__tables[0][ind] * (*__sinAmp);
 		samp += tables[WAVE_TYPE::SQUARE]->__tables[0][ind] * (*__sqAmp);
