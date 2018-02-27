@@ -32,7 +32,8 @@ void FilterButterworth::__RenderBlock(AudioBuffer<T>& buffer)
 	}
 	__prevFc = __fc;
 
-	for (size_t i = 0; i < buffer.getNumSamples(); i++)
+	auto buff = buffer.getArrayOfWritePointers();
+	for (int i = 0; i < buffer.getNumSamples(); i++)
 	{
 		// Current y[i-2] is the previous y[i-1]
 		__prevY2[0] = __prevY1[0];
@@ -59,8 +60,8 @@ void FilterButterworth::__RenderBlock(AudioBuffer<T>& buffer)
 		__prevX1[1] = buffer.getSample(1, i);
 
 		// Change the sample
-		buffer.setSample(0, i, __currentLeft);
-		buffer.setSample(1, i, __currentLeft);
+		buff[0][i]=  static_cast<T>(__currentLeft);
+		buff[1][i] = static_cast<T>(__currentLeft);
 
 	}
 }

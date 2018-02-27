@@ -22,7 +22,7 @@ void OurLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int width, int 
 	const float rw = radius * 2.0f;
 	const float angle = rotaryStartAngle + sliderPos * (rotaryEndAngle - rotaryStartAngle);
 
-	Image& knobRef = ImageFileFormat::loadFrom(Resources::Icons::knobs_png, sizeof(Resources::Icons::knobs_png));
+	Image knobRef = ImageFileFormat::loadFrom(Resources::Icons::knobs_png, sizeof(Resources::Icons::knobs_png));
 	g.setOpacity(1.0f);
 	g.drawImage(knobRef, Rectangle<float>(x,y,width,height), RectanglePlacement::stretchToFit, false);
 

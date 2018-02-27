@@ -5,12 +5,12 @@
 ExampleEffect::ExampleEffect(int ID,double sampleRate):
 	IEffect(sampleRate),
 	IVSTParameters(ID),
-	__delayBuffer(2,sampleRate/4), //1/6 sec echo 
+	__delayBuffer(2,static_cast<int>(sampleRate/4)), //1/6 sec echo 
 	__delayPos(0)
 {
 	__delayMultiplier = Global->paramHandler->Get<AudioParameterFloat>(ID, "EX_DELAYMULTI");
 
-	for (size_t i = 0; i < __delayBuffer.getNumSamples(); i++)
+	for (int i = 0; i < __delayBuffer.getNumSamples(); i++)
 	{
 		__delayBuffer.setSample(0, i,0);
 		__delayBuffer.setSample(1, i, 0);
@@ -31,7 +31,7 @@ void ExampleEffect::RegisterParameters(int ID)
 template<typename T>
 void ExampleEffect::__RenderBlock(AudioBuffer<T>& buffer)
 {
-	for (size_t i = 0; i < buffer.getNumSamples(); i++)
+	for (int i = 0; i < buffer.getNumSamples(); i++)
 	{
 
 		float multi = *__delayMultiplier;

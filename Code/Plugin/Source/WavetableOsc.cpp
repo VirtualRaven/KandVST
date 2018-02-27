@@ -52,9 +52,8 @@ void WavetableOsc::renderImage(Image* image,int width, int height)
 	double max = 0.0;
 	double* data = new double[width];
 
-	for (size_t i = 0; i < width; i++)
+	for (int i = 0; i < width; i++)
 	{
-		double inc = 2.0*3.14*1.1;
 		int ind = (i * 2048 / width);
 
 		double samp = tables[WAVE_TYPE::SINE]->__tables[0][ind] * (*__sinAmp);
@@ -79,7 +78,7 @@ void WavetableOsc::renderImage(Image* image,int width, int height)
 		hMul = (height - 16) / 2.0;
 
 	double lastx = 0, lasty=(height - 16)/2;
-	for (size_t i = 0; i < width; i++)
+	for (int i = 0; i < width; i++)
 	{
 		if (i > 0)
 			
@@ -179,13 +178,13 @@ void WavetableOsc::__RenderBlock(AudioBuffer<T>& buffer,double gain) {
 		auto tgt = IWavetable::getLoc(__phase, tmpFreq);
 
 
-		T samp = getSampleFromLoc<SINE>(tgt) *gains[0];
-		samp += getSampleFromLoc<SQUARE>(tgt) *gains[1];
-		samp += getSampleFromLoc<SAW>(tgt) *gains[2];
-		samp += getSampleFromLoc<TRI>(tgt) *gains[3];
-		samp += __noiseBuffer[__rand_index++] * gains[4];
-		samp *= __envelope.GenerateNextStep(__sustain) * gain;
-
+		double tmp_samp = getSampleFromLoc<SINE>(tgt) *gains[0];
+		tmp_samp += getSampleFromLoc<SQUARE>(tgt) *gains[1];
+		tmp_samp += getSampleFromLoc<SAW>(tgt) *gains[2];
+		tmp_samp += getSampleFromLoc<TRI>(tgt) *gains[3];
+		tmp_samp += __noiseBuffer[__rand_index++] * gains[4];
+		tmp_samp *= __envelope.GenerateNextStep(__sustain) * gain;
+		T samp = static_cast<T>(tmp_samp);
 		__phase += inc;
 		__rand_index = __rand_index % __noiseBuffer.size();
 

@@ -84,7 +84,7 @@ const String PluginProcessor::getProgramName(int index)
 	return Global->presetManager->GetPresetNames().at(index);
 }
 
-void PluginProcessor::changeProgramName(int index, const String & name)
+void PluginProcessor::changeProgramName(int , const String & )
 {
 	//TODO
 }

@@ -11,7 +11,7 @@ public:
 	~OurLookAndFeel();
 
 	void drawRotarySlider(Graphics& g, int x, int y, int width, int height,
-		float sliderPos, const float rotaryStartAngle, const float rotaryEndAngle, Slider& slider);
+		float sliderPos, float rotaryStartAngle,  float rotaryEndAngle, Slider& slider) override;
 private :
 
 };

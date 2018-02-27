@@ -44,7 +44,7 @@ void PresetManager::RefreshPresets()
 
 void PresetManager::LoadPreset(std::string name)
 {
-	for (int i = 0; i < __presets.size(); i++)
+	for (size_t i = 0; i < __presets.size(); i++)
 	{
 		if (std::get<0>(__presets.at(i)) == name)
 		{
@@ -77,7 +77,7 @@ void PresetManager::LoadPreset(int index)
 
 void PresetManager::SavePreset(std::string name)
 {	
-	for (int i = 0; i < __presets.size(); i++)
+	for (size_t i = 0; i < __presets.size(); i++)
 	{
 		if (std::get<0>(__presets.at(i)) == name)
 		{
@@ -123,7 +123,7 @@ int PresetManager::GetPresetCount()
 
 int PresetManager::GetPresetIndex(std::string name)
 {
-	for (int i = 0; i < __presets.size(); i++)
+	for (size_t i = 0; i < __presets.size(); i++)
 	{
 		if (std::get<0>(__presets.at(i)) == name)
 		{

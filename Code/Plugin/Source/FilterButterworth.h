@@ -34,7 +34,7 @@ protected:
 	double __b[3] = { 0, 0, 0 };
 
 	float __fc;
-	float __fs;
+	double __fs;
 	double __sqrt2;
 
 	AudioParameterFloat* lpFrequency;

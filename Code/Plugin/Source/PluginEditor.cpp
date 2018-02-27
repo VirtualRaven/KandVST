@@ -186,7 +186,7 @@ void JuceDemoPluginAudioProcessorEditor::updateTimecodeDisplay(AudioPlayHead::Cu
 	timecodeDisplayLabel.setText(displayText.toString(), dontSendNotification);
 }
 
-void JuceDemoPluginAudioProcessorEditor::comboBoxChanged(ComboBox * comboBoxThatHasChanged)
+void JuceDemoPluginAudioProcessorEditor::comboBoxChanged(ComboBox * )
 {
 	//Race with timer
 	AudioParameterInt* wt = Global->paramHandler->Get<AudioParameterInt>(0, "WAVE_TYPE");

@@ -17,7 +17,7 @@ Component* PresetRow::refreshComponentForRow(int rowNumber, bool isRowSelected, 
 {
 	Component* l;
 	delete existingComponentToUpdate;
-	if (rowNumber < Global->presetManager->GetPresetNames().size()) {
+	if (rowNumber > 0 && static_cast<size_t>( rowNumber) < Global->presetManager->GetPresetNames().size()) {
 		l = new Label("", Global->presetManager->GetPresetNames()[rowNumber]);
 		l->setInterceptsMouseClicks(false, false);
 		if (isRowSelected)
@@ -44,8 +44,8 @@ bool PresetRow::keyPressed(const KeyPress & key, Component * originatingComponen
 	return false;
 }
 
-void PresetRow::listBoxItemDoubleClicked(int row, const MouseEvent & ev)
+void PresetRow::listBoxItemDoubleClicked(int row, const MouseEvent &)
 {
-	if (row<Global->presetManager->GetPresetNames().size())
+	if ( row > 0 &&  static_cast<size_t>(row) < Global->presetManager->GetPresetNames().size())
 		Global->presetManager->LoadPreset(Global->presetManager->GetPresetNames()[row]);
 }

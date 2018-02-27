@@ -43,7 +43,7 @@ int ParameterButton::getValue() {
 	return __value;
 }
 
-void ParameterButton::buttonClicked(Button* button) {
+void ParameterButton::buttonClicked(Button* ) {
 	lock.lock();
 	if (getValue())
 		setValue(0);

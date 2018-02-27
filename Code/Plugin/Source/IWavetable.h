@@ -28,7 +28,7 @@ public:
 	template<bool B> friend  double getSampleFromLoc(const tableSampleLocation& t, const IWavetable* w);
 
 	inline static tableSampleLocation getLoc(double idx, double freq) {
-		int tableNr = freq < 20 ? 0 : floor(log2(freq / 20));
+		int tableNr = freq < 20 ? 0 : static_cast<int>(floor(log2(freq / 20)));
 		if (tableNr > __NrTables) tableNr = __NrTables - 1;
 		double diff = floor(idx) - idx;
 		int i = static_cast<int>(idx);

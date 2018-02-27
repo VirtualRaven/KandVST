@@ -28,7 +28,7 @@ void PresetsComponent::resized()
 
 void PresetsComponent::buttonClicked(Button * btn)
 {
-	if (btn = &__refresh) 
+	if (btn == &__refresh) 
 	{
 		Global->presetManager->RefreshPresets();
 		__presets.updateContent();

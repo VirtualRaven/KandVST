@@ -85,7 +85,7 @@ IVSTParameters(ID)
 	timerCallback();
 }
 
-void OscillatorComponent::paint(Graphics& g){
+void OscillatorComponent::paint(Graphics&){
 	
 }
 
