@@ -5,19 +5,23 @@
 #include "EnvelopeGenerator.h"
 #include "WavetableOsc.h"
 #include "ExampleEffect.h"
-#include "OscillatorMixer.h"
+
+#include <tuple>
+#include <array>
 
 class Pipeline 
 {
-
+	typedef std::tuple<IGenerator*, AudioParameterFloat*, AudioParameterBool*> OscTripple;
 private:
+	static const size_t __num_osc = 4;
+	std::array<OscTripple, __num_osc> __oscs;
+
 	double __rate;
-	//WavetableOsc __osc;
-	OscillatorMixer __osc;
 	int __note;
 	ExampleEffect __delay;
-	bool _active;
+	bool __active;
 public:
+
 
 	bool isActive();
 	void noteCommand(int offset,
@@ -28,11 +32,14 @@ public:
 
 
 	Pipeline(double rate);
+	Pipeline(const Pipeline&) = delete;
+	Pipeline(Pipeline&&);
 	int getNoteNumber();
 	template<typename T>
 	void render_block(AudioBuffer<T>& buffer);
 
 	~Pipeline();
+	static void RegisterParameters(int ID);
 };
 
 #endif

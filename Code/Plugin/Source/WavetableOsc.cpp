@@ -118,7 +118,7 @@ void WavetableOsc::RegisterParameters(int ID)
 
 
 template<typename T>
-void WavetableOsc::__RenderBlock(AudioBuffer<T>& buffer) {
+void WavetableOsc::__RenderBlock(AudioBuffer<T>& buffer,double gain) {
 	
 	
 	setWaveform(toWAVE_TYPE(*__waveType));
@@ -151,7 +151,7 @@ void WavetableOsc::__RenderBlock(AudioBuffer<T>& buffer) {
 		samp += getSampleFromLoc<SQUARE>(tgt) *gains[1];
 		samp += getSampleFromLoc<SAW>(tgt) *gains[2];
 		samp += getSampleFromLoc<TRI>(tgt) *gains[3];
-		samp *= __envelope.GenerateNextStep(__sustain);
+		samp *= __envelope.GenerateNextStep(__sustain) * gain;
 
 		__phase += inc;
 
@@ -167,6 +167,6 @@ void WavetableOsc::__RenderBlock(AudioBuffer<T>& buffer) {
 	}
 }
 
-template void WavetableOsc::__RenderBlock(AudioBuffer<double>& buffer);
-template void WavetableOsc::__RenderBlock(AudioBuffer<float>& buffer);
+template void WavetableOsc::__RenderBlock(AudioBuffer<double>& buffer,double gain);
+template void WavetableOsc::__RenderBlock(AudioBuffer<float>& buffer,double gain);
 

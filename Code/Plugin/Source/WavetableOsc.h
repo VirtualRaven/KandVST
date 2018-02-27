@@ -22,7 +22,7 @@ private:
 	AudioParameterInt* __waveType, *__octave,* __offset;
 	AudioParameterFloat* __detune, *__sinAmp,* __sqAmp, *__sawAmp, *__triAmp;
 	template<typename T>
-	void __RenderBlock(AudioBuffer<T>& buffer);
+	void __RenderBlock(AudioBuffer<T>& buffer,double gain);
 
 public:
 	WavetableOsc(int ID,double sampleRate);
@@ -32,13 +32,17 @@ public:
 	virtual void ProccesNoteCommand(int note, uint8 vel, bool isOn) override;
 	virtual void ProccessCommand(MidiMessage message) override;
 	static void RegisterParameters(int ID);
-	virtual void RenderBlock(AudioBuffer<float>& buffer) override
+	virtual void RenderBlock(AudioBuffer<float>& buffer, double gain) override
 	{
-		__RenderBlock(buffer);
+		__RenderBlock(buffer,gain);
 	}
-	virtual void RenderBlock(AudioBuffer<double>& buffer) override
+	virtual void RenderBlock(AudioBuffer<double>& buffer, double gain) override
 	{
-		__RenderBlock(buffer);
+		__RenderBlock(buffer,gain);
+	}
+
+	virtual const char * name() const override {
+		return "Wavetable osc";
 	}
 	void setWaveform(WAVE_TYPE t);
 	void renderImage(Image* image,int width, int height);

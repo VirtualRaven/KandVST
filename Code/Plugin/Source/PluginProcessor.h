@@ -7,7 +7,6 @@
 #include "PipelineManager.h"
 #include "Global.h"
 #include "TemplateHelper.h"
-#include "OscillatorMixer.h"
 #include "ParameterHandler.h"
 
 class PluginProcessor  : public AudioProcessor

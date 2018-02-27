@@ -25,11 +25,11 @@ public:
 	virtual void ProccesNoteCommand(int note, uint8 vel, bool isOn) override;
 	virtual void ProccessCommand(MidiMessage message) override;
 
-	virtual void RenderBlock(AudioBuffer<float>& buffer) override
+	virtual void RenderBlock(AudioBuffer<float>& buffer, double gain) override
 	{
 		__RenderBlock(buffer);
 	}
-	virtual void RenderBlock(AudioBuffer<double>& buffer) override
+	virtual void RenderBlock(AudioBuffer<double>& buffer, double gain) override
 	{
 		__RenderBlock(buffer);
 	}

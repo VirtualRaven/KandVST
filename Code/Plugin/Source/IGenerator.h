@@ -28,11 +28,12 @@ protected:
 public:
 	IGenerator(double sampleRate) : __messages(), 
 									__sampleRate(sampleRate) {};
-	virtual void RenderBlock(AudioBuffer<float>& buffer) = 0;
-	virtual void RenderBlock(AudioBuffer<double>& buffer) = 0;
+	virtual void RenderBlock(AudioBuffer<float>& buffer, double gain) = 0;
+	virtual void RenderBlock(AudioBuffer<double>& buffer,double gain) = 0;
 
 	virtual void ProccesNoteCommand( int note, uint8 vel, bool isOn) = 0;
 	virtual void AddNoteCommand(int offset, int note, uint8 vel, bool isOn);
+	virtual const char * name() const =0;
 	int HandleEvent(); //Processes the current event and returns the index of the next event to be handled
 	int getNextEventOffset(); //Get the buffer offset of the next event to occur
 	virtual void ProccessCommand(MidiMessage message) = 0;
