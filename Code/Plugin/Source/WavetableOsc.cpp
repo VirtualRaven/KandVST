@@ -46,18 +46,20 @@ void WavetableOsc::renderImage(Image* image,int width, int height)
 
 	image->clear(Rectangle<int>(width, height));
 
+
 	double max = 0.0;
 	double* data = new double[width];
 
 	for (size_t i = 0; i < width; i++)
 	{
 		double inc = 2.0*3.14*1.1;
+		int ind = (i * 2048 / width);
 
-		double samp = tables[WAVE_TYPE::SINE]->getSample(i*inc, 440.0)* (*__sinAmp);
-		samp += tables[WAVE_TYPE::SQUARE]->getSample(i*inc, 440.0)* (*__sqAmp);
-		samp += tables[WAVE_TYPE::SAW]->getSample(i*inc, 440.0)* (*__sawAmp);
-		samp += tables[WAVE_TYPE::TRI]->getSample(i*inc, 440.0)* (*__triAmp);
-		
+		double samp = tables[WAVE_TYPE::SINE]->__tables[0][ind] * (*__sinAmp);
+		samp += tables[WAVE_TYPE::SQUARE]->__tables[0][ind] * (*__sqAmp);
+		samp += tables[WAVE_TYPE::SAW]->__tables[0][ind] * (*__sawAmp);
+		samp += tables[WAVE_TYPE::TRI]->__tables[0][ind] * (*__triAmp);
+
 		data[i] = samp;
 
 		max = jmax<double>(max, samp);
@@ -65,22 +67,27 @@ void WavetableOsc::renderImage(Image* image,int width, int height)
 	}
 
 	Graphics g(*image);
-	g.setColour(Colours::teal);
+	g.setColour(Colour::fromRGB(36, 36, 36));
+	g.fillAll();
+	g.setColour(Colour::fromRGB(26,105,180));
 	g.setImageResamplingQuality(Graphics::highResamplingQuality);
-	double hMul = (static_cast<double>(height)/2.0) / (max);
-	if (max < 0.0001 || max < 1.00)
-		hMul =100.0;
 
-	double lastx = 0, lasty=height/2;
+	double hMul = (static_cast<double>(height - 16)/2.0) / (max);
+	if (max < 0.0001 || max < 1.00)
+		hMul = (height - 16) / 2.0;
+
+	double lastx = 0, lasty=(height - 16)/2;
 	for (size_t i = 0; i < width; i++)
 	{
 		if (i > 0)
+			
 			g.drawLine(lastx, lasty, i, height / 2 - hMul*data[i], 3);
 		lastx = i;
 		lasty = height / 2 - hMul*data[i];
 	}
 
-
+	g.setColour(Colour::fromRGB(26, 26, 26));
+	g.drawRect(0, 0, width, height, 3);
 	delete data;
 
 }

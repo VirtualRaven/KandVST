@@ -2,7 +2,7 @@
 #define PARAMETER_BUTTON_H
 #include <mutex>
 #include "../JuceLibraryCode/JuceHeader.h"
-class ParameterButton : public ToggleButton, private Button::Listener, private Timer
+class ParameterButton : public TextButton, private Button::Listener, private Timer
 {
 public:
 	ParameterButton(AudioProcessorParameter& p);

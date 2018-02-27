@@ -24,15 +24,15 @@ public:
 private:
 	//==============================================================================
 
-	Label __sineLabel, __squareLabel, __sawLabel, __triangleLabel;
-	ScopedPointer<ParameterSlider> __sineSlider, __squareSlider, __sawSlider, __triangleSlider;
+	Label __sineLabel, __squareLabel, __sawLabel, __triangleLabel,__noiseLabel;
+	ScopedPointer<ParameterSlider> __sineSlider, __squareSlider, __sawSlider, __triangleSlider,__noiseSlider;
 
 	Label __delayLabel, __octaveLabel, __detuneLabel, __offsetLabel;
 	ScopedPointer<ParameterSlider> __delaySlider, __octaveSlider, __detuneSlider, __offsetSlider;
 	float s, sq, sa, tr;
 	Image* __oscWaveform;
-	ScopedPointer<ParameterButton> __toggleOsc;
-	int __ID;
+	ImageComponent __waveformComp;
+
 
 	//==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OscillatorComponent)

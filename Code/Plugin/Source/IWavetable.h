@@ -3,6 +3,7 @@
 
 class IWavetable
 {
+	friend class WavetableOsc;
 protected:
 	static const int __length = 2048;
 	static const int __NrTables = 10;

@@ -4,11 +4,14 @@
 #include "PluginGui.h"
 //==============================================================================
 PluginGUI::PluginGUI(PluginProcessor& owner)
-    : AudioProcessorEditor (owner),
+	: AudioProcessorEditor(owner),
+	ourLookAndFeel(),
 	__tabComponent(TabbedButtonBar::Orientation::TabsAtTop),
 	__keyboard(owner.keyboardState,MidiKeyboardComponent::Orientation::horizontalKeyboard),
 	__cc()
 {
+	setLookAndFeel(&ourLookAndFeel);
+
 	__tabComponent.addTab("M", Colours::darkgreen, new MasterComponent(), true);
 
 	for (int i = 0; i < 4; i++)
@@ -22,13 +25,14 @@ PluginGUI::PluginGUI(PluginProcessor& owner)
 	addAndMakeVisible(__keyboard);
 	__keyboard.setKeyWidth(__keyboard.getKeyWidth()+10.0f);
 
-
 	setResizable(false, false);
-	setSize(1280, 720);
+	setSize(1000, 720);
 }
 
 PluginGUI::~PluginGUI()
 {
+	//Has to unset our lookAndFeel before it is destroyed
+	this->setLookAndFeel(nullptr);
 }
 
 //==============================================================================
@@ -36,6 +40,10 @@ void PluginGUI::paint (Graphics& g)
 {
     g.setColour (Colour::fromRGB(36,36,36));
     g.fillAll();
+
+	Image titleImage = ImageFileFormat::loadFrom(Resources::Images::Title3_png, sizeof(Resources::Images::Title3_png));
+	g.setOpacity(1.0f);
+	g.drawImageAt(titleImage, 1000, 0, false);
 }
 
 void PluginGUI::resized()
