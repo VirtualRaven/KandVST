@@ -20,13 +20,18 @@ private:
 	const IWavetable* __wavetable;
 	LFO __lfo;
 	AudioParameterInt* __waveType, *__octave,* __offset;
-	AudioParameterFloat* __detune, *__sinAmp,* __sqAmp, *__sawAmp, *__triAmp;
+	AudioParameterFloat* __detune, *__sinAmp,* __sqAmp, *__sawAmp, *__triAmp,*__noiseAmp;
 	template<typename T>
 	void __RenderBlock(AudioBuffer<T>& buffer,double gain);
 
+	//Random things
+	std::vector<double> __noiseBuffer;
+	Random __rand;
+	size_t __rand_index;
+
 public:
 	WavetableOsc(int ID,double sampleRate);
-	~WavetableOsc();
+	virtual ~WavetableOsc();
 
 	// Inherited via Generator
 	virtual void ProccesNoteCommand(int note, uint8 vel, bool isOn) override;
@@ -46,6 +51,7 @@ public:
 	}
 	void setWaveform(WAVE_TYPE t);
 	void renderImage(Image* image,int width, int height);
+	JUCE_LEAK_DETECTOR(WavetableOsc);
 };
 
 #endif //!WAVETABLEOSC_H

@@ -12,7 +12,8 @@ PipelineManager::PipelineManager(double rate, int maxBuffHint) :
 {
 	for (size_t i = 0; i < 16; i++)
 	{
-		pipList.push_back(Pipeline(rate));
+		pipList.emplace_back(rate);
+		//pipList.push_back(Pipeline(rate));
 	}
 	
 }

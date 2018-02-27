@@ -9,7 +9,10 @@ WavetableOsc::WavetableOsc(int ID, double sampleRate) :
 	__wavetable(tables[WAVE_TYPE::SAW]),
 	__phase(0),
 	__frequency(0),
-	__lfo(120,sampleRate, __ID)
+	__lfo(120,sampleRate, __ID),
+	__noiseBuffer(static_cast<int>(sampleRate)),
+	__rand(174594158),
+	__rand_index(0)
 {
 	__waveType = Global->paramHandler->Get<AudioParameterInt>(__ID, "WAVE_TYPE");
 	__octave = Global->paramHandler->Get<AudioParameterInt>(__ID, "OSC_OCTAVE");
@@ -20,6 +23,12 @@ WavetableOsc::WavetableOsc(int ID, double sampleRate) :
 	__sqAmp = Global->paramHandler->Get<AudioParameterFloat>(__ID, "OSC_SQUARE");
 	__sawAmp = Global->paramHandler->Get<AudioParameterFloat>(__ID, "OSC_SAW");
 	__triAmp = Global->paramHandler->Get<AudioParameterFloat>(__ID, "OSC_TRI");
+	__noiseAmp = Global->paramHandler->Get<AudioParameterFloat>(__ID, "OSC_NOISE");
+
+	// Generate wavetable
+	for (auto&& samp : __noiseBuffer)
+		samp = (__rand.nextDouble() - 0.5f) * 2.0f;
+
 }
 
 
@@ -48,7 +57,7 @@ void WavetableOsc::renderImage(Image* image,int width, int height)
 		samp += tables[WAVE_TYPE::SQUARE]->getSample(i*inc, 440.0)* (*__sqAmp);
 		samp += tables[WAVE_TYPE::SAW]->getSample(i*inc, 440.0)* (*__sawAmp);
 		samp += tables[WAVE_TYPE::TRI]->getSample(i*inc, 440.0)* (*__triAmp);
-
+		
 		data[i] = samp;
 
 		max = jmax<double>(max, samp);
@@ -113,6 +122,7 @@ void WavetableOsc::RegisterParameters(int ID)
 	Global->paramHandler->RegisterFloat(ID, "OSC_SQUARE", "Square", 0.0f, 1.0f, 0.0f);
 	Global->paramHandler->RegisterFloat(ID, "OSC_SAW", "Saw", 0.0f, 1.0f, 0.0f);
 	Global->paramHandler->RegisterFloat(ID, "OSC_TRI", "Tri", 0.0f, 1.0f, 0.0f);
+	Global->paramHandler->RegisterFloat(ID, "OSC_NOISE", "Noise", 0.0f, 1.0f, 0.0f);
 
 }
 
@@ -127,7 +137,7 @@ void WavetableOsc::__RenderBlock(AudioBuffer<T>& buffer,double gain) {
 	auto nextEvent = this->getNextEventOffset();
 	auto numSampels = buffer.getNumSamples();
 
-	float gains[4] = { *__sinAmp , *__sqAmp,*__sawAmp,*__triAmp };
+	float gains[5] = { *__sinAmp , *__sqAmp,*__sawAmp,*__triAmp, *__noiseAmp };
 	double calcFreq = __frequency * pow(2.0, *__octave + (((*__offset) + (*__detune)) / 12.0));
 	double tmpInc = __wavetable->getLength() / __sampleRate;
 
@@ -151,9 +161,11 @@ void WavetableOsc::__RenderBlock(AudioBuffer<T>& buffer,double gain) {
 		samp += getSampleFromLoc<SQUARE>(tgt) *gains[1];
 		samp += getSampleFromLoc<SAW>(tgt) *gains[2];
 		samp += getSampleFromLoc<TRI>(tgt) *gains[3];
+		samp += __noiseBuffer[__rand_index++] * gains[4];
 		samp *= __envelope.GenerateNextStep(__sustain) * gain;
 
 		__phase += inc;
+		__rand_index = __rand_index % __noiseBuffer.size();
 
 		if (buffer.getNumChannels() == 2) {
 			buffs[0][i] += samp;

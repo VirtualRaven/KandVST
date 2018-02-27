@@ -26,6 +26,7 @@ private:
 protected:
 	double __sampleRate;
 public:
+	virtual ~IGenerator() {};
 	IGenerator(double sampleRate) : __messages(), 
 									__sampleRate(sampleRate) {};
 	virtual void RenderBlock(AudioBuffer<float>& buffer, double gain) = 0;
