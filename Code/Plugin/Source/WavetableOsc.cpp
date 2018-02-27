@@ -11,8 +11,8 @@ WavetableOsc::WavetableOsc(int ID, double sampleRate) :
 	__phase(0),
 	__frequency(0),
 	__lfo(120,sampleRate, __ID),
-	__noiseBuffer(static_cast<int>(sampleRate)),
-	__rand(174594158),
+	__noiseBuffer(static_cast<int>(sampleRate*2)),
+	__rand(174594152),
 	__rand_index(0)
 
 {

@@ -37,7 +37,7 @@ void ExampleEffect::__RenderBlock(AudioBuffer<T>& buffer)
 		float multi = *__delayMultiplier;
 		
 		__delayBuffer.setSample(0, __delayPos, buffer.getSample(0, i)+__delayBuffer.getSample(0,__delayPos)*multi);
-		__delayBuffer.setSample(1, __delayPos, buffer.getSample(1, i)+__delayBuffer.getSample(0, __delayPos)*multi);
+		__delayBuffer.setSample(1, __delayPos, buffer.getSample(1, i)+__delayBuffer.getSample(1, __delayPos)*multi);
 		__delayPos = (__delayPos + 1) % __delayBuffer.getNumSamples();
 		buffer.addSample(0, i, static_cast<T>(__delayBuffer.getSample(0, __delayPos))*multi);
 		buffer.addSample(1, i, static_cast<T>(__delayBuffer.getSample(1, __delayPos))*multi);
