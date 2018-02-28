@@ -5,6 +5,8 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "../Resources_files.h"
 #include "PresetRow.h"
+#include "../OurLookAndFeel.h"
+
 class PresetsComponent  : public Component, private Button::Listener
 {
 public:
@@ -15,6 +17,7 @@ private:
 	ImageButton __refresh;
 	ListBox __presets;
 	PresetRow __rowModel;
+	OurLookAndFeel ourLookAndFeel;
 	// Inherited via Listener
 	virtual void buttonClicked(Button *) override;
 	

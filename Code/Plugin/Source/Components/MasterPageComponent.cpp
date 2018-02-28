@@ -9,15 +9,21 @@ MasterComponent::MasterComponent():
 	__infoComponent()
 {
 	addAndMakeVisible(__infoComponent);
-	//addAndMakeVisible(__presetComponent);
+	addAndMakeVisible(__presetComponent);
 }
 
 void MasterComponent::paint(Graphics& g){
 	g.setColour(Colour::fromRGB(40, 40, 40));
 	g.fillAll();
+
+	g.setFont(20.0f);
+	g.setColour(Colours::white);
+	g.drawSingleLineText("PRESETS", 500, 300, Justification::centred);
+	
+
 }
 
 void MasterComponent::resized() {
-	//__presetComponent.setCentrePosition(getLocalBounds().getCentre());
+	__presetComponent.setBounds(getLocalBounds().removeFromBottom(260).removeFromRight(680).removeFromLeft(400));
 	__infoComponent.setBounds(getLocalBounds().removeFromTop(400));
 }
