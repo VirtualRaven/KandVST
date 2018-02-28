@@ -1,10 +1,17 @@
 #include "Wavetable.h"
 #include <iostream>
 #include <fstream>
+#include "../JuceLibraryCode/JuceHeader.h"
+
+
+static ThreadPool wavePool;
+
+static volatile bool tableRdy[] = { false,false,false,false };
 
 /*
 * Sinewave
 */
+
 
 SinWavetable::SinWavetable()
 {
@@ -172,15 +179,35 @@ const IWavetable* tables[WAVE_TYPE::__COUNT] = { nullptr,nullptr,nullptr,nullptr
 void populateWavetable(double sampleRate)
 {
 	freeWavetable();
-	tables[WAVE_TYPE::SINE] = new SinWavetable();
-	tables[WAVE_TYPE::SQUARE] = new SquareWavetable(sampleRate);
-	tables[WAVE_TYPE::SAW] = new SawWavetable(sampleRate);
-	tables[WAVE_TYPE::TRI] = new TriangleWavetable(sampleRate);
+
+	std::function<void()> jobs[] = {
+		[]() {tables[WAVE_TYPE::SINE] = new SinWavetable(); tableRdy[0] = true; },
+		[sampleRate]() {tables[WAVE_TYPE::SQUARE] = new SquareWavetable(sampleRate); tableRdy[1] = true; },
+		[sampleRate]() {tables[WAVE_TYPE::SAW] = new SawWavetable(sampleRate); tableRdy[2] = true; },
+		[sampleRate]() {tables[WAVE_TYPE::TRI] = new TriangleWavetable(sampleRate); tableRdy[3] = true; }
+	};
+
+	for (auto&& j : jobs) {
+		wavePool.addJob(j);
+	}
+#ifdef NO_ASYNC_GEN
+	while (!wavetableRdy());
+#endif //NO_ASYNC_GEN 
+
 }
 
 void freeWavetable() {
 	for (int i = 0; i < WAVE_TYPE::__COUNT; i++) {
 		delete tables[i];
 		tables[i] = nullptr;
+		tableRdy[i] = false;
 	}
+}
+
+bool wavetableRdy() {
+	auto acc = true;
+	for (auto tmp : tableRdy) {
+		acc &= tmp;
+	}
+	return acc;
 }

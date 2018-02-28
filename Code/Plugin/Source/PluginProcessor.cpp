@@ -8,8 +8,10 @@ AudioProcessor* JUCE_CALLTYPE createPluginFilter();
 GLOBAL * Global;
 //==============================================================================
 PluginProcessor::PluginProcessor()
-    : AudioProcessor (getBusesProperties())
+    : AudioProcessor (getBusesProperties()),
+	__sampleRate(0.0)
 {
+	__gui = nullptr;
 	__pipManager = nullptr;
 	Global = new GLOBAL();
 	Global->paramHandler =  new ParameterHandler(*this);
@@ -62,6 +64,14 @@ AudioProcessor::BusesProperties PluginProcessor::getBusesProperties()
 {
     return BusesProperties().withInput  ("Input",  AudioChannelSet::stereo(), true)
                             .withOutput ("Output", AudioChannelSet::stereo(), true);
+}
+
+void PluginProcessor::timerCallback()
+{
+	if (wavetableRdy() && __gui != nullptr) {
+		__gui->InitializeGui();
+		stopTimer();
+	}
 }
 
 int PluginProcessor::getNumPrograms()
@@ -121,12 +131,17 @@ void PluginProcessor::setStateInformation(const void * data, int sizeInBytes)
 
 void PluginProcessor::prepareToPlay (double newSampleRate, int maxSamplesPerBlock)
 {
-	populateWavetable(newSampleRate);
+	bool first = __sampleRate == 0.0;
 
-    keyboardState.reset();
-	__pipManager = new PipelineManager(newSampleRate, maxSamplesPerBlock);
+	if (__sampleRate != newSampleRate) {
+		populateWavetable(newSampleRate);
+		keyboardState.reset();
+		__pipManager = new PipelineManager(newSampleRate, maxSamplesPerBlock);
+		__sampleRate = newSampleRate;
+	}
 
-
+	if (first && __gui != nullptr)
+		__gui->InitializeGui();
 }
 
 void PluginProcessor::releaseResources()
@@ -149,7 +164,9 @@ void PluginProcessor::process (AudioBuffer<FloatType>& buffer,
 
 AudioProcessorEditor* PluginProcessor::createEditor()
 {
-    return new PluginGUI (*this);
+	__gui = new PluginGUI(*this);
+	startTimer(50);
+    return __gui;
 }
 AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
