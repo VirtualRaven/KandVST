@@ -12,9 +12,15 @@ class FilterLP :
 
 private:
 	void __calculateCoefficients();
+	bool __isEnabled();
 	virtual void CalculateCoefficients() override
 	{
 		__calculateCoefficients();
+	}
+
+	virtual bool IsEnabled() override
+	{
+		return __isEnabled();
 	}
 	
 public:

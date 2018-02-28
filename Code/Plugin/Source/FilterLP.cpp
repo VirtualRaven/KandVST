@@ -15,7 +15,7 @@ FilterLP::~FilterLP()
 
 void FilterLP::RegisterParameters(int ID)
 {
-	FilterButterworth::RegisterParameters(ID, "LP Frequency", "FILTER_LP");
+	FilterButterworth::RegisterParameters(ID, "LP Frequency", "FILTER_LP", 20000.0f);
 }
 
 void FilterLP::__calculateCoefficients()
@@ -34,4 +34,10 @@ void FilterLP::__calculateCoefficients()
 	__b[0] *= gain;
 	__b[1] = __b[0] * 2;
 	__b[2] = __b[0];
+}
+
+bool FilterLP::__isEnabled()
+{
+	// Disable at 20kHz
+	return __fc < 20000.0f;
 }

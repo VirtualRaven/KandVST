@@ -15,15 +15,21 @@ FilterButterworth::~FilterButterworth()
 {
 }
 
-void FilterButterworth::RegisterParameters(int ID, String parameterLabel, String parameterId)
+void FilterButterworth::RegisterParameters(int ID, String parameterLabel, String parameterId, float defaultValue)
 {
-	Global->paramHandler->RegisterFloat(ID, parameterId, parameterLabel, 1.0f, 20000.0f, 400.0f);
+	Global->paramHandler->RegisterFloat(ID, parameterId, parameterLabel, 1.0f, 20000.0f, defaultValue);
 }
 
 template<typename T>
 void FilterButterworth::__RenderBlock(AudioBuffer<T>& buffer)
 {
 	__fc = *lpFrequency;
+
+	// Return if filter is not enabled
+	if (IsEnabled() == false)
+	{
+		return;
+	}
 
 	// Recalculate coefficients only if fc has changed
 	if (__fc != __prevFc)

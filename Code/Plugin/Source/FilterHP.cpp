@@ -15,7 +15,7 @@ FilterHP::~FilterHP()
 
 void FilterHP::RegisterParameters(int ID)
 {
-	FilterButterworth::RegisterParameters(ID, "HP Frequency", "FILTER_HP");
+	FilterButterworth::RegisterParameters(ID, "HP Frequency", "FILTER_HP", 1.0f);
 }
 
 void FilterHP::__calculateCoefficients()
@@ -32,4 +32,10 @@ void FilterHP::__calculateCoefficients()
 	__b[0] = (4 * fs2) / __a[0];
 	__b[1] = __b[0] * -2;
 	__b[2] = __b[0];
+}
+
+bool FilterHP::__isEnabled()
+{
+	// Disable under 20Hz
+	return __fc >= 20.0f;
 }
