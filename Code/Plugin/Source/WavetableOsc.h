@@ -8,6 +8,7 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "LFOsc.h"
 #include "FilterLP.h"
+#include "FilterHP.h"
 
 class WavetableOsc : public IGenerator, public IVSTParameters
 {
@@ -30,7 +31,8 @@ private:
 	Random __rand;
 	size_t __rand_index;
 
-	FilterLP __filter_lp;
+	FilterLP __filterLp;
+	FilterHP __filterHp;
 
 public:
 	WavetableOsc(int ID,double sampleRate);

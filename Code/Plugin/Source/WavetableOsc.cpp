@@ -14,7 +14,8 @@ WavetableOsc::WavetableOsc(int ID, double sampleRate) :
 	__noiseBuffer(static_cast<int>(sampleRate*2)),
 	__rand(174594152),
 	__rand_index(0),
-	__filter_lp(__ID, sampleRate, "FILTER_LP")
+	__filterLp(__ID, sampleRate, "FILTER_LP"),
+	__filterHp(__ID, sampleRate, "FILTER_HP")
 
 {
 	__waveType = Global->paramHandler->Get<AudioParameterInt>(__ID, "WAVE_TYPE");
@@ -138,6 +139,7 @@ void WavetableOsc::RegisterParameters(int ID)
 	Global->paramHandler->RegisterFloat(ID, "OSC_TRI", "Tri", 0.0f, 1.0f, 0.0f);
 	Global->paramHandler->RegisterFloat(ID, "OSC_NOISE", "Noise", 0.0f, 1.0f, 0.0f);
 	FilterLP::RegisterParameters(ID);
+	FilterHP::RegisterParameters(ID);
 }
 
 
@@ -205,7 +207,8 @@ void WavetableOsc::__RenderBlock(AudioBuffer<T>& buffer,double gain) {
 		
 	}
 
-	__filter_lp.RenderBlock(buffer);
+	__filterLp.RenderBlock(buffer);
+	__filterHp.RenderBlock(buffer);
 }
 
 template void WavetableOsc::__RenderBlock(AudioBuffer<double>& buffer,double gain);

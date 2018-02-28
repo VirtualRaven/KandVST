@@ -29,6 +29,8 @@ private:
 	Label __ampLabel;
 	ScopedPointer<ParameterSlider> __lpFreq;
 	Label __lpLabel;
+	ScopedPointer<ParameterSlider> __hpFreq;
+	Label __hpLabel;
 	ScopedPointer<ParameterButton> __toggleOsc;
     //==============================================================================
     
