@@ -7,6 +7,7 @@
 #include "IVSTParameters.h"
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "LFOsc.h"
+#include "FilterLP.h"
 
 class WavetableOsc : public IGenerator, public IVSTParameters
 {
@@ -28,6 +29,8 @@ private:
 	std::vector<double> __noiseBuffer;
 	Random __rand;
 	size_t __rand_index;
+
+	FilterLP __filter_lp;
 
 public:
 	WavetableOsc(int ID,double sampleRate);

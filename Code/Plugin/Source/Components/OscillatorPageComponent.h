@@ -27,6 +27,8 @@ private:
 	ComboBox __oscOctave;
 	ScopedPointer<ParameterSlider> __amplitude;
 	Label __ampLabel;
+	ScopedPointer<ParameterSlider> __lpFreq;
+	Label __lpLabel;
 	ScopedPointer<ParameterButton> __toggleOsc;
     //==============================================================================
     

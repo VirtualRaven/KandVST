@@ -15,7 +15,7 @@ FilterLP::~FilterLP()
 
 void FilterLP::RegisterParameters(int ID)
 {
-	FilterButterworth::RegisterParameters(ID, "LP Frequency", "EX_FILTER_LP");
+	FilterButterworth::RegisterParameters(ID, "LP Frequency", "FILTER_LP");
 }
 
 void FilterLP::__calculateCoefficients()

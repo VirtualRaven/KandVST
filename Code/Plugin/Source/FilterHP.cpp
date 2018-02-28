@@ -15,7 +15,7 @@ FilterHP::~FilterHP()
 
 void FilterHP::RegisterParameters(int ID)
 {
-	FilterButterworth::RegisterParameters(ID, "HP Frequency", "EX_FILTER_HP");
+	FilterButterworth::RegisterParameters(ID, "HP Frequency", "FILTER_HP");
 }
 
 void FilterHP::__calculateCoefficients()
