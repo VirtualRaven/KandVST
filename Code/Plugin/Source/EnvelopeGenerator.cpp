@@ -101,7 +101,7 @@ void EnvelopeGenerator::RenderBlock(double * buffer, size_t size)
 	{
 		if (__amplitude<a_level)
 		{
-			__counter = a_k / (pow(__amplitude, -1 / a_c));
+			__counter = static_cast<int>(a_k / (pow(__amplitude, -1 / a_c)));
 		}
 		else if (__amplitude == a_level)
 		{
@@ -117,7 +117,7 @@ void EnvelopeGenerator::RenderBlock(double * buffer, size_t size)
 
 	if (__state < 4 && __sustain == 0) {
 		__state = 4; //Release
-		__counter = releaseTime - r_k / (pow(__amplitude, -1 / r_c)); //Calculate were to begin in release
+		__counter = static_cast<int>(releaseTime - r_k / (pow(__amplitude, -1 / r_c))); //Calculate were to begin in release
 	}
 
 	for (size_t i = 0; i < size; i++)
@@ -289,13 +289,13 @@ void EnvelopeGenerator::RenderImage(int __ID, Image * image)
 
 	if (s_level >= d_level)
 	{
-		__s_time_s = (*__a_time + *__h_time + *__d_time + *__r_time)*0.1;
+		__s_time_s = static_cast<float>((*__a_time + *__h_time + *__d_time + *__r_time)*0.1);
 	}
 	int __state = 0;
 	double __amplitude = 0.0;
 	int __imageHeight = image->getHeight();
 	int __counter = 0;
-	int __sampleRate = (image->getWidth())/(*__a_time+ *__h_time + *__d_time + *__r_time + __s_time_s);
+	int __sampleRate = static_cast<int>((image->getWidth())/(*__a_time+ *__h_time + *__d_time + *__r_time + __s_time_s));
 
 	int attackTime = (int)(*__a_time * __sampleRate);
 	int holdTime = (int)(*__h_time * __sampleRate);
@@ -308,7 +308,7 @@ void EnvelopeGenerator::RenderImage(int __ID, Image * image)
 	double r_k = (releaseTime)*pow(d_level, -1 / r_c);
 
 	float lastx = 0,lasty = 0;
-	for (size_t i = 0; i < image->getWidth(); i++)
+	for (int i = 2; i < image->getWidth()-3; i++)
 	{
 		switch (__state)
 		{
@@ -366,10 +366,10 @@ void EnvelopeGenerator::RenderImage(int __ID, Image * image)
 		}
 		
 		if (std::isfinite<float>(static_cast<float>(__amplitude))) {
-			if (i > 0)
-				g->drawLine(lastx, lasty, i, __imageHeight - static_cast<float>(__amplitude*(__imageHeight-16)), 2.0f);
+			if (i > 2)
+				g->drawLine(lastx, lasty, static_cast<float>(i), __imageHeight - static_cast<float>(__amplitude*(__imageHeight-16))-3, 2.0f);
 			lastx = static_cast<float>(i);
-			lasty = __imageHeight - static_cast<float>(__amplitude*(__imageHeight - 16));
+			lasty = __imageHeight - static_cast<float>(__amplitude*(__imageHeight - 16))-3;
 		}
 		__counter++;
 	}
