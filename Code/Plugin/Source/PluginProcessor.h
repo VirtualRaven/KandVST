@@ -58,7 +58,19 @@ private:
     template <typename FloatType>
     void process (AudioBuffer<FloatType>& buffer, MidiBuffer& midiMessages);
 
-	PipelineManager* __pipManager;
+	union PipUnion {
+		PipelineManager<double>* dp;
+		PipelineManager<float>* fp;
+	};
+
+	template<typename T>  PipelineManager<T>* getPipeline();
+
+	bool doublePrecision;
+
+	void freePipelineManager();
+
+	PipUnion __pipManager;
+	
 	int __currentPreset = 0;
 
     Synthesiser synth;

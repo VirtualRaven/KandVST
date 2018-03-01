@@ -29,8 +29,8 @@ public:
 	virtual ~IGenerator() {};
 	IGenerator(double sampleRate) : __messages(), 
 									__sampleRate(sampleRate) {};
-	virtual void RenderBlock(AudioBuffer<float>& buffer, double gain) = 0;
-	virtual void RenderBlock(AudioBuffer<double>& buffer,double gain) = 0;
+	virtual bool RenderBlock(AudioBuffer<float>& buffer, int len) = 0;
+	virtual bool RenderBlock(AudioBuffer<double>& buffer,int len) = 0;
 
 	virtual void ProccesNoteCommand( int note, uint8 vel, bool isOn) = 0;
 	virtual void AddNoteCommand(int offset, int note, uint8 vel, bool isOn);

@@ -12,10 +12,15 @@ __oscillator(ID),
 __lfo(ID)
 {
 	__amplitude = new  ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(ID,"OSC_MIX_AMP"));
+	__lpFreq = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(ID, "FILTER_LP"));
+	__hpFreq = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(ID, "FILTER_HP"));
+
 	addAndMakeVisible(__envComponent);
 	addAndMakeVisible(__oscillator);
 	addAndMakeVisible(__lfo);
 	addAndMakeVisible(__amplitude);
+	addAndMakeVisible(__lpFreq);
+	addAndMakeVisible(__hpFreq);
 
 	__amplitude->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
 	__amplitude->setTextBoxStyle(__amplitude->NoTextBox, true, 10, 10);
@@ -23,6 +28,20 @@ __lfo(ID)
 	__ampLabel.attachToComponent(__amplitude, false);
 	__ampLabel.setJustificationType(juce::Justification::centred);
 
+	__lpFreq->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
+	__lpFreq->setTextBoxStyle(__lpFreq->NoTextBox, true, 10, 10);
+	__lpFreq->setSkewFactorFromMidPoint(0.15);
+	__lpLabel.setText("LP", NotificationType::dontSendNotification);
+	__lpLabel.attachToComponent(__lpFreq, false);
+	__lpLabel.setJustificationType(juce::Justification::centred);
+
+	__hpFreq->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
+	__hpFreq->setTextBoxStyle(__hpFreq->NoTextBox, true, 10, 10);
+	__hpFreq->setSkewFactorFromMidPoint(0.15);
+	__hpLabel.setText("HP", NotificationType::dontSendNotification);
+	__hpLabel.attachToComponent(__hpFreq, false);
+	__hpLabel.setJustificationType(juce::Justification::centred);
+	
 	addAndMakeVisible(__toggleOsc = new ParameterButton(*Global->paramHandler->Get<AudioParameterBool>(__ID, "OSC_MIX_EN")));
 	__toggleOsc->setButtonText("Oscillator");
 	
@@ -49,4 +68,6 @@ void OscillatorPageComponent::resized(){
 
 	Rectangle<int> amplitudeBounds(getLocalBounds().reduced(16));
 	__amplitude->setBounds(amplitudeBounds.removeFromRight(100).removeFromBottom(100));
+	__lpFreq->setBounds(amplitudeBounds.removeFromRight(50).removeFromBottom(50));
+	__hpFreq->setBounds(amplitudeBounds.removeFromRight(50).removeFromBottom(50));
 }

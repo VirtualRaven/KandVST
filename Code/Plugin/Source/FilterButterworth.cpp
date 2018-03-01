@@ -15,15 +15,21 @@ FilterButterworth::~FilterButterworth()
 {
 }
 
-void FilterButterworth::RegisterParameters(int ID, String parameterLabel, String parameterId)
+void FilterButterworth::RegisterParameters(int ID, String parameterLabel, String parameterId, float defaultValue)
 {
-	Global->paramHandler->RegisterFloat(ID, parameterId, parameterLabel, 1.0f, 20000.0f, 400.0f);
+	Global->paramHandler->RegisterFloat(ID, parameterId, parameterLabel, 1.0f, 20000.0f, defaultValue);
 }
 
 template<typename T>
-void FilterButterworth::__RenderBlock(AudioBuffer<T>& buffer)
+void FilterButterworth::__RenderBlock(AudioBuffer<T>& buffer,int len)
 {
 	__fc = *lpFrequency;
+
+	// Return if filter is not enabled
+	if (IsEnabled() == false)
+	{
+		return;
+	}
 
 	// Recalculate coefficients only if fc has changed
 	if (__fc != __prevFc)
@@ -33,7 +39,7 @@ void FilterButterworth::__RenderBlock(AudioBuffer<T>& buffer)
 	__prevFc = __fc;
 
 	auto buff = buffer.getArrayOfWritePointers();
-	for (int i = 0; i < buffer.getNumSamples(); i++)
+	for (int i = 0; i <len; i++)
 	{
 		// Current y[i-2] is the previous y[i-1]
 		__prevY2[0] = __prevY1[0];
@@ -66,8 +72,8 @@ void FilterButterworth::__RenderBlock(AudioBuffer<T>& buffer)
 	}
 }
 
-template void FilterButterworth::__RenderBlock(AudioBuffer<double>& buffer);
-template void FilterButterworth::__RenderBlock(AudioBuffer<float>& buffer);
+template void FilterButterworth::__RenderBlock(AudioBuffer<double>& buffer,int len);
+template void FilterButterworth::__RenderBlock(AudioBuffer<float>& buffer,int len);
 
 void FilterButterworth::ProccessCommand(MidiMessage message)
 {

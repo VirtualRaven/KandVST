@@ -1,12 +1,11 @@
 fs = 48000;
-fc = 4000;
+fc = 10000;
 w = 2*pi*fs;
 wc = 2*pi*fc;
 
 %% LP
 [b, a] = butter(2, fc/(fs/2), 'low')
 figure
-subplot(2,2,1);
 freqz(b,a, 256, fs);
 title('(LP) Genererad')
 
@@ -29,14 +28,16 @@ atest = [1, a1, a2];
 K = sum(atest)/sum(btest);
 btest = K*btest;
 
-subplot(2,2,2);
+figure
 freqz(btest, atest, 256, fs)
 title('(LP) Beräknad')
 
+%% HP
+
 [b, a] = butter(2, fc/(fs/2), 'high')
-subplot(2,2,3);
+figure
 freqz(b,a, 256, fs);
-title('(HP)Genererad')
+title('(HP) Genererad')
 
 wa = wc;
 a0 = 4*(fs^2)+2*fs*wa*sqrt(2)+(wa^2);
@@ -53,6 +54,6 @@ atest = [1, a1, a2];
 K = sum(atest)/sum(btest);
 %btest = K*btest;
 
-subplot(2,2,4);
+figure
 freqz(btest, atest, 256, fs)
 title('(HP) Beräknad')

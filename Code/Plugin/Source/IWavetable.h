@@ -11,7 +11,7 @@ protected:
 	static const int __NrTables = 10;
 	double __tables[__NrTables][__length];
 public:
-	int getLength() const
+	static int getLength() 
 	{
 		return __length;
 	}

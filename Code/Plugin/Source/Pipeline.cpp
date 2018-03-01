@@ -1,11 +1,13 @@
 #include "Pipeline.h"
 #include <math.h>
 
-
-Pipeline::Pipeline(double rate) :
+template<typename T>
+Pipeline<T>::Pipeline(double rate,int maxBuffHint) :
 	__rate(rate),
 	__delay(0,rate),
-	__active(false)
+	__active(false),
+	__maxBuffHint(maxBuffHint)
+	
 {
 	for (int i = 0; i < this->__num_osc; i++) {
 		__oscs[i] = std::make_tuple(
@@ -13,15 +15,23 @@ Pipeline::Pipeline(double rate) :
 				Global->paramHandler->Get<AudioParameterFloat>(i, "OSC_MIX_AMP"),
 				Global->paramHandler->Get<AudioParameterBool>(i, "OSC_MIX_EN")
 			);
+		__effects[i*__num_effects] = new FilterLP(i, rate, "FILTER_LP");
+		__effects[i*__num_effects + 1] = new FilterHP(i, rate, "FILTER_HP");
+
 	}
+
+	tmpBuff.setSize(2, maxBuffHint);
+
 }
 
-int Pipeline::getNoteNumber()
+
+template<typename T>
+int Pipeline<T>::getNoteNumber()
 {
 	return __note;
 }
-
-void Pipeline::noteCommand(int offset, int note, uint8 vel, bool isOn) 
+template<typename T>
+void Pipeline<T>::noteCommand(int offset, int note, uint8 vel, bool isOn) 
 {
 	if (isOn) {
 		__note = note;
@@ -35,19 +45,34 @@ void Pipeline::noteCommand(int offset, int note, uint8 vel, bool isOn)
 	}
 }
 
-Pipeline::Pipeline(Pipeline&& ref) :
+template<typename T>
+void Pipeline<T>::midiMessage(MidiMessage msg)
+{
+	for (auto osc : __oscs)
+	{
+		std::get<0>(osc)->ProccessCommand(msg);
+	}
+}
+
+template<typename T>
+Pipeline<T>::Pipeline(Pipeline<T>&& ref) :
 __rate(ref.__rate),
 __delay(0, ref.__rate),
-__active(ref.__active) {
+__active(ref.__active),
+__maxBuffHint(ref.__maxBuffHint){
 	for (size_t i = 0; i < this->__num_osc; i++) {
 		__oscs[i] = ref.__oscs[i];
+		for (size_t j = 0; j < this->__num_effects; j++) {
+			__effects[i*__num_effects + j] = ref.__effects[i*__num_effects + j];
+			ref.__effects[i*__num_effects + j] = nullptr;
+		}
 		ref.__oscs[i] = std::make_tuple(nullptr, nullptr, nullptr);
 	}
 
 }
 
-
-Pipeline::~Pipeline()
+template<typename T>
+Pipeline<T>::~Pipeline()
 {
 	for (auto&& obj : __oscs) {
 		auto && tmp = std::get<0>(obj);
@@ -55,33 +80,56 @@ Pipeline::~Pipeline()
 		tmp = nullptr;
 	}
 
+	for (auto&& obj : __effects) {
+		delete obj;
+	}
+
 }
 
-
-bool Pipeline::isActive() {
+template<typename T>
+bool Pipeline<T>::isActive() {
 	return __active;
 }
 
 template<typename T>
-void Pipeline::render_block(AudioBuffer<T>& buffer) {
+void Pipeline<T>::render_block(AudioBuffer<T>& buffer) {
 	
-	for (auto obj : __oscs) {
+	auto len = buffer.getNumSamples();
+	
+	if (len > tmpBuff.getNumSamples()) {
+		tmpBuff.setSize(2, len, false, false, true);
+	}
+
+	this->tmpBuff.clear(0, len);
+	for (int i = 0; i < __num_osc; i++) {
+		auto obj = __oscs[i];
+		//Is the osc active?
 		if (*std::get<2>(obj)) {
-			std::get<0>(obj)->RenderBlock(buffer,*std::get<1>(obj));
+
+			//Did the osc produce anything?
+			if (std::get<0>(obj)->RenderBlock(tmpBuff,len))
+			{	
+				//Apply the effects
+				for (int j = 0; j < __num_effects; j++) {
+					__effects[i*__num_effects + j]->RenderBlock(tmpBuff, len);
+				}
+				buffer.addFrom(0, 0, tmpBuff, 0, 0, len, *std::get<2>(obj));
+				buffer.addFrom(1, 0, tmpBuff, 1, 0, len, *std::get<2>(obj));
+				this->tmpBuff.clear(0, len);
+			}
 		}
 	}
-	__delay.RenderBlock(buffer);
+	__delay.RenderBlock(buffer,len);
 
-	if (buffer.getMagnitude(0, buffer.getNumSamples()) < 0.0001)
+	if (buffer.getMagnitude(0, len) < 0.0001)
 		__active = false;
 	else
 		__active = true;
 }
 
-template void Pipeline::render_block(AudioBuffer<double>& buffer);
-template void Pipeline::render_block(AudioBuffer<float>& buffer);
 
-void Pipeline::RegisterParameters(int ID)
+template<typename T>
+void Pipeline<T>::RegisterParameters(int ID)
 {
 	for (size_t i = 0; i < Pipeline::__num_osc; i++)
 	{
@@ -89,3 +137,6 @@ void Pipeline::RegisterParameters(int ID)
 		Global->paramHandler->RegisterFloat(Pipeline::__num_osc * ID + i, "OSC_MIX_AMP", "Oscillator Amplitude", 0.0f, 1.0f, 0.5f);
 	}
 }
+
+template class Pipeline<double>;
+template class Pipeline<float>;

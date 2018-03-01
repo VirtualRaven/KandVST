@@ -4,16 +4,16 @@
 WavetableOsc::WavetableOsc(int ID, double sampleRate) :
 	IGenerator(sampleRate),
 	IVSTParameters(ID),
-	__envelope(__ID,sampleRate),
+	__envelope(__ID, sampleRate),
 	__note(0),
 	__sustain(false),
-	__wavetable(tables[WAVE_TYPE::SAW]),
 	__phase(0),
 	__frequency(0),
-	__lfo(120,sampleRate, __ID),
-	__noiseBuffer(static_cast<int>(sampleRate)),
-	__rand(174594158),
-	__rand_index(0)
+	__lfo(120, sampleRate, __ID),
+	__noiseBuffer(static_cast<int>(sampleRate * 2)),
+	__rand(174594152),
+	__rand_index(0),
+	__pitchbend(0)
 
 {
 	__waveType = Global->paramHandler->Get<AudioParameterInt>(__ID, "WAVE_TYPE");
@@ -27,10 +27,10 @@ WavetableOsc::WavetableOsc(int ID, double sampleRate) :
 	__triAmp = Global->paramHandler->Get<AudioParameterFloat>(__ID, "OSC_TRI");
 	__noiseAmp = Global->paramHandler->Get<AudioParameterFloat>(__ID, "OSC_NOISE");
 
+
 	// Generate wavetable
 	for (auto&& samp : __noiseBuffer)
 		samp = (__rand.nextDouble() - 0.5f) * 2.0f;
-
 }
 
 
@@ -38,11 +38,7 @@ WavetableOsc::~WavetableOsc()
 {
 }
 
-void WavetableOsc::setWaveform(WAVE_TYPE t)
-{
-	if (t == WAVE_TYPE::__COUNT) return;
-	__wavetable = tables[t];
-}
+
 void WavetableOsc::renderImage(Image* image,int width, int height)
 {
 
@@ -122,6 +118,12 @@ void WavetableOsc::ProccesNoteCommand(int note, uint8 vel, bool isOn)
 
 void WavetableOsc::ProccessCommand(MidiMessage message)
 {
+	if (message.isPitchWheel())
+	{
+		//Convert from 14 bit unsigned int to float between -1.0 and 1.0
+		__pitchbend = ((float)message.getPitchWheelValue() / 16383)*2.0f - 1.0f;
+		//Global->log->Write("Pitchbend: " + std::to_string(message.getPitchWheelValue()) + ", calc:" + std::to_string(__pitchbend) + "\n");
+	}
 }
 
 void WavetableOsc::RegisterParameters(int ID)
@@ -141,18 +143,19 @@ void WavetableOsc::RegisterParameters(int ID)
 
 
 template<typename T>
-void WavetableOsc::__RenderBlock(AudioBuffer<T>& buffer,double gain) {
+bool WavetableOsc::__RenderBlock(AudioBuffer<T>& buffer,int len) {
 	
 	
-	setWaveform(toWAVE_TYPE(*__waveType));
 	auto buffs = buffer.getArrayOfWritePointers();
 
 	auto nextEvent = this->getNextEventOffset();
-	auto numSampels = buffer.getNumSamples();
+	auto numSampels = len;
 
 	float gains[5] = { *__sinAmp , *__sqAmp,*__sawAmp,*__triAmp, *__noiseAmp };
-	double calcFreq = __frequency * pow(2.0, *__octave + (((*__offset) + (*__detune)) / 12.0));
-	double tmpInc = __wavetable->getLength() / __sampleRate;
+	double calcFreq = __frequency * pow(2.0, *__octave + (((*__offset) + (*__detune) + 2*__pitchbend) / 12.0));
+	double tmpInc = IWavetable::getLength() / __sampleRate;
+
+	bool dataGenerated = false;
 
 	for (int i = 0; i < numSampels; i++)
 	{
@@ -191,24 +194,28 @@ void WavetableOsc::__RenderBlock(AudioBuffer<T>& buffer,double gain) {
 		tmp_samp += getSampleFromLoc<SAW>(tgt) *gains[2];
 		tmp_samp += getSampleFromLoc<TRI>(tgt) *gains[3];
 		tmp_samp += __noiseBuffer[__rand_index++] * gains[4];
-		tmp_samp *= *env * gain;
+		tmp_samp *= *env;
 		delete env;
 		T samp = static_cast<T>(tmp_samp);
 		__phase += inc;
 		__rand_index = __rand_index % __noiseBuffer.size();
 
 		if (buffer.getNumChannels() == 2) {
-			buffs[0][i] += samp;
-			buffs[1][i] += samp;
+			buffs[0][i] = samp;
+			buffs[1][i] = samp;
 		}
 		else{
 			for (int j = 0; j < buffer.getNumChannels(); j++)
-				buffs[j][i]+= samp;
+				buffs[j][i]= samp;
 		}
+		dataGenerated = true;
 		
 	}
+
+	
+	return dataGenerated;
 }
 
-template void WavetableOsc::__RenderBlock(AudioBuffer<double>& buffer,double gain);
-template void WavetableOsc::__RenderBlock(AudioBuffer<float>& buffer,double gain);
+template bool WavetableOsc::__RenderBlock(AudioBuffer<double>& buffer,int len);
+template bool WavetableOsc::__RenderBlock(AudioBuffer<float>& buffer, int len);
 
