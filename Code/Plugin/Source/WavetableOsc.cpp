@@ -39,12 +39,10 @@ WavetableOsc::~WavetableOsc()
 }
 
 
-void WavetableOsc::renderImage(Image* image,int width, int height)
+void WavetableOsc::renderImage(Image* image)
 {
-
-	image->clear(Rectangle<int>(width, height));
-
-
+	int width = image->getWidth();
+	int height = image->getHeight();
 	double max = 0.0;
 	double* data = new double[width];
 

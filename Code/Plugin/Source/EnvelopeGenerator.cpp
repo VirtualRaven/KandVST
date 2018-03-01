@@ -367,7 +367,7 @@ void EnvelopeGenerator::RenderImage(int __ID, Image * image)
 		
 		if (std::isfinite<float>(static_cast<float>(__amplitude))) {
 			if (i > 2)
-				g->drawLine(lastx, lasty, static_cast<float>(i), __imageHeight - static_cast<float>(__amplitude*(__imageHeight-16))-3, 2.0f);
+				g->drawLine(lastx, lasty, static_cast<float>(i), __imageHeight - static_cast<float>(__amplitude*(__imageHeight-16))-3, 3.0f);
 			lastx = static_cast<float>(i);
 			lasty = __imageHeight - static_cast<float>(__amplitude*(__imageHeight - 16))-3;
 		}

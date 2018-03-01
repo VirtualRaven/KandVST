@@ -52,7 +52,7 @@ public:
 	virtual const char * name() const override {
 		return "Wavetable osc";
 	}
-	void renderImage(Image* image,int width, int height);
+	void renderImage(Image* image);
 	JUCE_LEAK_DETECTOR(WavetableOsc);
 };
 
