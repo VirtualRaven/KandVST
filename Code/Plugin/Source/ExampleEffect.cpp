@@ -29,9 +29,9 @@ void ExampleEffect::RegisterParameters(int ID)
 }
 
 template<typename T>
-void ExampleEffect::__RenderBlock(AudioBuffer<T>& buffer)
+void ExampleEffect::__RenderBlock(AudioBuffer<T>& buffer,int len)
 {
-	for (int i = 0; i < buffer.getNumSamples(); i++)
+	for (int i = 0; i <len; i++)
 	{
 
 		float multi = *__delayMultiplier;
@@ -45,8 +45,8 @@ void ExampleEffect::__RenderBlock(AudioBuffer<T>& buffer)
 	}
 }
 
-template void ExampleEffect::__RenderBlock(AudioBuffer<double>& buffer);
-template void ExampleEffect::__RenderBlock(AudioBuffer<float>& buffer);
+template void ExampleEffect::__RenderBlock(AudioBuffer<double>& buffer,int len);
+template void ExampleEffect::__RenderBlock(AudioBuffer<float>& buffer, int len);
 
 void ExampleEffect::ProccessCommand(MidiMessage message)
 {

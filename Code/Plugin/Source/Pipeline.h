@@ -5,21 +5,28 @@
 #include "EnvelopeGenerator.h"
 #include "WavetableOsc.h"
 #include "ExampleEffect.h"
+#include "FilterLP.h"
+#include "FilterHP.h"
 
 #include <tuple>
 #include <array>
 
+template<typename T>
 class Pipeline 
 {
 	typedef std::tuple<IGenerator*, AudioParameterFloat*, AudioParameterBool*> OscTripple;
 private:
 	static const size_t __num_osc = 4;
+	static const size_t __num_effects = 2;
 	std::array<OscTripple, __num_osc> __oscs;
-
+	std::array<IEffect*, __num_osc*__num_effects> __effects;
+	AudioBuffer<T> tmpBuff;
 	double __rate;
 	int __note;
 	ExampleEffect __delay;
 	bool __active;
+	const int __maxBuffHint;
+
 public:
 
 
@@ -31,11 +38,10 @@ public:
 
 
 
-	Pipeline(double rate);
-	Pipeline(const Pipeline&) = delete;
-	Pipeline(Pipeline&&);
+	Pipeline(double rate,int maxBuffHint);
+	Pipeline(const Pipeline<T>&) = delete;
+	Pipeline(Pipeline<T>&&);
 	int getNoteNumber();
-	template<typename T>
 	void render_block(AudioBuffer<T>& buffer);
 
 	~Pipeline();

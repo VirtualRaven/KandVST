@@ -7,8 +7,7 @@
 #include "IVSTParameters.h"
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "LFOsc.h"
-#include "FilterLP.h"
-#include "FilterHP.h"
+
 
 class WavetableOsc : public IGenerator, public IVSTParameters
 {
@@ -19,20 +18,18 @@ private:
 	double __phase;
 	//double __inc;
 	bool __sustain;
-	const IWavetable* __wavetable;
 	LFO __lfo;
 	AudioParameterInt* __waveType, *__octave,* __offset;
 	AudioParameterFloat* __detune, *__sinAmp,* __sqAmp, *__sawAmp, *__triAmp,*__noiseAmp;
 	template<typename T>
-	void __RenderBlock(AudioBuffer<T>& buffer,double gain);
+	bool __RenderBlock(AudioBuffer<T>& buffer,int len);
 
 	//Random things
 	std::vector<double> __noiseBuffer;
 	Random __rand;
 	size_t __rand_index;
 
-	FilterLP __filterLp;
-	FilterHP __filterHp;
+
 
 public:
 	WavetableOsc(int ID,double sampleRate);
@@ -42,19 +39,18 @@ public:
 	virtual void ProccesNoteCommand(int note, uint8 vel, bool isOn) override;
 	virtual void ProccessCommand(MidiMessage message) override;
 	static void RegisterParameters(int ID);
-	virtual void RenderBlock(AudioBuffer<float>& buffer, double gain) override
+	virtual bool RenderBlock(AudioBuffer<float>& buffer,int len) override
 	{
-		__RenderBlock(buffer,gain);
+		return __RenderBlock(buffer, len);
 	}
-	virtual void RenderBlock(AudioBuffer<double>& buffer, double gain) override
+	virtual bool RenderBlock(AudioBuffer<double>& buffer, int len) override
 	{
-		__RenderBlock(buffer,gain);
+		return __RenderBlock(buffer, len);
 	}
 
 	virtual const char * name() const override {
 		return "Wavetable osc";
 	}
-	void setWaveform(WAVE_TYPE t);
 	void renderImage(Image* image,int width, int height);
 	JUCE_LEAK_DETECTOR(WavetableOsc);
 };
