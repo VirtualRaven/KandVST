@@ -70,7 +70,12 @@ void PipelineManager<T>::genSamples(AudioBuffer<T>& buff, MidiBuffer & midiMessa
 				}
 			}
 		}
-
+		else if (tmp.isPitchWheel())
+		{
+			for (pipIt = pipList.begin(); pipIt != pipList.end(); pipIt++) {
+				pipIt->midiMessage(tmp);
+			}
+		}
 		else {
 		}
 	}

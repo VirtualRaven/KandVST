@@ -44,6 +44,16 @@ void Pipeline<T>::noteCommand(int offset, int note, uint8 vel, bool isOn)
 		}
 	}
 }
+
+template<typename T>
+void Pipeline<T>::midiMessage(MidiMessage msg)
+{
+	for (auto osc : __oscs)
+	{
+		std::get<0>(osc)->ProccessCommand(msg);
+	}
+}
+
 template<typename T>
 Pipeline<T>::Pipeline(Pipeline<T>&& ref) :
 __rate(ref.__rate),

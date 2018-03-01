@@ -4,15 +4,16 @@
 WavetableOsc::WavetableOsc(int ID, double sampleRate) :
 	IGenerator(sampleRate),
 	IVSTParameters(ID),
-	__envelope(__ID,sampleRate),
+	__envelope(__ID, sampleRate),
 	__note(0),
 	__sustain(false),
 	__phase(0),
 	__frequency(0),
-	__lfo(120,sampleRate, __ID),
-	__noiseBuffer(static_cast<int>(sampleRate*2)),
+	__lfo(120, sampleRate, __ID),
+	__noiseBuffer(static_cast<int>(sampleRate * 2)),
 	__rand(174594152),
-	__rand_index(0)
+	__rand_index(0),
+	__pitchbend(0)
 
 {
 	__waveType = Global->paramHandler->Get<AudioParameterInt>(__ID, "WAVE_TYPE");
@@ -117,6 +118,12 @@ void WavetableOsc::ProccesNoteCommand(int note, uint8 vel, bool isOn)
 
 void WavetableOsc::ProccessCommand(MidiMessage message)
 {
+	if (message.isPitchWheel())
+	{
+		//Convert from 14 bit unsigned int to float between -1.0 and 1.0
+		__pitchbend = ((float)message.getPitchWheelValue() / 16383)*2.0f - 1.0f;
+		//Global->log->Write("Pitchbend: " + std::to_string(message.getPitchWheelValue()) + ", calc:" + std::to_string(__pitchbend) + "\n");
+	}
 }
 
 void WavetableOsc::RegisterParameters(int ID)
@@ -145,7 +152,7 @@ bool WavetableOsc::__RenderBlock(AudioBuffer<T>& buffer,int len) {
 	auto numSampels = len;
 
 	float gains[5] = { *__sinAmp , *__sqAmp,*__sawAmp,*__triAmp, *__noiseAmp };
-	double calcFreq = __frequency * pow(2.0, *__octave + (((*__offset) + (*__detune)) / 12.0));
+	double calcFreq = __frequency * pow(2.0, *__octave + (((*__offset) + (*__detune) + 2*__pitchbend) / 12.0));
 	double tmpInc = IWavetable::getLength() / __sampleRate;
 
 	bool dataGenerated = false;

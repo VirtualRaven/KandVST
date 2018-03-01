@@ -21,6 +21,7 @@ private:
 	LFO __lfo;
 	AudioParameterInt* __waveType, *__octave,* __offset;
 	AudioParameterFloat* __detune, *__sinAmp,* __sqAmp, *__sawAmp, *__triAmp,*__noiseAmp;
+	float __pitchbend;
 	template<typename T>
 	bool __RenderBlock(AudioBuffer<T>& buffer,int len);
 

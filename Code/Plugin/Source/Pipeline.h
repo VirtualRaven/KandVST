@@ -35,6 +35,7 @@ public:
 					int note, 
 					uint8 vel, 
 					bool isOn =true );
+	void midiMessage(MidiMessage msg);
 
 
 
