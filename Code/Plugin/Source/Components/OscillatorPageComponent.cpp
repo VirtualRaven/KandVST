@@ -43,7 +43,8 @@ void OscillatorPageComponent::resized(){
 	Rectangle<int> bounds(getLocalBounds().reduced(8));
 	__toggleOsc->setBounds(bounds.removeFromTop(25).removeFromLeft(75));
 	__oscillator.setBounds(bounds.removeFromLeft(400));
-	__envComponent.setBounds(bounds.removeFromLeft(250));
+	bounds.removeFromLeft(16);
+	__envComponent.setBounds(bounds.removeFromLeft(400-32));
 	__lfo.setBounds(getLocalBounds().reduced(8).removeFromRight(200).removeFromTop(250));
 
 	Rectangle<int> amplitudeBounds(getLocalBounds().reduced(16));
