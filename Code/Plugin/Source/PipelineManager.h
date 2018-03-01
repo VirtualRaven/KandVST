@@ -20,7 +20,8 @@ public:
 
 	template<typename T> void genSamples(
 		AudioBuffer<T>& buff, 
-		MidiBuffer& midiMessages);
+		MidiBuffer& midiMessages,
+		AudioPlayHead::CurrentPositionInfo posInfo);
 
 
 };

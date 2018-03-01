@@ -54,6 +54,8 @@ public:
 	virtual void setStateInformation(const void * data, int sizeInBytes) override;
 
     MidiKeyboardState keyboardState;
+
+	AudioPlayHead::CurrentPositionInfo lastPosInfo;
 private:
     template <typename FloatType>
     void process (AudioBuffer<FloatType>& buffer, MidiBuffer& midiMessages);
@@ -63,6 +65,8 @@ private:
 
     Synthesiser synth;
     static BusesProperties getBusesProperties();
+
+	void updateCurrentTimeInfoFromHost();
 
 	double __sampleRate;
 	PluginGUI * __gui;

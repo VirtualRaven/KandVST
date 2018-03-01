@@ -31,6 +31,6 @@ private:
         return static_cast<PluginProcessor&> (processor);
     }
 
-  
+	void updateTimecodeDisplay(AudioPlayHead::CurrentPositionInfo pos);
 };
 #endif // !PLUGIN_GUI_H

@@ -1,13 +1,15 @@
 #ifndef LFO_H
 #define LFO_H
 #include "Wavetable.h"
-#include "IVSTParameters.h"
+#include <vector>
 
 class LFO
 {
 private:
 	double __phase;
 	double __sampleRate;
+	double __bpm;
+	std::vector<double> __samples;
 	//double* __parameter; // TEMPORARY
 	const IWavetable* __wavetable;
 	AudioParameterFloat* __amount;
@@ -15,14 +17,13 @@ private:
 	AudioParameterInt* __ratio;
 	AudioParameterInt* __waveType;
 
-	double __bpm;
-	double calcRatio();
 public:
 
-	LFO(double bpm, double sampleRate, int ID);
-	void apply(double& tmp);
+	LFO(double bpm, double sampleRate, int maxSamples, int ID);
 	static void RegisterParameters(int ID);
-	void setWavetable(int t);
+	void fillBlock(int numSamples, AudioPlayHead::CurrentPositionInfo posInfo);
+	double calcRatio();
+	double getSample(int idx);
 };
 
 #endif //!LFO_H

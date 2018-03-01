@@ -10,7 +10,6 @@ WavetableOsc::WavetableOsc(int ID, double sampleRate) :
 	__wavetable(tables[WAVE_TYPE::SAW]),
 	__phase(0),
 	__frequency(0),
-	__lfo(120,sampleRate, __ID),
 	__noiseBuffer(static_cast<int>(sampleRate)),
 	__rand(174594158),
 	__rand_index(0)
@@ -177,7 +176,7 @@ void WavetableOsc::__RenderBlock(AudioBuffer<T>& buffer,double gain) {
 
 		
 		double tmpFreq = calcFreq;
-		__lfo.apply(tmpFreq);
+	//	__lfo.apply(tmpFreq);
 		double inc = tmpInc * tmpFreq;
 
 		auto tgt = IWavetable::getLoc(__phase, tmpFreq);

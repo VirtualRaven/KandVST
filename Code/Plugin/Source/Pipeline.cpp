@@ -64,7 +64,6 @@ bool Pipeline::isActive() {
 
 template<typename T>
 void Pipeline::render_block(AudioBuffer<T>& buffer) {
-	
 	for (auto obj : __oscs) {
 		if (*std::get<2>(obj)) {
 			std::get<0>(obj)->RenderBlock(buffer,*std::get<1>(obj));

@@ -11,12 +11,13 @@ PluginProcessor::PluginProcessor()
     : AudioProcessor (getBusesProperties()),
 	__sampleRate(0.0)
 {
+	lastPosInfo.resetToDefault();
 	__gui = nullptr;
 	__pipManager = nullptr;
 	Global = new GLOBAL();
 	Global->paramHandler =  new ParameterHandler(*this);
 	Global->log = new Log("log.txt");
-	setParameters<int, EnvelopeGenerator, ExampleEffect, WavetableOsc, Pipeline, LFO>({ {0,1,2,3},{0},{0,1,2,3},{ 0 },{0,1,2,3} });
+	setParameters<int, EnvelopeGenerator, ExampleEffect, WavetableOsc, Pipeline>({ {0,1,2,3},{0},{0,1,2,3},{ 0 } });
 	Global->presetManager = new PresetManager(this);
 	Global->presetManager->RefreshPresets();
 	//*(Global->paramHandler->Get<AudioParameterBool>(0, "OSC_MIX_EN")) = 1; //Enable default oscillator
@@ -139,7 +140,6 @@ void PluginProcessor::prepareToPlay (double newSampleRate, int maxSamplesPerBloc
 		__pipManager = new PipelineManager(newSampleRate, maxSamplesPerBlock);
 		__sampleRate = newSampleRate;
 	}
-
 	if (first && __gui != nullptr)
 		__gui->InitializeGui();
 }
@@ -156,10 +156,12 @@ void PluginProcessor::process (AudioBuffer<FloatType>& buffer,
 {
     const int numSamples = buffer.getNumSamples();
     keyboardState.processNextMidiBuffer (midiMessages, 0, numSamples, true);
-	__pipManager->genSamples(buffer, midiMessages);
+	__pipManager->genSamples(buffer, midiMessages, lastPosInfo);
 
     for (int i = getTotalNumInputChannels(); i < getTotalNumOutputChannels(); ++i)
         buffer.clear (i, 0, numSamples);
+
+	updateCurrentTimeInfoFromHost();
 }
 
 AudioProcessorEditor* PluginProcessor::createEditor()
@@ -171,4 +173,21 @@ AudioProcessorEditor* PluginProcessor::createEditor()
 AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
     return new PluginProcessor();
+}
+
+void PluginProcessor::updateCurrentTimeInfoFromHost()
+{
+	if (AudioPlayHead* ph = getPlayHead())
+	{
+		AudioPlayHead::CurrentPositionInfo newTime;
+
+		if (ph->getCurrentPosition(newTime))
+		{
+			lastPosInfo = newTime;  // Successfully got the current time from the host..
+			return;
+		}
+	}
+
+	// If the host fails to provide the current time, we'll just reset our copy to a default..
+	lastPosInfo.resetToDefault();
 }

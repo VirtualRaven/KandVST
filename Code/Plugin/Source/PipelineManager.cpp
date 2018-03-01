@@ -24,7 +24,7 @@ PipelineManager::~PipelineManager()
 }
 
 template<typename T>
-void PipelineManager::genSamples(AudioBuffer<T>& buff, MidiBuffer & midiMessages)
+void PipelineManager::genSamples(AudioBuffer<T>& buff, MidiBuffer & midiMessages, AudioPlayHead::CurrentPositionInfo posInfo)
 {
 	std::vector<AudioBuffer<T>> pipBuff = std::vector<AudioBuffer<T>>();
 	for (size_t i = 0; i < 16; i++)
@@ -75,7 +75,7 @@ void PipelineManager::genSamples(AudioBuffer<T>& buff, MidiBuffer & midiMessages
 		}
 	}
 	//AudioBuffer<T> tmpBuff = AudioBuffer<T>(2, buff.getNumSamples());
-
+	
 	int buffCount = 0;
 	for (pipIt = pipList.begin(); pipIt != pipList.end() - 1; pipIt++) {
 		std::function<void()> f = [pipIt, &pipBuff, buffCount]() {
@@ -97,5 +97,5 @@ void PipelineManager::genSamples(AudioBuffer<T>& buff, MidiBuffer & midiMessages
 	
 }
 
-template void PipelineManager::genSamples(AudioBuffer<double>& buff, MidiBuffer & midiMessages);
-template void PipelineManager::genSamples(AudioBuffer<float>& buff, MidiBuffer & midiMessages);
+template void PipelineManager::genSamples(AudioBuffer<double>& buff, MidiBuffer & midiMessage, AudioPlayHead::CurrentPositionInfo posInfo);
+template void PipelineManager::genSamples(AudioBuffer<float>& buff, MidiBuffer & midiMessages, AudioPlayHead::CurrentPositionInfo posInfo);
