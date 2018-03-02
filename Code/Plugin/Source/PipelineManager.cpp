@@ -5,13 +5,12 @@
 #include <list>         
 #include <thread>
 
-LFO* Lfos[LFO_COUNT] = {};
 PipelineManager::PipelineManager(double rate, int maxBuffHint) :
 	__sampleRate(rate),
 	__maybeMaxBuff(maxBuffHint)
 {
 	for (int i = 0; i < LFO_COUNT; i++) {
-		Lfos[i] = new LFO(maxBuffHint, i, rate);
+		lfos[i] = new LFO(maxBuffHint, i, rate);
 	}
 	for (size_t i = 0; i < 16; i++)
 	{
@@ -30,7 +29,7 @@ template<typename T>
 void PipelineManager::genSamples(AudioBuffer<T>& buff, MidiBuffer & midiMessages, AudioPlayHead::CurrentPositionInfo & posInfo)
 {
 	for (int i = 0; i < LFO_COUNT; i++) {
-		Lfos[i]->generate(buff.getNumSamples(), posInfo);
+		lfos[i]->generate(buff.getNumSamples(), posInfo);
 	}
 
 	std::vector<AudioBuffer<T>> pipBuff = std::vector<AudioBuffer<T>>();

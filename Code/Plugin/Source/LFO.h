@@ -12,6 +12,7 @@ private:
 	double __sampleRate;
 	int __ID;
 	std::vector<double> __samples;
+	bool __activeCheck;
 	//double* __parameter; // TEMPORARY
 	const IWavetable* __wavetable;
 	AudioParameterFloat* __amount;
@@ -19,13 +20,14 @@ private:
 	AudioParameterInt* __ratio;
 	AudioParameterInt* __waveType;
 
+	double calcRatio();
 public:
 
 	LFO(int maxSamples, int ID, double sampleRate);
 	static void RegisterParameters(int ID);
 	void generate(int numSamples, AudioPlayHead::CurrentPositionInfo& posInfo);
-	double calcRatio();
+	
 	double getSample(int idx);
 };
-extern LFO* Lfos[LFO_COUNT];
+extern LFO* lfos[LFO_COUNT];
 #endif //!LFO_H
