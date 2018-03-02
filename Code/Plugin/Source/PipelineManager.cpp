@@ -54,7 +54,7 @@ void PipelineManager<T>::genSamples(AudioBuffer<T>& buff, MidiBuffer & midiMessa
 			bool foundPip = false;
 			for (pipIt = pipList.begin(); pipIt != pipList.end(); pipIt++) {
 				if (pipIt->getNoteNumber() == tmp.getNoteNumber()) {
-					pipIt->midiCommand(tmp);
+					pipIt->midiCommand(tmp, pos);
 					foundPip = true;
 					break;
 				}
@@ -65,7 +65,7 @@ void PipelineManager<T>::genSamples(AudioBuffer<T>& buff, MidiBuffer & midiMessa
 
 			for (pipIt = pipList.begin(); pipIt != pipList.end(); pipIt++) {
 				if (!pipIt->isActive()) {
-					pipIt->midiCommand(tmp);
+					pipIt->midiCommand(tmp, pos);
 					break;
 				}
 			}
@@ -73,7 +73,7 @@ void PipelineManager<T>::genSamples(AudioBuffer<T>& buff, MidiBuffer & midiMessa
 		else if (tmp.isPitchWheel())
 		{
 			for (pipIt = pipList.begin(); pipIt != pipList.end(); pipIt++) {
-				pipIt->midiCommand(tmp);
+				pipIt->midiCommand(tmp, pos);
 			}
 		}
 		else {

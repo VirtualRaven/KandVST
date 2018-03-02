@@ -32,7 +32,7 @@ public:
 
 	bool isActive();
 
-	void midiCommand(MidiMessage msg);
+	void midiCommand(MidiMessage msg, int offset);
 
 
 	Pipeline(double rate,int maxBuffHint);
