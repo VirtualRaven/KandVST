@@ -38,7 +38,8 @@ void Pipeline::noteCommand(int offset, int note, uint8 vel, bool isOn)
 Pipeline::Pipeline(Pipeline&& ref) :
 __rate(ref.__rate),
 __delay(0, ref.__rate),
-__active(ref.__active) {
+__active(ref.__active)
+{
 	for (size_t i = 0; i < this->__num_osc; i++) {
 		__oscs[i] = ref.__oscs[i];
 		ref.__oscs[i] = std::make_tuple(nullptr, nullptr, nullptr);
@@ -70,7 +71,6 @@ void Pipeline::render_block(AudioBuffer<T>& buffer) {
 		}
 	}
 	__delay.RenderBlock(buffer);
-
 	if (buffer.getMagnitude(0, buffer.getNumSamples()) < 0.0001)
 		__active = false;
 	else

@@ -6,6 +6,7 @@
 #include <fstream>
 #include "Pipeline.h"
 #include <list>
+#include "LFO.h"
 
 class PipelineManager
 {
@@ -17,11 +18,11 @@ private:
 public:
 	PipelineManager(double rate, int maxBuffHint);
 	~PipelineManager();	
-
+	
 	template<typename T> void genSamples(
 		AudioBuffer<T>& buff, 
 		MidiBuffer& midiMessages,
-		AudioPlayHead::CurrentPositionInfo posInfo);
+		AudioPlayHead::CurrentPositionInfo & posInfo);
 
 
 };

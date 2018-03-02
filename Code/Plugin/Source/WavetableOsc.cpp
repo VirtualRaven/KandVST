@@ -176,7 +176,9 @@ void WavetableOsc::__RenderBlock(AudioBuffer<T>& buffer,double gain) {
 
 		
 		double tmpFreq = calcFreq;
-	//	__lfo.apply(tmpFreq);
+		
+		tmpFreq *= pow(2, 1.5*Lfos[0]->getSample(i) / 12.0);
+	
 		double inc = tmpInc * tmpFreq;
 
 		auto tgt = IWavetable::getLoc(__phase, tmpFreq);
@@ -188,6 +190,10 @@ void WavetableOsc::__RenderBlock(AudioBuffer<T>& buffer,double gain) {
 		tmp_samp += getSampleFromLoc<TRI>(tgt) *gains[3];
 		tmp_samp += __noiseBuffer[__rand_index++] * gains[4];
 		tmp_samp *= __envelope.GenerateNextStep(__sustain) * gain;
+
+		 
+		
+
 		T samp = static_cast<T>(tmp_samp);
 		__phase += inc;
 		__rand_index = __rand_index % __noiseBuffer.size();

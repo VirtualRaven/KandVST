@@ -3,12 +3,14 @@
 #include "Wavetable.h"
 #include <vector>
 
+const unsigned int LFO_COUNT = 2;
+
 class LFO
 {
 private:
 	double __phase;
 	double __sampleRate;
-	double __bpm;
+	int __ID;
 	std::vector<double> __samples;
 	//double* __parameter; // TEMPORARY
 	const IWavetable* __wavetable;
@@ -19,11 +21,11 @@ private:
 
 public:
 
-	LFO(double bpm, double sampleRate, int maxSamples, int ID);
+	LFO(int maxSamples, int ID, double sampleRate);
 	static void RegisterParameters(int ID);
-	void fillBlock(int numSamples, AudioPlayHead::CurrentPositionInfo posInfo);
+	void generate(int numSamples, AudioPlayHead::CurrentPositionInfo& posInfo);
 	double calcRatio();
 	double getSample(int idx);
 };
-
+extern LFO* Lfos[LFO_COUNT];
 #endif //!LFO_H

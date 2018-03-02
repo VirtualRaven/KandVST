@@ -5,6 +5,7 @@
 #include "EnvelopeGenerator.h"
 #include "WavetableOsc.h"
 #include "ExampleEffect.h"
+#include "LFO.h"
 
 #include <tuple>
 #include <array>

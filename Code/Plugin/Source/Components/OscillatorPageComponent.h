@@ -23,7 +23,6 @@ private:
     //==============================================================================
 	EnvelopeComponent __envComponent;
 	OscillatorComponent __oscillator;
-	LFOComponent		__lfo;
 	ComboBox __oscOctave;
 	ScopedPointer<ParameterSlider> __amplitude;
 	Label __ampLabel;
