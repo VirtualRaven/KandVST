@@ -5,11 +5,13 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "ParameterSlider.h"
 #include "../IVSTParameters.h"
+#include "../OurLookAndFeel.h";
 class EnvelopeComponent: public  Component, private IVSTParameters
 {
 private:
 	Label attackLabel, decayLabel, sustainLabel, releaseLabel;
 	ScopedPointer<ParameterSlider> attack, decay, release, sustain;
+	OurLookAndFeel ourLookAndFeel;
 public:
 	EnvelopeComponent(int ID);
 	~EnvelopeComponent();

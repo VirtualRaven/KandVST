@@ -9,6 +9,8 @@ EnvelopeComponent::EnvelopeComponent(int ID):
 	sustainLabel(String(), "Sustain:"),
 	releaseLabel(String(), "Release:")
 {
+	setLookAndFeel(&ourLookAndFeel);
+
 	addAndMakeVisible(attack = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "ENV_ATTACK")));
 	attack->setSliderStyle(Slider::LinearVertical);
 	attack->setTextBoxStyle(Slider::TextEntryBoxPosition::TextBoxBelow, true, 50, 15);

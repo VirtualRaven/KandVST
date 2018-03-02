@@ -22,11 +22,11 @@ __lfo(ID)
 	addAndMakeVisible(__lpFreq);
 	addAndMakeVisible(__hpFreq);
 
-	__amplitude->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
-	__amplitude->setTextBoxStyle(__amplitude->NoTextBox, true, 10, 10);
-	__ampLabel.setText("Amplitude", NotificationType::dontSendNotification);
-	__ampLabel.attachToComponent(__amplitude, false);
-	__ampLabel.setJustificationType(juce::Justification::centred);
+	//__amplitude->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
+	//__amplitude->setTextBoxStyle(__amplitude->NoTextBox, true, 10, 10);
+	//__ampLabel.setText("Amplitude", NotificationType::dontSendNotification);
+	//__ampLabel.attachToComponent(__amplitude, false);
+	//__ampLabel.setJustificationType(juce::Justification::centred);
 
 	__lpFreq->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
 	__lpFreq->setTextBoxStyle(__lpFreq->NoTextBox, true, 10, 10);
@@ -66,7 +66,7 @@ void OscillatorPageComponent::resized(){
 	__lfo.setBounds(getLocalBounds().reduced(8).removeFromRight(200).removeFromTop(250));
 
 	Rectangle<int> amplitudeBounds(getLocalBounds().reduced(16));
-	__amplitude->setBounds(amplitudeBounds.removeFromRight(100).removeFromBottom(100));
+	//__amplitude->setBounds(amplitudeBounds.removeFromRight(100).removeFromBottom(100));
 	__lpFreq->setBounds(amplitudeBounds.removeFromRight(50).removeFromBottom(50));
 	__hpFreq->setBounds(amplitudeBounds.removeFromRight(50).removeFromBottom(50));
 }

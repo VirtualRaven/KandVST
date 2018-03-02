@@ -59,7 +59,7 @@ void PluginGUI::paint (Graphics& g)
 
 	Image titleImage = ImageFileFormat::loadFrom(Resources::Images::Title3_png, sizeof(Resources::Images::Title3_png));
 	g.setOpacity(1.0f);
-	g.drawImageAt(titleImage, 1000, 0, false);
+	g.drawImageAt(titleImage, 780, 0, false);
 }
 
 void PluginGUI::resized()

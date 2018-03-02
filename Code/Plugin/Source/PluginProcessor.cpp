@@ -29,8 +29,8 @@ PluginProcessor::PluginProcessor()
 			{0,1,2,3},
 			{ 0 },
 			{0,1,2,3},
-			{0,1,2,3},
-			{0,1,2,3} });
+			{-1,0,1,2,3},
+			{-1,0,1,2,3} });
 
 	Global->presetManager = new PresetManager(this);
 	Global->presetManager->RefreshPresets();
