@@ -8,18 +8,20 @@
 #include <list>
 #include "LFO.h"
 
+template<typename T>
 class PipelineManager
 {
 private:
 	double __sampleRate;
 	int   __maybeMaxBuff;
-	std::vector<Pipeline> pipList;
+	std::vector<Pipeline<T>> pipList;
+	
 	ThreadPool pool;
 public:
 	PipelineManager(double rate, int maxBuffHint);
 	~PipelineManager();	
-	
-	template<typename T> void genSamples(
+
+void genSamples(
 		AudioBuffer<T>& buff, 
 		MidiBuffer& midiMessages,
 		AudioPlayHead::CurrentPositionInfo & posInfo);
