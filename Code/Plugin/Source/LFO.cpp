@@ -53,7 +53,7 @@ void LFO::generate(int numSamples, AudioPlayHead::CurrentPositionInfo& posInfo)
 	double freq = (posInfo.bpm)* calcRatio() / 60.0;
 
 	double inc = __wavetable->getLength() * freq / __sampleRate;
-	if (posInfo.ppqPosition > 5) Global->log->Write("BIGGER THAN 5!!!");
+
 	if (posInfo.isPlaying) __phase = posInfo.ppqPosition * __wavetable->getLength() * calcRatio();
 
 	for (int i = 0; i < numSamples; i++)
