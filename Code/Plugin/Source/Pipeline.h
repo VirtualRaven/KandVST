@@ -31,12 +31,8 @@ public:
 
 
 	bool isActive();
-	void noteCommand(int offset,
-					int note, 
-					uint8 vel, 
-					bool isOn =true );
-	void midiMessage(MidiMessage msg);
 
+	void midiCommand(MidiMessage msg);
 
 
 	Pipeline(double rate,int maxBuffHint);

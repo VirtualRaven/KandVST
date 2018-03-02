@@ -30,24 +30,16 @@ int Pipeline<T>::getNoteNumber()
 {
 	return __note;
 }
-template<typename T>
-void Pipeline<T>::noteCommand(int offset, int note, uint8 vel, bool isOn) 
-{
-	if (isOn) {
-		__note = note;
-		__active = true;
-	}
-		
-	for (auto obj : __oscs) {
-		if (*std::get<2>(obj)) {
-			std::get<0>(obj)->AddNoteCommand(offset, note, vel, isOn);
-		}
-	}
-}
 
 template<typename T>
-void Pipeline<T>::midiMessage(MidiMessage msg)
+void Pipeline<T>::midiCommand(MidiMessage msg)
 {
+	if (msg.isNoteOn())
+	{
+		__note = msg.getNoteNumber();
+		__active = true;
+	}
+
 	for (auto osc : __oscs)
 	{
 		std::get<0>(osc)->ProccessCommand(msg);

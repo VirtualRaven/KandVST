@@ -99,30 +99,23 @@ void WavetableOsc::renderImage(Image* image,int width, int height)
 	__octave = o;
 }*/
 
-void WavetableOsc::ProccesNoteCommand(int note, uint8 vel, bool isOn)
+void WavetableOsc::ProccessCommand(MidiMessage msg)
 {
-	if (isOn)
+	if (msg.isNoteOn())
 	{
-		__frequency = MidiMessage::getMidiNoteInHertz(note);
-		//__phase = 0.0;
-		__note = note;
-		__envelope.Reset(vel);
-		__sustain = true; //Right now we ignore sustain pedal
+		__note = msg.getNoteNumber();
+		__frequency = MidiMessage::getMidiNoteInHertz(__note);
+		__envelope.Reset(msg.getVelocity());
+		__sustain = true;
 	}
-	else if (!isOn && note == __note) {
-		__sustain = false;
+	else if (msg.isNoteOff())
+	{
+		__sustain = msg.getNoteNumber() != __note;
 	}
-	
-
-}
-
-void WavetableOsc::ProccessCommand(MidiMessage message)
-{
-	if (message.isPitchWheel())
+	else if (msg.isPitchWheel())
 	{
 		//Convert from 14 bit unsigned int to float between -1.0 and 1.0
-		__pitchbend = ((float)message.getPitchWheelValue() / 16383)*2.0f - 1.0f;
-		//Global->log->Write("Pitchbend: " + std::to_string(message.getPitchWheelValue()) + ", calc:" + std::to_string(__pitchbend) + "\n");
+		__pitchbend = ((float)msg.getPitchWheelValue() / 16383)*2.0f - 1.0f;
 	}
 }
 

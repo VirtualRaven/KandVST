@@ -37,8 +37,7 @@ public:
 	virtual ~WavetableOsc();
 
 	// Inherited via Generator
-	virtual void ProccesNoteCommand(int note, uint8 vel, bool isOn) override;
-	virtual void ProccessCommand(MidiMessage message) override;
+	virtual void ProccessCommand(MidiMessage msg) override;
 	static void RegisterParameters(int ID);
 	virtual bool RenderBlock(AudioBuffer<float>& buffer,int len) override
 	{
