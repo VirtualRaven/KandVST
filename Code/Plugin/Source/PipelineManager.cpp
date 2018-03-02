@@ -5,25 +5,26 @@
 #include <list>         
 #include <thread>
 
-
-PipelineManager::PipelineManager(double rate, int maxBuffHint) :
+template<typename T>
+PipelineManager<T>::PipelineManager(double rate, int maxBuffHint) :
 	__sampleRate(rate),
 	__maybeMaxBuff(maxBuffHint)
 {
 	for (size_t i = 0; i < 16; i++)
 	{
-		pipList.push_back(Pipeline(rate));
+		pipList.emplace_back(rate,maxBuffHint);
+		//pipList.push_back(Pipeline(rate));
 	}
 	
 }
 
-
-PipelineManager::~PipelineManager()
+template<typename T>
+PipelineManager<T>::~PipelineManager()
 {
 }
 
 template<typename T>
-void PipelineManager::genSamples(AudioBuffer<T>& buff, MidiBuffer & midiMessages)
+void PipelineManager<T>::genSamples(AudioBuffer<T>& buff, MidiBuffer & midiMessages)
 {
 	std::vector<AudioBuffer<T>> pipBuff = std::vector<AudioBuffer<T>>();
 	for (size_t i = 0; i < 16; i++)
@@ -31,7 +32,7 @@ void PipelineManager::genSamples(AudioBuffer<T>& buff, MidiBuffer & midiMessages
 		pipBuff.push_back(AudioBuffer<T>(2, buff.getNumSamples()));
 		pipBuff[i].applyGain(0.0);
 	}
-	std::vector<Pipeline>::iterator pipIt;
+	std::vector<Pipeline<T>>::iterator pipIt;
 	auto it = juce::MidiBuffer::Iterator(midiMessages);
 	int pos;
 	juce::MidiMessage tmp;
@@ -69,7 +70,12 @@ void PipelineManager::genSamples(AudioBuffer<T>& buff, MidiBuffer & midiMessages
 				}
 			}
 		}
-
+		else if (tmp.isPitchWheel())
+		{
+			for (pipIt = pipList.begin(); pipIt != pipList.end(); pipIt++) {
+				pipIt->midiMessage(tmp);
+			}
+		}
 		else {
 		}
 	}
@@ -96,5 +102,6 @@ void PipelineManager::genSamples(AudioBuffer<T>& buff, MidiBuffer & midiMessages
 	
 }
 
-template void PipelineManager::genSamples(AudioBuffer<double>& buff, MidiBuffer & midiMessages);
-template void PipelineManager::genSamples(AudioBuffer<float>& buff, MidiBuffer & midiMessages);
+template class PipelineManager<double>;
+template class PipelineManager<float>;
+

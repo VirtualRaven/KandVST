@@ -5,12 +5,12 @@
 ExampleEffect::ExampleEffect(int ID,double sampleRate):
 	IEffect(sampleRate),
 	IVSTParameters(ID),
-	__delayBuffer(2,sampleRate/4), //1/6 sec echo 
+	__delayBuffer(2,static_cast<int>(sampleRate/4)), //1/6 sec echo 
 	__delayPos(0)
 {
 	__delayMultiplier = Global->paramHandler->Get<AudioParameterFloat>(ID, "EX_DELAYMULTI");
 
-	for (size_t i = 0; i < __delayBuffer.getNumSamples(); i++)
+	for (int i = 0; i < __delayBuffer.getNumSamples(); i++)
 	{
 		__delayBuffer.setSample(0, i,0);
 		__delayBuffer.setSample(1, i, 0);
@@ -29,24 +29,24 @@ void ExampleEffect::RegisterParameters(int ID)
 }
 
 template<typename T>
-void ExampleEffect::__RenderBlock(AudioBuffer<T>& buffer)
+void ExampleEffect::__RenderBlock(AudioBuffer<T>& buffer,int len)
 {
-	for (size_t i = 0; i < buffer.getNumSamples(); i++)
+	for (int i = 0; i <len; i++)
 	{
 
 		float multi = *__delayMultiplier;
 		
 		__delayBuffer.setSample(0, __delayPos, buffer.getSample(0, i)+__delayBuffer.getSample(0,__delayPos)*multi);
-		__delayBuffer.setSample(1, __delayPos, buffer.getSample(1, i)+__delayBuffer.getSample(0, __delayPos)*multi);
+		__delayBuffer.setSample(1, __delayPos, buffer.getSample(1, i)+__delayBuffer.getSample(1, __delayPos)*multi);
 		__delayPos = (__delayPos + 1) % __delayBuffer.getNumSamples();
-		buffer.addSample(0, i, __delayBuffer.getSample(0, __delayPos)*multi);
-		buffer.addSample(1, i, __delayBuffer.getSample(1, __delayPos)*multi);
+		buffer.addSample(0, i, static_cast<T>(__delayBuffer.getSample(0, __delayPos))*multi);
+		buffer.addSample(1, i, static_cast<T>(__delayBuffer.getSample(1, __delayPos))*multi);
 
 	}
 }
 
-template void ExampleEffect::__RenderBlock(AudioBuffer<double>& buffer);
-template void ExampleEffect::__RenderBlock(AudioBuffer<float>& buffer);
+template void ExampleEffect::__RenderBlock(AudioBuffer<double>& buffer,int len);
+template void ExampleEffect::__RenderBlock(AudioBuffer<float>& buffer, int len);
 
 void ExampleEffect::ProccessCommand(MidiMessage message)
 {

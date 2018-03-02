@@ -5,34 +5,48 @@
 #include "EnvelopeGenerator.h"
 #include "WavetableOsc.h"
 #include "ExampleEffect.h"
-#include "OscillatorMixer.h"
+#include "FilterLP.h"
+#include "FilterHP.h"
 
+#include <tuple>
+#include <array>
+
+template<typename T>
 class Pipeline 
 {
-
+	typedef std::tuple<IGenerator*, AudioParameterFloat*, AudioParameterBool*> OscTripple;
 private:
+	static const size_t __num_osc = 4;
+	static const size_t __num_effects = 2;
+	std::array<OscTripple, __num_osc> __oscs;
+	std::array<IEffect*, __num_osc*__num_effects> __effects;
+	AudioBuffer<T> tmpBuff;
 	double __rate;
-	//WavetableOsc __osc;
-	OscillatorMixer __osc;
 	int __note;
 	ExampleEffect __delay;
-	bool _active;
+	bool __active;
+	const int __maxBuffHint;
+
 public:
+
 
 	bool isActive();
 	void noteCommand(int offset,
 					int note, 
 					uint8 vel, 
 					bool isOn =true );
+	void midiMessage(MidiMessage msg);
 
 
 
-	Pipeline(double rate);
+	Pipeline(double rate,int maxBuffHint);
+	Pipeline(const Pipeline<T>&) = delete;
+	Pipeline(Pipeline<T>&&);
 	int getNoteNumber();
-	template<typename T>
 	void render_block(AudioBuffer<T>& buffer);
 
 	~Pipeline();
+	static void RegisterParameters(int ID);
 };
 
 #endif

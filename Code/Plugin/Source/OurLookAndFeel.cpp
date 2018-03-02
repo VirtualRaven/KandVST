@@ -12,7 +12,7 @@ OurLookAndFeel::OurLookAndFeel() {
 
 
 void OurLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int width, int height
-	, float sliderPos, const float rotaryStartAngle, const float rotaryEndAngle, Slider & slider)
+	, float sliderPos, const float rotaryStartAngle, const float rotaryEndAngle, Slider & /*slider*/)
 {
 	const float radius = jmin(width / 2, height / 2) - 4.0f;
 	const float centreX = x + width * 0.5f;
@@ -22,9 +22,9 @@ void OurLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int width, int 
 	const float rw = radius * 2.0f;
 	const float angle = rotaryStartAngle + sliderPos * (rotaryEndAngle - rotaryStartAngle);
 
-	Image& knobRef = ImageFileFormat::loadFrom(Resources::Icons::knobs_png, sizeof(Resources::Icons::knobs_png));
+	Image knobRef = ImageFileFormat::loadFrom(Resources::Icons::knobs_png, sizeof(Resources::Icons::knobs_png));
 	g.setOpacity(1.0f);
-	g.drawImage(knobRef, Rectangle<float>(x,y,width,height), RectanglePlacement::stretchToFit, false);
+	g.drawImage(knobRef, Rectangle<float>(static_cast<float>(x), static_cast<float>(y), static_cast<float>(width), static_cast<float>(height)), RectanglePlacement::stretchToFit, false);
 
 	Path p;
 	const float pointerLength = radius * 0.3f;

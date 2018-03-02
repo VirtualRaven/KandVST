@@ -22,7 +22,7 @@ public:
 template<typename F> 
 class parameterArguments<F, 0> {
 public:
-	parameterArguments(typename std::initializer_list<F>::iterator it,int size) {
+	parameterArguments(typename std::initializer_list<F>::iterator ,int size) {
 		if (size != 0)
 			throw std::length_error("Too few arguments provided");
 	}

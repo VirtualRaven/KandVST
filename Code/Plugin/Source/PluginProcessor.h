@@ -7,10 +7,9 @@
 #include "PipelineManager.h"
 #include "Global.h"
 #include "TemplateHelper.h"
-#include "OscillatorMixer.h"
 #include "ParameterHandler.h"
-
-class PluginProcessor  : public AudioProcessor
+class PluginGUI;
+class PluginProcessor  : public AudioProcessor, private Timer
 {
 public:
 	PluginProcessor();
@@ -59,15 +58,33 @@ private:
     template <typename FloatType>
     void process (AudioBuffer<FloatType>& buffer, MidiBuffer& midiMessages);
 
-	PipelineManager* __pipManager;
+	union PipUnion {
+		PipelineManager<double>* dp;
+		PipelineManager<float>* fp;
+	};
+
+	template<typename T>  PipelineManager<T>* getPipeline();
+
+	bool doublePrecision;
+
+	void freePipelineManager();
+
+	PipUnion __pipManager;
+	
 	int __currentPreset = 0;
 
     Synthesiser synth;
     static BusesProperties getBusesProperties();
 
+	double __sampleRate;
+	PluginGUI * __gui;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginProcessor)
 
 	
+
+		// Inherited via Timer
+		virtual void timerCallback() override;
+
 };
 
 #endif // !PLUGIN_PROCESSOR_H

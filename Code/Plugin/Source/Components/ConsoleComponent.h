@@ -14,7 +14,7 @@ private:
 	std::stringstream __buffer;
 	std::vector<std::string> split(const std::string& s, char seperator);
 	std::vector<std::string> __lastCommands;
-	int __lastCounter;
+	size_t __lastCounter;
 	void setParam(String id, std::string value);
 public:
 	ConsoleComponent();

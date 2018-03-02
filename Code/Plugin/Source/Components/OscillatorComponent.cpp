@@ -42,7 +42,7 @@ IVSTParameters(ID)
 	__triangleLabel.attachToComponent(__triangleSlider, false);
 	__triangleLabel.setJustificationType(juce::Justification::centred);
 
-	addAndMakeVisible(__noiseSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "OSC_TRI"))); //Change to whitenoise
+	addAndMakeVisible(__noiseSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "OSC_NOISE"))); 
 	__noiseSlider->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
 	__noiseSlider->setTextBoxStyle(__noiseSlider->NoTextBox, true, 10, 10);
 	__noiseLabel.setText("NOISE", NotificationType::dontSendNotification);
@@ -85,7 +85,7 @@ IVSTParameters(ID)
 	timerCallback();
 }
 
-void OscillatorComponent::paint(Graphics& g){
+void OscillatorComponent::paint(Graphics&){
 	
 }
 

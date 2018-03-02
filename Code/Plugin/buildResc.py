@@ -27,9 +27,9 @@ def createResourceFile(fullDir,__fileList,__name,__namespace):
         data = __file.read()
         #WriteHeader
         filename,ext= os.path.splitext(__fileName)
-        __writeFile_h.write("extern char " + filename+"_"+ext[1:] +"[" + str(os.path.getsize(os.path.join(fullDir,__fileName))) +"];\n")
+        __writeFile_h.write("extern unsigned char " + filename+"_"+ext[1:] +"[" + str(os.path.getsize(os.path.join(fullDir,__fileName))) +"];\n")
         
-        __writeFile_cpp.write("char " + __namespace+"::"+filename+"_"+ext[1:] +"[] = {")
+        __writeFile_cpp.write("unsigned char " + __namespace+"::"+filename+"_"+ext[1:] +"[] = {")
         count = 0
         for byte in data:
             if (count == len(data)-1):

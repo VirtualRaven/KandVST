@@ -37,15 +37,15 @@ void InformationComponent::paint (Graphics& g){
     
     //Path to draw the rectangle
     Path myPath;
-    Rectangle<int> infoWindow(x,y,w,h);
+    Rectangle<float> infoWindow(x,y,w,h);
 	myPath.addRectangle(infoWindow);
     g.setColour(Colour::fromRGB(40,60,90));
     g.fillPath(myPath);
 
     // == adding inner shadows using gradients == 
     //shadow for top
-    ColourGradient shadowTop(Colours::black.withAlpha(startAlpha), midX, y,
-                    Colours::black.withAlpha(endAlpha), midX, y+offset, false);
+    ColourGradient shadowTop(
+		Colours::black.withAlpha(startAlpha), midX, y,Colours::black.withAlpha(endAlpha), midX, y+offset, false);
                     
     g.setGradientFill(shadowTop);
     g.fillPath(myPath);
@@ -75,11 +75,11 @@ void InformationComponent::paint (Graphics& g){
 }
 void InformationComponent::resized(){
     //set the bounds of any child components here.
-    Rectangle<int> r (x,y,w,h);
+    Rectangle<int> r (static_cast<int>(x), static_cast<int>(y), static_cast<int>(w), static_cast<int>(h));
 	r.removeFromTop(60);
     __version.setBounds(r);
-	__version.setCentrePosition(midX + 10.0f, r.getY());
+	__version.setCentrePosition(static_cast<int>(midX) + 10, r.getY());
     r.removeFromTop(40);
     __authors.setBounds(r);
-    __authors.setCentrePosition(midX + 10.0f, r.getY());
+    __authors.setCentrePosition(static_cast<int>(midX) + 10, r.getY());
 }

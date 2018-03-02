@@ -4,6 +4,7 @@
 void IGenerator::AddNoteCommand(int offset, int note, uint8 vel, bool isOn) {
 	this->__messages.push(noteMessage(offset, note, vel, isOn));
 }
+
 int IGenerator::HandleEvent() {
 	if (!this->__messages.empty()) {
 		auto tmp = this->__messages.front();

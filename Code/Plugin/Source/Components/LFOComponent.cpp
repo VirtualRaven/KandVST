@@ -27,7 +27,7 @@ IVSTParameters(ID)
 	setSize(300,200);
 }
 
-void LFOComponent::paint(Graphics& g){
+void LFOComponent::paint(Graphics&){
 	
 }
 

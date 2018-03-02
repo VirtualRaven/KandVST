@@ -17,13 +17,14 @@ public:
 
 	void paint(Graphics& g);
 	void resized();
+	void InitializeGui();
 
 private:
-	
+	OurLookAndFeel ourLookAndFeel; //Must be on top
+	ImageComponent  __loadingImage;
 	TabbedComponent __tabComponent;
 	MidiKeyboardComponent __keyboard;
 	ConsoleComponent __cc;
-	OurLookAndFeel ourLookAndFeel;
     //==============================================================================
 	PluginProcessor& getProcessor() const
     {
