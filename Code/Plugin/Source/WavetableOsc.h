@@ -30,7 +30,6 @@ private:
 	size_t __rand_index;
 
 
-
 public:
 	WavetableOsc(int ID,double sampleRate);
 	virtual ~WavetableOsc();

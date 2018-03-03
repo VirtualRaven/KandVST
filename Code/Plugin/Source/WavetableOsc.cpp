@@ -175,8 +175,15 @@ bool WavetableOsc::__RenderBlock(AudioBuffer<T>& buffer,int len) {
 		double inc = tmpInc * tmpFreq;
 
 		auto tgt = IWavetable::getLoc(__phase, tmpFreq);
-
-
+		float tmpAmp = gains[0] + gains[1] + gains[2] + gains[3] + gains[4];
+		if (tmpAmp > 1)
+		{
+			for (size_t i = 0; i < 4; i++)
+			{
+				if (gains[i] != 0 )
+					gains[i] /= tmpAmp;
+			}
+		}
 		double tmp_samp = getSampleFromLoc<SINE>(tgt) *gains[0];
 		tmp_samp += getSampleFromLoc<SQUARE>(tgt) *gains[1];
 		tmp_samp += getSampleFromLoc<SAW>(tgt) *gains[2];
