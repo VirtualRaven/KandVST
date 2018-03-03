@@ -29,8 +29,9 @@ void ExampleEffect::RegisterParameters(int ID)
 }
 
 template<typename T>
-void ExampleEffect::__RenderBlock(AudioBuffer<T>& buffer,int len)
+bool ExampleEffect::__RenderBlock(AudioBuffer<T>& buffer, int len, bool empty)
 {
+	// TODO: handle empty
 	for (int i = 0; i <len; i++)
 	{
 
@@ -43,10 +44,12 @@ void ExampleEffect::__RenderBlock(AudioBuffer<T>& buffer,int len)
 		buffer.addSample(1, i, static_cast<T>(__delayBuffer.getSample(1, __delayPos))*multi);
 
 	}
+
+	return true;
 }
 
-template void ExampleEffect::__RenderBlock(AudioBuffer<double>& buffer,int len);
-template void ExampleEffect::__RenderBlock(AudioBuffer<float>& buffer, int len);
+template bool ExampleEffect::__RenderBlock(AudioBuffer<double>& buffer, int len, bool empty);
+template bool ExampleEffect::__RenderBlock(AudioBuffer<float>& buffer, int len, bool empty);
 
 void ExampleEffect::ProccessCommand(MidiMessage message)
 {

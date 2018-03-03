@@ -39,5 +39,5 @@ void FilterLP::__calculateCoefficients()
 bool FilterLP::__isEnabled()
 {
 	// Disable at 20kHz
-	return __fc < 20000.0f;
+	return (__fc < 20000.0f) && (__fc > 0.0f);
 }

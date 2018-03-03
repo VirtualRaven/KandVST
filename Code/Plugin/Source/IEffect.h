@@ -9,8 +9,8 @@ protected:
 	double __sampleRate;
 public:
 	IEffect(double sampleRate) : __sampleRate(sampleRate) {};
-	virtual void RenderBlock(AudioBuffer<float>& buffer,int len) = 0;
-	virtual void RenderBlock(AudioBuffer<double>& buffer,int len) = 0;
+	virtual bool RenderBlock(AudioBuffer<float>& buffer, int len, bool empty) = 0;
+	virtual bool RenderBlock(AudioBuffer<double>& buffer, int len, bool empty) = 0;
 	virtual void ProccessCommand(MidiMessage message) = 0;
 };
 
