@@ -5,11 +5,15 @@
 #include <list>         
 #include <thread>
 
+
 template<typename T>
 PipelineManager<T>::PipelineManager(double rate, int maxBuffHint) :
 	__sampleRate(rate),
 	__maybeMaxBuff(maxBuffHint)
 {
+	for (int i = 0; i < LFO_COUNT; i++) {
+		lfos[i] = new LFO(maxBuffHint, i, rate);
+	}
 	for (size_t i = 0; i < 16; i++)
 	{
 		pipList.emplace_back(rate,maxBuffHint);
@@ -24,8 +28,11 @@ PipelineManager<T>::~PipelineManager()
 }
 
 template<typename T>
-void PipelineManager<T>::genSamples(AudioBuffer<T>& buff, MidiBuffer & midiMessages)
+void PipelineManager<T>::genSamples(AudioBuffer<T>& buff, MidiBuffer & midiMessages, AudioPlayHead::CurrentPositionInfo & posInfo)
 {
+	for (int i = 0; i < LFO_COUNT; i++) {
+		lfos[i]->generate(buff.getNumSamples(), posInfo);
+	}
 	std::vector<AudioBuffer<T>> pipBuff = std::vector<AudioBuffer<T>>();
 	for (size_t i = 0; i < 16; i++)
 	{
@@ -92,15 +99,18 @@ void PipelineManager<T>::genSamples(AudioBuffer<T>& buff, MidiBuffer & midiMessa
 	}
 	//Run last job on this thread
 	(pipList.end() - 1)->render_block(pipBuff[buffCount]);
-	
+
 	while (pool.getNumJobs()>0);
 	for (auto b : pipBuff)
-	{	
+	{
 		buff.addFrom(0, 0, b, 0, 0, buff.getNumSamples());
 		buff.addFrom(1, 0, b, 1, 0, buff.getNumSamples());
 	}
 	
 }
+
+//template void PipelineManager::genSamples(AudioBuffer<double>& buff, MidiBuffer & midiMessage, AudioPlayHead::CurrentPositionInfo & posInfo);
+//template void PipelineManager::genSamples(AudioBuffer<float>& buff, MidiBuffer & midiMessages, AudioPlayHead::CurrentPositionInfo & posInfo);
 
 template class PipelineManager<double>;
 template class PipelineManager<float>;

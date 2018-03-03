@@ -5,8 +5,10 @@
 #include "EnvelopeGenerator.h"
 #include "WavetableOsc.h"
 #include "ExampleEffect.h"
+#include "LFO.h"
 #include "FilterLP.h"
 #include "FilterHP.h"
+
 
 #include <tuple>
 #include <array>

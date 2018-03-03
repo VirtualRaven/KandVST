@@ -6,6 +6,7 @@
 #include <fstream>
 #include "Pipeline.h"
 #include <list>
+#include "LFO.h"
 
 template<typename T>
 class PipelineManager
@@ -22,7 +23,8 @@ public:
 
 void genSamples(
 		AudioBuffer<T>& buff, 
-		MidiBuffer& midiMessages);
+		MidiBuffer& midiMessages,
+		AudioPlayHead::CurrentPositionInfo & posInfo);
 
 
 };

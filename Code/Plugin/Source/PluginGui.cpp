@@ -17,8 +17,6 @@ PluginGUI::PluginGUI(PluginProcessor& owner)
 	addAndMakeVisible(__loadingImage);
 	__loadingImage.setBounds(getLocalBounds());
 
-
-
 }
 
 
@@ -72,4 +70,6 @@ void PluginGUI::resized()
 	__tabComponent.setBounds(localBounds);
 
 }
+
+
 
