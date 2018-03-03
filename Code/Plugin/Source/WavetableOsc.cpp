@@ -146,14 +146,26 @@ bool WavetableOsc::__RenderBlock(AudioBuffer<T>& buffer,int len) {
 	double calcFreq = __frequency * pow(2.0, *__octave + (((*__offset) + (*__detune) + 2*__pitchbend) / 12.0));
 	double tmpInc = IWavetable::getLength() / __sampleRate;
 
+
 	bool dataGenerated = false;
+	if (__ID != 0) {
+		float tmpAmp = gains[0] + gains[1] + gains[2] + gains[3] + gains[4];
+		if (tmpAmp > 1)
+		{
+			for (size_t i = 0; i < 4; i++)
+			{
+				if (gains[i] != 0)
+					gains[i] /= tmpAmp;
+			}
+		}
+	}
+
 
 	for (int i = 0; i < numSampels; i++)
 	{
 		if (i == nextEvent) {
 			nextEvent = this->HandleEvent();
-			calcFreq = __frequency * pow(2.0, *__octave + (((*__offset) + (*__detune)) / 12.0));
-			
+			calcFreq = __frequency * pow(2.0, *__octave + (((*__offset) + (*__detune) + 2 * __pitchbend) / 12.0));
 		}
 
 		//This code makes sure that we do not render anything
@@ -163,7 +175,7 @@ bool WavetableOsc::__RenderBlock(AudioBuffer<T>& buffer,int len) {
 			if (nextEvent < numSampels && nextEvent  > i) {
 				i = nextEvent;
 				nextEvent = this->HandleEvent();
-				calcFreq = __frequency * pow(2.0, *__octave + (((*__offset) + (*__detune)) / 12.0));
+				calcFreq = __frequency * pow(2.0, *__octave + (((*__offset) + (*__detune) + 2 * __pitchbend) / 12.0));
 			}
 			else break; 
 		}
@@ -175,21 +187,26 @@ bool WavetableOsc::__RenderBlock(AudioBuffer<T>& buffer,int len) {
 		double inc = tmpInc * tmpFreq;
 
 		auto tgt = IWavetable::getLoc(__phase, tmpFreq);
-		float tmpAmp = gains[0] + gains[1] + gains[2] + gains[3] + gains[4];
-		if (tmpAmp > 1)
-		{
-			for (size_t i = 0; i < 4; i++)
+
+		if (__ID == 0) {
+			float tmpAmp = gains[0] + gains[1] + gains[2] + gains[3] + gains[4];
+			if (tmpAmp > 1)
 			{
-				if (gains[i] != 0 )
-					gains[i] /= tmpAmp;
+				for (size_t i = 0; i < 4; i++)
+				{
+					if (gains[i] != 0)
+						gains[i] /= tmpAmp;
+				}
 			}
 		}
+		
 		double tmp_samp = getSampleFromLoc<SINE>(tgt) *gains[0];
 		tmp_samp += getSampleFromLoc<SQUARE>(tgt) *gains[1];
 		tmp_samp += getSampleFromLoc<SAW>(tgt) *gains[2];
 		tmp_samp += getSampleFromLoc<TRI>(tgt) *gains[3];
 		tmp_samp += __noiseBuffer[__rand_index++] * gains[4];
 
+		
 		tmp_samp *= __envelope.GenerateNextStep(__sustain) ;
 
 		T samp = static_cast<T>(tmp_samp);
