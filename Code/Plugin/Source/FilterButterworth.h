@@ -15,9 +15,10 @@ class FilterButterworth :
 
 private:
 	template<typename T>
-	void __RenderBlock(AudioBuffer<T>& buffer,int len);
+	bool __RenderBlock(AudioBuffer<T>& buffer, int len, bool empty);
 	virtual void CalculateCoefficients() = 0;
 	virtual bool IsEnabled() = 0;
+	bool __enabled;
 
 	double __prevFc;
 
@@ -47,13 +48,13 @@ public:
 	static void RegisterParameters(int ID, String parameterLabel, String parameterId, float defaultValue);
 
 	// Inherited via IEffect
-	virtual void RenderBlock(AudioBuffer<float>& buffer,int len) override 
+	virtual bool RenderBlock(AudioBuffer<float>& buffer, int len, bool empty) override 
 	{
-		__RenderBlock(buffer,len);
+		return __RenderBlock(buffer, len, empty);
 	}
-	virtual void RenderBlock(AudioBuffer<double>& buffer,int len) override
+	virtual bool RenderBlock(AudioBuffer<double>& buffer, int len, bool empty) override
 	{
-		__RenderBlock(buffer,len);
+		return __RenderBlock(buffer, len, empty);
 	}
 	virtual void ProccessCommand(MidiMessage message) override;
 };

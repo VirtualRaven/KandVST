@@ -5,8 +5,10 @@
 #include "EnvelopeGenerator.h"
 #include "WavetableOsc.h"
 #include "ExampleEffect.h"
+#include "LFO.h"
 #include "FilterLP.h"
 #include "FilterHP.h"
+
 
 #include <tuple>
 #include <array>
@@ -31,12 +33,8 @@ public:
 
 
 	bool isActive();
-	void noteCommand(int offset,
-					int note, 
-					uint8 vel, 
-					bool isOn =true );
-	void midiMessage(MidiMessage msg);
 
+	void midiCommand(MidiMessage msg, int offset);
 
 
 	Pipeline(double rate,int maxBuffHint);

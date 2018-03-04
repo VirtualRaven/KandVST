@@ -2,7 +2,8 @@
 
 FilterButterworth::FilterButterworth(int ID, double sampleRate, String parameterId) :
 	IEffect(sampleRate),
-	IVSTParameters(ID)
+	IVSTParameters(ID),
+	__enabled(true)
 {
 	__fs = sampleRate;
 	__prevFc = -1;
@@ -21,14 +22,29 @@ void FilterButterworth::RegisterParameters(int ID, String parameterLabel, String
 }
 
 template<typename T>
-void FilterButterworth::__RenderBlock(AudioBuffer<T>& buffer,int len)
+bool FilterButterworth::__RenderBlock(AudioBuffer<T>& buffer, int len, bool empty)
 {
 	__fc = *lpFrequency;
 
-	// Return if filter is not enabled
-	if (IsEnabled() == false)
+	if (!__enabled && ((!empty) && IsEnabled()))
 	{
-		return;
+		// Enabled again
+		__enabled = true;
+
+		// Make sure previous values are reset
+		/*for (int i = 0; i < 2; i++)
+		{
+			__prevX1[i] = 0;
+			__prevX2[i] = 0;
+
+			__prevY1[i] = 0;
+			__prevY2[i] = 0;
+		}*/
+	}
+	else if (!__enabled)
+	{
+		// Return false if not enabled
+		return false;
 	}
 
 	// Recalculate coefficients only if fc has changed
@@ -70,10 +86,17 @@ void FilterButterworth::__RenderBlock(AudioBuffer<T>& buffer,int len)
 		buff[1][i] = static_cast<T>(__currentLeft);
 
 	}
+
+	if ((empty || !IsEnabled()) && __enabled)
+	{
+		__enabled = false;
+	}
+
+	return true;
 }
 
-template void FilterButterworth::__RenderBlock(AudioBuffer<double>& buffer,int len);
-template void FilterButterworth::__RenderBlock(AudioBuffer<float>& buffer,int len);
+template bool FilterButterworth::__RenderBlock(AudioBuffer<double>& buffer, int len, bool empty);
+template bool FilterButterworth::__RenderBlock(AudioBuffer<float>& buffer, int len, bool empty);
 
 void FilterButterworth::ProccessCommand(MidiMessage message)
 {

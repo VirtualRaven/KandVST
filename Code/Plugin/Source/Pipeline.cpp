@@ -30,27 +30,23 @@ int Pipeline<T>::getNoteNumber()
 {
 	return __note;
 }
-template<typename T>
-void Pipeline<T>::noteCommand(int offset, int note, uint8 vel, bool isOn) 
-{
-	if (isOn) {
-		__note = note;
-		__active = true;
-	}
-		
-	for (auto obj : __oscs) {
-		if (*std::get<2>(obj)) {
-			std::get<0>(obj)->AddNoteCommand(offset, note, vel, isOn);
-		}
-	}
-}
 
 template<typename T>
-void Pipeline<T>::midiMessage(MidiMessage msg)
+void Pipeline<T>::midiCommand(MidiMessage msg, int offset)
 {
-	for (auto osc : __oscs)
+	if (msg.isNoteOn())
 	{
-		std::get<0>(osc)->ProccessCommand(msg);
+		__note = msg.getNoteNumber();
+		__active = true;
+	}
+
+	for (auto obj : __oscs) 
+	{
+		if (*std::get<2>(obj)) 
+		{
+			std::get<0>(obj)->AddCommand(msg, offset);
+			
+		}
 	}
 }
 
@@ -111,7 +107,7 @@ void Pipeline<T>::render_block(AudioBuffer<T>& buffer) {
 			{	
 				//Apply the effects
 				for (int j = 0; j < __num_effects; j++) {
-					__effects[i*__num_effects + j]->RenderBlock(tmpBuff, len);
+					__effects[i*__num_effects + j]->RenderBlock(tmpBuff, len, false);
 				}
 				buffer.addFrom(0, 0, tmpBuff, 0, 0, len, *std::get<2>(obj));
 				buffer.addFrom(1, 0, tmpBuff, 1, 0, len, *std::get<2>(obj));
@@ -119,7 +115,7 @@ void Pipeline<T>::render_block(AudioBuffer<T>& buffer) {
 			}
 		}
 	}
-	__delay.RenderBlock(buffer,len);
+	__delay.RenderBlock(buffer, len, false);
 
 	if (buffer.getMagnitude(0, len) < 0.0001)
 		__active = false;

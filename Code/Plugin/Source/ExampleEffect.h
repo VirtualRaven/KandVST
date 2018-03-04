@@ -12,7 +12,7 @@ class ExampleEffect :
 
 private:
 	template<typename T>
-	void __RenderBlock(AudioBuffer<T>& buffer,int len);
+	bool __RenderBlock(AudioBuffer<T>& buffer, int len, bool empty);
 	AudioBuffer<double> __delayBuffer;
 	int __delayPos;
 
@@ -25,13 +25,13 @@ public:
 	static void RegisterParameters(int ID);
 
 	// Inherited via IEffect
-	virtual void RenderBlock(AudioBuffer<float>& buffer,int len) override 
+	virtual bool RenderBlock(AudioBuffer<float>& buffer, int len, bool empty) override
 	{
-		__RenderBlock(buffer,len);
+		return __RenderBlock(buffer, len, empty);
 	}
-	virtual void RenderBlock(AudioBuffer<double>& buffer,int len) override
+	virtual bool RenderBlock(AudioBuffer<double>& buffer, int len, bool empty) override
 	{
-		__RenderBlock(buffer,len);
+		return __RenderBlock(buffer, len, empty);
 	}
 	virtual void ProccessCommand(MidiMessage message) override;
 };
