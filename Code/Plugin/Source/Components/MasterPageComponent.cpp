@@ -5,12 +5,18 @@ MasterComponent::~MasterComponent()
 {
 }
 
-MasterComponent::MasterComponent():
-	__infoComponent()
+MasterComponent::MasterComponent() :
+	__infoComponent(),
+	__lfoComponent1(0),
+	__lfoComponent2(1)
 {
+	
 	addAndMakeVisible(__infoComponent);
 	addAndMakeVisible(__presetComponent);
 	addAndMakeVisible(__mixerComponent);
+	addAndMakeVisible(__filterComponent);
+	addAndMakeVisible(__lfoComponent1);
+	addAndMakeVisible(__lfoComponent2);
 
 }
 
@@ -22,12 +28,14 @@ void MasterComponent::paint(Graphics& g){
 	g.setFont(presets);
 	g.setColour(Colours::white);
 	g.drawSingleLineText("PRESETS", 500, 300, Justification::centred);
-	
 }
 
 void MasterComponent::resized() {
 	__presetComponent.setBounds(getLocalBounds().removeFromBottom(260).removeFromRight(680).removeFromLeft(400));
 	__infoComponent.setBounds(getLocalBounds().removeFromTop(300));
-	__mixerComponent.setBounds(getLocalBounds().reduced(8));
+	__mixerComponent.setBounds(Rectangle<int>(740,10,230,360));
+	__filterComponent.setBounds(Rectangle<int>(740, 370, 230, 150));
+	__lfoComponent1.setBounds(Rectangle<int>(8,8,265,145));
+	__lfoComponent2.setBounds(Rectangle<int>(8, 155, 265, 145));
 	
 }

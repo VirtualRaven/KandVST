@@ -11,9 +11,7 @@ ParameterButton::ParameterButton(AudioProcessorParameter& p)
 	setValue(static_cast<int>(param.getValue())); //Set Default value
 	param.setValueNotifyingHost(static_cast<float>(__value));
 	setColour(TextButton::ColourIds::buttonOnColourId, Colours::green);
-	setColour(TextButton::ColourIds::buttonColourId, Colours::darkgrey);
-	//setColour(ToggleButton::tickDisabledColourId, Colours::darkgrey);
-	//setColour(ToggleButton::tickColourId, Colours::skyblue);
+	setColour(TextButton::ColourIds::buttonColourId, Colour::fromRGB(60,60,60));
 	startTimer(30);
 	addListener(this);
 

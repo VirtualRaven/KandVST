@@ -18,7 +18,7 @@ PluginProcessor::PluginProcessor()
 	Global = new GLOBAL();
 	Global->paramHandler =  new ParameterHandler(*this);
 	Global->log = new Log("log.txt");
-
+	// -1 = master
 	setParameters<int,	EnvelopeGenerator, 
 						ExampleEffect, 
 						WavetableOsc,

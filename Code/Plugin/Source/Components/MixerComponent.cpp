@@ -1,6 +1,4 @@
 #include "MixerComponent.h"
-#include "MixerComponent.h"
-
 
 MixerComponent::~MixerComponent()
 {
@@ -15,18 +13,11 @@ MixerComponent::MixerComponent()
 	__osc4 = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(3, "OSC_MIX_AMP"));
 	__masterMixer = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(3, "OSC_MIX_AMP"));
 
-	__hpFilter = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(-1, "FILTER_HP"));
-	__lpFilter = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(-1, "FILTER_LP"));
-
 	addAndMakeVisible(__osc1);
 	addAndMakeVisible(__osc2);
 	addAndMakeVisible(__osc3);
 	addAndMakeVisible(__osc4);
 	addAndMakeVisible(__masterMixer);
-	addAndMakeVisible(__mixerLabel);
-
-	addAndMakeVisible(__hpFilter);
-	addAndMakeVisible(__lpFilter);
 
 	__osc1->setSliderStyle(Slider::LinearVertical);
 	__osc1->setTextBoxStyle(__osc1->TextBoxBelow, true, 55, 15);
@@ -59,39 +50,32 @@ MixerComponent::MixerComponent()
 	__masterLabel.attachToComponent(__masterMixer, false);
 	__masterLabel.setJustificationType(Justification::centred);
 
-	Font mixer(20, Font::FontStyleFlags::bold);
-	__mixerLabel.setFont(mixer);
-	__mixerLabel.setText("MIXER", NotificationType::dontSendNotification);
-
-
-	__hpFilter->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
-	__hpFilter->setTextBoxStyle(__hpFilter->NoTextBox, true, 10, 10);
-
-	__lpFilter->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
-	__lpFilter->setTextBoxStyle(__lpFilter->NoTextBox, true, 10, 10);
 }
 
 void MixerComponent::paint(Graphics& g) {
 	g.setColour(Colour::fromRGB(60, 60, 60));
-	g.drawRect(Rectangle<int>(740, 10, 220, 345), 2.0f);
-	g.fillRect(Rectangle<int>(740, 10, 220, 30));
+	g.drawRect(Rectangle<int>(10, 10, 220, 345), 2.0f);
+	g.fillRect(Rectangle<int>(10, 10, 220, 30));
+
+	Font mixer(20, Font::FontStyleFlags::bold);
+	g.setColour(Colours::white);
+	g.setFont(mixer);
+	g.drawText("MIXER", Rectangle<int>(10, 10, 220, 30), Justification::centred, false);
+
 }
 
 void MixerComponent::resized() {
 
-	__mixerLabel.setBounds(Rectangle<int>(815, 15, 150, 20));
-
-	//Rectangle<int> bounds(0,0,0,0);
-	__masterMixer->setBounds(getLocalBounds().reduced(8).removeFromTop(335).removeFromBottom(280).removeFromRight(75));
+	__masterMixer->setBounds(getLocalBounds().reduced(8).removeFromTop(335).removeFromBottom(280).removeFromLeft(75));
 	Rectangle<int> ampBounds(getLocalBounds().reduced(8));
 	ampBounds.removeFromTop(55);
-	ampBounds.removeFromRight(70);
-	Rectangle<int> topBounds(ampBounds.removeFromTop(120).removeFromRight(140));
-	__osc1->setBounds(topBounds.removeFromLeft(60));
-	__osc2->setBounds(topBounds);
+	ampBounds.removeFromLeft(70);
+	Rectangle<int> topBounds(ampBounds.removeFromTop(120).removeFromLeft(140));
+	__osc2->setBounds(topBounds.removeFromRight(60));
+	__osc1->setBounds(topBounds);
 	ampBounds.removeFromTop(40);
-	Rectangle<int> lowerBounds(ampBounds.removeFromTop(120).removeFromRight(140));
-	__osc3->setBounds(lowerBounds.removeFromLeft(60));
-	__osc4->setBounds(lowerBounds);
+	Rectangle<int> lowerBounds(ampBounds.removeFromTop(120).removeFromLeft(140));
+	__osc4->setBounds(lowerBounds.removeFromRight(60));
+	__osc3->setBounds(lowerBounds);
 
 }

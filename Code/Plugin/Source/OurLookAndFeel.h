@@ -9,7 +9,6 @@ class OurLookAndFeel : public LookAndFeel_V4
 public:
 	 OurLookAndFeel();
 	~OurLookAndFeel();
-
 	void drawRotarySlider(Graphics& g, int x, int y, int width, int height,
 		float sliderPos, float rotaryStartAngle,  float rotaryEndAngle, Slider& slider) override;
 	

@@ -25,11 +25,11 @@ void PluginGUI::InitializeGui()
 	removeAllChildren();
 	setLookAndFeel(&ourLookAndFeel);
 
-	__tabComponent.addTab("M", Colours::darkgreen, new MasterComponent(), true);
+	__tabComponent.addTab("M", Colours::rebeccapurple, new MasterComponent(), true);
 
 	for (int i = 0; i < 4; i++)
 	{
-		__tabComponent.addTab(std::to_string(i + 1), Colours::darkgrey, new OscillatorPageComponent(i), true);
+		__tabComponent.addTab(std::to_string(i + 1), Colour::fromRGB(60,90,120), new OscillatorPageComponent(i), true);
 	}
 
 	__tabComponent.addTab("Console", Colours::darkgrey, &__cc, true);

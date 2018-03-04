@@ -20,12 +20,6 @@ __oscillator(ID)
 	addAndMakeVisible(__lpFreq);
 	addAndMakeVisible(__hpFreq);
 
-	//__amplitude->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
-	//__amplitude->setTextBoxStyle(__amplitude->NoTextBox, true, 10, 10);
-	//__ampLabel.setText("Amplitude", NotificationType::dontSendNotification);
-	//__ampLabel.attachToComponent(__amplitude, false);
-	//__ampLabel.setJustificationType(juce::Justification::centred);
-
 	__lpFreq->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
 	__lpFreq->setTextBoxStyle(__lpFreq->NoTextBox, true, 10, 10);
 	__lpFreq->setSkewFactorFromMidPoint(0.15);
@@ -50,8 +44,24 @@ void OscillatorPageComponent::paint(Graphics& g){
 	g.fillAll();
 
 	g.setColour(Colours::white);
-	g.setFont(20.0f);
+	Font env(20, Font::FontStyleFlags::bold);
+	g.setFont(env);
 	g.drawText("ENVELOPE", Rectangle<float>(350,8,300,25), Justification::centred, false);
+
+	//===================================================================================
+
+	int startX = 855;
+	int startY = 455;
+	g.setColour(Colour::fromRGB(60, 60, 60));
+	g.drawRect(Rectangle<int>(startX, 455, 120, 100));
+	g.fillRect(Rectangle<int>(startX, 455, 120, 20));
+
+	g.setColour(Colours::white);
+	Font filt(15, Font::FontStyleFlags::bold);
+	g.setFont(filt);
+	g.drawText("FILTER", Rectangle<float>(static_cast<float>(startX), static_cast<float>(startY),
+										static_cast<float>(120), static_cast<float>(20)), Justification::centred, false);
+	
 }
 
 void OscillatorPageComponent::resized(){
@@ -64,7 +74,6 @@ void OscillatorPageComponent::resized(){
 	//__lfo.setBounds(getLocalBounds().reduced(8).removeFromRight(200).removeFromTop(250));
 
 	Rectangle<int> amplitudeBounds(getLocalBounds().reduced(16));
-	//__amplitude->setBounds(amplitudeBounds.removeFromRight(100).removeFromBottom(100));
 	__lpFreq->setBounds(amplitudeBounds.removeFromRight(50).removeFromBottom(50));
 	__hpFreq->setBounds(amplitudeBounds.removeFromRight(50).removeFromBottom(50));
 }
