@@ -1,11 +1,11 @@
-#ifndef EXAMPLE_EFFECT_H
-#define EXAMPLE_EFFECT_H
+#ifndef DELAY_EFFECT_H
+#define DELAY_EFFECT_H
 #include "IEffect.h"
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "Global.h"
 #include "ParameterHandler.h"
 #include "IVSTParameters.h"
-class ExampleEffect :
+class DelayEffect :
 	public IEffect,
 	public IVSTParameters
 {
@@ -19,8 +19,8 @@ private:
 	AudioParameterFloat* __delayMultiplier;
 	
 public:
-	ExampleEffect(int ID,double sampleRate);
-	~ExampleEffect();
+	DelayEffect(int ID,double sampleRate);
+	~DelayEffect();
 
 	static void RegisterParameters(int ID);
 
@@ -37,4 +37,4 @@ public:
 };
 
 
-#endif //EXAMPLE_EFFECT_H
+#endif //DELAY_EFFECT_H

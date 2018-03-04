@@ -1,8 +1,8 @@
-#include "ExampleEffect.h"
+#include "DelayEffect.h"
 #define FADE 0.3
 
 
-ExampleEffect::ExampleEffect(int ID,double sampleRate):
+DelayEffect::DelayEffect(int ID,double sampleRate):
 	IEffect(sampleRate),
 	IVSTParameters(ID),
 	__delayBuffer(2,static_cast<int>(sampleRate/4)), //1/6 sec echo 
@@ -19,17 +19,17 @@ ExampleEffect::ExampleEffect(int ID,double sampleRate):
 }
 
 
-ExampleEffect::~ExampleEffect()
+DelayEffect::~DelayEffect()
 {
 }
 
-void ExampleEffect::RegisterParameters(int ID)
+void DelayEffect::RegisterParameters(int ID)
 {
 	Global->paramHandler->RegisterFloat(ID, "EX_DELAYMULTI", "Delay", 0.0f, 1.0f, 0.2f);
 }
 
 template<typename T>
-bool ExampleEffect::__RenderBlock(AudioBuffer<T>& buffer, int len, bool empty)
+bool DelayEffect::__RenderBlock(AudioBuffer<T>& buffer, int len, bool empty)
 {
 	// TODO: handle empty
 	
@@ -42,7 +42,7 @@ bool ExampleEffect::__RenderBlock(AudioBuffer<T>& buffer, int len, bool empty)
 	if (count != len) {
 		for (int i = 0; i < len; i++)
 		{
-
+				
 			float multi = *__delayMultiplier;
 
 			__delayBuffer.setSample(0, __delayPos, buffer.getSample(0, i) + __delayBuffer.getSample(0, __delayPos)*multi);
@@ -56,9 +56,9 @@ bool ExampleEffect::__RenderBlock(AudioBuffer<T>& buffer, int len, bool empty)
 	return true;
 }
 
-template bool ExampleEffect::__RenderBlock(AudioBuffer<double>& buffer, int len, bool empty);
-template bool ExampleEffect::__RenderBlock(AudioBuffer<float>& buffer, int len, bool empty);
+template bool DelayEffect::__RenderBlock(AudioBuffer<double>& buffer, int len, bool empty);
+template bool DelayEffect::__RenderBlock(AudioBuffer<float>& buffer, int len, bool empty);
 
-void ExampleEffect::ProccessCommand(MidiMessage message)
+void DelayEffect::ProccessCommand(MidiMessage message)
 {
 }
