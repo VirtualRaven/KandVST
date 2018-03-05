@@ -19,6 +19,7 @@ private:
 	virtual void CalculateCoefficients() = 0;
 	virtual bool IsEnabled() = 0;
 	bool __enabled;
+	int __firstSampleIndex;
 
 	double __prevFc;
 
