@@ -1,5 +1,5 @@
 fs = 48000;
-fc = 10000;
+fc = 12000;
 w = 2*pi*fs;
 wc = 2*pi*fc;
 
@@ -9,8 +9,7 @@ figure
 freqz(b,a, 256, fs);
 title('(LP) Genererad')
 
-%wd = 2*pi*fc/fs;
-wa = wc;%2*fs*tan(wc*2*fs);
+wa = 2*fs*tan(wc/(2*fs));
 
 a0 = 4*(fs^2)+2*fs*wa*sqrt(2)+(wa^2);
 
@@ -39,7 +38,7 @@ figure
 freqz(b,a, 256, fs);
 title('(HP) Genererad')
 
-wa = wc;
+wa = 2*fs*tan(wc/(2*fs));
 a0 = 4*(fs^2)+2*fs*wa*sqrt(2)+(wa^2);
 b2 = (4*fs^2)/a0;
 b1 = (-8*fs^2)/a0;
