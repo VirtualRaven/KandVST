@@ -18,7 +18,7 @@ private:
 
 	ScopedPointer<ParameterSlider> __osc1, __osc2, __osc3, __osc4, __masterMixer;
 	Label __osc1Label, __osc2Label, __osc3Label, __osc4Label, __masterLabel;
-
+	Rectangle<int> __bounds;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MixerComponent)
 };

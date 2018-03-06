@@ -7,6 +7,8 @@
 #include "../Global.h"
 #include "OscillatorComponent.h"
 #include "LFOComponent.h"
+#include "FilterComponent.h"
+
 class OscillatorPageComponent  : public Component, private IVSTParameters
 {
 public:
@@ -26,11 +28,9 @@ private:
 	ComboBox __oscOctave;
 	ScopedPointer<ParameterSlider> __amplitude;
 	Label __ampLabel;
-	ScopedPointer<ParameterSlider> __lpFreq;
-	Label __lpLabel;
-	ScopedPointer<ParameterSlider> __hpFreq;
-	Label __hpLabel;
 	ScopedPointer<ParameterButton> __toggleOsc;
+
+	FilterComponent __filterComponent;
     //==============================================================================
     
 };

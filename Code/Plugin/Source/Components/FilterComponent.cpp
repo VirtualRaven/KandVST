@@ -4,12 +4,11 @@ FilterComponent::~FilterComponent()
 {
 
 }
-
-FilterComponent::FilterComponent()
+FilterComponent::FilterComponent(int ID)
 {
 
-	__hpFilter = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(-1, "FILTER_HP"));
-	__lpFilter = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(-1, "FILTER_LP"));
+	__hpFilter = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(ID, "FILTER_HP"));
+	__lpFilter = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(ID, "FILTER_LP"));
 
 	addAndMakeVisible(__hpFilter);
 	addAndMakeVisible(__lpFilter);
@@ -31,23 +30,37 @@ FilterComponent::FilterComponent()
 }
 
 void FilterComponent::paint(Graphics& g) {
-	g.setColour(Colour::fromRGB(60, 60, 60));
-	g.drawRect(Rectangle<int>(10, 10, 220, 130), 2.0f);
-	g.fillRect(Rectangle<int>(10, 10, 220, 30));
 
+	int width = __bounds.getWidth() * 0.95;
+	int height = __bounds.getHeight() * 0.9;
+	int fontHeight = __bounds.getHeight() * 0.2;
+	int fontSize = __bounds.getHeight() * 0.12;
+
+	g.setColour(Colour::fromRGB(60, 60, 60));
+	g.drawRect(Rectangle<float>(10, 10, width, height), 2.0f);
+	g.fillRect(Rectangle<float>(10, 10, width, fontHeight));
+	
 	g.setColour(Colours::white);
-	Font filter(20, Font::FontStyleFlags::bold);
+	Font filter(fontSize, Font::FontStyleFlags::bold);
 	g.setFont(filter);
-	g.drawText("FILTER", Rectangle<int>(10, 10, 220, 30), Justification::centred, false);
+	g.drawText("FILTER", Rectangle<int>(10, 10, width, fontHeight), Justification::centred, false);
 	
 }
 
 void FilterComponent::resized() {
 
-	Rectangle<int> filterBounds(getLocalBounds().reduced(16));
-	filterBounds.removeFromRight(15);
-	__lpFilter->setBounds(filterBounds.removeFromRight(70).removeFromBottom(70));
-	filterBounds.removeFromRight(25);
-	__hpFilter->setBounds(filterBounds.removeFromRight(70).removeFromBottom(70));
+	__bounds = getLocalBounds();
+
+	Rectangle<int> __filterBounds(__bounds.reduced(16));
+
+	int __size = (__bounds.getHeight() - __bounds.getHeight() * 0.2) * 0.6;
+	
+	__filterBounds.removeFromRight(__bounds.getWidth() * 0.05);
+	
+	__lpFilter->setBounds(__filterBounds.removeFromRight(__size).removeFromBottom(__size));
+
+	__filterBounds.removeFromRight(__bounds.getWidth() * 0.05);
+	
+	__hpFilter->setBounds(__filterBounds.removeFromRight(__size).removeFromBottom(__size));
 
 }

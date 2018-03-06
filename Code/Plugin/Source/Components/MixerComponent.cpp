@@ -53,29 +53,50 @@ MixerComponent::MixerComponent()
 }
 
 void MixerComponent::paint(Graphics& g) {
-	g.setColour(Colour::fromRGB(60, 60, 60));
-	g.drawRect(Rectangle<int>(10, 10, 220, 345), 2.0f);
-	g.fillRect(Rectangle<int>(10, 10, 220, 30));
 
-	Font mixer(20, Font::FontStyleFlags::bold);
+	int width = __bounds.getWidth() * 0.95;
+	int height = __bounds.getHeight() * 0.97;
+	int fontHeight = __bounds.getHeight() * 0.08;
+	int fontSize = __bounds.getHeight() * 0.05;
+
+	g.setColour(Colour::fromRGB(60, 60, 60));
+	g.drawRect(Rectangle<int>(10, 10, width, height), 2.0f);
+	g.fillRect(Rectangle<int>(10, 10, width, fontHeight));
+
+	Font mixer(fontSize, Font::FontStyleFlags::bold);
 	g.setColour(Colours::white);
 	g.setFont(mixer);
-	g.drawText("MIXER", Rectangle<int>(10, 10, 220, 30), Justification::centred, false);
+	g.drawText("MIXER", Rectangle<int>(10, 10, width, fontHeight), Justification::centred, false);
 
 }
 
 void MixerComponent::resized() {
+	__bounds = getLocalBounds();
 
-	__masterMixer->setBounds(getLocalBounds().reduced(8).removeFromTop(335).removeFromBottom(280).removeFromLeft(75));
+	Rectangle<int> mixerBounds(getLocalBounds().reduced(8)
+		.removeFromBottom(__bounds.getHeight() - __bounds.getHeight()*0.2)
+		.removeFromTop(__bounds.getHeight() * 0.8)
+		.removeFromLeft(__bounds.getWidth() * 0.35));
+
+	__masterMixer->setBounds(mixerBounds);
+
 	Rectangle<int> ampBounds(getLocalBounds().reduced(8));
-	ampBounds.removeFromTop(55);
-	ampBounds.removeFromLeft(70);
-	Rectangle<int> topBounds(ampBounds.removeFromTop(120).removeFromLeft(140));
-	__osc2->setBounds(topBounds.removeFromRight(60));
+	ampBounds.removeFromTop(ampBounds.getHeight() * 0.165);
+	ampBounds.removeFromLeft(ampBounds.getWidth() * 0.4);
+
+	Rectangle<int> topBounds(ampBounds
+		.removeFromTop(ampBounds.getHeight() * 0.45)
+		.removeFromLeft(ampBounds.getWidth() * 0.9));
+
+	__osc2->setBounds(topBounds.removeFromRight(topBounds.getWidth() * 0.42));
 	__osc1->setBounds(topBounds);
-	ampBounds.removeFromTop(40);
-	Rectangle<int> lowerBounds(ampBounds.removeFromTop(120).removeFromLeft(140));
-	__osc4->setBounds(lowerBounds.removeFromRight(60));
+	
+	ampBounds.removeFromTop(ampBounds.getHeight() * 0.2);
+	
+	Rectangle<int> lowerBounds(ampBounds
+		.removeFromTop(ampBounds.getHeight())
+		.removeFromLeft(ampBounds.getWidth() * 0.9));
+	__osc4->setBounds(lowerBounds.removeFromRight(lowerBounds.getWidth() * 0.42));
 	__osc3->setBounds(lowerBounds);
 
 }
