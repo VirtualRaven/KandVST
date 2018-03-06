@@ -4,7 +4,6 @@
 #include "../Global.h"
 #include "ParameterSlider.h"
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "../JuceLibraryCode/JuceHeader.h"
 
 class FilterComponent : public Component
 {

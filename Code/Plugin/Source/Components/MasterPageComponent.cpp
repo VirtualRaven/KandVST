@@ -27,7 +27,7 @@ void MasterComponent::paint(Graphics& g){
 	Font presets(20, Font::FontStyleFlags::bold);
 	g.setFont(presets);
 	g.setColour(Colours::white);
-	g.drawSingleLineText("PRESETS", 500, 300, Justification::centred);
+	g.drawSingleLineText("PRESETS", 500, 300, Justification::horizontallyCentred);
 }
 
 void MasterComponent::resized() {

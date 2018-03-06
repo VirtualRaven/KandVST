@@ -25,15 +25,15 @@ void PluginGUI::InitializeGui()
 	removeAllChildren();
 	setLookAndFeel(&ourLookAndFeel);
 
-	__tabComponent.addTab("M", Colours::rebeccapurple, new MasterComponent(), true);
+	__tabComponent.addTab("M", Colour::fromRGB(200,200,200), new MasterComponent(), true);
 
 	for (int i = 0; i < 4; i++)
 	{
-		__tabComponent.addTab(std::to_string(i + 1), Colour::fromRGB(60,90,120), new OscillatorPageComponent(i), true);
+		__tabComponent.addTab(std::to_string(i + 1), Colour::fromRGB(1,1,1), new OscillatorPageComponent(i), true);
 	}
 
 	__tabComponent.addTab("Console", Colours::darkgrey, &__cc, true);
-
+	
 	addAndMakeVisible(__tabComponent);
 	addAndMakeVisible(__keyboard);
 	__keyboard.setKeyWidth(__keyboard.getKeyWidth() + 10.0f);
