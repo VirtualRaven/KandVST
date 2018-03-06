@@ -43,12 +43,12 @@ double LFO::getSample(int idx)
 
 void LFO::generate(int numSamples, AudioPlayHead::CurrentPositionInfo& posInfo)
 {
-	if ((*__isActive)) __activeCheck = true;
-	else {
+	if (!(*__isActive)) {
 		__activeCheck = false;
 		return;
 	}
-	__wavetable = (tables[toWAVE_TYPE(*__waveType)]); 
+	
+	//WAVE_TYPE type = toWAVE_TYPE(*__waveType);
 
 	double freq = (posInfo.bpm)* calcRatio() / 60.0;
 
@@ -58,9 +58,26 @@ void LFO::generate(int numSamples, AudioPlayHead::CurrentPositionInfo& posInfo)
 
 	for (int i = 0; i < numSamples; i++)
 	{
-		__samples[i] = __wavetable->getSample(__phase, freq);
+		auto tgt = IWavetable::getLoc(__phase, freq);
+		//__samples[i] = getSampleFromLoc<SQUARE>(tgt);
+		switch (toWAVE_TYPE(*__waveType)) {
+		case SAW	: 
+			__samples[i] = getSampleFromLoc<SAW>(tgt);
+			break;
+		case SQUARE	: 
+			__samples[i] = getSampleFromLoc<SQUARE>(tgt);
+			break;
+		case TRI	: 
+			__samples[i] = getSampleFromLoc<TRI>(tgt);
+			break;
+		case SINE	: 
+			__samples[i] = getSampleFromLoc<SINE>(tgt);
+			break;
+		}
 		__phase += inc;
 	}
+	__activeCheck = true;
 }
+
 
 

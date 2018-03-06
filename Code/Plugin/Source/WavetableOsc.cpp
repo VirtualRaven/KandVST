@@ -1,6 +1,7 @@
 #include "WavetableOsc.h"
 #include "Wavetable.h"
- 
+#include "LFO.h" 
+
 WavetableOsc::WavetableOsc(int ID, double sampleRate) :
 	IGenerator(sampleRate),
 	IVSTParameters(ID),
@@ -177,10 +178,10 @@ bool WavetableOsc::__RenderBlock(AudioBuffer<T>& buffer,int len) {
 			}
 			else break; 
 		}
-	
-
 		
+
 		double tmpFreq = calcFreq;
+	
 	
 		double inc = tmpInc * tmpFreq;
 
