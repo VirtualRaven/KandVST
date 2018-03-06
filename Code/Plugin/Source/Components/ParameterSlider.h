@@ -30,7 +30,7 @@ DISCLAIMED.
 #define PARAMETER_SLIDER_H
 
 #include "../JuceLibraryCode/JuceHeader.h"
-class ParameterSlider: public Slider, private Timer
+class ParameterSlider: public Slider, private Timer, public MouseListener
 {
 public:
 	ParameterSlider(AudioProcessorParameter& p);
@@ -47,6 +47,7 @@ public:
 
 	void updateSliderPos();
 	AudioProcessorParameter& param;
+	virtual void mouseDoubleClick(const MouseEvent& event) override;
 };
 
 

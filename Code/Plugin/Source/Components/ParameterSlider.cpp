@@ -33,6 +33,7 @@ ParameterSlider::ParameterSlider(AudioProcessorParameter& p):
 	 Slider(p.getName(256)), param(p)
 {
 	setRange(0.0, 1.0, 0.0);
+	this->addMouseListener(this,false);
 	startTimerHz(30);
 	updateSliderPos();
 	
@@ -77,6 +78,12 @@ void ParameterSlider::updateSliderPos()
 
 	if (newValue != (float)Slider::getValue() && !isMouseButtonDown())
 		Slider::setValue(newValue, NotificationType::dontSendNotification);
+}
+
+void ParameterSlider::mouseDoubleClick(const MouseEvent & event)
+{
+	param.setValueNotifyingHost(param.getDefaultValue());
+
 }
 
 
