@@ -30,6 +30,10 @@ PipelineManager<T>::~PipelineManager()
 template<typename T>
 void PipelineManager<T>::genSamples(AudioBuffer<T>& buff, MidiBuffer & midiMessages, AudioPlayHead::CurrentPositionInfo & posInfo)
 {
+	// Return if wavetables are not ready
+	if (!wavetableRdy())
+		return;
+
 	for (int i = 0; i < LFO_COUNT; i++) {
 		lfos[i]->generate(buff.getNumSamples(), posInfo);
 	}

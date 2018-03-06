@@ -10,7 +10,7 @@ WavetableOsc::WavetableOsc(int ID, double sampleRate) :
 	__phase(0),
 	__frequency(0),
 	__noiseBuffer(static_cast<int>(sampleRate * 2)),
-	__rand(174594152),
+	__rand(),
 	__rand_index(0),
 	__pitchbend(0)
 {
@@ -26,9 +26,9 @@ WavetableOsc::WavetableOsc(int ID, double sampleRate) :
 	__noiseAmp = Global->paramHandler->Get<AudioParameterFloat>(__ID, "OSC_NOISE");
 
 
-	// Generate wavetable
-	for (auto&& samp : __noiseBuffer)
-		samp = (__rand.nextDouble() - 0.5f) * 2.0f;
+	// Don't Generate wavetable
+	//for (auto&& samp : __noiseBuffer)
+		//samp = (__rand.nextDouble() - 0.5f) * 2.0f;
 }
 
 
@@ -205,7 +205,9 @@ bool WavetableOsc::__RenderBlock(AudioBuffer<T>& buffer,int len) {
 		tmp_samp += getSampleFromLoc<SQUARE>(tgt) *gains[1];
 		tmp_samp += getSampleFromLoc<SAW>(tgt) *gains[2];
 		tmp_samp += getSampleFromLoc<TRI>(tgt) *gains[3];
-		tmp_samp += __noiseBuffer[__rand_index++] * gains[4];
+		// No wavetable for noise
+		//tmp_samp += __noiseBuffer[__rand_index++] * gains[4];
+		tmp_samp += (__rand.nextDouble() - 0.5f) * 2.0f * gains[4];
 		tmp_samp *= *env;
 		delete env;
 		T samp = static_cast<T>(tmp_samp);
