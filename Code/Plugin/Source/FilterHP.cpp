@@ -22,6 +22,7 @@ void FilterHP::__calculateCoefficients()
 {
 	// Calculate coefficients based on the current cut-off frequency
 	double wc = 2 * double_Pi * __fc;
+	wc = 2 * __fs * tan(wc / (2 * __fs));
 	double fs2 = __fs * __fs;
 	double wc2 = wc * wc;
 

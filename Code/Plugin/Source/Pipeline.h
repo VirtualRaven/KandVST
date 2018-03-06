@@ -4,7 +4,7 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "EnvelopeGenerator.h"
 #include "WavetableOsc.h"
-#include "ExampleEffect.h"
+#include "DelayEffect.h"
 #include "LFO.h"
 #include "FilterLP.h"
 #include "FilterHP.h"
@@ -25,7 +25,7 @@ private:
 	AudioBuffer<T> tmpBuff;
 	double __rate;
 	int __note;
-	ExampleEffect __delay;
+	DelayEffect __delay;
 	bool __active;
 	const int __maxBuffHint;
 

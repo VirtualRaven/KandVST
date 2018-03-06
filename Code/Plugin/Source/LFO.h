@@ -20,14 +20,15 @@ private:
 	AudioParameterInt* __ratio;
 	AudioParameterInt* __waveType;
 
+
 	double calcRatio();
 public:
 
 	LFO(int maxSamples, int ID, double sampleRate);
 	static void RegisterParameters(int ID);
 	void generate(int numSamples, AudioPlayHead::CurrentPositionInfo& posInfo);
-	
 	double getSample(int idx);
+	
 };
 extern LFO* lfos[LFO_COUNT];
 #endif //!LFO_H

@@ -1,21 +1,27 @@
 #ifndef ENVELOPE_COMPONENT_H
 #define ENVELOPE_COMPONENT_H
+
 #include "../Global.h"
 #include "../ParameterHandler.h"
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "ParameterSlider.h"
 #include "../IVSTParameters.h"
-#include "../OurLookAndFeel.h";
-class EnvelopeComponent: public  Component, private IVSTParameters
+#include "../OurLookAndFeel.h"
+#include "../EnvelopeGenerator.h"
+class EnvelopeComponent : public  Component, private IVSTParameters, private Timer
 {
 private:
-	Label attackLabel, decayLabel, sustainLabel, releaseLabel;
-	ScopedPointer<ParameterSlider> attack, decay, release, sustain;
-	OurLookAndFeel ourLookAndFeel;
+	ImageComponent __envImageComponent;
+	Image *		   __envImage;
+	Label attackLabel, decayLabel, sustainLabel, releaseLabel,holdLabel,lLabel,tLabel,cLabel;
+	ScopedPointer<ParameterSlider> attackTime, holdTime, decayTime, releaseTime, sustainTime,
+								   attackCurve, decayCurve, releaseCurve, sustainCurve,
+								   attackLevel, decayLevel, sustainLevel;
+	virtual void timerCallback() override;
+
 public:
 	EnvelopeComponent(int ID);
 	~EnvelopeComponent();
 	void resized() override;
 };
-
 #endif

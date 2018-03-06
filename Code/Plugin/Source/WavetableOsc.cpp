@@ -1,6 +1,7 @@
 #include "WavetableOsc.h"
 #include "Wavetable.h"
- 
+#include "LFO.h" 
+
 WavetableOsc::WavetableOsc(int ID, double sampleRate) :
 	IGenerator(sampleRate),
 	IVSTParameters(ID),
@@ -10,7 +11,7 @@ WavetableOsc::WavetableOsc(int ID, double sampleRate) :
 	__phase(0),
 	__frequency(0),
 	__noiseBuffer(static_cast<int>(sampleRate * 2)),
-	__rand(174594152),
+	__rand(),
 	__rand_index(0),
 	__pitchbend(0)
 {
@@ -18,6 +19,7 @@ WavetableOsc::WavetableOsc(int ID, double sampleRate) :
 	__octave = Global->paramHandler->Get<AudioParameterInt>(__ID, "OSC_OCTAVE");
 	__offset = Global->paramHandler->Get<AudioParameterInt>(__ID, "OSC_OFFSET");
 	__detune = Global->paramHandler->Get<AudioParameterFloat>(__ID, "OSC_DETUNE");
+	__overtone = Global->paramHandler->Get<AudioParameterInt>(__ID, "OSC_OVERTONE");
 
 	__sinAmp = Global->paramHandler->Get<AudioParameterFloat>(__ID, "OSC_SINE");
 	__sqAmp = Global->paramHandler->Get<AudioParameterFloat>(__ID, "OSC_SQUARE");
@@ -26,9 +28,9 @@ WavetableOsc::WavetableOsc(int ID, double sampleRate) :
 	__noiseAmp = Global->paramHandler->Get<AudioParameterFloat>(__ID, "OSC_NOISE");
 
 
-	// Generate wavetable
-	for (auto&& samp : __noiseBuffer)
-		samp = (__rand.nextDouble() - 0.5f) * 2.0f;
+	// Don't Generate wavetable
+	//for (auto&& samp : __noiseBuffer)
+		//samp = (__rand.nextDouble() - 0.5f) * 2.0f;
 }
 
 
@@ -37,12 +39,10 @@ WavetableOsc::~WavetableOsc()
 }
 
 
-void WavetableOsc::renderImage(Image* image,int width, int height)
+void WavetableOsc::renderImage(Image* image)
 {
-
-	image->clear(Rectangle<int>(width, height));
-
-
+	int width = image->getWidth();
+	int height = image->getHeight();
 	double max = 0.0;
 	double* data = new double[width];
 
@@ -123,6 +123,7 @@ void WavetableOsc::RegisterParameters(int ID)
 	Global->paramHandler->RegisterInt(ID, "OSC_OCTAVE", "Octave", -3, 3, 0);
 	Global->paramHandler->RegisterInt(ID, "OSC_OFFSET", "Offset", -11, 11, 0);
 	Global->paramHandler->RegisterFloat(ID, "OSC_DETUNE", "Detune", -1.0f, 1.0f, 0.0f);
+	Global->paramHandler->RegisterInt(ID, "OSC_OVERTONE", "Overtone", 0, 6, 0);
 
 	Global->paramHandler->RegisterFloat(ID, "OSC_SINE", "Sine", 0.0f, 1.0f, 1.0f);
 	Global->paramHandler->RegisterFloat(ID, "OSC_SQUARE", "Square", 0.0f, 1.0f, 0.0f);
@@ -143,7 +144,7 @@ bool WavetableOsc::__RenderBlock(AudioBuffer<T>& buffer,int len) {
 	auto numSampels = len;
 
 	float gains[5] = { *__sinAmp , *__sqAmp,*__sawAmp,*__triAmp, *__noiseAmp };
-	double calcFreq = __frequency * pow(2.0, *__octave + (((*__offset) + (*__detune) + 2*__pitchbend) / 12.0));
+	double calcFreq = __frequency * pow(2.0, *__octave + (((*__offset) + (*__detune) + 2*__pitchbend) / 12.0)) * ((*__overtone)+1);
 	double tmpInc = IWavetable::getLength() / __sampleRate;
 
 
@@ -165,7 +166,7 @@ bool WavetableOsc::__RenderBlock(AudioBuffer<T>& buffer,int len) {
 	{
 		if (i == nextEvent) {
 			nextEvent = this->HandleEvent();
-			calcFreq = __frequency * pow(2.0, *__octave + (((*__offset) + (*__detune) + 2 * __pitchbend) / 12.0));
+			calcFreq = __frequency * pow(2.0, *__octave + (((*__offset) + (*__detune) + 2 * __pitchbend) / 12.0)) * ((*__overtone) + 1);
 		}
 
 		//This code makes sure that we do not render anything
@@ -175,19 +176,18 @@ bool WavetableOsc::__RenderBlock(AudioBuffer<T>& buffer,int len) {
 			if (nextEvent < numSampels && nextEvent  > i) {
 				i = nextEvent;
 				nextEvent = this->HandleEvent();
-				calcFreq = __frequency * pow(2.0, *__octave + (((*__offset) + (*__detune) + 2 * __pitchbend) / 12.0));
+				calcFreq = __frequency * pow(2.0, *__octave + (((*__offset) + (*__detune) + 2 * __pitchbend) / 12.0)) * ((*__overtone) + 1);
 			}
 			else break; 
 		}
-	
-
 		
+
 		double tmpFreq = calcFreq;
+	
 	
 		double inc = tmpInc * tmpFreq;
 
 		auto tgt = IWavetable::getLoc(__phase, tmpFreq);
-
 		if (__ID == 0) {
 			float tmpAmp = gains[0] + gains[1] + gains[2] + gains[3] + gains[4];
 			if (tmpAmp > 1)
@@ -200,15 +200,19 @@ bool WavetableOsc::__RenderBlock(AudioBuffer<T>& buffer,int len) {
 			}
 		}
 		
+		double * env = new double(0.0);
+		__envelope.setSustain(__sustain);
+		__envelope.setVelocity(127);
+		__envelope.RenderBlock(env, 1);
 		double tmp_samp = getSampleFromLoc<SINE>(tgt) *gains[0];
 		tmp_samp += getSampleFromLoc<SQUARE>(tgt) *gains[1];
 		tmp_samp += getSampleFromLoc<SAW>(tgt) *gains[2];
 		tmp_samp += getSampleFromLoc<TRI>(tgt) *gains[3];
-		tmp_samp += __noiseBuffer[__rand_index++] * gains[4];
-
-		
-		tmp_samp *= __envelope.GenerateNextStep(__sustain) ;
-
+		// No wavetable for noise
+		//tmp_samp += __noiseBuffer[__rand_index++] * gains[4];
+		tmp_samp += (__rand.nextDouble() - 0.5f) * 2.0f * gains[4];
+		tmp_samp *= *env;
+		delete env;
 		T samp = static_cast<T>(tmp_samp);
 		__phase += inc;
 		__rand_index = __rand_index % __noiseBuffer.size();

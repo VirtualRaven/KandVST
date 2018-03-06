@@ -42,26 +42,6 @@ __oscillator(ID)
 void OscillatorPageComponent::paint(Graphics& g){
 	g.setColour(Colour::fromRGB(40, 40, 40));
 	g.fillAll();
-
-	g.setColour(Colours::white);
-	Font env(20, Font::FontStyleFlags::bold);
-	g.setFont(env);
-	g.drawText("ENVELOPE", Rectangle<float>(350,8,300,25), Justification::centred, false);
-
-	//===================================================================================
-
-	int startX = 855;
-	int startY = 455;
-	g.setColour(Colour::fromRGB(60, 60, 60));
-	g.drawRect(Rectangle<int>(startX, 455, 120, 100));
-	g.fillRect(Rectangle<int>(startX, 455, 120, 20));
-
-	g.setColour(Colours::white);
-	Font filt(15, Font::FontStyleFlags::bold);
-	g.setFont(filt);
-	g.drawText("FILTER", Rectangle<float>(static_cast<float>(startX), static_cast<float>(startY),
-										static_cast<float>(120), static_cast<float>(20)), Justification::centred, false);
-	
 }
 
 void OscillatorPageComponent::resized(){
@@ -69,8 +49,10 @@ void OscillatorPageComponent::resized(){
 
 	Rectangle<int> bounds(getLocalBounds().reduced(8));
 	__toggleOsc->setBounds(bounds.removeFromTop(25).removeFromLeft(75));
+	bounds.removeFromTop(16);
 	__oscillator.setBounds(bounds.removeFromLeft(400));
-	__envComponent.setBounds(bounds.removeFromLeft(250));
+	bounds.removeFromLeft(16);
+	__envComponent.setBounds(bounds.removeFromLeft(400-32));
 	//__lfo.setBounds(getLocalBounds().reduced(8).removeFromRight(200).removeFromTop(250));
 
 	Rectangle<int> amplitudeBounds(getLocalBounds().reduced(16));

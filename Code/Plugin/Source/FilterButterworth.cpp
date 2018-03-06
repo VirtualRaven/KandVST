@@ -3,7 +3,8 @@
 FilterButterworth::FilterButterworth(int ID, double sampleRate, String parameterId) :
 	IEffect(sampleRate),
 	IVSTParameters(ID),
-	__enabled(true)
+	__enabled(true),
+	__firstSampleIndex(0)
 {
 	__fs = sampleRate;
 	__prevFc = -1;
@@ -31,15 +32,27 @@ bool FilterButterworth::__RenderBlock(AudioBuffer<T>& buffer, int len, bool empt
 		// Enabled again
 		__enabled = true;
 
-		// Make sure previous values are reset
-		/*for (int i = 0; i < 2; i++)
+		// Set the previous values
+		if (len >= 2)
 		{
-			__prevX1[i] = 0;
-			__prevX2[i] = 0;
+			// This will become y[i-1]
+			__currentLeft = buffer.getSample(0, 1);
+			__currentRight = buffer.getSample(1, 1);
 
-			__prevY1[i] = 0;
-			__prevY2[i] = 0;
-		}*/
+			for (int i = 0; i < 2; i++)
+			{
+				__prevX2[i] = 0;
+				__prevY2[i] = 0;
+
+				// This will become y[i-2]
+				__prevX1[i] = buffer.getSample(i, 0);
+				__prevY1[i] = buffer.getSample(i, 0);
+			}
+
+			// Make the loop begin with sample 2
+			__firstSampleIndex = 2;
+		}
+		
 	}
 	else if (!__enabled)
 	{
@@ -55,8 +68,10 @@ bool FilterButterworth::__RenderBlock(AudioBuffer<T>& buffer, int len, bool empt
 	__prevFc = __fc;
 
 	auto buff = buffer.getArrayOfWritePointers();
-	for (int i = 0; i <len; i++)
+	for (int i = __firstSampleIndex; i < len; i++)
 	{
+		__firstSampleIndex = 0;
+
 		// Current y[i-2] is the previous y[i-1]
 		__prevY2[0] = __prevY1[0];
 		__prevY2[1] = __prevY1[1];

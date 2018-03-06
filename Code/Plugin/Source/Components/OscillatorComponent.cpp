@@ -92,10 +92,20 @@ void OscillatorComponent::paint(Graphics&){
 
 void OscillatorComponent::resized(){
 	Rectangle<int> bounds(getLocalBounds());
-		__waveformComp.setBounds(bounds.removeFromTop(280));
+		__waveformComp.setBounds(bounds.removeFromTop(jmin<int>(bounds.getWidth(), bounds.getHeight() / 2)));
+	delete __oscWaveform;
+	__oscWaveform = nullptr;
+	__oscWaveform = new Image(Image::PixelFormat::RGB, __waveformComp.getWidth(), __waveformComp.getHeight(), true);
+	WavetableOsc os = WavetableOsc(__ID, 0);
+	os.renderImage(__oscWaveform);
+	__waveformComp.setImage(*__oscWaveform);
+	__waveformComp.repaint();
+
+	bounds.removeFromTop(32);
 	//Rectangle<int> waveforms(bounds.removeFromTop(jmax<int>(bounds.getWidth() / 5, 100)));
-	Rectangle<int> waveforms(bounds.getX()+50, bounds.getY()+15, 300, 60);
-	int sliderw = waveforms.getWidth() / 5;
+	Rectangle<int> waveforms(bounds.removeFromTop((bounds.getWidth()-100)/5));
+	waveforms.removeFromLeft(50);
+	int sliderw = (waveforms.getWidth()-50) / 5;
 
 	// waves
 	__sineSlider->setBounds(waveforms.removeFromLeft(sliderw));
@@ -104,10 +114,11 @@ void OscillatorComponent::resized(){
 	__triangleSlider->setBounds(waveforms.removeFromLeft(sliderw));
 	__noiseSlider->setBounds(waveforms.removeFromLeft(sliderw));
 
-	bounds.removeFromTop(15);
+	bounds.removeFromTop(32);
 	//Rectangle<int> atrSliders(bounds.removeFromTop(jmax<int>(bounds.getWidth() / 3,100)));
-	Rectangle<int> atrSliders(bounds.getX()+50, waveforms.getY()+100, 300, 100);
-	sliderw = atrSliders.getWidth() / 3;
+	Rectangle<int> atrSliders(bounds.removeFromTop((bounds.getWidth() - 100) / 3));
+	atrSliders.removeFromLeft(50);
+	sliderw = (atrSliders.getWidth()-50) / 3;
 
 	// detune, offset, octave
 	__octaveSlider->setBounds(atrSliders.removeFromLeft(sliderw));
@@ -126,7 +137,7 @@ void OscillatorComponent::timerCallback()
 		tr = (float) __triangleSlider->getValue();
 
 		WavetableOsc os = WavetableOsc(__ID, 0);
-		os.renderImage(__oscWaveform, 300, 200);
+		os.renderImage(__oscWaveform);
 		__waveformComp.repaint();
 	}
 }
