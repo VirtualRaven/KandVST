@@ -7,7 +7,7 @@ class IWavetable
 {
 	friend class WavetableOsc;
 protected:
-	static const int __length = 4096;
+	static const int __length = 2048;
 	static const int __NrTables = 10;
 	double __tables[__NrTables][__length];
 public:
@@ -37,7 +37,7 @@ public:
 		return { tableNr,
 				diff,
 				i%__length, 
-				i%__length 
+				(i+1)%__length 
 		};
 	}
 };
