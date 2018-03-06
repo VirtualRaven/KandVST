@@ -45,16 +45,6 @@ void PipelineManager<T>::genSamples(AudioBuffer<T>& buff, MidiBuffer & midiMessa
 	juce::MidiMessage tmp;
 	it.setNextSamplePosition(0);
 	while (it.getNextEvent(tmp, pos)) {
-
-		if (tmp.isNoteOnOrOff() && tmp.getNoteNumber() == 65) {
-			if (tmp.isNoteOn())
-				Global->log->Write("-----------------------------------------------------\n");
-		}
-		else
-			Global->log->Write(String(pos) + String(" : ") + tmp.getDescription() + String("\n"));
-
-
-
 		if (tmp.isNoteOnOrOff()) {
 			// finds or create pipeline
 
@@ -108,7 +98,6 @@ void PipelineManager<T>::genSamples(AudioBuffer<T>& buff, MidiBuffer & midiMessa
 	}
 	
 }
-
 //template void PipelineManager::genSamples(AudioBuffer<double>& buff, MidiBuffer & midiMessage, AudioPlayHead::CurrentPositionInfo & posInfo);
 //template void PipelineManager::genSamples(AudioBuffer<float>& buff, MidiBuffer & midiMessages, AudioPlayHead::CurrentPositionInfo & posInfo);
 
