@@ -44,6 +44,9 @@ double LFO::getSample(int idx)
 void LFO::generate(int numSamples, AudioPlayHead::CurrentPositionInfo& posInfo)
 {
 	if (!(*__isActive)) {
+		if (!posInfo.isPlaying) {
+			__phase += (__wavetable->getLength() * ((posInfo.bpm)* calcRatio() / 60.0) / __sampleRate) * numSamples;
+		}
 		__activeCheck = false;
 		return;
 	}

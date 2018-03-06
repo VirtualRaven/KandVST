@@ -19,6 +19,7 @@ WavetableOsc::WavetableOsc(int ID, double sampleRate) :
 	__octave = Global->paramHandler->Get<AudioParameterInt>(__ID, "OSC_OCTAVE");
 	__offset = Global->paramHandler->Get<AudioParameterInt>(__ID, "OSC_OFFSET");
 	__detune = Global->paramHandler->Get<AudioParameterFloat>(__ID, "OSC_DETUNE");
+	__overtone = Global->paramHandler->Get<AudioParameterInt>(__ID, "OSC_OVERTONE");
 
 	__sinAmp = Global->paramHandler->Get<AudioParameterFloat>(__ID, "OSC_SINE");
 	__sqAmp = Global->paramHandler->Get<AudioParameterFloat>(__ID, "OSC_SQUARE");
@@ -122,6 +123,7 @@ void WavetableOsc::RegisterParameters(int ID)
 	Global->paramHandler->RegisterInt(ID, "OSC_OCTAVE", "Octave", -3, 3, 0);
 	Global->paramHandler->RegisterInt(ID, "OSC_OFFSET", "Offset", -11, 11, 0);
 	Global->paramHandler->RegisterFloat(ID, "OSC_DETUNE", "Detune", -1.0f, 1.0f, 0.0f);
+	Global->paramHandler->RegisterInt(ID, "OSC_OVERTONE", "Overtone", 0, 6, 0);
 
 	Global->paramHandler->RegisterFloat(ID, "OSC_SINE", "Sine", 0.0f, 1.0f, 1.0f);
 	Global->paramHandler->RegisterFloat(ID, "OSC_SQUARE", "Square", 0.0f, 1.0f, 0.0f);
@@ -142,7 +144,7 @@ bool WavetableOsc::__RenderBlock(AudioBuffer<T>& buffer,int len) {
 	auto numSampels = len;
 
 	float gains[5] = { *__sinAmp , *__sqAmp,*__sawAmp,*__triAmp, *__noiseAmp };
-	double calcFreq = __frequency * pow(2.0, *__octave + (((*__offset) + (*__detune) + 2*__pitchbend) / 12.0));
+	double calcFreq = __frequency * pow(2.0, *__octave + (((*__offset) + (*__detune) + 2*__pitchbend) / 12.0)) * ((*__overtone)+1);
 	double tmpInc = IWavetable::getLength() / __sampleRate;
 
 
@@ -164,7 +166,7 @@ bool WavetableOsc::__RenderBlock(AudioBuffer<T>& buffer,int len) {
 	{
 		if (i == nextEvent) {
 			nextEvent = this->HandleEvent();
-			calcFreq = __frequency * pow(2.0, *__octave + (((*__offset) + (*__detune) + 2 * __pitchbend) / 12.0));
+			calcFreq = __frequency * pow(2.0, *__octave + (((*__offset) + (*__detune) + 2 * __pitchbend) / 12.0)) * ((*__overtone) + 1);
 		}
 
 		//This code makes sure that we do not render anything
@@ -174,7 +176,7 @@ bool WavetableOsc::__RenderBlock(AudioBuffer<T>& buffer,int len) {
 			if (nextEvent < numSampels && nextEvent  > i) {
 				i = nextEvent;
 				nextEvent = this->HandleEvent();
-				calcFreq = __frequency * pow(2.0, *__octave + (((*__offset) + (*__detune) + 2 * __pitchbend) / 12.0));
+				calcFreq = __frequency * pow(2.0, *__octave + (((*__offset) + (*__detune) + 2 * __pitchbend) / 12.0)) * ((*__overtone) + 1);
 			}
 			else break; 
 		}
