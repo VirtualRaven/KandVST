@@ -7,7 +7,7 @@ class IWavetable
 {
 	friend class WavetableOsc;
 protected:
-	static const int __length = 2048;
+	static const int __length = 4096;
 	static const int __NrTables = 10;
 	double __tables[__NrTables][__length];
 public:
@@ -32,7 +32,7 @@ public:
 	inline static tableSampleLocation getLoc(double idx, double freq) {
 		int tableNr = freq < 20 ? 0 : static_cast<int>(floor(log2(freq / 20)));
 		if (tableNr > __NrTables) tableNr = __NrTables - 1;
-		double diff = floor(idx) - idx;
+		double diff = idx - floor(idx);
 		int i = static_cast<int>(idx);
 		return { tableNr,
 				diff,
