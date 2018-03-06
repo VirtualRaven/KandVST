@@ -31,3 +31,4 @@ template bool Log::Write(String);
 template bool Log::Write(std::string);
 template bool Log::Write(int);
 template bool Log::Write(float);
+template bool Log::Write(double);

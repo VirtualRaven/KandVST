@@ -48,10 +48,6 @@ __oscillator(ID)
 void OscillatorPageComponent::paint(Graphics& g){
 	g.setColour(Colour::fromRGB(40, 40, 40));
 	g.fillAll();
-
-	g.setColour(Colours::white);
-	g.setFont(20.0f);
-	g.drawText("ENVELOPE", Rectangle<float>(350,8,300,25), Justification::centred, false);
 }
 
 void OscillatorPageComponent::resized(){
@@ -59,8 +55,10 @@ void OscillatorPageComponent::resized(){
 
 	Rectangle<int> bounds(getLocalBounds().reduced(8));
 	__toggleOsc->setBounds(bounds.removeFromTop(25).removeFromLeft(75));
+	bounds.removeFromTop(16);
 	__oscillator.setBounds(bounds.removeFromLeft(400));
-	__envComponent.setBounds(bounds.removeFromLeft(250));
+	bounds.removeFromLeft(16);
+	__envComponent.setBounds(bounds.removeFromLeft(400-32));
 	//__lfo.setBounds(getLocalBounds().reduced(8).removeFromRight(200).removeFromTop(250));
 
 	Rectangle<int> amplitudeBounds(getLocalBounds().reduced(16));

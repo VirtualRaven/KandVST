@@ -5,11 +5,17 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "ParameterSlider.h"
 #include "../IVSTParameters.h"
-class EnvelopeComponent: public  Component, private IVSTParameters
+#include "../EnvelopeGenerator.h"
+class EnvelopeComponent : public  Component, private IVSTParameters, private Timer
 {
 private:
-	Label attackLabel, decayLabel, sustainLabel, releaseLabel;
-	ScopedPointer<ParameterSlider> attack, decay, release, sustain;
+	ImageComponent __envImageComponent;
+	Image *		   __envImage;
+	Label attackLabel, decayLabel, sustainLabel, releaseLabel,holdLabel,lLabel,tLabel,cLabel;
+	ScopedPointer<ParameterSlider> attackTime, holdTime, decayTime, releaseTime, sustainTime,
+								   attackCurve, decayCurve, releaseCurve, sustainCurve,
+								   attackLevel, decayLevel, sustainLevel;
+	virtual void timerCallback() override;
 public:
 	EnvelopeComponent(int ID);
 	~EnvelopeComponent();

@@ -37,12 +37,10 @@ WavetableOsc::~WavetableOsc()
 }
 
 
-void WavetableOsc::renderImage(Image* image,int width, int height)
+void WavetableOsc::renderImage(Image* image)
 {
-
-	image->clear(Rectangle<int>(width, height));
-
-
+	int width = image->getWidth();
+	int height = image->getHeight();
 	double max = 0.0;
 	double* data = new double[width];
 
@@ -187,7 +185,6 @@ bool WavetableOsc::__RenderBlock(AudioBuffer<T>& buffer,int len) {
 		double inc = tmpInc * tmpFreq;
 
 		auto tgt = IWavetable::getLoc(__phase, tmpFreq);
-
 		if (__ID == 0) {
 			float tmpAmp = gains[0] + gains[1] + gains[2] + gains[3] + gains[4];
 			if (tmpAmp > 1)
@@ -200,15 +197,17 @@ bool WavetableOsc::__RenderBlock(AudioBuffer<T>& buffer,int len) {
 			}
 		}
 		
+		double * env = new double(0.0);
+		__envelope.setSustain(__sustain);
+		__envelope.setVelocity(127);
+		__envelope.RenderBlock(env, 1);
 		double tmp_samp = getSampleFromLoc<SINE>(tgt) *gains[0];
 		tmp_samp += getSampleFromLoc<SQUARE>(tgt) *gains[1];
 		tmp_samp += getSampleFromLoc<SAW>(tgt) *gains[2];
 		tmp_samp += getSampleFromLoc<TRI>(tgt) *gains[3];
 		tmp_samp += __noiseBuffer[__rand_index++] * gains[4];
-
-		
-		tmp_samp *= __envelope.GenerateNextStep(__sustain) ;
-
+		tmp_samp *= *env;
+		delete env;
 		T samp = static_cast<T>(tmp_samp);
 		__phase += inc;
 		__rand_index = __rand_index % __noiseBuffer.size();
