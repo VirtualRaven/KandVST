@@ -147,6 +147,8 @@ void EnvelopeGenerator::RenderBlock(double * buffer, size_t size)
 					__counter = 0;
 					__state++;
 				}
+				if (!isfinite(__amplitude))
+					__amplitude = d_level;
 				break;
 			case 3://Sustain
 				if (s_level != d_level) 
@@ -171,6 +173,8 @@ void EnvelopeGenerator::RenderBlock(double * buffer, size_t size)
 					__counter = 0;
 					__state++;
 				}
+				if (!isfinite(__amplitude))
+					__amplitude = 0;
 				break;
 			case 5:
 				__amplitude = 0.0;
