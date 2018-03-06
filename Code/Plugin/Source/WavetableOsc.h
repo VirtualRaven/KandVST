@@ -6,7 +6,7 @@
 #include "IWavetable.h"
 #include "IVSTParameters.h"
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "LFO.h"
+
 
 
 class WavetableOsc : public IGenerator, public IVSTParameters
@@ -18,7 +18,7 @@ private:
 	double __phase;
 	bool __sustain;
 
-	AudioParameterInt* __waveType, *__octave,* __offset;
+	AudioParameterInt* __waveType, *__octave,* __offset, *__overtone;
 	AudioParameterFloat* __detune, *__sinAmp,* __sqAmp, *__sawAmp, *__triAmp,*__noiseAmp;
 	float __pitchbend;
 	template<typename T>
