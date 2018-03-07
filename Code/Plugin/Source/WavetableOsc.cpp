@@ -20,6 +20,7 @@ WavetableOsc::WavetableOsc(int ID, double sampleRate) :
 	__offset = Global->paramHandler->Get<AudioParameterInt>(__ID, "OSC_OFFSET");
 	__detune = Global->paramHandler->Get<AudioParameterFloat>(__ID, "OSC_DETUNE");
 	__overtone = Global->paramHandler->Get<AudioParameterInt>(__ID, "OSC_OVERTONE");
+	__panning = Global->paramHandler->Get<AudioParameterFloat>(__ID, "OSC_PAN");
 
 	__sinAmp = Global->paramHandler->Get<AudioParameterFloat>(__ID, "OSC_SINE");
 	__sqAmp = Global->paramHandler->Get<AudioParameterFloat>(__ID, "OSC_SQUARE");
@@ -124,6 +125,7 @@ void WavetableOsc::RegisterParameters(int ID)
 	Global->paramHandler->RegisterInt(ID, "OSC_OFFSET", "Offset", -11, 11, 0);
 	Global->paramHandler->RegisterFloat(ID, "OSC_DETUNE", "Detune", -1.0f, 1.0f, 0.0f);
 	Global->paramHandler->RegisterInt(ID, "OSC_OVERTONE", "Overtone", 0, 6, 0);
+	Global->paramHandler->RegisterFloat(ID, "OSC_PAN", "Panning", -1.0f, 1.0f, 0.0f);
 
 	Global->paramHandler->RegisterFloat(ID, "OSC_SINE", "Sine", 0.0f, 1.0f, 1.0f);
 	Global->paramHandler->RegisterFloat(ID, "OSC_SQUARE", "Square", 0.0f, 1.0f, 0.0f);
@@ -160,7 +162,8 @@ bool WavetableOsc::__RenderBlock(AudioBuffer<T>& buffer,int len) {
 			}
 		}
 	}
-
+	float leftSpeaker = std::min(1.0f, 1.0f - (*__panning));
+	float rightSpeaker = std::min(1.0f, 1.0f + (*__panning));
 
 	for (int i = 0; i < numSampels; i++)
 	{
@@ -218,8 +221,8 @@ bool WavetableOsc::__RenderBlock(AudioBuffer<T>& buffer,int len) {
 		__rand_index = __rand_index % __noiseBuffer.size();
 
 		if (buffer.getNumChannels() == 2) {
-			buffs[0][i] = samp;
-			buffs[1][i] = samp;
+			buffs[0][i] = samp * leftSpeaker;
+			buffs[1][i] = samp * rightSpeaker;
 		}
 		else{
 			for (int j = 0; j < buffer.getNumChannels(); j++)
