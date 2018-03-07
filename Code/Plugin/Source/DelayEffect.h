@@ -15,8 +15,10 @@ private:
 
 
 	AudioBuffer<T> __delayBuffer;
-	const int __delayLen;
+	int __delayLen;
+	int __prevDelayLen;
 	int __delayPos;
+	AudioParameterFloat* __delayLenMult;
 	AudioParameterFloat* __delayMultiplier;
 	
 public:
