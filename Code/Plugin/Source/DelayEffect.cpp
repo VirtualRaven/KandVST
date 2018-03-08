@@ -38,9 +38,10 @@ bool DelayEffect<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool empty)
 	float lenmult = *__delayLenMult;
 
 	__delayLen = (__sampleRate * lenmult);
+
 	if (__delayLen != __prevDelayLen)
 	{
-		// Clear buffer after __delayLen
+		// Clear buffer when the length has changed
 		__delayBuffer.clear();
 	}
 	__prevDelayLen = __delayLen;

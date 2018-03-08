@@ -8,7 +8,8 @@ MasterComponent::~MasterComponent()
 MasterComponent::MasterComponent() :
 	__infoComponent(),
 	__lfoComponent1(0),
-	__lfoComponent2(1)
+	__lfoComponent2(1),
+	__settingsComponent()
 {
 	
 	addAndMakeVisible(__infoComponent);
@@ -17,6 +18,8 @@ MasterComponent::MasterComponent() :
 	addAndMakeVisible(__filterComponent);
 	addAndMakeVisible(__lfoComponent1);
 	addAndMakeVisible(__lfoComponent2);
+
+	addAndMakeVisible(__settingsComponent);
 
 }
 
@@ -35,7 +38,8 @@ void MasterComponent::resized() {
 	__infoComponent.setBounds(getLocalBounds().removeFromTop(300));
 	__mixerComponent.setBounds(Rectangle<int>(740,10,230,360));
 	__filterComponent.setBounds(Rectangle<int>(740, 370, 230, 150));
-	__lfoComponent1.setBounds(Rectangle<int>(8,8,265,145));
+	__lfoComponent1.setBounds(Rectangle<int>(8, 8, 265, 145));
 	__lfoComponent2.setBounds(Rectangle<int>(8, 155, 265, 145));
-	
+
+	__settingsComponent.setBounds(Rectangle<int>(8, 302, 265, 145));
 }

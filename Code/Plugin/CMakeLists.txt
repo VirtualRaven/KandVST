@@ -157,6 +157,9 @@ jucer_project_files("KandVST"
   x         .         .         "Source/Constants.cpp"
   x         .         .         "Source/ParameterListener.cpp"
   .         .         .         "Source/ParameterListener.h"
+  x         .         .         "Source/Components/SettingsComponent.cpp"
+  .         .         .         "Source/Components/SettingsComponent.h"
+>>>>>>> 7fda394bc4458c7c183ae8251fe1f42fe51640ac
 )
 
 jucer_project_module(
