@@ -22,6 +22,7 @@ PluginGUI::PluginGUI(PluginProcessor& owner)
 
 void PluginGUI::InitializeGui()
 {
+	const MessageManagerLock mmLock;
 	removeAllChildren();
 	setLookAndFeel(&ourLookAndFeel);
 
