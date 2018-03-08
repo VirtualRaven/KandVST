@@ -25,15 +25,15 @@ void PluginGUI::InitializeGui()
 	removeAllChildren();
 	setLookAndFeel(&ourLookAndFeel);
 
-	__tabComponent.addTab("M", Colours::darkgreen, new MasterComponent(), true);
+	__tabComponent.addTab("M", Colour::fromRGB(200,200,200), new MasterComponent(), true);
 
 	for (int i = 0; i < 4; i++)
 	{
-		__tabComponent.addTab(std::to_string(i + 1), Colours::darkgrey, new OscillatorPageComponent(i), true);
+		__tabComponent.addTab(std::to_string(i + 1), Colour::fromRGB(1,1,1), new OscillatorPageComponent(i), true);
 	}
 
 	__tabComponent.addTab("Console", Colours::darkgrey, &__cc, true);
-
+	
 	addAndMakeVisible(__tabComponent);
 	addAndMakeVisible(__keyboard);
 	__keyboard.setKeyWidth(__keyboard.getKeyWidth() + 10.0f);
@@ -57,7 +57,7 @@ void PluginGUI::paint (Graphics& g)
 
 	Image titleImage = ImageFileFormat::loadFrom(Resources::Images::Title3_png, sizeof(Resources::Images::Title3_png));
 	g.setOpacity(1.0f);
-	g.drawImageAt(titleImage, 1000, 0, false);
+	g.drawImageAt(titleImage, 780, 0, false);
 }
 
 void PluginGUI::resized()

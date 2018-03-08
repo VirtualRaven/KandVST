@@ -20,7 +20,7 @@ InformationComponent::InformationComponent(){
 
 	// variables
 	x = 310; //starting x position
-	y = 50; //starting y position
+	y = 20; //starting y position
 	midX = 500;
 	midY = 225;
 	w = 380; //width of component

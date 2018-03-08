@@ -6,6 +6,11 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "InformationComponent.h"
 #include "PresetsComponent.h"
+#include "ParameterSlider.h"
+#include "../Global.h"
+#include "MixerComponent.h"
+#include "FilterComponent.h"
+#include "LFOComponent.h"
 class MasterComponent : public Component
 {
 public:
@@ -21,6 +26,10 @@ public:
 private:
 	InformationComponent __infoComponent;
 	PresetsComponent __presetComponent;
+	MixerComponent __mixerComponent;
+	FilterComponent __filterComponent;
+	LFOComponent __lfoComponent1, __lfoComponent2;
+	
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MasterComponent)
 };

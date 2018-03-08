@@ -18,7 +18,7 @@ PluginProcessor::PluginProcessor()
 	Global = new GLOBAL();
 	Global->paramHandler =  new ParameterHandler(*this);
 	Global->log = new Log("log.txt");
-
+	// -1 = master
 	setParameters<int,	EnvelopeGenerator, 
 						DelayEffect, 
 						WavetableOsc,
@@ -31,8 +31,8 @@ PluginProcessor::PluginProcessor()
 			{0,1,2,3},
 			{ 0 },
 			{0,1,2,3},
-			{0,1,2,3},
-			{0,1,2,3} });
+			{-1,0,1,2,3},
+			{-1,0,1,2,3} });
 
 
 	Global->presetManager = new PresetManager(this);

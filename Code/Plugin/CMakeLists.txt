@@ -150,6 +150,10 @@ jucer_project_files("KandVST"
   .         .         .         "Source/OurLookAndFeel.h"
   x         .         .         "Source/Resources_files.cpp"
   .         .         .         "Source/Resources_files.h"
+  x         .         .         "Source/Components/MixerComponent.cpp"
+  .         .         .         "Source/Components/MixerComponent.h"
+  x         .         .         "Source/Components/FilterComponent.cpp"
+  .         .         .         "Source/Components/FilterComponent.h"
 )
 
 jucer_project_module(

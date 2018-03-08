@@ -5,6 +5,7 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "ParameterSlider.h"
 #include "../IVSTParameters.h"
+#include "../OurLookAndFeel.h";
 #include "../EnvelopeGenerator.h"
 class EnvelopeComponent : public  Component, private IVSTParameters, private Timer
 {
@@ -15,7 +16,9 @@ private:
 	ScopedPointer<ParameterSlider> attackTime, holdTime, decayTime, releaseTime, sustainTime,
 								   attackCurve, decayCurve, releaseCurve, sustainCurve,
 								   attackLevel, decayLevel, sustainLevel;
+	OurLookAndFeel ourLookAndFeel;
 	virtual void timerCallback() override;
+
 public:
 	EnvelopeComponent(int ID);
 	~EnvelopeComponent();
