@@ -102,6 +102,28 @@ EnvelopeComponent::~EnvelopeComponent()
 	__envImage = nullptr;
 }
 
+void EnvelopeComponent::paint(Graphics & g) {
+	
+	g.setColour(Colour::fromRGB(60, 60, 60));
+	int startY = getLocalBounds().getHeight() / 2 + 13;
+	int startX = 22;
+	int height = (getLocalBounds().getHeight() / 2) * 0.88;
+	
+	for (int i = 0; i < 5; i++) {
+		g.fillRect(Rectangle<int>(startX, startY, 65, 15));
+
+		if (i == 1) {
+			g.drawRect(Rectangle<int>(startX, startY, 65, height * 0.38));
+		} else if (i == 4) {
+			g.drawRect(Rectangle<int>(startX, startY, 65, height * 0.69));
+		}else {
+			g.drawRect(Rectangle<int>(startX, startY, 65, height));
+		}
+		startX += 70;
+	}
+	
+}
+
 void EnvelopeComponent::resized()
 {
 	
@@ -109,7 +131,7 @@ void EnvelopeComponent::resized()
 	Rectangle<int> bounds(getLocalBounds());
 	
 	__envImageComponent.setBounds(bounds.removeFromTop(jmin<int>(bounds.getWidth(),bounds.getHeight()/2)));
-	bounds.removeFromTop(32);
+	bounds.removeFromTop(10);
 
 	Rectangle<int> labels(bounds.removeFromTop(20));
 	int knobWidth = jmin<int>((bounds.getHeight()-20)/3, bounds.getWidth() / 5);

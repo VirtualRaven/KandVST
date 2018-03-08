@@ -21,24 +21,32 @@ SettingsComponent::SettingsComponent()
 }
 
 void SettingsComponent::paint(Graphics& g) {
+
+	int width = __bounds.getWidth();
+	int height = __bounds.getHeight();
+	int fontHeight = __bounds.getHeight() * 0.2;
+	int fontSize = __bounds.getHeight() * 0.16;
+
 	g.setColour(Colour::fromRGB(60, 60, 60));
-	g.drawRect(Rectangle<int>(10, 10, 220, 130), 2.0f);
-	g.fillRect(Rectangle<int>(10, 10, 220, 30));
+	g.drawRect(Rectangle<int>(10, 10, width, height), 2.0f);
+	g.fillRect(Rectangle<int>(10, 10, width, fontHeight));
 
 	g.setColour(Colours::white);
-	Font filter(20, Font::FontStyleFlags::bold);
+	Font filter(fontSize, Font::FontStyleFlags::bold);
 	g.setFont(filter);
-	g.drawText("SETTINGS", Rectangle<int>(10, 10, 220, 30), Justification::centred, false);
+	g.drawText("SETTINGS", Rectangle<int>(10, 10, width, fontHeight), Justification::centred, false);
 	
 }
 
 void SettingsComponent::resized() 
 {
-	int size = 50;
-	int gap = 25;
+	__bounds = getLocalBounds().reduced(5);
 
-	Rectangle<int> sliders(getLocalBounds().reduced(8));
-	sliders.removeFromTop(60);
+	int size = __bounds.getHeight() * 0.4;
+	int gap = size * 0.4;
+
+	Rectangle<int> sliders(__bounds);
+	sliders.removeFromTop( __bounds.getHeight() * 0.45);
 	sliders.removeFromLeft(gap);
 	__pitchBendSens->setBounds(sliders.removeFromLeft(size).removeFromTop(size + 15));
 }

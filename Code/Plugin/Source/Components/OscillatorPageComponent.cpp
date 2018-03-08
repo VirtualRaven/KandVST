@@ -26,14 +26,15 @@ __filterComponent(ID)
 void OscillatorPageComponent::paint(Graphics& g){
 	g.setColour(Colour::fromRGB(40, 40, 40));
 	g.fillAll();
+
 }
 
 void OscillatorPageComponent::resized(){
 
 
 	Rectangle<int> bounds(getLocalBounds().reduced(8));
-	__toggleOsc->setBounds(bounds.removeFromTop(25).removeFromLeft(75));
-	bounds.removeFromTop(16);
+	__toggleOsc->setBounds(bounds.removeFromTop(25).removeFromLeft(100));
+	bounds.removeFromTop(5);
 	__oscillator.setBounds(bounds.removeFromLeft(400));
 	bounds.removeFromLeft(16);
 	__envComponent.setBounds(bounds.removeFromLeft(400-32));

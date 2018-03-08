@@ -18,6 +18,7 @@ private:
 
 	ScopedPointer<ParameterSlider> __pitchBendSens;
 	Label __pitchBendLabel;
+	Rectangle<int> __bounds;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SettingsComponent)
 };

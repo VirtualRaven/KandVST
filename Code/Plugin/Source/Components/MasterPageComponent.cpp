@@ -40,8 +40,8 @@ void MasterComponent::resized() {
 	__mixerComponent.setBounds(Rectangle<int>(740,10,230,360));
 
 	__filterComponent.setBounds(Rectangle<int>(740, 370, 230, 160));
-	__lfoComponent1.setBounds(Rectangle<int>(0,8,250,145));
-	__lfoComponent2.setBounds(Rectangle<int>(0, 155, 250, 145));
+	__lfoComponent1.setBounds(Rectangle<int>(0,8,250,135));
+	__lfoComponent2.setBounds(Rectangle<int>(0, 145, 250, 135));
 
-	__settingsComponent.setBounds(Rectangle<int>(8, 302, 265, 145));
+	__settingsComponent.setBounds(Rectangle<int>(0, 282, 250, 135));
 }

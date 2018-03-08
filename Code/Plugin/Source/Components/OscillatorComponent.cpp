@@ -38,7 +38,7 @@ IVSTParameters(ID)
 	addAndMakeVisible(__triangleSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "OSC_TRI")));
 	__triangleSlider->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
 	__triangleSlider->setTextBoxStyle(__triangleSlider->NoTextBox, true, 10, 10);
-	__triangleLabel.setText("TRIANGLE", NotificationType::dontSendNotification);
+	__triangleLabel.setText("TRI", NotificationType::dontSendNotification);
 	__triangleLabel.attachToComponent(__triangleSlider, false);
 	__triangleLabel.setJustificationType(juce::Justification::centred);
 
@@ -73,10 +73,6 @@ IVSTParameters(ID)
 	__offsetLabel.setJustificationType(juce::Justification::centred);
 	//============================================================================
 
-	
-	
-	
-	//=======
 	__oscWaveform = new Image(Image::PixelFormat::RGB, 300, 200, true);
 
 	__waveformComp.setImage(*__oscWaveform);
@@ -85,12 +81,32 @@ IVSTParameters(ID)
 	timerCallback();
 }
 
-void OscillatorComponent::paint(Graphics&){
+void OscillatorComponent::paint(Graphics& g){
+
+	Rectangle<int> bounds(getLocalBounds());
+
+	g.setColour(Colour::fromRGB(65, 65, 65));
+	int startY = bounds.getHeight() / 2 + 10;
+	g.fillRect(Rectangle<int>(3, startY+5, 13, 80));
+	g.drawRect(Rectangle<int>(8, startY, bounds.getWidth() - 8, 90));
+
+	g.saveState();
+
+	g.setColour(Colours::white);
+	g.setFont(Font(10, Font::bold));
+
+	int translateX = -250;
+	int translateY = 515;
+	float angle = -float_Pi / 2.0f;
+	g.addTransform(AffineTransform::identity.rotated(angle).followedBy(AffineTransform::identity.translated(translateX, translateY)));
+	g.drawText("WAVES", bounds, Justification::centred, false);
 	
+	g.restoreState();
 }
 
 
 void OscillatorComponent::resized(){
+	
 	Rectangle<int> bounds(getLocalBounds());
 		__waveformComp.setBounds(bounds.removeFromTop(jmin<int>(bounds.getWidth(), bounds.getHeight() / 2)));
 	delete __oscWaveform;
@@ -104,26 +120,35 @@ void OscillatorComponent::resized(){
 	bounds.removeFromTop(32);
 	//Rectangle<int> waveforms(bounds.removeFromTop(jmax<int>(bounds.getWidth() / 5, 100)));
 	Rectangle<int> waveforms(bounds.removeFromTop((bounds.getWidth()-100)/5));
-	waveforms.removeFromLeft(50);
-	int sliderw = (waveforms.getWidth()-50) / 5;
+	
+	int sliderw = (waveforms.getWidth()-100) / 5;
+	int gap = 15;
 
 	// waves
+	waveforms.removeFromLeft(gap+10);
 	__sineSlider->setBounds(waveforms.removeFromLeft(sliderw));
+	waveforms.removeFromLeft(gap);
 	__squareSlider->setBounds(waveforms.removeFromLeft(sliderw));
+	waveforms.removeFromLeft(gap);
 	__sawSlider->setBounds(waveforms.removeFromLeft(sliderw));
+	waveforms.removeFromLeft(gap);
 	__triangleSlider->setBounds(waveforms.removeFromLeft(sliderw));
+	waveforms.removeFromLeft(gap);
 	__noiseSlider->setBounds(waveforms.removeFromLeft(sliderw));
 
-	bounds.removeFromTop(32);
+	bounds.removeFromTop(50);
 	//Rectangle<int> atrSliders(bounds.removeFromTop(jmax<int>(bounds.getWidth() / 3,100)));
-	Rectangle<int> atrSliders(bounds.removeFromTop((bounds.getWidth() - 100) / 3));
-	atrSliders.removeFromLeft(50);
-	sliderw = (atrSliders.getWidth()-50) / 3;
+	Rectangle<int> atrSliders(bounds.removeFromTop((bounds.getWidth() - 100) / 5));
+	atrSliders.removeFromLeft(gap+10);
+	sliderw = (bounds.getWidth()-100) / 5;
 
 	// detune, offset, octave
 	__octaveSlider->setBounds(atrSliders.removeFromLeft(sliderw));
+	atrSliders.removeFromLeft(gap);
 	__detuneSlider->setBounds(atrSliders.removeFromLeft(sliderw));
+	atrSliders.removeFromLeft(gap);
 	__offsetSlider->setBounds(atrSliders.removeFromLeft(sliderw));
+	
 }
 
 

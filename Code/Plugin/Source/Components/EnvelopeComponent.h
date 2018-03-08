@@ -26,5 +26,6 @@ public:
 	EnvelopeComponent(int ID);
 	~EnvelopeComponent();
 	void resized() override;
+	void paint(Graphics & g) override;
 };
 #endif
