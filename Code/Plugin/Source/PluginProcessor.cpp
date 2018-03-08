@@ -39,6 +39,7 @@ PluginProcessor::PluginProcessor()
 
 	Global->presetManager = new PresetManager(this);
 	Global->presetManager->RefreshPresets();
+	this->addListener(Global->paramHandler);
 	//*(Global->paramHandler->Get<AudioParameterBool>(0, "OSC_MIX_EN")) = 1; //Enable default oscillator
 	__gui = new PluginGUI(*this);
 }
@@ -170,8 +171,6 @@ template<> PipelineManager<float>* PluginProcessor::getPipeline<float>() {
 
 void PluginProcessor::prepareToPlay (double newSampleRate, int maxSamplesPerBlock)
 {
-	bool first = __sampleRate == 0.0;
-
 	if (__sampleRate != newSampleRate) {
 		populateWavetable(newSampleRate);
 		keyboardState.reset();

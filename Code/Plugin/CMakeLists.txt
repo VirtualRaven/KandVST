@@ -155,6 +155,8 @@ jucer_project_files("KandVST"
   x         .         .         "Source/Components/FilterComponent.cpp"
   .         .         .         "Source/Components/FilterComponent.h"
   x         .         .         "Source/Constants.cpp"
+  x         .         .         "Source/ParameterListener.cpp"
+  .         .         .         "Source/ParameterListener.h"
 )
 
 jucer_project_module(

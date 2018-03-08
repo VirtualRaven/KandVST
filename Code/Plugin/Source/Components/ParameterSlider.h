@@ -30,7 +30,7 @@ DISCLAIMED.
 #define PARAMETER_SLIDER_H
 
 #include "../JuceLibraryCode/JuceHeader.h"
-class ParameterSlider: public Slider, private Timer, public MouseListener
+class ParameterSlider: public Slider, private Timer
 {
 public:
 	ParameterSlider(AudioProcessorParameter& p);
