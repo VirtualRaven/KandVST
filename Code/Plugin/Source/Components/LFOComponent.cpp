@@ -38,21 +38,26 @@ IVSTParameters(ID)
 
 void LFOComponent::paint(Graphics& g){
 	g.setColour(Colour::fromRGB(60, 60, 60));
-	g.drawRect(Rectangle<int>(8,10,255,130), 2.0f);
-	g.fillRect(Rectangle<int>(8, 10, 255, 35));
+
+	int width = __bounds.getWidth();
+	int height = __bounds.getHeight();
+	int fontHeight = __bounds.getHeight() * 0.2;
+	g.drawRect(Rectangle<int>(10, 10, width, height), 2.0f);
+	g.fillRect(Rectangle<int>(10, 10, width, fontHeight));
 }
 
 void LFOComponent::resized(){
-	int size = 50;
-	int gap = 25;
-	Rectangle<int> r = getLocalBounds().reduced(8);
-	r.removeFromTop(7);
-	r.removeFromLeft(30);
-	__toggleLfo->setBounds(r.removeFromTop(25).removeFromLeft(195));
+	__bounds = getLocalBounds().reduced(5);
+	
+	int fontHeight = __bounds.getHeight() * 0.2;
+	Rectangle<int> lfoButtonBounds(10,10, __bounds.getWidth(), fontHeight);
+	__toggleLfo->setBounds(lfoButtonBounds);
 
-	Rectangle<int> sliders(getLocalBounds().reduced(8));
-	sliders.removeFromTop(60);
-	sliders.removeFromLeft(gap);
+	int size = __bounds.getHeight() * 0.4;
+	int gap = size * 0.4;
+	Rectangle<int> sliders(__bounds);
+	sliders.removeFromTop(__bounds.getHeight() * 0.4);
+	sliders.removeFromLeft(gap * 1.1);
 	__ratio->setBounds(sliders.removeFromLeft(size).removeFromTop(size+15));
 	sliders.removeFromLeft(gap);
 	__type->setBounds(sliders.removeFromLeft(size).removeFromTop(size+15));

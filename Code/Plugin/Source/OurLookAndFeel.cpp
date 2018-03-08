@@ -7,7 +7,8 @@ OurLookAndFeel::OurLookAndFeel() {
 	
 	setColour(Slider::backgroundColourId, Colour::fromRGB(30,30,30));
 	setColour(Slider::thumbColourId, Colour::fromRGB(26, 105, 180));
-	LookAndFeel_V4::setColour(Slider::trackColourId, Colour::fromRGB(26, 26, 26));
+	setColour(Slider::trackColourId, Colour::fromRGB(26, 26, 26));
+	
 }
 
 
@@ -28,7 +29,7 @@ void OurLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int width, int 
 
 	Path p;
 	const float pointerLength = radius * 0.3f;
-	const float pointerThickness = 5.0f;
+	const float pointerThickness = pointerLength * 0.6f;
 	p.addRectangle(-pointerThickness * 0.5f, -radius, pointerThickness, pointerLength);
 	p.applyTransform(AffineTransform::rotation(angle).translated(centreX, centreY));
 
@@ -182,29 +183,25 @@ void OurLookAndFeel::drawTabButton(TabBarButton & button, Graphics & g, bool isM
 	textLayout.draw(g, Rectangle<float>(length, depth));
 }
 
-
-void OurLookAndFeel::drawButtonText(Graphics & g, TextButton & button, bool isMouseOverButton, bool isButtonDown)
+void OurLookAndFeel::drawButtonBackground(Graphics& g, Button& button, const Colour& backgroundColour, bool isMouseOverButton, bool isButtonDown)
 {
-	Font font(getTextButtonFont(button, button.getHeight()));
-	font.setStyleFlags(Font::FontStyleFlags::bold);
-	g.setFont(font);
-	g.setColour(button.findColour(button.getToggleState() ? TextButton::textColourOnId
-		: TextButton::textColourOffId)
-		.withMultipliedAlpha(button.isEnabled() ? 1.0f : 0.5f));
+	auto bounds = button.getLocalBounds().toFloat().reduced(0.5f, 0.5f);
 
-	const int yIndent = 0;//jmin(4, button.proportionOfHeight(0.3f));
-	const int cornerSize = 0;
+	auto baseColour = backgroundColour.withMultipliedSaturation(button.hasKeyboardFocus(true) ? 1.3f : 0.9f)
+		.withMultipliedAlpha(button.isEnabled() ? 1.0f : 0.5f);
 
-	const int fontHeight = roundToInt(font.getHeight() * 0.6f);
-	const int leftIndent = jmin(fontHeight, 2 + cornerSize / (button.isConnectedOnLeft() ? 4 : 2));
-	const int rightIndent = jmin(fontHeight, 2 + cornerSize / (button.isConnectedOnRight() ? 4 : 2));
-	const int textWidth = button.getWidth() - leftIndent - rightIndent;
+	if (isButtonDown || isMouseOverButton)
+		baseColour = baseColour.contrasting(isButtonDown ? 0.2f : 0.05f);
 
-	if (textWidth > 0)
-		g.drawFittedText(button.getButtonText(),
-			leftIndent, yIndent, textWidth, button.getHeight(),//- yIndent * 2,
-			Justification::centred, 0);
+	g.setColour(baseColour);
+
+	Path path;
+	path.addRectangle(bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight());
+	g.fillPath(path);
+
 }
+
+
 
 void OurLookAndFeel::createTabTextLayout(const TabBarButton & button, float length, float depth, Colour colour, TextLayout & textLayout)
 {
@@ -216,6 +213,28 @@ void OurLookAndFeel::createTabTextLayout(const TabBarButton & button, float leng
 	s.append(button.getButtonText().trim(), font, colour);
 
 	textLayout.createLayout(s, length);
+}
+
+void OurLookAndFeel::drawButtonText(Graphics & g, TextButton & button, bool isMouseOverButton, bool isButtonDown)
+{
+	Font font(button.getHeight() * 0.7, Font::bold);
+	g.setFont(font);
+	g.setColour(button.findColour(button.getToggleState() ? TextButton::textColourOnId
+		: TextButton::textColourOffId)
+		.withMultipliedAlpha(button.isEnabled() ? 1.0f : 0.5f));
+
+	const int yIndent = jmin(4, button.proportionOfHeight(0.3f));
+	const int cornerSize = jmin(button.getHeight(), button.getWidth()) / 2;
+
+	const int fontHeight = roundToInt(font.getHeight() * 0.6f);
+	const int leftIndent = jmin(fontHeight, 2 + cornerSize / (button.isConnectedOnLeft() ? 4 : 2));
+	const int rightIndent = jmin(fontHeight, 2 + cornerSize / (button.isConnectedOnRight() ? 4 : 2));
+	const int textWidth = button.getWidth() - leftIndent - rightIndent;
+
+	if (textWidth > 0)
+		g.drawFittedText(button.getButtonText(),
+			leftIndent, yIndent, textWidth, button.getHeight() - yIndent * 2,
+			Justification::centred, 2);
 }
 
 

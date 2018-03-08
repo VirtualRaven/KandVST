@@ -26,6 +26,7 @@ private:
 	ScopedPointer<ParameterSlider> __ratio, __type, __amp;
 	Label __ratioLabel, __typeLabel, __ampLabel;
 	ScopedPointer<ParameterButton> __toggleLfo;
+	Rectangle<int> __bounds;
 	int __ID, __width, __height;
 	//==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LFOComponent)

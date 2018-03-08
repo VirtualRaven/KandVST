@@ -36,7 +36,7 @@ void MasterComponent::resized() {
 	__infoComponent.setBounds(getLocalBounds().removeFromTop(300));
 	__mixerComponent.setBounds(Rectangle<int>(740,10,230,360));
 	__filterComponent.setBounds(Rectangle<int>(740, 370, 230, 160));
-	__lfoComponent1.setBounds(Rectangle<int>(8,8,265,145));
-	__lfoComponent2.setBounds(Rectangle<int>(8, 155, 265, 145));
+	__lfoComponent1.setBounds(Rectangle<int>(0,8,250,145));
+	__lfoComponent2.setBounds(Rectangle<int>(0, 155, 250, 145));
 	
 }

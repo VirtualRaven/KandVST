@@ -40,5 +40,6 @@ void OscillatorPageComponent::resized(){
 	//__lfo.setBounds(getLocalBounds().reduced(8).removeFromRight(200).removeFromTop(250));
 
 	Rectangle<int> amplitudeBounds(getLocalBounds().reduced(16));
-	__filterComponent.setBounds(amplitudeBounds.removeFromRight(150).removeFromBottom(100));
+	Rectangle<int> filterBounds(amplitudeBounds.removeFromRight(230).removeFromBottom(140));
+	__filterComponent.setBounds(Rectangle<int>(820,450,150,105));
 }

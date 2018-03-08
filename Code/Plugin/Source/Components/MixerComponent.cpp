@@ -54,10 +54,10 @@ MixerComponent::MixerComponent()
 
 void MixerComponent::paint(Graphics& g) {
 
-	int width = __bounds.getWidth() * 0.95;
-	int height = __bounds.getHeight() * 0.97;
+	int width = __bounds.getWidth();
+	int height = __bounds.getHeight();
 	int fontHeight = __bounds.getHeight() * 0.08;
-	int fontSize = __bounds.getHeight() * 0.05;
+	int fontSize = __bounds.getHeight() * 0.07;
 
 	g.setColour(Colour::fromRGB(60, 60, 60));
 	g.drawRect(Rectangle<int>(10, 10, width, height), 2.0f);
@@ -71,7 +71,7 @@ void MixerComponent::paint(Graphics& g) {
 }
 
 void MixerComponent::resized() {
-	__bounds = getLocalBounds();
+	__bounds = getLocalBounds().reduced(5);
 
 	Rectangle<int> mixerBounds(getLocalBounds().reduced(8)
 		.removeFromBottom(__bounds.getHeight() - __bounds.getHeight()*0.2)

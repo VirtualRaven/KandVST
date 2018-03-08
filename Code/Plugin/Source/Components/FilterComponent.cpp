@@ -18,23 +18,23 @@ FilterComponent::FilterComponent(int ID)
 	__lpFilter->setSkewFactorFromMidPoint(0.15);
 	__lpLabel.setText("LP", NotificationType::dontSendNotification);
 	__lpLabel.attachToComponent(__lpFilter, false);
-	__lpLabel.setJustificationType(juce::Justification::centred);
+	__lpLabel.setJustificationType(juce::Justification::horizontallyCentred);
 
 	__hpFilter->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
 	__hpFilter->setTextBoxStyle(__hpFilter->NoTextBox, true, 10, 10);
 	__hpFilter->setSkewFactorFromMidPoint(0.15);
 	__hpLabel.setText("HP", NotificationType::dontSendNotification);
 	__hpLabel.attachToComponent(__hpFilter, false);
-	__hpLabel.setJustificationType(juce::Justification::centred);
+	__hpLabel.setJustificationType(juce::Justification::horizontallyCentred);
 
 }
 
 void FilterComponent::paint(Graphics& g) {
 
-	int width = __bounds.getWidth() * 0.95;
-	int height = __bounds.getHeight() * 0.9;
+	int width = __bounds.getWidth();
+	int height = __bounds.getHeight();
 	int fontHeight = __bounds.getHeight() * 0.2;
-	int fontSize = __bounds.getHeight() * 0.12;
+	int fontSize = __bounds.getHeight() * 0.16;
 
 	g.setColour(Colour::fromRGB(60, 60, 60));
 	g.drawRect(Rectangle<float>(10, 10, width, height), 2.0f);
@@ -49,11 +49,13 @@ void FilterComponent::paint(Graphics& g) {
 
 void FilterComponent::resized() {
 
-	__bounds = getLocalBounds();
+	__bounds = getLocalBounds().reduced(5);
+	__lpLabel.setFont(Font(__bounds.getHeight() * 0.13, Font::plain));
+	__hpLabel.setFont(Font(__bounds.getHeight() * 0.13, Font::plain));
 
-	Rectangle<int> __filterBounds(__bounds.reduced(16));
+	Rectangle<int> __filterBounds(__bounds);
 
-	int __size = (__bounds.getHeight() - __bounds.getHeight() * 0.2) * 0.6;
+	int __size = (__bounds.getHeight() * 0.55);
 	
 	__filterBounds.removeFromRight(__bounds.getWidth() * 0.05);
 	
@@ -62,5 +64,6 @@ void FilterComponent::resized() {
 	__filterBounds.removeFromRight(__bounds.getWidth() * 0.05);
 	
 	__hpFilter->setBounds(__filterBounds.removeFromRight(__size).removeFromBottom(__size));
+
 
 }

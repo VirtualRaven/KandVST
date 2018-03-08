@@ -33,7 +33,6 @@ void PluginGUI::InitializeGui()
 	}
 
 	__tabComponent.addTab("Console", Colours::darkgrey, &__cc, true);
-	__tabComponent.setCurrentTabIndex(1);
 	addAndMakeVisible(__tabComponent);
 	addAndMakeVisible(__keyboard);
 	__keyboard.setKeyWidth(__keyboard.getKeyWidth() + 10.0f);
