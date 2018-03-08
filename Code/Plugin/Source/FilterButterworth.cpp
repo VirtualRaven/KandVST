@@ -1,6 +1,7 @@
 #include "FilterButterworth.h"
 
-FilterButterworth::FilterButterworth(int ID, double sampleRate, String parameterId) :
+template<typename T>
+FilterButterworth<T>::FilterButterworth(int ID, double sampleRate, String parameterId) :
 	IEffect(sampleRate),
 	IVSTParameters(ID),
 	__enabled(true),
@@ -12,18 +13,18 @@ FilterButterworth::FilterButterworth(int ID, double sampleRate, String parameter
 	lpFrequency = Global->paramHandler->Get<AudioParameterFloat>(ID, parameterId);
 }
 
-
-FilterButterworth::~FilterButterworth()
+template<typename T>
+FilterButterworth<T>::~FilterButterworth()
 {
 }
-
-void FilterButterworth::RegisterParameters(int ID, String parameterLabel, String parameterId, float defaultValue)
+template<typename T>
+void FilterButterworth<T>::RegisterParameters(int ID, String parameterLabel, String parameterId, float defaultValue)
 {
 	Global->paramHandler->RegisterFloat(ID, parameterId, parameterLabel, 1.0f, 20000.0f, defaultValue);
 }
 
 template<typename T>
-bool FilterButterworth::__RenderBlock(AudioBuffer<T>& buffer, int len, bool empty)
+bool FilterButterworth<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool empty)
 {
 	__fc = *lpFrequency;
 
@@ -110,9 +111,12 @@ bool FilterButterworth::__RenderBlock(AudioBuffer<T>& buffer, int len, bool empt
 	return true;
 }
 
-template bool FilterButterworth::__RenderBlock(AudioBuffer<double>& buffer, int len, bool empty);
-template bool FilterButterworth::__RenderBlock(AudioBuffer<float>& buffer, int len, bool empty);
 
-void FilterButterworth::ProccessCommand(MidiMessage message)
+
+template<typename T>
+void FilterButterworth<T>::ProccessCommand(MidiMessage message)
 {
 }
+
+template class FilterButterworth<double>;
+template class FilterButterworth<float>;

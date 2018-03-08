@@ -20,12 +20,12 @@ PluginProcessor::PluginProcessor()
 	Global->log = new Log("log.txt");
 	// -1 = master
 	setParameters<int,	EnvelopeGenerator, 
-						DelayEffect, 
+						DelayEffect<double>, 
 						WavetableOsc,
 						Pipeline<double>, 
 						LFO,
-						FilterHP,
-		FilterLP>({
+						FilterHP<double>,
+		FilterLP<double>>({
 			{0,1,2,3},
 			{0},
 			{0,1,2,3},
