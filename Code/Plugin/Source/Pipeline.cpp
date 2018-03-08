@@ -15,8 +15,8 @@ Pipeline<T>::Pipeline(double rate,int maxBuffHint) :
 				Global->paramHandler->Get<AudioParameterFloat>(i, "OSC_MIX_AMP"),
 				Global->paramHandler->Get<AudioParameterBool>(i, "OSC_MIX_EN")
 			);
-		__effects[i*__num_effects] = new FilterLP(i, rate, "FILTER_LP");
-		__effects[i*__num_effects + 1] = new FilterHP(i, rate, "FILTER_HP");
+		__effects[i*__num_effects] = new FilterLP<T>(i, rate, "FILTER_LP");
+		__effects[i*__num_effects + 1] = new FilterHP<T>(i, rate, "FILTER_HP");
 
 	}
 

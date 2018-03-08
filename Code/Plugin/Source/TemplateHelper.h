@@ -1,6 +1,7 @@
 #ifndef TEMPLATE_HELPER
 #define TEMPLATE_HELPER
-
+#include <initializer_list>
+#include <vector>
 template<typename F, unsigned int I> 
 class parameterArguments : parameterArguments<F, I - 1> {
 	F args;
@@ -52,7 +53,16 @@ struct setParameters<F, arg0> {
 	}
 };
 
+template<typename T>
+struct Constants {};
 
+template<> struct Constants<double> {
+	static const double PI;
+};
+
+template<> struct Constants<float> {
+	static const float PI;
+};
 
 /* 
 Test code

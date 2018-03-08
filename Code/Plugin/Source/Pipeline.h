@@ -21,11 +21,11 @@ private:
 	static const size_t __num_osc = 4;
 	static const size_t __num_effects = 2;
 	std::array<OscTripple, __num_osc> __oscs;
-	std::array<IEffect*, __num_osc*__num_effects> __effects;
+	std::array<IEffect<T>*, __num_osc*__num_effects> __effects;
 	AudioBuffer<T> tmpBuff;
 	double __rate;
 	int __note;
-	DelayEffect __delay;
+	DelayEffect<T> __delay;
 	bool __active;
 	const int __maxBuffHint;
 

@@ -18,8 +18,8 @@ private:
 	double __phase;
 	bool __sustain;
 
-	AudioParameterInt* __waveType, *__octave,* __offset, *__overtone;
-	AudioParameterFloat* __detune, *__sinAmp,* __sqAmp, *__sawAmp, *__triAmp,*__noiseAmp;
+	AudioParameterInt* __waveType, *__octave,* __offset, *__overtone, *__pitchBendSens;
+	AudioParameterFloat* __detune, *__sinAmp,* __sqAmp, *__sawAmp, *__triAmp,*__noiseAmp, *__panning;
 	float __pitchbend;
 	template<typename T>
 	bool __RenderBlock(AudioBuffer<T>& buffer,int len);

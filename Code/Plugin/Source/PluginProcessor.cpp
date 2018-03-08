@@ -3,42 +3,49 @@
 #include "IWavetable.h"
 #include "PresetManager.h"
 #include "Pipeline.h"
+#include "Components\SettingsComponent.h"
 AudioProcessor* JUCE_CALLTYPE createPluginFilter();
 
 GLOBAL * Global;
 //==============================================================================
 PluginProcessor::PluginProcessor()
     : AudioProcessor (getBusesProperties()),
-	__sampleRate(0.0)
+	__sampleRate(0.0),
+	processorReady(false)
 {
 	lastPosInfo.resetToDefault();
 	__gui = nullptr;
 	__pipManager.dp = nullptr;
+	__pipManager.fp = nullptr;
 	doublePrecision = true;
 	Global = new GLOBAL();
 	Global->paramHandler =  new ParameterHandler(*this);
 	Global->log = new Log("log.txt");
 	// -1 = master
 	setParameters<int,	EnvelopeGenerator, 
-						DelayEffect, 
+						DelayEffect<double>, 
 						WavetableOsc,
 						Pipeline<double>, 
 						LFO,
-						FilterHP,
-		FilterLP>({
+						FilterHP<double>,
+						FilterLP<double>,
+						SettingsComponent
+			>({
 			{0,1,2,3},
 			{0},
 			{0,1,2,3},
 			{ 0 },
 			{0,1,2,3},
 			{-1,0,1,2,3},
-			{-1,0,1,2,3} });
+			{-1,0,1,2,3},
+			{-1}
+			});
 
 
 	Global->presetManager = new PresetManager(this);
 	Global->presetManager->RefreshPresets();
 	//*(Global->paramHandler->Get<AudioParameterBool>(0, "OSC_MIX_EN")) = 1; //Enable default oscillator
-
+	__gui = new PluginGUI(*this);
 }
 
 
@@ -97,10 +104,6 @@ AudioProcessor::BusesProperties PluginProcessor::getBusesProperties()
 
 void PluginProcessor::timerCallback()
 {
-	if (wavetableRdy() && __gui != nullptr) {
-		__gui->InitializeGui();
-		stopTimer();
-	}
 }
 
 int PluginProcessor::getNumPrograms()
@@ -177,17 +180,23 @@ void PluginProcessor::prepareToPlay (double newSampleRate, int maxSamplesPerBloc
 	if (__sampleRate != newSampleRate) {
 		populateWavetable(newSampleRate);
 		keyboardState.reset();
-		
 		freePipelineManager();
-		if ( (doublePrecision = isUsingDoublePrecision()) == true)
-			__pipManager.dp = new PipelineManager<double>(newSampleRate, maxSamplesPerBlock);
-		else
-			__pipManager.fp = new PipelineManager<float>(newSampleRate, maxSamplesPerBlock);
+		Thread::launch([this,newSampleRate,maxSamplesPerBlock]() {
+			while (!wavetableRdy());
+			if ((doublePrecision = isUsingDoublePrecision()) == true)
+				__pipManager.dp = new PipelineManager<double>(newSampleRate, maxSamplesPerBlock);
+			else
+				__pipManager.fp = new PipelineManager<float>(newSampleRate, maxSamplesPerBlock);
+
+		
+			__gui->InitializeGui();
+			processorReady = true;
+		});
+		
+		
 
 		__sampleRate = newSampleRate;
 	}
-	if (first && __gui != nullptr)
-		__gui->InitializeGui();
 }
 
 void PluginProcessor::releaseResources()
@@ -200,6 +209,8 @@ template <typename FloatType>
 void PluginProcessor::process (AudioBuffer<FloatType>& buffer,
                                             MidiBuffer& midiMessages)
 {
+	if (!processorReady)
+		return;
     const int numSamples = buffer.getNumSamples();
     keyboardState.processNextMidiBuffer (midiMessages, 0, numSamples, true);
 
@@ -214,8 +225,6 @@ void PluginProcessor::process (AudioBuffer<FloatType>& buffer,
 
 AudioProcessorEditor* PluginProcessor::createEditor()
 {
-	__gui = new PluginGUI(*this);
-	startTimer(50);
     return __gui;
 }
 AudioProcessor* JUCE_CALLTYPE createPluginFilter()

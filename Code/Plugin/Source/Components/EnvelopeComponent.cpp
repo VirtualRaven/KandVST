@@ -14,7 +14,6 @@ EnvelopeComponent::EnvelopeComponent(int ID):
 	cLabel(String(), "C")
 
 {
-
 	__envImage = new Image(Image::PixelFormat::RGB, 300, 150, true);
 	addAndMakeVisible(attackTime = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "ENV_ATTACK_TIME")));
 	attackTime->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
@@ -55,6 +54,7 @@ EnvelopeComponent::EnvelopeComponent(int ID):
 	sustainLevel->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
 	sustainLevel->setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, true, 50, 15);
 
+	setLookAndFeel(&ourLookAndFeel);
 	
 	// add some labels for the sliders..
 	

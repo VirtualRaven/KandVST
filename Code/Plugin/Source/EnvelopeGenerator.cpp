@@ -180,6 +180,7 @@ void EnvelopeGenerator::RenderBlock(double * buffer, size_t size)
 				__amplitude = 0.0;
 				break;
 		}
+		jassert(isfinite(__amplitude));
 		buffer[i] = __amplitude;
 		__counter++;
 	}
