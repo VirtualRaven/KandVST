@@ -3,6 +3,7 @@
 #include "IWavetable.h"
 #include "PresetManager.h"
 #include "Pipeline.h"
+#include "Components\SettingsComponent.h"
 AudioProcessor* JUCE_CALLTYPE createPluginFilter();
 
 GLOBAL * Global;
@@ -27,14 +28,18 @@ PluginProcessor::PluginProcessor()
 						Pipeline<double>, 
 						LFO,
 						FilterHP<double>,
-		FilterLP<double>>({
+						FilterLP<double>,
+						SettingsComponent
+			>({
 			{0,1,2,3},
 			{0},
 			{0,1,2,3},
 			{ 0 },
 			{0,1,2,3},
 			{-1,0,1,2,3},
-			{-1,0,1,2,3} });
+			{-1,0,1,2,3},
+			{-1}
+			});
 
 
 	Global->presetManager = new PresetManager(this);
