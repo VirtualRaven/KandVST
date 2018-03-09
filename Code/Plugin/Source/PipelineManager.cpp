@@ -11,6 +11,8 @@ PipelineManager<T>::PipelineManager(double rate, int maxBuffHint) :
 	__sampleRate(rate),
 	__maybeMaxBuff(maxBuffHint)
 {
+	__masterGain = Global->paramHandler->Get<AudioParameterFloat>(-1, "MASTER_GAIN");
+
 	for (int i = 0; i < LFO_COUNT; i++) {
 		lfos[i] = new LFO(maxBuffHint, i, rate);
 	}
@@ -97,13 +99,19 @@ void PipelineManager<T>::genSamples(AudioBuffer<T>& buff, MidiBuffer & midiMessa
 	while (pool.getNumJobs()>0);
 	for (auto b : pipBuff)
 	{
-		buff.addFrom(0, 0, b, 0, 0, buff.getNumSamples());
-		buff.addFrom(1, 0, b, 1, 0, buff.getNumSamples());
+		buff.addFrom(0, 0, b, 0, 0, buff.getNumSamples(), *__masterGain);
+		buff.addFrom(1, 0, b, 1, 0, buff.getNumSamples(), *__masterGain);
 	}
 	
 }
 //template void PipelineManager::genSamples(AudioBuffer<double>& buff, MidiBuffer & midiMessage, AudioPlayHead::CurrentPositionInfo & posInfo);
 //template void PipelineManager::genSamples(AudioBuffer<float>& buff, MidiBuffer & midiMessages, AudioPlayHead::CurrentPositionInfo & posInfo);
+
+template<typename T>
+void PipelineManager<T>::RegisterParameters(int ID)
+{
+	Global->paramHandler->RegisterFloat(ID, "MASTER_GAIN", "Master Volume", 0.0f, 1.0f, 1.0f);
+}
 
 template class PipelineManager<double>;
 template class PipelineManager<float>;
