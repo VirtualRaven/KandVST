@@ -18,7 +18,7 @@ private:
 	double __phase;
 	bool __sustain;
 
-	AudioParameterInt* __waveType, *__octave,* __offset, *__overtone;
+	AudioParameterInt* __waveType, *__octave,* __offset, *__overtone, *__pitchBendSens;
 	AudioParameterFloat* __detune, *__sinAmp,* __sqAmp, *__sawAmp, *__triAmp,*__noiseAmp, *__panning;
 	AudioParameterChoice* __lfofreq, *__lfoamp;
 	float __pitchbend;

@@ -9,8 +9,8 @@
 #include "ParameterButton.h"
 #include "../IVSTParameters.h"
 #include "../WavetableOsc.h"
-
-class OscillatorComponent : public Component, private IVSTParameters, private Timer
+#include "../ParameterListener.h"
+class OscillatorComponent : public Component, private IVSTParameters, private Timer, private ParameterListener
 {
 public:
     //==============================================================================
@@ -32,12 +32,15 @@ private:
 	float s, sq, sa, tr;
 	Image* __oscWaveform;
 	ImageComponent __waveformComp;
-
+	bool __waveformInvalid;
 
 	//==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OscillatorComponent)
 
 		// Inherited via Timer
 		virtual void timerCallback() override;
+
+	// Inherited via ParameterListener
+	virtual void parametersChanged(std::vector<std::string>) override;
 };
 #endif

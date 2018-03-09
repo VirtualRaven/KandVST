@@ -75,6 +75,56 @@ AudioParameterFloat * ParameterHandler::GetFloat(String id)
 	return __floatParams[id];
 }
 
+void ParameterHandler::addParamaterListener(ParameterListener * listener, int intId, std::string id)
+{
+	std::string idString = std::to_string(intId) + std::string("_") + id;
+
+	if (__parameterListeners.count(idString) == 0)
+		__parameterListeners[idString] = std::vector<ParameterListener*>();
+	__parameterListeners[idString].push_back(listener);
+}
+
+void ParameterHandler::addParamaterListener(ParameterListener * listener, int intId, std::vector<std::string> ids)
+{
+	
+	for (auto s : ids)
+	{
+		std::string idString = std::to_string(intId) + std::string("_") + s;
+		if (__parameterListeners.count(idString) == 0)
+			__parameterListeners[idString] = std::vector<ParameterListener*>();
+
+		__parameterListeners[idString].push_back(listener);
+	}
+
+}
+
+void ParameterHandler::audioProcessorParameterChanged(AudioProcessor * processor, int parameterIndex, float newValue)
+{
+	indexChange[head] = parameterIndex;
+	head = (head + 1) % INDEX_CHANGE_SIZE;
+	triggerAsyncUpdate();
+}
+
+void ParameterHandler::audioProcessorChanged(AudioProcessor * /*processor*/)
+{
+}
+
+void ParameterHandler::handleAsyncUpdate()
+{
+	while (tail != head)
+	{
+		std::string id = __owner->getParameterID(indexChange[tail]).toStdString();
+		std::vector<ParameterListener*> listeners = __parameterListeners[id];
+		for (auto list : listeners)
+		{
+			if (list != nullptr)
+				list->callParameterChange(id);
+		}
+		
+		tail = (tail + 1) % INDEX_CHANGE_SIZE;
+	}
+}
+
 template<> AudioParameterFloat * ParameterHandler::Get(int iid, String id)
 {
 	return __floatParams[std::to_string(iid) + std::string("_") + id];

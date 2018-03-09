@@ -33,7 +33,7 @@ ParameterSlider::ParameterSlider(AudioProcessorParameter& p):
 	 Slider(p.getName(256)), param(p)
 {
 	setRange(0.0, 1.0, 0.0);
-	this->addMouseListener(this,false);
+	
 	startTimerHz(30);
 	updateSliderPos();
 	

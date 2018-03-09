@@ -17,7 +17,6 @@ private:
 	ImageButton __refresh;
 	ListBox __presets;
 	PresetRow __rowModel;
-	OurLookAndFeel ourLookAndFeel;
 	// Inherited via Listener
 	virtual void buttonClicked(Button *) override;
 	

@@ -16,12 +16,13 @@ PluginGUI::PluginGUI(PluginProcessor& owner)
 
 	addAndMakeVisible(__loadingImage);
 	__loadingImage.setBounds(getLocalBounds());
-
+	addKeyListener(this);
 }
 
 
 void PluginGUI::InitializeGui()
 {
+	const MessageManagerLock mmLock;
 	removeAllChildren();
 	setLookAndFeel(&ourLookAndFeel);
 
@@ -39,6 +40,16 @@ void PluginGUI::InitializeGui()
 	__keyboard.setKeyWidth(__keyboard.getKeyWidth() + 10.0f);
 
 
+}
+
+bool PluginGUI::keyPressed(const KeyPress & /*key*/, Component * /*originatingComponent*/)
+{
+	return false;
+}
+
+bool PluginGUI::keyStateChanged(bool isKeyDown, Component * /*originatingComponent*/)
+{
+	return __keyboard.keyStateChanged(isKeyDown);
 }
 
 

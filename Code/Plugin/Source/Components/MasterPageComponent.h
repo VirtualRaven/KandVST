@@ -11,6 +11,8 @@
 #include "MixerComponent.h"
 #include "FilterComponent.h"
 #include "LFOComponent.h"
+#include "SettingsComponent.h"
+
 class MasterComponent : public Component
 {
 public:
@@ -29,6 +31,10 @@ private:
 	MixerComponent __mixerComponent;
 	FilterComponent __filterComponent;
 	LFOComponent __lfoComponent1, __lfoComponent2;
+
+	// Temporary on master
+	SettingsComponent __settingsComponent;
+
 	
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MasterComponent)
