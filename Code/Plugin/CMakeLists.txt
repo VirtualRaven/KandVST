@@ -159,6 +159,8 @@ jucer_project_files("KandVST"
   .         .         .         "Source/ParameterListener.h"
   x         .         .         "Source/Components/SettingsComponent.cpp"
   .         .         .         "Source/Components/SettingsComponent.h"
+  x         .         .         "Source/ConvolutionReverb.cpp"
+  .         .         .         "Source/ConvolutionReverb.h"
 )
 
 jucer_project_module(
@@ -220,6 +222,12 @@ jucer_project_module(
   juce_gui_extra
   PATH "../Juce/modules"
 )
+
+jucer_project_module(
+  juce_dsp
+  PATH "../Juce/modules"
+)
+
 
 jucer_appconfig_header(
   USER_CODE_SECTION
