@@ -54,7 +54,7 @@ void LFOComponent::resized(){
 	__toggleLfo->setBounds(lfoButtonBounds);
 
 	int size = __bounds.getHeight() * 0.4;
-	int gap = size * 0.4;
+	int gap = size * 0.5;
 	Rectangle<int> sliders(__bounds);
 	sliders.removeFromTop(__bounds.getHeight() * 0.45);
 	sliders.removeFromLeft(gap * 1.1);

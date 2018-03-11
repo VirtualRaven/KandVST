@@ -25,7 +25,7 @@ void SettingsComponent::paint(Graphics& g) {
 	int width = __bounds.getWidth();
 	int height = __bounds.getHeight();
 	int fontHeight = __bounds.getHeight() * 0.2;
-	int fontSize = __bounds.getHeight() * 0.16;
+	int fontSize = __bounds.getHeight() * 0.14;
 
 	g.setColour(Colour::fromRGB(60, 60, 60));
 	g.drawRect(Rectangle<int>(10, 10, width, height), 2.0f);
@@ -43,7 +43,7 @@ void SettingsComponent::resized()
 	__bounds = getLocalBounds().reduced(5);
 
 	int size = __bounds.getHeight() * 0.4;
-	int gap = size * 0.4;
+	int gap = size * 0.5;
 
 	Rectangle<int> sliders(__bounds);
 	sliders.removeFromTop( __bounds.getHeight() * 0.45);

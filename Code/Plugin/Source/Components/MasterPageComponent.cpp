@@ -10,7 +10,8 @@ MasterComponent::MasterComponent() :
 	__lfoComponent1(0),
 	__lfoComponent2(1),
 	__filterComponent(-1),
-	__settingsComponent()
+	__settingsComponent(),
+	__delayComponent()
 {
 	
 	addAndMakeVisible(__infoComponent);
@@ -21,13 +22,13 @@ MasterComponent::MasterComponent() :
 	addAndMakeVisible(__lfoComponent2);
 
 	addAndMakeVisible(__settingsComponent);
+	addAndMakeVisible(__delayComponent);
 
 }
 
 void MasterComponent::paint(Graphics& g){
 	g.setColour(Colour::fromRGB(40, 40, 40));
 	g.fillAll();
-
 	Font presets(20, Font::FontStyleFlags::bold);
 	g.setFont(presets);
 	g.setColour(Colours::white);
@@ -43,5 +44,7 @@ void MasterComponent::resized() {
 	__lfoComponent1.setBounds(Rectangle<int>(0,8,250,135));
 	__lfoComponent2.setBounds(Rectangle<int>(0, 145, 250, 135));
 
-	__settingsComponent.setBounds(Rectangle<int>(0, 282, 250, 135));
+	__settingsComponent.setBounds(Rectangle<int>(0, 282, 100, 135));
+
+	__delayComponent.setBounds(Rectangle<int>(100, 282, 150, 135));
 }

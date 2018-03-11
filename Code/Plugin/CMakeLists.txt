@@ -157,6 +157,8 @@ jucer_project_files("KandVST"
   x         .         .         "Source/Constants.cpp"
   x         .         .         "Source/Components/SettingsComponent.cpp"
   .         .         .         "Source/Components/SettingsComponent.h"
+  x         .         .         "Source/Components/DelayComponent.cpp"
+  .         .         .         "Source/Components/DelayComponent.h"
 )
 
 jucer_project_module(

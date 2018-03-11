@@ -12,6 +12,7 @@
 #include "FilterComponent.h"
 #include "LFOComponent.h"
 #include "SettingsComponent.h"
+#include "DelayComponent.h"
 
 class MasterComponent : public Component
 {
@@ -31,6 +32,7 @@ private:
 	MixerComponent __mixerComponent;
 	FilterComponent __filterComponent;
 	LFOComponent __lfoComponent1, __lfoComponent2;
+	DelayComponent __delayComponent;
 
 	// Temporary on master
 	SettingsComponent __settingsComponent;

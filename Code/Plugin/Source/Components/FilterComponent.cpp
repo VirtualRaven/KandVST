@@ -61,7 +61,7 @@ void FilterComponent::resized() {
 	
 	__lpFilter->setBounds(__filterBounds.removeFromRight(__size).removeFromBottom(__size));
 
-	__filterBounds.removeFromRight(__bounds.getWidth() * 0.05);
+	__filterBounds.removeFromRight(__bounds.getWidth() * 0.1);
 	
 	__hpFilter->setBounds(__filterBounds.removeFromRight(__size).removeFromBottom(__size));
 
