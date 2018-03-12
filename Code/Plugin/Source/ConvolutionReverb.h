@@ -5,6 +5,7 @@
 #include "Global.h"
 #include "ParameterHandler.h"
 #include "IVSTParameters.h"
+#include "juce_dsp\juce_dsp.h"
 
 template<typename T>
 class ConvolutionReverb :
@@ -14,9 +15,10 @@ class ConvolutionReverb :
 
 private:
 	juce::dsp::Convolution __conv;
-	
+	int __maxBuffHint;
+
 public:
-	ConvolutionReverb(int ID,double sampleRate);
+	ConvolutionReverb(int ID,double sampleRate, int maxBuffHint);
 	~ConvolutionReverb();
 	bool RenderBlock(AudioBuffer<T>& buffer, int len, bool empty) override;
 	static void RegisterParameters(int ID);
