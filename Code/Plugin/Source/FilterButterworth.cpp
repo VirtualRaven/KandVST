@@ -73,13 +73,22 @@ bool FilterButterworth<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 
 	auto buff = buffer.getArrayOfWritePointers();
 	
-	double* lfo = (*lfoIndex) > 0 ? lfos[(*lfoIndex)-1]->getPointer() : nullptr;
+	double* lfo = nullptr;
+	double amount = 0;
+	if ((*lfoIndex) > 0) {
+		static double lastAmount = 0.0;
+		lfo = lfos[(*lfoIndex) - 1]->getPointer();
+		amount = lfos[(*lfoIndex) - 1]->getAmount();
+		amount = pow(2, amount)*(*lpFrequency) > 20000.0 ? lastAmount : amount;
+		lastAmount = amount;
+	}
+		 
 
 	for (int i = __firstSampleIndex; i < len; i++)
 	{
 		__firstSampleIndex = 0;
 		if (lfo) {
-			__fc = (*lpFrequency) * pow(2, lfo[i]);
+			__fc = (*lpFrequency) * pow(2, lfo[i] * amount);
 			CalculateCoefficients();
 		}
 		// Current y[i-2] is the previous y[i-1]
