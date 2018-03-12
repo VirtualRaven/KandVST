@@ -41,7 +41,7 @@ void LFO::RegisterParameters(int ID)
 	Global->paramHandler->RegisterInt(ID, "LFO_RATIO", "LFO Ratio", -2, 16, 1); //TEMP!!!
 	Global->paramHandler->RegisterInt(ID, "LFO_TYPE", "LFO Wave type", 0, 3, 0);
 	Global->paramHandler->RegisterFloat(ID, "LFO_AMOUNT", "LFO amount", 0.0, 1.0, 0.5);
-	Global->paramHandler->RegisterFloat(ID, "LFO_FREQ_AMOUNT", "LFO Frequency Amount",0.0,24.0,1.0);
+	Global->paramHandler->RegisterFloat(ID, "LFO_FREQ_AMOUNT", "LFO Frequency Amount",0.0,24.0,2.0);
 }
 
 double* LFO::getPointer()
@@ -78,7 +78,7 @@ void LFO::generate(int numSamples, AudioPlayHead::CurrentPositionInfo& posInfo)
 		bool bla = __phase < 0;
 	}
 	//WAVE_TYPE type = toWAVE_TYPE(*__waveType);
-
+	
 	double freq = (posInfo.bpm)* calcRatio() / 60.0;
 
 	double inc = __wavetable->getLength() * freq / __sampleRate;

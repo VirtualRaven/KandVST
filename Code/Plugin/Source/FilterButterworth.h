@@ -40,6 +40,7 @@ protected:
 	T __sqrt2;
 
 	AudioParameterFloat* lpFrequency;
+	AudioParameterInt* lfoIndex;
 	
 public:
 	FilterButterworth(int ID, double sampleRate, String parameterId);
