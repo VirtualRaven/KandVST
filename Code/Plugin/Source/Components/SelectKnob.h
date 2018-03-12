@@ -4,21 +4,34 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "ParameterSlider.h"
-class SelectKnob: public ParameterSlider
+class SelectKnobSlider: public ParameterSlider
 {
 public:
-	SelectKnob(AudioParameterChoice& p);
-	~SelectKnob();
+	SelectKnobSlider(AudioParameterChoice& p);
+	~SelectKnobSlider();
 	void valueChanged() override;
 	void resized() override;
-	void paint(Graphics& g) override; // Temp?
 
 	void startedDragging() override;
 	void stoppedDragging() override;
 
 private:
+	AudioParameterChoice& __param;
+};
+
+class SelectKnob : public Component
+{
+public:
+	SelectKnob(AudioParameterChoice& p);
+	~SelectKnob();
+
+private:
+	SelectKnobSlider __slider;
 	std::vector<Label*> __labels;
 	AudioParameterChoice& __param;
+
+	void paint(Graphics& g) override;
+	void resized() override;
 };
 
 
