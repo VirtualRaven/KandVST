@@ -44,11 +44,13 @@ void SettingsComponent::resized()
 	sliders.removeFromLeft(gap);
 	__pitchBendSens->setBounds(sliders.removeFromLeft(size).removeFromTop(size + 15));
 	sliders.removeFromLeft(gap);
-	__selectKnob->setBounds(sliders.removeFromLeft(200));
+	//__selectKnob->setBounds(sliders.removeFromLeft(200));
+	__selectKnob->setBounds(120, 50, 100, 100);
+	//__selectKnob->setTopLeftPosition(120, 100);
 }
 
 void SettingsComponent::RegisterParameters(int ID)
 {
 	Global->paramHandler->RegisterInt(ID, "PITCH_BEND_SENS", "Pitch bend sensitivity", 1, 12, 2);
-	Global->paramHandler->RegisterChoice(ID, "SELECT_KNOB_VALUE", "Select Knob", StringArray("One", "Two", "Three"), 1);
+	Global->paramHandler->RegisterChoice(ID, "SELECT_KNOB_VALUE", "Select Knob", StringArray("One", "Two", "Three", "Four", "Five"), 1);
 }

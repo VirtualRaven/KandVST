@@ -1,11 +1,21 @@
 #include "SelectKnob.h"
 
 SelectKnob::SelectKnob(AudioParameterChoice& p) :
-	__slider(p),
+	__angleBetweenPos((float_Pi / 4.0f) * 0.9f),
 	__param(p),
-	__labels()
+	__labels(),
+	__snapAngles(),
+	__slider(p, __angleBetweenPos)
 {
 	addAndMakeVisible(__slider);
+
+	// Create snap positions:
+	float startAngle = -((__param.choices.size() - 1) * __angleBetweenPos / 2.0f);
+	for (int i = 0; i < __param.choices.size(); i++)
+	{
+		float currentAngle = startAngle + i * __angleBetweenPos;
+		__snapAngles.push_back(currentAngle);
+	}
 
 	Font font(10, Font::FontStyleFlags::plain);
 
@@ -30,23 +40,46 @@ SelectKnob::~SelectKnob()
 void SelectKnob::paint(Graphics& g)
 {
 	g.setColour(Colour::fromRGB(255, 40, 40));
-	g.drawRect(getBounds().reduced(5));
+	g.drawRect(0, 0, 100, 100);
+	g.drawRect(getBounds());
+	
+	// Draw dots
+	for (auto angle : __snapAngles)
+	{
+		Point<float> p = angleToPos(angle, 27);
+		g.drawEllipse(p.getX(), p.getY(), 1, 1, 2);
+	}
+}
+
+Point<float> SelectKnob::angleToPos(float angle, float r)
+{
+	int sliderR = __slider.getWidth() / 2;
+	int sliderX = __slider.getPosition().getX();
+	int sliderY = __slider.getPosition().getY();
+
+	return Point<float>(sliderX + sliderR + (r * sin(angle)),
+						sliderY + sliderR - (r * cos(angle)));
 }
 
 void SelectKnob::resized()
 {
+	setSize(100, 100);
 	Rectangle<int> box(getLocalBounds());
 	__slider.setBounds(box);
 
-	box = box.expanded(10);
 
 	for (int i = 0; i < __labels.size(); i++)
 	{
-		__labels.at(i)->setBounds(box.removeFromTop(10));
+		float angle = __snapAngles.at(i);
+		Point<float> p = angleToPos(angle, 30);
+		__labels.at(i)->setBounds(getLocalBounds());
+
+		__labels.at(i)->setCentrePosition(static_cast<int>(__slider.getX() + p.getX()), static_cast<int>(p.getY()));
 	}
 }
 
-SelectKnobSlider::SelectKnobSlider(AudioParameterChoice& p) :
+SelectKnobSlider::SelectKnobSlider(AudioParameterChoice& p, float angleBetweenPos) :
+	__angleBetweenPos(angleBetweenPos),
 	ParameterSlider(p),
 	__param(p)
 {
@@ -54,7 +87,9 @@ SelectKnobSlider::SelectKnobSlider(AudioParameterChoice& p) :
 	setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
 	setTextBoxStyle(Slider::NoTextBox, false, 0, 0);
 	
-	setRotaryParameters(1.5*float_Pi, 2.5*float_Pi, true);
+	float halfMaxAngle = (__angleBetweenPos * (__param.choices.size() - 1)) / 2.0f;
+
+	setRotaryParameters((2.0f*float_Pi) - halfMaxAngle, (2.0f*float_Pi) + halfMaxAngle, true);
 }
 
 
@@ -79,7 +114,7 @@ void SelectKnobSlider::stoppedDragging()
 
 void SelectKnobSlider::resized()
 {
-	setBounds(Rectangle<int>(50, 50));
+	setBounds(30, 20, 50, 50);
 	ParameterSlider::resized();
 }
 

@@ -7,7 +7,7 @@
 class SelectKnobSlider: public ParameterSlider
 {
 public:
-	SelectKnobSlider(AudioParameterChoice& p);
+	SelectKnobSlider(AudioParameterChoice& p, float angleBetweenPos);
 	~SelectKnobSlider();
 	void valueChanged() override;
 	void resized() override;
@@ -17,6 +17,7 @@ public:
 
 private:
 	AudioParameterChoice& __param;
+	float __angleBetweenPos;
 };
 
 class SelectKnob : public Component
@@ -26,9 +27,13 @@ public:
 	~SelectKnob();
 
 private:
+	float __angleBetweenPos;
 	SelectKnobSlider __slider;
 	std::vector<Label*> __labels;
+	std::vector<float> __snapAngles;
 	AudioParameterChoice& __param;
+	Point<float> angleToPos(float angle, float d);
+
 
 	void paint(Graphics& g) override;
 	void resized() override;
