@@ -8,11 +8,7 @@ EnvelopeComponent::EnvelopeComponent(int ID):
 	decayLabel(String(), "Decay"),
 	sustainLabel(String(), "Sustain"),
 	releaseLabel(String(), "Release"),
-	holdLabel(String(),"Hold"),
-	lLabel(String(), "L"),
-	tLabel(String(), "T"),
-	cLabel(String(), "C")
-
+	holdLabel(String(),"Hold")
 {
 	__envImage = new Image(Image::PixelFormat::RGB, 300, 150, true);
 	addAndMakeVisible(attackTime = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "ENV_ATTACK_TIME")));
@@ -69,25 +65,11 @@ EnvelopeComponent::EnvelopeComponent(int ID):
 	holdLabel.setFont(Font(11.0f));
 	holdLabel.setJustificationType(Justification::centred);
 
-	lLabel.setFont(Font(11.0f));
-	lLabel.setJustificationType(Justification::centred);
-
-	tLabel.setFont(Font(11.0f));
-	tLabel.setJustificationType(Justification::centred);
-
-	cLabel.setFont(Font(11.0f));
-	cLabel.setJustificationType(Justification::centred);
-
-
 	addAndMakeVisible(attackLabel);
 	addAndMakeVisible(decayLabel);
 	addAndMakeVisible(sustainLabel);
 	addAndMakeVisible(releaseLabel);
 	addAndMakeVisible(holdLabel);
-
-	addAndMakeVisible(tLabel);
-	addAndMakeVisible(lLabel);
-	addAndMakeVisible(cLabel);
 
 	setSize(400, 100);
 	addAndMakeVisible(__envImageComponent);
@@ -121,7 +103,31 @@ void EnvelopeComponent::paint(Graphics & g) {
 		}
 		startX += 70;
 	}
+	g.saveState();
+
+	g.setColour(Colours::white);
+	g.setFont(Font(12, Font::bold));
+	int translateX = -250;
+	int translateY = 515;
+	float angle = -float_Pi / 2.0f;
+	g.addTransform(AffineTransform::identity.rotated(angle).followedBy(AffineTransform::identity.translated(translateX, translateY)));
 	
+	Rectangle<int> sideLabels(getLocalBounds().removeFromLeft(500));
+	g.drawText("TIME", 
+		Rectangle<int>(sideLabels.getX()+8, sideLabels.getY(), sideLabels.getWidth(), sideLabels.getHeight()),
+		Justification::centred, false);
+
+	sideLabels.removeFromRight(125);
+	g.drawText("CURVE",
+		Rectangle<int>(sideLabels.getX(), sideLabels.getY(), sideLabels.getWidth(), sideLabels.getHeight()),
+		Justification::centred, false);
+	
+	sideLabels.removeFromRight(130);
+	g.drawText("LEVEL",
+		Rectangle<int>(sideLabels.getX(), sideLabels.getY(), sideLabels.getWidth(), sideLabels.getHeight()),
+		Justification::centred, false);
+
+	g.restoreState();
 }
 
 void EnvelopeComponent::resized()
@@ -142,10 +148,12 @@ void EnvelopeComponent::resized()
 	sustainLabel.setBounds(labels.removeFromLeft(knobWidth));
 	releaseLabel.setBounds(labels.removeFromLeft(knobWidth));
 	Rectangle<int> leftLabels(bounds.removeFromLeft(20));
+
+/*
 	tLabel.setBounds(leftLabels.removeFromTop(knobWidth));
 	cLabel.setBounds(leftLabels.removeFromTop(knobWidth));
 	lLabel.setBounds(leftLabels.removeFromTop(knobWidth));
-
+*/
 	Rectangle<int> attackCol(bounds.removeFromLeft(knobWidth));
 	attackTime->setBounds(attackCol.removeFromTop(knobWidth).reduced(4));
 	attackCurve->setBounds(attackCol.removeFromTop(knobWidth).reduced(4));

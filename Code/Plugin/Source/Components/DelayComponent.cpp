@@ -7,8 +7,8 @@ DelayComponent::~DelayComponent() {
 DelayComponent::DelayComponent() :
 	IVSTParameters(-1)
 {
-	__delaySpeed = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(0, "EX_DELAYMULTI"));
-	__delaySeconds = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(0, "EX_DELAYLENGTH"));
+	__delaySpeed = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(0, "EX_DELAYLENGTH"));
+	__delaySeconds = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(0, "EX_DELAYMULTI"));
 
 	addAndMakeVisible(__delaySpeed);
 	addAndMakeVisible(__delaySeconds);

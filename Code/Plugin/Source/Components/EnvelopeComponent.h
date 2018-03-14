@@ -13,7 +13,7 @@ class EnvelopeComponent : public  Component, private IVSTParameters, private Tim
 private:
 	ImageComponent __envImageComponent;
 	Image *		   __envImage;
-	Label attackLabel, decayLabel, sustainLabel, releaseLabel,holdLabel,lLabel,tLabel,cLabel;
+	Label attackLabel, decayLabel, sustainLabel, releaseLabel, holdLabel;
 	ScopedPointer<ParameterSlider> attackTime, holdTime, decayTime, releaseTime, sustainTime,
 								   attackCurve, decayCurve, releaseCurve, sustainCurve,
 								   attackLevel, decayLevel, sustainLevel;

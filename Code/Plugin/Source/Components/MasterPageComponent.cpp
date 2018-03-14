@@ -36,7 +36,9 @@ void MasterComponent::paint(Graphics& g){
 }
 
 void MasterComponent::resized() {
-	__presetComponent.setBounds(getLocalBounds().removeFromBottom(260).removeFromRight(680).removeFromLeft(400));
+	Rectangle<int> presetBounds(getLocalBounds().removeFromBottom(260).removeFromRight(680).removeFromLeft(400));
+	presetBounds.removeFromBottom(10);
+	__presetComponent.setBounds(presetBounds);
 	__infoComponent.setBounds(getLocalBounds().removeFromTop(300));
 	__mixerComponent.setBounds(Rectangle<int>(740,10,230,360));
 
