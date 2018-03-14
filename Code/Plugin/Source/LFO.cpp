@@ -38,7 +38,7 @@ double LFO::calcRatio()
 void LFO::RegisterParameters(int ID)
 {
 	Global->paramHandler->RegisterBool(ID, "LFO_EN", "LFO", 0);
-	Global->paramHandler->RegisterInt(ID, "LFO_RATIO", "LFO Ratio", -2, 16, 1); //TEMP!!!
+	Global->paramHandler->RegisterInt(ID, "LFO_RATIO", "LFO Ratio", -8, 16, 1); //TEMP!!!
 	Global->paramHandler->RegisterInt(ID, "LFO_TYPE", "LFO Wave type", 0, 3, 0);
 	Global->paramHandler->RegisterFloat(ID, "LFO_AMOUNT", "LFO amount", 0.0, 1.0, 0.5);
 	Global->paramHandler->RegisterFloat(ID, "LFO_FREQ_AMOUNT", "LFO Frequency Amount",0.0,24.0,2.0);
@@ -66,6 +66,7 @@ void LFO::generate(int numSamples, AudioPlayHead::CurrentPositionInfo& posInfo)
 		__samples = new double[numSamples];
 		Global->log->Write("New lfo buffer created\n");
 	}
+
 	if (!(*__isActive)) {
 		if (!posInfo.isPlaying) {
 			__phase = fmod(__phase + (IWavetable::getLength() * ((posInfo.bpm)* calcRatio() / 60.0) / __sampleRate) * numSamples, IWavetable::getLength());
@@ -83,7 +84,24 @@ void LFO::generate(int numSamples, AudioPlayHead::CurrentPositionInfo& posInfo)
 
 	double inc = __wavetable->getLength() * freq / __sampleRate;
 
-	if (posInfo.isPlaying) __phase = fmod(posInfo.ppqPosition * IWavetable::getLength() * calcRatio(), IWavetable::getLength());
+	static int nrLoopsPlayed = 0;
+	static double prevPos = posInfo.ppqPosition;
+
+	if (posInfo.isPlaying) {
+		if (posInfo.isLooping) {
+
+			if (prevPos > posInfo.ppqPosition) {
+				nrLoopsPlayed++;
+			}
+			__phase = fmod((nrLoopsPlayed * posInfo.timeSigNumerator + posInfo.ppqPosition) * IWavetable::getLength() * calcRatio(), IWavetable::getLength());
+			prevPos = posInfo.ppqPosition;
+		} else 
+			__phase = fmod(posInfo.ppqPosition * IWavetable::getLength() * calcRatio(), IWavetable::getLength());
+	}
+	else {
+		nrLoopsPlayed = 0;
+		prevPos = 0;
+	}
 
 	for (int i = 0; i < numSamples; i++)
 	{
