@@ -2,7 +2,9 @@
 #define PRESET_MANAGER_H
 #include <map>
 #include "../JuceLibraryCode/JuceHeader.h"
-class PresetManager
+#include "Global.h"
+#include "ParameterHandler.h"
+class PresetManager : public ChangeBroadcaster
 {
 private:
 	AudioProcessor* __owner;

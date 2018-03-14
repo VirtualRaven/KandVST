@@ -44,7 +44,7 @@ PluginProcessor::PluginProcessor()
 
 	Global->presetManager = new PresetManager(this);
 	Global->presetManager->RefreshPresets();
-	this->addListener(Global->paramHandler);
+	
 	//*(Global->paramHandler->Get<AudioParameterBool>(0, "OSC_MIX_EN")) = 1; //Enable default oscillator
 	__gui = new PluginGUI(*this);
 }

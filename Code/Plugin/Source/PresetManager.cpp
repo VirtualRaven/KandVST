@@ -68,10 +68,20 @@ void PresetManager::LoadPreset(int index)
 					XmlElement* child = xmlState->getChildByName(String("_") + p->paramID);
 					if (child != nullptr && child->hasAttribute("value"))
 						p->setValue((float)child->getDoubleAttribute("value", p->getValue()));
+					if (child != nullptr && child->hasAttribute("sender"))
+					{
+						auto sender = Global->paramHandler->GetParameter(child->getStringAttribute("sender").toStdString());
+						auto rec = Global->paramHandler->GetParameter(p->paramID.toStdString());
+						if (sender != nullptr && rec != nullptr)
+						{
+							Global->paramHandler->LinkParameters(sender, rec);
+						}
+
+					}
 				}
 		}
 	}
-
+	sendChangeMessage();
 	__currentPreset = index;
 }
 
@@ -86,6 +96,8 @@ void PresetManager::SavePreset(std::string name)
 		}
 	}
 
+	auto links = Global->paramHandler->GetLinks();
+
 	XmlElement* el = new XmlElement("KandVSTPreset");
 	el->setAttribute("name", name);
 	for (auto&& param : __owner->getParameters())
@@ -93,10 +105,17 @@ void PresetManager::SavePreset(std::string name)
 		if (auto* p = dynamic_cast<AudioProcessorParameterWithID*> (param)) {
 			XmlElement* paramEl = new XmlElement(String("_") + p->paramID);
 			paramEl->setAttribute("value",p->getValue());
+			auto link = Global->paramHandler->GetSender(param);
+			if (link != nullptr)
+			{
+				
+				if (auto* linkSender = dynamic_cast<AudioProcessorParameterWithID*> (link)) {
+					paramEl->setAttribute("sender", linkSender->paramID);
+				}
+			}
 			el->addChildElement(paramEl);
 		}
 	}
-
 	el->writeToFile(File(getPresetPath() + String("/") + name + String(".xml")), "");
 	
 	if (PresetExists(name))
