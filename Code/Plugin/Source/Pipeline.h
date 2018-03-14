@@ -26,7 +26,6 @@ private:
 	double __rate;
 	int __note;
 	DelayEffect<T> __delay;
-	ConvolutionReverb<T> __reverb;
 	bool __active;
 	const int __maxBuffHint;
 

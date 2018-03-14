@@ -6,8 +6,7 @@ Pipeline<T>::Pipeline(double rate,int maxBuffHint) :
 	__rate(rate),
 	__delay(0,rate),
 	__active(false),
-	__maxBuffHint(maxBuffHint),
-	__reverb(0, rate, maxBuffHint)
+	__maxBuffHint(maxBuffHint)
 	
 {
 	for (int i = 0; i < this->__num_osc; i++) {
@@ -56,8 +55,7 @@ Pipeline<T>::Pipeline(Pipeline<T>&& ref) :
 __rate(ref.__rate),
 __delay(0, ref.__rate),
 __active(ref.__active),
-__maxBuffHint(ref.__maxBuffHint),
-__reverb(0, ref.__rate, ref.__maxBuffHint){
+__maxBuffHint(ref.__maxBuffHint){
 	for (size_t i = 0; i < this->__num_osc; i++) {
 		__oscs[i] = ref.__oscs[i];
 		for (size_t j = 0; j < this->__num_effects; j++) {
@@ -118,7 +116,6 @@ void Pipeline<T>::render_block(AudioBuffer<T>& buffer) {
 		}
 	}
 	__delay.RenderBlock(buffer, len, false);
-	__reverb.RenderBlock(buffer, len, false);
 
 	if (buffer.getMagnitude(0, len) < 0.0001)
 		__active = false;

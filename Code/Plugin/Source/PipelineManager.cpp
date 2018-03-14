@@ -9,7 +9,8 @@
 template<typename T>
 PipelineManager<T>::PipelineManager(double rate, int maxBuffHint) :
 	__sampleRate(rate),
-	__maybeMaxBuff(maxBuffHint)
+	__maybeMaxBuff(maxBuffHint),
+	__reverb(0, rate, maxBuffHint)
 {
 	__masterGain = Global->paramHandler->Get<AudioParameterFloat>(-1, "MASTER_GAIN");
 
@@ -102,6 +103,8 @@ void PipelineManager<T>::genSamples(AudioBuffer<T>& buff, MidiBuffer & midiMessa
 		buff.addFrom(0, 0, b, 0, 0, buff.getNumSamples(), *__masterGain);
 		buff.addFrom(1, 0, b, 1, 0, buff.getNumSamples(), *__masterGain);
 	}
+
+	__reverb.RenderBlock(buff, buff.getNumSamples(), false);
 	
 }
 //template void PipelineManager::genSamples(AudioBuffer<double>& buff, MidiBuffer & midiMessage, AudioPlayHead::CurrentPositionInfo & posInfo);

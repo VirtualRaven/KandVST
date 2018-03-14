@@ -10,8 +10,10 @@ ConvolutionReverb<T>::ConvolutionReverb(int ID, double sampleRate, int maxBuffHi
 	__maxBuffHint(maxBuffHint)
 {
 	File resp = File(File::getSpecialLocation(juce::File::SpecialLocationType::userApplicationDataDirectory).getFullPathName() + String("/KandVST/resp.wav"));
-	__conv.prepare({sampleRate, (uint32)4096*4, 2 });
-	__conv.loadImpulseResponse(resp, true, false, 0);
+	__conv.prepare({sampleRate, (uint32) maxBuffHint, 2 });
+
+	auto maxSize = static_cast<T> (roundDoubleToInt(8192.0 *  sampleRate / 44100.0));
+	__conv.loadImpulseResponse(resp, true, true, maxSize * 10);
 }
 
 template<typename T>

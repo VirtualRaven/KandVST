@@ -17,6 +17,8 @@ private:
 	std::vector<Pipeline<T>> pipList;
 	AudioParameterFloat* __masterGain;
 	ThreadPool pool;
+	ConvolutionReverb<T> __reverb;
+
 public:
 	PipelineManager(double rate, int maxBuffHint);
 	~PipelineManager();	
