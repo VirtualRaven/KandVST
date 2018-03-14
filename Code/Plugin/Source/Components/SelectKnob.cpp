@@ -1,7 +1,7 @@
 #include "SelectKnob.h"
 
 SelectKnob::SelectKnob(AudioParameterChoice& p) :
-	__angleBetweenPos((float_Pi / 4.0f) * 0.9f),
+	__angleBetweenPos((float_Pi / 4.0f) * 0.9f), // *0.9 for esthetic purposes
 	__param(p),
 	__snapAngles(),
 	__slider(p, __angleBetweenPos)
@@ -33,6 +33,7 @@ void SelectKnob::paint(Graphics& g)
 	Font font(10, Font::FontStyleFlags::plain);
 	g.setFont(font);
 
+	// Draw dots and text
 	for (int i = 0; i < __snapAngles.size(); i++)
 	{
 		float currentAngle = __snapAngles.at(i);
@@ -53,7 +54,7 @@ void SelectKnob::paint(Graphics& g)
 		textP.setY(textP.getY() + mul * currentAngle * 3);
 
 		// Draw text
-		g.setColour(Colour::fromRGB(180, 180, 180));
+		g.setColour(Colour::fromRGB(255, 255, 255));
 		g.drawSingleLineText(__param.choices[i], textP.getX(), textP.getY(), Justification::horizontallyCentred);
 	}
 }
@@ -61,7 +62,8 @@ void SelectKnob::paint(Graphics& g)
 Point<float> SelectKnob::angleToPos(float angle, float r)
 {
 	// Angle from the knob's Y-axis to a (x, y) position where
-	// the middle of the knob is the origin and r the distance from the knob's origin
+	// the middle of the knob is the origin and r the distance from the knob's origin.
+	// The position uses the top-left corner of the component as reference
 	int sliderR = __slider.getWidth() / 2;
 	int sliderX = __slider.getPosition().getX();
 	int sliderY = __slider.getPosition().getY();
@@ -72,8 +74,7 @@ Point<float> SelectKnob::angleToPos(float angle, float r)
 
 void SelectKnob::resized()
 {
-	Rectangle<int> box(getLocalBounds());
-	__slider.setBounds(box);
+
 }
 
 SelectKnobSlider::SelectKnobSlider(AudioParameterChoice& p, float angleBetweenPos) :
@@ -112,6 +113,7 @@ void SelectKnobSlider::stoppedDragging()
 
 void SelectKnobSlider::resized()
 {
+	// Hardcoded values
 	setBounds(30, 20, 50, 50);
 	ParameterSlider::resized();
 }

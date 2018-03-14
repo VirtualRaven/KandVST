@@ -59,6 +59,10 @@ bool ConsoleComponent::keyPressed(const KeyPress & key, Component * /*originatin
 
 		__lastCommands.push_back(s.toStdString());
 		
+		if (s == "clear")
+		{
+			__output.setText("");
+		}
 		if (s == "help")
 		{
 			__buffer << "list parameters" << "\n" << "set %parameterID% %value%" << "\n";
@@ -75,6 +79,10 @@ bool ConsoleComponent::keyPressed(const KeyPress & key, Component * /*originatin
 			}
 			auto bools= Global->paramHandler->GetAll<AudioParameterBool>();
 			for (std::map<String, AudioParameterBool* >::iterator it = (*bools).begin(); it != (*bools).end(); ++it) {
+				__buffer << it->first << " = " << *(it->second) << "\n";
+			}
+			auto choices = Global->paramHandler->GetAll<AudioParameterChoice>();
+			for (std::map<String, AudioParameterChoice* >::iterator it = (*choices).begin(); it != (*choices).end(); ++it) {
 				__buffer << it->first << " = " << *(it->second) << "\n";
 			}
 			__output.setText(__buffer.str());
