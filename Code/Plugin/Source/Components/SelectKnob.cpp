@@ -3,13 +3,13 @@
 SelectKnob::SelectKnob(AudioParameterChoice& p) :
 	__angleBetweenPos((float_Pi / 4.0f) * 0.9f),
 	__param(p),
-	__labels(),
 	__snapAngles(),
 	__slider(p, __angleBetweenPos)
 {
-	addAndMakeVisible(__slider);
+	// The knob needs tweaking to work with more parameters
+	jassert(__param.choices.size() <= 5);
 
-	// Create snap positions:
+	// Create snap positions (angles):
 	float startAngle = -((__param.choices.size() - 1) * __angleBetweenPos / 2.0f);
 	for (int i = 0; i < __param.choices.size(); i++)
 	{
@@ -17,42 +17,51 @@ SelectKnob::SelectKnob(AudioParameterChoice& p) :
 		__snapAngles.push_back(currentAngle);
 	}
 
-	Font font(10, Font::FontStyleFlags::plain);
-
-	for (int i = 0; i < __param.choices.size(); i++)
-	{
-		Label* l = new Label(__param.choices[i], __param.choices[i]);
-		l->setFont(font);
-		l->setText(__param.choices[i], NotificationType::sendNotification);
-		__labels.push_back(l);
-		addAndMakeVisible(*l);
-	}
+	addAndMakeVisible(__slider);
 }
 
 SelectKnob::~SelectKnob()
 {
-	for (int i = 0; i < __labels.size(); i++)
-	{
-		delete __labels.at(i);
-	}
+
 }
 
 void SelectKnob::paint(Graphics& g)
 {
-	g.setColour(Colour::fromRGB(255, 40, 40));
-	g.drawRect(0, 0, 100, 100);
-	g.drawRect(getBounds());
+	//g.setColour(Colour::fromRGB(255, 40, 40));
+	//g.drawRect(0, 0, 120, 100);
 	
-	// Draw dots
-	for (auto angle : __snapAngles)
+	Font font(10, Font::FontStyleFlags::plain);
+	g.setFont(font);
+
+	for (int i = 0; i < __snapAngles.size(); i++)
 	{
-		Point<float> p = angleToPos(angle, 27);
+		float currentAngle = __snapAngles.at(i);
+
+		// Draw dots
+		Point<float> p = angleToPos(currentAngle, 27);
+		g.setColour(Colour::fromRGB(120, 120, 120));
 		g.drawEllipse(p.getX(), p.getY(), 1, 1, 2);
+
+		Point<float> textP = angleToPos(currentAngle, 33);
+
+		// X-offset based on angle
+		textP.setX(textP.getX() + currentAngle * 6);
+
+		// Y-offset based on angle
+		int mul = -1;
+		if (currentAngle > 0) mul = 1;
+		textP.setY(textP.getY() + mul * currentAngle * 3);
+
+		// Draw text
+		g.setColour(Colour::fromRGB(180, 180, 180));
+		g.drawSingleLineText(__param.choices[i], textP.getX(), textP.getY(), Justification::horizontallyCentred);
 	}
 }
 
 Point<float> SelectKnob::angleToPos(float angle, float r)
 {
+	// Angle from the knob's Y-axis to a (x, y) position where
+	// the middle of the knob is the origin and r the distance from the knob's origin
 	int sliderR = __slider.getWidth() / 2;
 	int sliderX = __slider.getPosition().getX();
 	int sliderY = __slider.getPosition().getY();
@@ -63,19 +72,8 @@ Point<float> SelectKnob::angleToPos(float angle, float r)
 
 void SelectKnob::resized()
 {
-	setSize(100, 100);
 	Rectangle<int> box(getLocalBounds());
 	__slider.setBounds(box);
-
-
-	for (int i = 0; i < __labels.size(); i++)
-	{
-		float angle = __snapAngles.at(i);
-		Point<float> p = angleToPos(angle, 30);
-		__labels.at(i)->setBounds(getLocalBounds());
-
-		__labels.at(i)->setCentrePosition(static_cast<int>(__slider.getX() + p.getX()), static_cast<int>(p.getY()));
-	}
 }
 
 SelectKnobSlider::SelectKnobSlider(AudioParameterChoice& p, float angleBetweenPos) :
@@ -87,8 +85,8 @@ SelectKnobSlider::SelectKnobSlider(AudioParameterChoice& p, float angleBetweenPo
 	setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
 	setTextBoxStyle(Slider::NoTextBox, false, 0, 0);
 	
+	// Set the knob's limits according to __angleBetweenPos
 	float halfMaxAngle = (__angleBetweenPos * (__param.choices.size() - 1)) / 2.0f;
-
 	setRotaryParameters((2.0f*float_Pi) - halfMaxAngle, (2.0f*float_Pi) + halfMaxAngle, true);
 }
 

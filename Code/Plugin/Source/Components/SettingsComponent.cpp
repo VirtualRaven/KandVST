@@ -44,9 +44,7 @@ void SettingsComponent::resized()
 	sliders.removeFromLeft(gap);
 	__pitchBendSens->setBounds(sliders.removeFromLeft(size).removeFromTop(size + 15));
 	sliders.removeFromLeft(gap);
-	//__selectKnob->setBounds(sliders.removeFromLeft(200));
-	__selectKnob->setBounds(120, 50, 100, 100);
-	//__selectKnob->setTopLeftPosition(120, 100);
+	__selectKnob->setBounds(100, 50, 120, 100);
 }
 
 void SettingsComponent::RegisterParameters(int ID)

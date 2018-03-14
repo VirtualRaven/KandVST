@@ -29,7 +29,6 @@ public:
 private:
 	float __angleBetweenPos;
 	SelectKnobSlider __slider;
-	std::vector<Label*> __labels;
 	std::vector<float> __snapAngles;
 	AudioParameterChoice& __param;
 	Point<float> angleToPos(float angle, float d);
