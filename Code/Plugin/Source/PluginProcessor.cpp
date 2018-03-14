@@ -4,10 +4,12 @@
 #include "PresetManager.h"
 #include "Pipeline.h"
 #include "Components\SettingsComponent.h"
+#include "PipelineManager.h"
 AudioProcessor* JUCE_CALLTYPE createPluginFilter();
 
 GLOBAL * Global;
 //==============================================================================
+
 PluginProcessor::PluginProcessor()
     : AudioProcessor (getBusesProperties()),
 	__sampleRate(0.0),
@@ -22,6 +24,7 @@ PluginProcessor::PluginProcessor()
 	Global->paramHandler =  new ParameterHandler(*this);
 	Global->log = new Log("log.txt");
 	// -1 = master
+
 	setParameters<int,	EnvelopeGenerator, 
 						DelayEffect<double>, 
 						WavetableOsc,
@@ -29,7 +32,8 @@ PluginProcessor::PluginProcessor()
 						LFO,
 						FilterHP<double>,
 						FilterLP<double>,
-						SettingsComponent
+						SettingsComponent,
+						PipelineManager<double>
 			>({
 			{0,1,2,3},
 			{0},
@@ -38,7 +42,8 @@ PluginProcessor::PluginProcessor()
 			{0,1,2,3},
 			{-1,0,1,2,3},
 			{-1,0,1,2,3},
-			{-1}
+			{-1},
+			{-1} 
 			});
 
 

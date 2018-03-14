@@ -162,6 +162,8 @@ jucer_project_files("KandVST"
   .         .         .         "Source/Components/SettingsComponent.h"
   x         .         .         "Source/Linkable.cpp"
   .         .         .         "Source/Linkable.h"
+  x         .         .         "Source/Components/SelectKnob.cpp"
+  .         .         .         "Source/Components/SelectKnob.h"
 )
 
 jucer_project_module(

@@ -9,8 +9,10 @@ SettingsComponent::SettingsComponent()
 {
 
 	__pitchBendSens = new ParameterSlider(*Global->paramHandler->Get<AudioParameterInt>(-1, "PITCH_BEND_SENS"));
+	__selectKnob = new SelectKnob(*Global->paramHandler->Get<AudioParameterChoice>(-1, "SELECT_KNOB_VALUE"));
 
 	addAndMakeVisible(__pitchBendSens);
+	addAndMakeVisible(__selectKnob);
 
 	__pitchBendSens->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
 	__pitchBendSens->setTextBoxStyle(Slider::TextEntryBoxPosition::TextBoxBelow, true, 50, 15);
@@ -41,10 +43,12 @@ void SettingsComponent::resized()
 	sliders.removeFromTop(60);
 	sliders.removeFromLeft(gap);
 	__pitchBendSens->setBounds(sliders.removeFromLeft(size).removeFromTop(size + 15));
+	sliders.removeFromLeft(gap);
+	__selectKnob->setBounds(100, 50, 120, 100);
 }
 
 void SettingsComponent::RegisterParameters(int ID)
 {
 	Global->paramHandler->RegisterInt(ID, "PITCH_BEND_SENS", "Pitch bend sensitivity", 1, 12, 2);
-
+	Global->paramHandler->RegisterChoice(ID, "SELECT_KNOB_VALUE", "Select Knob", StringArray("One", "Two", "Three", "Four", "Five"), 1);
 }

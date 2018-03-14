@@ -20,6 +20,7 @@ private:
 
 	AudioParameterInt* __waveType, *__octave,* __offset, *__overtone, *__pitchBendSens;
 	AudioParameterFloat* __detune, *__sinAmp,* __sqAmp, *__sawAmp, *__triAmp,*__noiseAmp, *__panning;
+	AudioParameterChoice* __lfofreq, *__lfoamp;
 	float __pitchbend;
 	template<typename T>
 	bool __RenderBlock(AudioBuffer<T>& buffer,int len);

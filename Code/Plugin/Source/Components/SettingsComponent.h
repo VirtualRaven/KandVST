@@ -4,6 +4,7 @@
 #include "../Global.h"
 #include "ParameterSlider.h"
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "SelectKnob.h"
 
 class SettingsComponent : public Component
 {
@@ -17,6 +18,7 @@ private:
 	void resized() override;
 
 	ScopedPointer<ParameterSlider> __pitchBendSens;
+	ScopedPointer<SelectKnob> __selectKnob;
 	Label __pitchBendLabel;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SettingsComponent)
