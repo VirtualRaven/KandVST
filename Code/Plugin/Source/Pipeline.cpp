@@ -109,8 +109,8 @@ void Pipeline<T>::render_block(AudioBuffer<T>& buffer) {
 				for (int j = 0; j < __num_effects; j++) {
 					__effects[i*__num_effects + j]->RenderBlock(tmpBuff, len, false);
 				}
-				buffer.addFrom(0, 0, tmpBuff, 0, 0, len, *std::get<2>(obj));
-				buffer.addFrom(1, 0, tmpBuff, 1, 0, len, *std::get<2>(obj));
+				buffer.addFrom(0, 0, tmpBuff, 0, 0, len, *std::get<1>(obj));
+				buffer.addFrom(1, 0, tmpBuff, 1, 0, len, *std::get<1>(obj));
 				this->tmpBuff.clear(0, len);
 			}
 		}

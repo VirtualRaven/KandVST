@@ -29,11 +29,51 @@ DISCLAIMED.
 
 
 
+void ParameterSlider::mouseUp(const MouseEvent & event)
+{
+	Slider::mouseUp(event);
+	if (event.mouseWasClicked() && event.mods.testFlags(ModifierKeys::rightButtonModifier))
+	{
+		if (auto* pid = dynamic_cast<AudioProcessorParameterWithID*> (&param)) {
+			PopupMenu pm = PopupMenu();
+			if (!isLinked()) {
+				pm.addSectionHeader("Links");
+				for (auto p : Global->paramHandler->FindSimilar(pid))
+				{
+					String idString = String(p.first + 1);
+					if (p.first == -1)
+						idString = "Master";
+					pm.addItem(p.first + 100, idString + String(" - ")+  p.second->name);
+				}
+			
+				pm.showMenuAsync(PopupMenu::Options(), ModalCallbackFunction::create([this](int ind) {
+					if (ind > 0) {
+						Linkable::Link(ind - 100);
+						setEnabled(false);
+					}
+				}));
+			}
+			else 
+			{
+				pm.addItem(1,"Unlink");
+				pm.showMenuAsync(PopupMenu::Options(), ModalCallbackFunction::create([this](int ind) {
+					if (ind == 1) {
+						Unlink();
+						setEnabled(true);
+
+					}
+				}));
+			}
+		}
+	}
+}
+
 ParameterSlider::ParameterSlider(AudioProcessorParameter& p):
-	 Slider(p.getName(256)), param(p)
+	 Slider(p.getName(256)), param(p),
+	Linkable(&p)
 {
 	setRange(0.0, 1.0, 0.0);
-	this->addMouseListener(this,false);
+	
 	startTimerHz(30);
 	updateSliderPos();
 	
@@ -84,6 +124,14 @@ void ParameterSlider::mouseDoubleClick(const MouseEvent & event)
 {
 	param.setValueNotifyingHost(param.getDefaultValue());
 
+}
+
+void ParameterSlider::LinkCouldHaveChanged()
+{
+	if (isLinked())
+	{
+		this->setEnabled(false);
+	}
 }
 
 

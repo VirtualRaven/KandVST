@@ -11,7 +11,7 @@ MixerComponent::MixerComponent()
 	__osc2 = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(1, "OSC_MIX_AMP"));
 	__osc3 = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(2, "OSC_MIX_AMP"));
 	__osc4 = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(3, "OSC_MIX_AMP"));
-	__masterMixer = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(3, "OSC_MIX_AMP"));
+	__masterMixer = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(-1, "MASTER_GAIN"));
 
 	addAndMakeVisible(__osc1);
 	addAndMakeVisible(__osc2);

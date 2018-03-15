@@ -8,7 +8,8 @@ OscillatorComponent::~OscillatorComponent()
 }
 
 OscillatorComponent::OscillatorComponent(int ID):
-IVSTParameters(ID)
+IVSTParameters(ID),
+__waveformInvalid(false)
 {
 	__ID = ID;
 	//=====================================
@@ -73,12 +74,21 @@ IVSTParameters(ID)
 	__offsetLabel.setJustificationType(juce::Justification::centred);
 	//============================================================================
 
+	Global->paramHandler->addParamaterListener(this, __ID, "OSC_SINE");
+	Global->paramHandler->addParamaterListener(this, __ID, "OSC_SAW");
+	Global->paramHandler->addParamaterListener(this, __ID, "OSC_SQUARE");
+	Global->paramHandler->addParamaterListener(this, __ID, "OSC_TRI");
+
+	//=======
 	__oscWaveform = new Image(Image::PixelFormat::RGB, 300, 200, true);
 
 	__waveformComp.setImage(*__oscWaveform);
+
+	WavetableOsc os = WavetableOsc(__ID, 0);
+	os.renderImage(__oscWaveform);
+	__waveformComp.repaint();
+
 	addAndMakeVisible(__waveformComp);
-	startTimer(50);
-	timerCallback();
 }
 
 void OscillatorComponent::paint(Graphics& g){
@@ -154,15 +164,17 @@ void OscillatorComponent::resized(){
 
 void OscillatorComponent::timerCallback()
 {
-	if (s != __sineSlider->getValue() || sq != __squareSlider->getValue() || sa != __sawSlider->getValue() || tr != __triangleSlider->getValue()) {
+	if (!__waveformInvalid)
+		stopTimer();
+	WavetableOsc os = WavetableOsc(__ID, 0);
+	os.renderImage(__oscWaveform);
+	__waveformComp.repaint();
+	__waveformInvalid = false;
+}
 
-		s =  (float) __sineSlider->getValue();
-		sq = (float) __squareSlider->getValue();
-		sa = (float) __sawSlider->getValue();
-		tr = (float) __triangleSlider->getValue();
-
-		WavetableOsc os = WavetableOsc(__ID, 0);
-		os.renderImage(__oscWaveform);
-		__waveformComp.repaint();
-	}
+void OscillatorComponent::parametersChanged(std::vector<std::string>)
+{
+	__waveformInvalid = true;
+	if (!isTimerRunning())
+		startTimerHz(60);
 }

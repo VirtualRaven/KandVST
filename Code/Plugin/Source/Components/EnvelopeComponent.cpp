@@ -74,7 +74,20 @@ EnvelopeComponent::EnvelopeComponent(int ID):
 	setSize(400, 100);
 	addAndMakeVisible(__envImageComponent);
 	__envImageComponent.setImage(*__envImage);
-	startTimer(50);
+	EnvelopeGenerator::RenderImage(__ID, __envImage);
+	__envImageComponent.repaint();
+	Global->paramHandler->addParamaterListener(this, ID, "ENV_ATTACK_TIME");
+	Global->paramHandler->addParamaterListener(this, ID, "ENV_HOLD_TIME");
+	Global->paramHandler->addParamaterListener(this, ID, "ENV_DECAY_TIME");
+	Global->paramHandler->addParamaterListener(this, ID, "ENV_SUSTAIN_TIME");
+	Global->paramHandler->addParamaterListener(this, ID, "ENV_RELEASE_TIME");
+	Global->paramHandler->addParamaterListener(this, ID, "ENV_ATTACK_CURVE");
+	Global->paramHandler->addParamaterListener(this, ID, "ENV_DECAY_CURVE");
+	Global->paramHandler->addParamaterListener(this, ID, "ENV_SUSTAIN_CURVE");
+	Global->paramHandler->addParamaterListener(this, ID, "ENV_RELEASE_CURVE");
+	Global->paramHandler->addParamaterListener(this, ID, "ENV_ATTACK_LEVEL");
+	Global->paramHandler->addParamaterListener(this, ID, "ENV_DECAY_LEVEL");
+	Global->paramHandler->addParamaterListener(this, ID, "ENV_SUSTAIN_LEVEL");
 }
 
 
@@ -183,8 +196,20 @@ void EnvelopeComponent::resized()
 	__envImageComponent.setImage(*__envImage);
 	__envImageComponent.repaint();
 }
+void EnvelopeComponent::parametersChanged(std::vector<std::string>)
+{
+	__envInvalid = true;
+	if (!isTimerRunning())
+		startTimerHz(60);
+	
+}
 void EnvelopeComponent::timerCallback()
 {
-	EnvelopeGenerator::RenderImage(__ID, __envImage);
-	__envImageComponent.repaint();
+	if (!__envInvalid) 
+		stopTimer();
+
+		EnvelopeGenerator::RenderImage(__ID, __envImage);
+		__envImageComponent.repaint();
+		__envInvalid = false;
+
 }

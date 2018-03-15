@@ -9,7 +9,7 @@
 #include "Components\OscillatorPageComponent.h"
 #include "OurLookAndFeel.h"
 
-class PluginGUI  : public AudioProcessorEditor                    
+class PluginGUI  : public AudioProcessorEditor, private KeyListener               
 {
 public:
 	PluginGUI(PluginProcessor& owner);
@@ -32,5 +32,10 @@ private:
     }
 
 	void updateTimecodeDisplay(AudioPlayHead::CurrentPositionInfo pos);
+
+	// Inherited via KeyListener
+	virtual bool keyPressed(const KeyPress & key, Component * originatingComponent) override;
+	virtual bool keyStateChanged(bool isKeyDown, Component* originatingComponent);
+
 };
 #endif // !PLUGIN_GUI_H
