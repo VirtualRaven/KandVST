@@ -7,9 +7,10 @@
 #include "ParameterListener.h"
 #include <map>
 #include "Log.h"
-class ParameterHandler : public AudioProcessorListener, private AsyncUpdater
+class ParameterHandler : private AsyncUpdater,private Timer
 {
 private:
+	std::map<AudioProcessorParameter *, float> __changeList;
 	//JuceDemoPluginAudioProcessor * __owner;
 	std::map<String, AudioParameterFloat*> __floatParams;
 	std::map<String, AudioParameterInt*> __intParams;
@@ -17,14 +18,17 @@ private:
 	std::map<String, AudioParameterChoice*> __choiceParams;
 	AudioProcessor* __owner;
 	std::map<std::string, std::vector<ParameterListener*>> __parameterListeners;
+	std::map<AudioProcessorParameter*, std::vector<AudioProcessorParameter*>> __parameterLinks;
 	int indexChange[INDEX_CHANGE_SIZE];
 	int head = 0, tail = 0;
 	// Inherited via AudioProcessorListener
-	virtual void audioProcessorParameterChanged(AudioProcessor * processor, int parameterIndex, float newValue) override;
-	virtual void audioProcessorChanged(AudioProcessor * processor) override;
+	void audioProcessorParameterChanged(AudioProcessor * processor, int parameterIndex, float newValue);
+
 
 	// Inherited via AsyncUpdater
 	virtual void handleAsyncUpdate() override;
+
+	std::string createParameterId(int intId, std::string id);
 
 public:
 	ParameterHandler(AudioProcessor& owner);
@@ -33,6 +37,15 @@ public:
 	AudioParameterInt* RegisterInt(int iid, String id, String label, int minValue, int maxValue, int defaultvalue);
 	AudioParameterBool* RegisterBool(int iid, String id, String label, bool defaultvalue);
 	AudioParameterChoice* RegisterChoice(int iid, String id, String label, StringArray &choices, int defaultItemIndex);
+	AudioProcessorParameter* GetParameter(int iid, std::string id);
+	AudioProcessorParameter* GetParameter(std::string id);
+	bool LinkParameters(AudioProcessorParameter * sender, AudioProcessorParameter * receiver);
+	bool LinkParameters(int sender_intId, std::string sender, int receiver_intId,std::string receiver);
+	bool RemoveLink(AudioProcessorParameter * sender, AudioProcessorParameter * receiver);
+	bool RemoveLink(int sender_intId, std::string sender, int receiver_intId, std::string receiver);
+	std::map<int,AudioProcessorParameterWithID*> FindSimilar(AudioProcessorParameterWithID*);
+	const std::map<AudioProcessorParameter*, std::vector<AudioProcessorParameter*>> GetLinks();
+	AudioProcessorParameter* GetSender(AudioProcessorParameter* link);
 
 
 	template<typename T>
@@ -46,6 +59,10 @@ public:
 	JUCE_LEAK_DETECTOR(ParameterHandler);
 
 	
+
+	// Inherited via Timer
+	virtual void timerCallback() override;
+
 };
 
 

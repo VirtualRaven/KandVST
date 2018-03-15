@@ -110,6 +110,7 @@ jucer_project_files("KandVST"
   x         .         .         "Source/Log.cpp"
   .         .         .         "Source/Log.h"
   .         .         .         "Source/Global.h"
+  x         .         .         "Source/Global.cpp"
   .         .         .         "Source/TemplateHelper.h"
   x         .         .         "Source/Components/ConsoleComponent.cpp"
   .         .         .         "Source/Components/ConsoleComponent.h"
@@ -159,6 +160,10 @@ jucer_project_files("KandVST"
   .         .         .         "Source/ParameterListener.h"
   x         .         .         "Source/Components/SettingsComponent.cpp"
   .         .         .         "Source/Components/SettingsComponent.h"
+  x         .         .         "Source/Linkable.cpp"
+  .         .         .         "Source/Linkable.h"
+  x         .         .         "Source/Components/SelectKnob.cpp"
+  .         .         .         "Source/Components/SelectKnob.h"
 )
 
 jucer_project_module(
