@@ -86,7 +86,7 @@ __waveformInvalid(false)
 
 	__waveformComp.setImage(*__oscWaveform);
 
-	WavetableOsc os = WavetableOsc(__ID, 0);
+	WavetableOsc os = WavetableOsc(__ID, 0,0);
 	os.renderImage(__oscWaveform);
 	__waveformComp.repaint();
 
@@ -104,7 +104,7 @@ void OscillatorComponent::resized(){
 	delete __oscWaveform;
 	__oscWaveform = nullptr;
 	__oscWaveform = new Image(Image::PixelFormat::RGB, __waveformComp.getWidth(), __waveformComp.getHeight(), true);
-	WavetableOsc os = WavetableOsc(__ID, 0);
+	WavetableOsc os = WavetableOsc(__ID, 0,0);
 	os.renderImage(__oscWaveform);
 	__waveformComp.setImage(*__oscWaveform);
 	__waveformComp.repaint();
@@ -139,7 +139,7 @@ void OscillatorComponent::timerCallback()
 {
 	if (!__waveformInvalid)
 		stopTimer();
-	WavetableOsc os = WavetableOsc(__ID, 0);
+	WavetableOsc os = WavetableOsc(__ID, 0,0);
 	os.renderImage(__oscWaveform);
 	__waveformComp.repaint();
 	__waveformInvalid = false;
