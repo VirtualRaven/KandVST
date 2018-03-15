@@ -8,7 +8,7 @@ OurLookAndFeel::OurLookAndFeel() {
 	setColour(Slider::backgroundColourId, Colour::fromRGB(30,30,30));
 	setColour(Slider::thumbColourId, Colour::fromRGB(26, 105, 180));
 	setColour(Slider::trackColourId, Colour::fromRGB(26, 26, 26));
-	
+	setColour(ListBox::backgroundColourId, Colour::fromRGB(25, 45, 75));
 }
 
 

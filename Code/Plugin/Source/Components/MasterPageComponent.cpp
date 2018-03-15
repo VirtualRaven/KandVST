@@ -15,7 +15,6 @@ MasterComponent::MasterComponent() :
 {
 	
 	addAndMakeVisible(__infoComponent);
-	addAndMakeVisible(__presetComponent);
 	addAndMakeVisible(__mixerComponent);
 	addAndMakeVisible(__filterComponent);
 	addAndMakeVisible(__lfoComponent1);
@@ -29,16 +28,10 @@ MasterComponent::MasterComponent() :
 void MasterComponent::paint(Graphics& g){
 	g.setColour(Colour::fromRGB(40, 40, 40));
 	g.fillAll();
-	Font presets(20, Font::FontStyleFlags::bold);
-	g.setFont(presets);
-	g.setColour(Colours::white);
-	g.drawSingleLineText("PRESETS", 500, 300, Justification::horizontallyCentred);
 }
 
 void MasterComponent::resized() {
-	Rectangle<int> presetBounds(getLocalBounds().removeFromBottom(260).removeFromRight(680).removeFromLeft(400));
-	presetBounds.removeFromBottom(10);
-	__presetComponent.setBounds(presetBounds);
+	
 	__infoComponent.setBounds(getLocalBounds().removeFromTop(300));
 	__mixerComponent.setBounds(Rectangle<int>(740,10,230,360));
 

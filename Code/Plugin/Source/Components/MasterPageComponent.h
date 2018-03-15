@@ -28,7 +28,6 @@ public:
 
 private:
 	InformationComponent __infoComponent;
-	PresetsComponent __presetComponent;
 	MixerComponent __mixerComponent;
 	FilterComponent __filterComponent;
 	LFOComponent __lfoComponent1, __lfoComponent2;
