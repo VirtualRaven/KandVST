@@ -199,17 +199,17 @@ bool WavetableOsc::__RenderBlock(AudioBuffer<T>& buffer,int len) {
 
 
 	bool dataGenerated = false;
-	if (__ID != 0) {
-		float tmpAmp = gains[0] + gains[1] + gains[2] + gains[3] + gains[4];
-		if (tmpAmp > 1)
+	
+	float tmpAmp = gains[0] + gains[1] + gains[2] + gains[3] + gains[4];
+	if (tmpAmp > 1)
+	{
+		for (size_t i = 0; i < 4; i++)
 		{
-			for (size_t i = 0; i < 4; i++)
-			{
-				if (gains[i] != 0)
-					gains[i] /= tmpAmp;
-			}
+			if (gains[i] != 0)
+				gains[i] /= tmpAmp;
 		}
 	}
+
 	float leftSpeaker = std::min(1.0f, 1.0f - (*__panning));
 	float rightSpeaker = std::min(1.0f, 1.0f + (*__panning));
 

@@ -65,9 +65,11 @@ PluginProcessor::~PluginProcessor()
 void PluginProcessor::freePipelineManager() {
 	if (doublePrecision) {
 		delete __pipManager.dp;
+		__pipManager.dp = nullptr;
 	}
 	else {
 		delete __pipManager.fp;
+		__pipManager.fp = nullptr;
 	}
 
 	
@@ -191,7 +193,6 @@ void PluginProcessor::prepareToPlay (double newSampleRate, int maxSamplesPerBloc
 				__pipManager.dp = new PipelineManager<double>(newSampleRate, maxSamplesPerBlock);
 			else
 				__pipManager.fp = new PipelineManager<float>(newSampleRate, maxSamplesPerBlock);
-
 		
 			__gui->InitializeGui();
 			processorReady = true;
