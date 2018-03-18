@@ -202,8 +202,6 @@ void PluginProcessor::prepareToPlay (double newSampleRate, int maxSamplesPerBloc
 				__pipManager.dp = new PipelineManager<double>(newSampleRate, maxSamplesPerBlock);
 			else
 				__pipManager.fp = new PipelineManager<float>(newSampleRate, maxSamplesPerBlock);
-
-			__gui->InitializeGui();
 			processorReady = true;
 		});
 		
