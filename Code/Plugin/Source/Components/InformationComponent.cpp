@@ -28,7 +28,13 @@ void InformationComponent::paint (Graphics& g){
     
     //Path to draw the rectangle
     Path myPath;
-    Rectangle<float> infoWindow(x,y,w,h);
+    Rectangle<int> infoWindow = getLocalBounds();
+	x = infoWindow.getX();
+	y = infoWindow.getY();
+	midX = infoWindow.getCentreX();
+	midY = infoWindow.getCentreY();
+	w = infoWindow.getWidth();
+	h = infoWindow.getHeight();
 	myPath.addRectangle(infoWindow);
     g.setColour(Colour::fromRGB(40,60,90));
     g.fillPath(myPath);
@@ -75,7 +81,9 @@ void InformationComponent::paint (Graphics& g){
 
 }
 void InformationComponent::resized(){
-    //set the bounds of any child components here.
-	Rectangle<int> bounds(x,y,w,h);
-	__presetComponent.setBounds(bounds.reduced(8).removeFromBottom(190));
+	Rectangle<int> bounds = getLocalBounds();
+	bounds.removeFromTop(offset+30);
+	bounds.removeFromTop(8);
+
+	__presetComponent.setBounds(bounds.reduced(9));
 }

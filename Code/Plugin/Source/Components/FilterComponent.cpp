@@ -37,33 +37,28 @@ void FilterComponent::paint(Graphics& g) {
 	int fontSize = __bounds.getHeight() * 0.16;
 
 	g.setColour(Colour::fromRGB(60, 60, 60));
-	g.drawRect(Rectangle<float>(10, 10, width, height), 2.0f);
-	g.fillRect(Rectangle<float>(10, 10, width, fontHeight));
+	g.drawRect(Rectangle<float>(0, 0, width, height), 2.0f);
+	g.fillRect(Rectangle<float>(0, 0, width, fontHeight));
 	
 	g.setColour(Colours::white);
 	Font filter(fontSize, Font::FontStyleFlags::bold);
 	g.setFont(filter);
-	g.drawText("FILTER", Rectangle<int>(10, 10, width, fontHeight), Justification::centred, false);
+	g.drawText("FILTER", Rectangle<int>(0, 0, width, fontHeight), Justification::centred, false);
 	
 }
 
 void FilterComponent::resized() {
 
-	__bounds = getLocalBounds().reduced(5);
+	__bounds = getLocalBounds();
+
+	Rectangle<int> temp = __bounds.reduced(8);
 	__lpLabel.setFont(Font(__bounds.getHeight() * 0.13, Font::plain));
 	__hpLabel.setFont(Font(__bounds.getHeight() * 0.13, Font::plain));
-
-	Rectangle<int> __filterBounds(__bounds);
-
-	int __size = (__bounds.getHeight() * 0.55);
-	
-	__filterBounds.removeFromRight(__bounds.getWidth() * 0.05);
-	
-	__lpFilter->setBounds(__filterBounds.removeFromRight(__size).removeFromBottom(__size));
-
-	__filterBounds.removeFromRight(__bounds.getWidth() * 0.1);
-	
-	__hpFilter->setBounds(__filterBounds.removeFromRight(__size).removeFromBottom(__size));
-
+	int fontHeight = __bounds.getHeight() * 0.2;
+	temp.removeFromTop(fontHeight);
+	temp.removeFromTop(__hpLabel.getFont().getHeight());
+	int size = temp.getWidth() / 2;
+	__lpFilter->setBounds(temp.removeFromRight(size));
+	__hpFilter->setBounds(temp.removeFromRight(size));
 
 }

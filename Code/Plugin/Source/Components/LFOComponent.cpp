@@ -42,26 +42,22 @@ void LFOComponent::paint(Graphics& g){
 	int width = __bounds.getWidth();
 	int height = __bounds.getHeight();
 	int fontHeight = __bounds.getHeight() * 0.2;
-	g.drawRect(Rectangle<int>(10, 10, width, height), 2.0f);
-	g.fillRect(Rectangle<int>(10, 10, width, fontHeight));
+	g.drawRect(Rectangle<int>(0, 0, width, height), 2.0f);
+	g.fillRect(Rectangle<int>(0, 0, width, fontHeight));
 }
 
 void LFOComponent::resized(){
-	__bounds = getLocalBounds().reduced(5);
+	__bounds = getLocalBounds();
 	
 	int fontHeight = __bounds.getHeight() * 0.2;
-	Rectangle<int> lfoButtonBounds(10,10, __bounds.getWidth(), fontHeight);
+	Rectangle<int> lfoButtonBounds(0,0, __bounds.getWidth(), fontHeight);
 	__toggleLfo->setBounds(lfoButtonBounds);
 
-	int size = __bounds.getHeight() * 0.4;
-	int gap = size * 0.5;
-	Rectangle<int> sliders(__bounds);
-	sliders.removeFromTop(__bounds.getHeight() * 0.45);
-	sliders.removeFromLeft(gap * 1.1);
-	__ratio->setBounds(sliders.removeFromLeft(size).removeFromTop(size+15));
-	sliders.removeFromLeft(gap);
-	__type->setBounds(sliders.removeFromLeft(size).removeFromTop(size+15));
-	sliders.removeFromLeft(gap);
-	__amp->setBounds(sliders.removeFromLeft(size).removeFromTop(size+15));
-
+	Rectangle<int> sliders(__bounds.reduced(8));
+	int size = sliders.getWidth() / 3;
+	sliders.removeFromTop(fontHeight);
+	sliders.removeFromTop(__ampLabel.getFont().getHeight());
+	__ratio->setBounds(sliders.removeFromLeft(size));
+	__type->setBounds(sliders.removeFromLeft(size));
+	__amp->setBounds(sliders.removeFromLeft(size));
 }

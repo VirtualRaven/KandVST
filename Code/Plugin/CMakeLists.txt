@@ -164,6 +164,10 @@ jucer_project_files("KandVST"
   .         .         .         "Source/Linkable.h"
   x         .         .         "Source/Components/SelectKnob.cpp"
   .         .         .         "Source/Components/SelectKnob.h"
+  x         .         .         "Source/Components/OSCLFOComponent.cpp"
+  .         .         .         "Source/Components/OSCLFOComponent.h"
+  x         .         .         "Source/Components/MixerSubComponent.cpp"
+  .         .         .         "Source/Components/MixerSubComponent.h"
 )
 
 jucer_project_module(

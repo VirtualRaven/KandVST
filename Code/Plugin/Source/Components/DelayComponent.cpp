@@ -33,22 +33,24 @@ void DelayComponent::paint(Graphics & g) {
 	int fontHeight = __bounds.getHeight() * 0.2;
 	int fontSize = __bounds.getHeight() * 0.16;
 
-	g.drawRect(Rectangle<int>(10, 10, width, height), 2.0f);
-	g.fillRect(Rectangle<int>(10, 10, width, fontHeight));
+	g.drawRect(Rectangle<int>(0, 0, width, height), 2.0f);
+	g.fillRect(Rectangle<int>(0, 0, width, fontHeight));
 
 	g.setColour(Colours::white);
 	g.setFont(Font(fontSize, Font::bold));
-	g.drawText("DELAY", Rectangle<int>(10, 10, width, fontHeight), Justification::centred, false);
+	g.drawText("DELAY", Rectangle<int>(0, 0, width, fontHeight), Justification::centred, false);
 }
 
 void DelayComponent::resized() {
-	__bounds = getLocalBounds().reduced(5);
-	int __size = (__bounds.getHeight() * 0.4);
-	int gap = __size * 0.3;
-	Rectangle<int> __delayBounds(__bounds);
+	__bounds = getLocalBounds();
+	
+	int fontHeight = __bounds.getHeight() * 0.2;
+	Rectangle<int> __delayBounds(__bounds.reduced(8));
 
-	__delayBounds.removeFromLeft(gap * 1.2); 
-	__delaySpeed->setBounds(__delayBounds.removeFromLeft(__size).removeFromBottom(__size + 15));
-	__delayBounds.removeFromLeft(gap);
-	__delaySeconds->setBounds(__delayBounds.removeFromLeft(__size).removeFromBottom(__size + 15));
+	__delayBounds.removeFromTop(fontHeight);
+	__delayBounds.removeFromTop(__secondsLabel.getFont().getHeight());
+
+	int __size = (__bounds.getWidth() / 2);
+	__delaySpeed->setBounds(__delayBounds.removeFromLeft(__size));
+	__delaySeconds->setBounds(__delayBounds.removeFromLeft(__size));
 }

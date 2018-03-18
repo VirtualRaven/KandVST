@@ -15,6 +15,8 @@ OurLookAndFeel::OurLookAndFeel() {
 void OurLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int width, int height
 	, float sliderPos, const float rotaryStartAngle, const float rotaryEndAngle, Slider & /*slider*/)
 {
+	//g.setColour(Colour::fromFloatRGBA(1.0f, 0.0f, 0.0f, 0.3f));
+	//g.fillRect(x, y, width, height);
 	const float radius = jmin(width / 2, height / 2) - 4.0f;
 	const float centreX = x + width * 0.5f;
 	const float centreY = y + height * 0.5f;
@@ -24,8 +26,13 @@ void OurLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int width, int 
 	const float angle = rotaryStartAngle + sliderPos * (rotaryEndAngle - rotaryStartAngle);
 
 	Image knobRef = ImageFileFormat::loadFrom(Resources::Icons::knobs_png, sizeof(Resources::Icons::knobs_png));
+	int size = jmin<int>(height, width);
+
+	x = jmax<int>(x, (width - size)/2);
+	y = jmax<int>(y, (height - size)/2);
+
 	g.setOpacity(1.0f);
-	g.drawImage(knobRef, Rectangle<float>(static_cast<float>(x), static_cast<float>(y), static_cast<float>(width), static_cast<float>(height)), RectanglePlacement::stretchToFit, false);
+	g.drawImage(knobRef, Rectangle<float>(static_cast<float>(x), static_cast<float>(y), static_cast<float>(size), static_cast<float>(size)), RectanglePlacement::stretchToFit, false);
 
 	Path p;
 	const float pointerLength = radius * 0.3f;
@@ -35,6 +42,8 @@ void OurLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int width, int 
 
 	g.setColour(Colours::white);
 	g.fillPath(p);
+	
+	//DEBUG
 
 }
 

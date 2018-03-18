@@ -8,7 +8,7 @@
 #include "OscillatorComponent.h"
 #include "LFOComponent.h"
 #include "FilterComponent.h"
-
+#include "OSCLFOComponent.h"
 class OscillatorPageComponent  : public Component, private IVSTParameters
 {
 public:
@@ -31,6 +31,7 @@ private:
 	ScopedPointer<ParameterButton> __toggleOsc;
 
 	FilterComponent __filterComponent;
+	OSCLFOComponent __osclfoComponent;
     //==============================================================================
     
 };
