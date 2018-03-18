@@ -33,13 +33,14 @@ void MasterComponent::paint(Graphics& g){
 void MasterComponent::resized() {
 	
 	__infoComponent.setBounds(getLocalBounds().removeFromTop(300));
-	__mixerComponent.setBounds(Rectangle<int>(740,10,230,360));
 
-	__filterComponent.setBounds(Rectangle<int>(740, 370, 230, 160));
-	__lfoComponent1.setBounds(Rectangle<int>(0,8,250,135));
-	__lfoComponent2.setBounds(Rectangle<int>(0, 145, 250, 135));
+	__lfoComponent1.setBounds(Rectangle<int>(0, 8, 250, 135));
+	__lfoComponent2.setBounds(Rectangle<int>(0, 160, 250, 135));
 
-	__settingsComponent.setBounds(Rectangle<int>(0, 282, 100, 135));
+	__filterComponent.setBounds(Rectangle<int>(720, 0, 250, 160));
+	__settingsComponent.setBounds(Rectangle<int>(720, 160, 100, 135));
+	__delayComponent.setBounds(Rectangle<int>(820, 160, 150, 135));
 
-	__delayComponent.setBounds(Rectangle<int>(100, 282, 150, 135));
+	__mixerComponent.setBounds(Rectangle<int>(0, 290, 970, 260));
+
 }
