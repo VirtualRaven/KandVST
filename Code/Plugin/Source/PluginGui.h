@@ -41,6 +41,6 @@ private:
 
 	// Inherited via Timer
 	virtual void timerCallback() override;
-
+	bool __guiInit;
 };
 #endif // !PLUGIN_GUI_H

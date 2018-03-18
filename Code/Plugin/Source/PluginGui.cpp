@@ -9,7 +9,8 @@ PluginGUI::PluginGUI(PluginProcessor& owner)
 	__tabComponent(TabbedButtonBar::Orientation::TabsAtTop),
 	__keyboard(owner.keyboardState,MidiKeyboardComponent::Orientation::horizontalKeyboard),
 	__cc(),
-	__owner(&owner)
+	__owner(&owner),
+	__guiInit(false)
 {
 	setResizable(false, false);
 	setSize(1000, 720);
@@ -24,6 +25,9 @@ PluginGUI::PluginGUI(PluginProcessor& owner)
 
 void PluginGUI::InitializeGui()
 {
+	if (__guiInit)
+		return;
+	__guiInit = true;
 	const MessageManagerLock mmLock;
 	removeAllChildren();
 	setLookAndFeel(&ourLookAndFeel);
