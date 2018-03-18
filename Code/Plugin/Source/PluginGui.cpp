@@ -8,7 +8,8 @@ PluginGUI::PluginGUI(PluginProcessor& owner)
 	ourLookAndFeel(),
 	__tabComponent(TabbedButtonBar::Orientation::TabsAtTop),
 	__keyboard(owner.keyboardState,MidiKeyboardComponent::Orientation::horizontalKeyboard),
-	__cc()
+	__cc(),
+	__owner(&owner)
 {
 	setResizable(false, false);
 	setSize(1000, 720);
@@ -17,6 +18,7 @@ PluginGUI::PluginGUI(PluginProcessor& owner)
 	addAndMakeVisible(__loadingImage);
 	__loadingImage.setBounds(getLocalBounds());
 	addKeyListener(this);
+	startTimerHz(60);
 }
 
 
@@ -49,6 +51,14 @@ bool PluginGUI::keyPressed(const KeyPress & /*key*/, Component * /*originatingCo
 bool PluginGUI::keyStateChanged(bool isKeyDown, Component * /*originatingComponent*/)
 {
 	return __keyboard.keyStateChanged(isKeyDown);
+}
+
+void PluginGUI::timerCallback()
+{
+	if (__owner->isReady()) {
+		InitializeGui();
+		stopTimer();
+	}
 }
 
 

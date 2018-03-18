@@ -11,7 +11,7 @@ Pipeline<T>::Pipeline(double rate,int maxBuffHint) :
 {
 	for (int i = 0; i < this->__num_osc; i++) {
 		__oscs[i] = std::make_tuple(
-				new WavetableOsc(i, rate),
+				new WavetableOsc(i, rate,maxBuffHint),
 				Global->paramHandler->Get<AudioParameterFloat>(i, "OSC_MIX_AMP"),
 				Global->paramHandler->Get<AudioParameterBool>(i, "OSC_MIX_EN")
 			);
@@ -39,13 +39,15 @@ void Pipeline<T>::midiCommand(MidiMessage msg, int offset)
 		__note = msg.getNoteNumber();
 		__active = true;
 	}
-
-	for (auto obj : __oscs) 
-	{
-		if (*std::get<2>(obj)) 
+	
+	if (__active) {
+		for (auto obj : __oscs)
 		{
-			std::get<0>(obj)->AddCommand(msg, offset);
-			
+			if (*std::get<2>(obj))
+			{
+				std::get<0>(obj)->AddCommand(msg, offset);
+
+			}
 		}
 	}
 }
@@ -88,39 +90,48 @@ bool Pipeline<T>::isActive() {
 }
 
 template<typename T>
-void Pipeline<T>::render_block(AudioBuffer<T>& buffer) {
+void Pipeline<T>::render_block(AudioBuffer<T>& buffer,int len) {
 	
-	auto len = buffer.getNumSamples();
-	
-	if (len > tmpBuff.getNumSamples()) {
-		tmpBuff.setSize(2, len, false, false, true);
-	}
+	if (__active) {
+		if (len > tmpBuff.getNumSamples()) {
+			tmpBuff.setSize(2, len, false, false, true);
+		}
 
-	this->tmpBuff.clear(0, len);
-	for (int i = 0; i < __num_osc; i++) {
-		auto obj = __oscs[i];
-		//Is the osc active?
-		if (*std::get<2>(obj)) {
+		this->tmpBuff.clear(0, len);
+		bool soundGenerated = false;
+		bool oscActive = false;
+		for (int i = 0; i < __num_osc; i++) {
+			auto obj = __oscs[i];
+			//Is the osc active?
+			if (*std::get<2>(obj)) {
 
-			//Did the osc produce anything?
-			if (std::get<0>(obj)->RenderBlock(tmpBuff,len))
-			{	
+				//Run osc and check if they generated anything?
+				bool osc = std::get<0>(obj)->RenderBlock(tmpBuff, len);
+				oscActive |= osc;
+				bool effectGenSound = false;
 				//Apply the effects
 				for (int j = 0; j < __num_effects; j++) {
-					__effects[i*__num_effects + j]->RenderBlock(tmpBuff, len, false);
+					effectGenSound |= __effects[i*__num_effects + j]->RenderBlock(tmpBuff, len, !osc);
 				}
-				buffer.addFrom(0, 0, tmpBuff, 0, 0, len, *std::get<1>(obj));
-				buffer.addFrom(1, 0, tmpBuff, 1, 0, len, *std::get<1>(obj));
-				this->tmpBuff.clear(0, len);
+
+				//Run copy rutine if the effects or osc produced any sound
+				if (osc || effectGenSound) {
+					buffer.addFrom(0, 0, tmpBuff, 0, 0, len, *std::get<1>(obj));
+					buffer.addFrom(1, 0, tmpBuff, 1, 0, len, *std::get<1>(obj));
+					this->tmpBuff.clear(0, len);
+					soundGenerated = true;
+				}
+
 			}
 		}
-	}
-	__delay.RenderBlock(buffer, len, false);
 
-	if (buffer.getMagnitude(0, len) < 0.0001)
-		__active = false;
-	else
-		__active = true;
+		soundGenerated = __delay.RenderBlock(buffer, len, !soundGenerated);
+
+		if (!oscActive && !soundGenerated)
+			__active = false;
+		else
+			__active = true;
+	}
 }
 
 

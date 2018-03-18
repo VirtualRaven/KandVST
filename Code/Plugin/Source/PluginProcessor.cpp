@@ -57,17 +57,20 @@ PluginProcessor::PluginProcessor()
 
 PluginProcessor::~PluginProcessor()
 {
-	freePipelineManager();
-	freeWavetable();
-	delete Global;
+	Global->log->Write("Destory\n");
+	//freePipelineManager();
+	//freeWavetable();
+	//delete Global;
 }
 
 void PluginProcessor::freePipelineManager() {
 	if (doublePrecision) {
 		delete __pipManager.dp;
+		__pipManager.dp = nullptr;
 	}
 	else {
 		delete __pipManager.fp;
+		__pipManager.fp = nullptr;
 	}
 
 	
@@ -137,8 +140,14 @@ void PluginProcessor::changeProgramName(int , const String & )
 	//TODO
 }
 
+bool PluginProcessor::isReady()
+{
+	return processorReady;
+}
+
 void PluginProcessor::getStateInformation(juce::MemoryBlock & destData)
 {
+	Global->log->Write("Get state\n");
 	//this needs rewrite
 	XmlElement xml("MYPLUGINSETTINGS");
 
@@ -152,7 +161,7 @@ void PluginProcessor::getStateInformation(juce::MemoryBlock & destData)
 void PluginProcessor::setStateInformation(const void * data, int sizeInBytes)
 {
 	//this needs rewrite
-
+	Global->log->Write("Set state\n");
 	ScopedPointer<XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
 
 	if (xmlState != nullptr)
@@ -181,18 +190,19 @@ template<> PipelineManager<float>* PluginProcessor::getPipeline<float>() {
 
 void PluginProcessor::prepareToPlay (double newSampleRate, int maxSamplesPerBlock)
 {
+	Global->log->Write("Prepare To play\n");
+
 	if (__sampleRate != newSampleRate) {
 		populateWavetable(newSampleRate);
 		keyboardState.reset();
 		freePipelineManager();
-		Thread::launch([this,newSampleRate,maxSamplesPerBlock]() {
+		Thread::launch([this, newSampleRate, maxSamplesPerBlock]() {
 			while (!wavetableRdy());
 			if ((doublePrecision = isUsingDoublePrecision()) == true)
 				__pipManager.dp = new PipelineManager<double>(newSampleRate, maxSamplesPerBlock);
 			else
 				__pipManager.fp = new PipelineManager<float>(newSampleRate, maxSamplesPerBlock);
 
-		
 			__gui->InitializeGui();
 			processorReady = true;
 		});
@@ -229,6 +239,8 @@ void PluginProcessor::process (AudioBuffer<FloatType>& buffer,
 
 AudioProcessorEditor* PluginProcessor::createEditor()
 {
+	Global->log->Write("createEditor\n");
+	__gui = new PluginGUI(*this);
     return __gui;
 }
 AudioProcessor* JUCE_CALLTYPE createPluginFilter()
