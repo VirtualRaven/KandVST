@@ -146,12 +146,22 @@ void WavetableOsc::ProccessCommand(MidiMessage msg)
 		__note = msg.getNoteNumber();
 		__frequency = MidiMessage::getMidiNoteInHertz(__note);
 		__envelope.Reset(msg.getVelocity());
-		__sustain = true;
-		__envelope.setSustain(__sustain);
+		//__sustain = true;
+		//__envelope.setSustain(__sustain);
 	}
 	else if (msg.isNoteOff())
 	{
-		__sustain = msg.getNoteNumber() != __note;
+		//__sustain = msg.getNoteNumber() != __note;
+		//__envelope.setSustain(__sustain);
+	}
+	else if (msg.isSustainPedalOn())
+	{
+		__sustain = true;
+		__envelope.setSustain(__sustain);
+	}
+	else if (msg.isSustainPedalOff())
+	{
+		__sustain = false;
 		__envelope.setSustain(__sustain);
 	}
 	else if (msg.isPitchWheel())

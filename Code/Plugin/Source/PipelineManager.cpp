@@ -84,7 +84,8 @@ void PipelineManager<T>::genSamples(AudioBuffer<T>& buff, MidiBuffer & midiMessa
 				}
 			}
 		}
-		else if (tmp.isPitchWheel())
+		// Messages for all pipelines
+		else if (tmp.isPitchWheel() || tmp.isSustainPedalOn() || tmp.isSustainPedalOff())
 		{
 			for (pipIt = pipList.begin(); pipIt != pipList.end(); pipIt++) {
 				pipIt->midiCommand(tmp, pos);
