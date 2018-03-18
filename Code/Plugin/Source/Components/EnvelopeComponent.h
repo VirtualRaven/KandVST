@@ -18,8 +18,6 @@ private:
 	ScopedPointer<ParameterSlider> attackTime, holdTime, decayTime, releaseTime, sustainTime,
 								   attackCurve, decayCurve, releaseCurve, sustainCurve,
 								   attackLevel, decayLevel, sustainLevel;
-
-	OurLookAndFeel ourLookAndFeel;
 	bool __envInvalid;
 	virtual void timerCallback() override;
 

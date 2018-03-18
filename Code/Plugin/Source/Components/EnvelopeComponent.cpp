@@ -59,7 +59,6 @@ EnvelopeComponent::EnvelopeComponent(int ID):
 	sustainLevel->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
 	sustainLevel->setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, true, 50, 15);
 
-	setLookAndFeel(&ourLookAndFeel);
 	
 	// add some labels for the sliders..
 	
