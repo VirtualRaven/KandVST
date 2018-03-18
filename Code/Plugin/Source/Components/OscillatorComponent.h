@@ -27,9 +27,8 @@ private:
 	Label __sineLabel, __squareLabel, __sawLabel, __triangleLabel,__noiseLabel;
 	ScopedPointer<ParameterSlider> __sineSlider, __squareSlider, __sawSlider, __triangleSlider,__noiseSlider;
 
-	Label __delayLabel, __octaveLabel, __detuneLabel, __offsetLabel;
-	ScopedPointer<ParameterSlider> __delaySlider, __octaveSlider, __detuneSlider, __offsetSlider;
-	float s, sq, sa, tr;
+	Label __delayLabel, __octaveLabel, __detuneLabel, __offsetLabel, __overtoneLabel;
+	ScopedPointer<ParameterSlider> __delaySlider, __octaveSlider, __detuneSlider, __offsetSlider, __overtoneSlider;
 	Image* __oscWaveform;
 	ImageComponent __waveformComp;
 	bool __waveformInvalid;

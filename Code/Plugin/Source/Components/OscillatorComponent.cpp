@@ -72,6 +72,13 @@ __waveformInvalid(false)
 	__offsetLabel.setText("OFFSET", NotificationType::dontSendNotification);
 	__offsetLabel.attachToComponent(__offsetSlider, false);
 	__offsetLabel.setJustificationType(juce::Justification::centred);
+
+	addAndMakeVisible(__overtoneSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterInt>(__ID, "OSC_OVERTONE")));
+	__overtoneSlider->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
+	__overtoneSlider->setTextBoxStyle(__overtoneSlider->NoTextBox, true, 0, 0);
+	__overtoneLabel.setText("OVERTONE", NotificationType::dontSendNotification);
+	__overtoneLabel.attachToComponent(__overtoneSlider, false);
+	__overtoneLabel.setJustificationType(juce::Justification::centred);
 	//============================================================================
 
 	Global->paramHandler->addParamaterListener(this, __ID, "OSC_SINE");
@@ -148,9 +155,9 @@ void OscillatorComponent::resized(){
 
 	bounds.removeFromTop(50);
 	//Rectangle<int> atrSliders(bounds.removeFromTop(jmax<int>(bounds.getWidth() / 3,100)));
-	Rectangle<int> atrSliders(bounds.removeFromTop((bounds.getWidth() - 100) / 5));
+	Rectangle<int> atrSliders(bounds.removeFromTop((bounds.getWidth() - 100) / 4));
 	atrSliders.removeFromLeft(gap+10);
-	sliderw = (bounds.getWidth()-100) / 5;
+	sliderw = (bounds.getWidth()-100) / 4;
 
 	// detune, offset, octave
 	__octaveSlider->setBounds(atrSliders.removeFromLeft(sliderw));
@@ -158,7 +165,8 @@ void OscillatorComponent::resized(){
 	__detuneSlider->setBounds(atrSliders.removeFromLeft(sliderw));
 	atrSliders.removeFromLeft(gap);
 	__offsetSlider->setBounds(atrSliders.removeFromLeft(sliderw));
-	
+	atrSliders.removeFromLeft(gap);
+	__overtoneSlider->setBounds(atrSliders.removeFromLeft(sliderw));
 }
 
 
