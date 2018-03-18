@@ -58,9 +58,9 @@ PluginProcessor::PluginProcessor()
 PluginProcessor::~PluginProcessor()
 {
 	Global->log->Write("Destory\n");
-	//freePipelineManager();
-	//freeWavetable();
-	//delete Global;
+	freePipelineManager();
+	freeWavetable();
+	delete Global;
 }
 
 void PluginProcessor::freePipelineManager() {
@@ -238,6 +238,7 @@ void PluginProcessor::process (AudioBuffer<FloatType>& buffer,
 AudioProcessorEditor* PluginProcessor::createEditor()
 {
 	Global->log->Write("createEditor\n");
+	delete __gui;
 	__gui = new PluginGUI(*this);
     return __gui;
 }
