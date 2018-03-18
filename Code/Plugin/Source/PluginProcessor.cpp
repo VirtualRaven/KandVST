@@ -49,7 +49,7 @@ PluginProcessor::PluginProcessor()
 	Global->presetManager = new PresetManager(this);
 	Global->presetManager->RefreshPresets();
 	
-	//*(Global->paramHandler->Get<AudioParameterBool>(0, "OSC_MIX_EN")) = 1; //Enable default oscillator
+	*(Global->paramHandler->Get<AudioParameterBool>(0, "OSC_MIX_EN")) = 1; //Enable default oscillator
 }
 
 
@@ -63,6 +63,7 @@ PluginProcessor::~PluginProcessor()
 }
 
 void PluginProcessor::freePipelineManager() {
+	processorReady = false;
 	if (doublePrecision) {
 		delete __pipManager.dp;
 		__pipManager.dp = nullptr;
@@ -189,9 +190,11 @@ template<> PipelineManager<float>* PluginProcessor::getPipeline<float>() {
 
 void PluginProcessor::prepareToPlay (double newSampleRate, int maxSamplesPerBlock)
 {
+	
 	Global->log->Write("Prepare To play\n");
 
 	if (__sampleRate != newSampleRate) {
+		
 		populateWavetable(newSampleRate);
 		keyboardState.reset();
 		freePipelineManager();
@@ -208,6 +211,7 @@ void PluginProcessor::prepareToPlay (double newSampleRate, int maxSamplesPerBloc
 
 		__sampleRate = newSampleRate;
 	}
+	
 }
 
 void PluginProcessor::releaseResources()
