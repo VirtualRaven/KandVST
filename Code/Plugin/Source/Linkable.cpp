@@ -4,19 +4,33 @@ void Linkable::mouseUp(const MouseEvent & event)
 {
 }
 
-Linkable::Linkable(AudioProcessorParameter* param):
-	__linkedTo(-1)
+Linkable::Linkable(AudioProcessorParameter* param)
 {
 	__linkParameters = std::vector<AudioProcessorParameter *>();
 	__linkParameters.push_back(param);
 	Global->presetManager->addChangeListener(this);
+	__linkedTo = -1;
+	if (__linkParameters.size() != 0) {
+		auto sender = Global->paramHandler->GetSender(__linkParameters[0]);
+		if (auto* pid = dynamic_cast<AudioProcessorParameterWithID*> (sender))
+		{
+			__linkedTo = stoi(pid->paramID.toStdString().substr(0, pid->paramID.toStdString().find_first_of('_')));
+		}
+	}
 }
 
-Linkable::Linkable(std::vector<AudioProcessorParameter *> params):
-	__linkedTo(-1)
+Linkable::Linkable(std::vector<AudioProcessorParameter *> params)
 {
 	__linkParameters = std::vector<AudioProcessorParameter *>(params);
 	Global->presetManager->addChangeListener(this);
+	__linkedTo = -1;
+	if (__linkParameters.size() != 0) {
+		auto sender = Global->paramHandler->GetSender(__linkParameters[0]);
+		if (auto* pid = dynamic_cast<AudioProcessorParameterWithID*> (sender))
+		{
+			__linkedTo = stoi(pid->paramID.toStdString().substr(0, pid->paramID.toStdString().find_first_of('_')));
+		}
+	}
 }
 
 Linkable::~Linkable()
@@ -68,12 +82,13 @@ void Linkable::Unlink()
 
 void Linkable::changeListenerCallback(ChangeBroadcaster * source)
 {
+	__linkedTo = -1;
 	if (__linkParameters.size() != 0) {
 		auto sender = Global->paramHandler->GetSender(__linkParameters[0]);
 		if (auto* pid = dynamic_cast<AudioProcessorParameterWithID*> (sender))
 		{
 			__linkedTo = stoi(pid->paramID.toStdString().substr(0, pid->paramID.toStdString().find_first_of('_')));
-			LinkCouldHaveChanged();
 		}
 	}
+	LinkCouldHaveChanged();
 }

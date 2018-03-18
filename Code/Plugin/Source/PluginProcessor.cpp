@@ -149,11 +149,8 @@ void PluginProcessor::getStateInformation(juce::MemoryBlock & destData)
 {
 	Global->log->Write("Get state\n");
 	//this needs rewrite
-	XmlElement xml("MYPLUGINSETTINGS");
-
-	for (auto* param : getParameters())
-		if (auto* p = dynamic_cast<AudioProcessorParameterWithID*> (param))
-			xml.setAttribute(String("_") + p->paramID, p->getValue());
+	XmlElement xml("KandVSTPreset");
+	Global->presetManager->SavePreset(&xml);
 
 	copyXmlToBinary(xml, destData);
 }
@@ -163,16 +160,8 @@ void PluginProcessor::setStateInformation(const void * data, int sizeInBytes)
 	//this needs rewrite
 	Global->log->Write("Set state\n");
 	ScopedPointer<XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
-
-	if (xmlState != nullptr)
-	{
-		if (xmlState->hasTagName("MYPLUGINSETTINGS"))
-		{
-			for (auto* param : getParameters())
-				if (auto* p = dynamic_cast<AudioProcessorParameterWithID*> (param))
-					p->setValue((float)xmlState->getDoubleAttribute(String("_") + p->paramID, p->getValue()));
-		}
-	}
+	xmlState->writeToFile(File("D:\\text.xml"), "");
+	Global->presetManager->LoadPreset(xmlState);
 
 }
 
