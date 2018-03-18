@@ -13,7 +13,7 @@ OurLookAndFeel::OurLookAndFeel() {
 
 
 void OurLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int width, int height
-	, float sliderPos, const float rotaryStartAngle, const float rotaryEndAngle, Slider & /*slider*/)
+	, float sliderPos, const float rotaryStartAngle, const float rotaryEndAngle, Slider & slider)
 {
 	//g.setColour(Colour::fromFloatRGBA(1.0f, 0.0f, 0.0f, 0.3f));
 	//g.fillRect(x, y, width, height);
@@ -32,6 +32,9 @@ void OurLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int width, int 
 	y = jmax<int>(y, (height - size)/2);
 
 	g.setOpacity(1.0f);
+	if (!slider.isEnabled()) {
+		g.setOpacity(0.5f);
+	}
 	g.drawImage(knobRef, Rectangle<float>(static_cast<float>(x), static_cast<float>(y), static_cast<float>(size), static_cast<float>(size)), RectanglePlacement::stretchToFit, false);
 
 	Path p;
@@ -42,7 +45,8 @@ void OurLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int width, int 
 
 	g.setColour(Colours::white);
 	g.fillPath(p);
-	
+
+
 	//DEBUG
 
 }
@@ -115,9 +119,13 @@ void OurLookAndFeel::drawLinearSlider(Graphics& g, int x, int y, int width, int 
 			// CHANGE SLIDER THUMB HERE
 
 			Image verticalSlider = ImageFileFormat::loadFrom(Resources::Icons::sliderthumb_png, sizeof(Resources::Icons::sliderthumb_png));
+			
 			g.setOpacity(1.0f);
+			if (!slider.isEnabled()) {
+				g.setOpacity(0.5f);
+			}
 			g.drawImage(verticalSlider, Rectangle<float>(static_cast<float>(thumbWidth * 5), static_cast<float>(thumbWidth * 5)).withCentre(isThreeVal ? thumbPoint : maxPoint), RectanglePlacement::centred, false);
-
+			
 		}
 
 		if (isTwoVal || isThreeVal)
