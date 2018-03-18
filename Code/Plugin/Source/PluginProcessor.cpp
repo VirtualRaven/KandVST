@@ -16,7 +16,6 @@ PluginProcessor::PluginProcessor()
 	processorReady(false)
 {
 	lastPosInfo.resetToDefault();
-	__gui = nullptr;
 	__pipManager.dp = nullptr;
 	__pipManager.fp = nullptr;
 	doublePrecision = true;
@@ -51,7 +50,6 @@ PluginProcessor::PluginProcessor()
 	Global->presetManager->RefreshPresets();
 	
 	//*(Global->paramHandler->Get<AudioParameterBool>(0, "OSC_MIX_EN")) = 1; //Enable default oscillator
-	__gui = new PluginGUI(*this);
 }
 
 
@@ -61,6 +59,7 @@ PluginProcessor::~PluginProcessor()
 	freePipelineManager();
 	freeWavetable();
 	delete Global;
+	delete getActiveEditor();
 }
 
 void PluginProcessor::freePipelineManager() {
@@ -238,9 +237,7 @@ void PluginProcessor::process (AudioBuffer<FloatType>& buffer,
 AudioProcessorEditor* PluginProcessor::createEditor()
 {
 	Global->log->Write("createEditor\n");
-	delete __gui;
-	__gui = new PluginGUI(*this);
-    return __gui;
+    return new PluginGUI(*this);
 }
 AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {

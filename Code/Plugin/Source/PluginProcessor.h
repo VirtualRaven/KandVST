@@ -84,7 +84,6 @@ private:
 	void updateCurrentTimeInfoFromHost();
 
 	double __sampleRate;
-	PluginGUI * __gui;
 	bool processorReady;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginProcessor)
 

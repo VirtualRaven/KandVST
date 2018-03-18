@@ -2,7 +2,7 @@
 
 MixerComponent::~MixerComponent()
 {
-	for (size_t i = 0; i < 4; i++)
+	for (size_t i = 0; i < __mixers.size(); i++)
 	{
 		delete __mixers[i];
 	}
