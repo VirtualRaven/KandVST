@@ -96,6 +96,7 @@ __waveformInvalid(false)
 	__waveformComp.repaint();
 
 	addAndMakeVisible(__waveformComp);
+	this->addComponentListener(this);
 }
 
 void OscillatorComponent::paint(Graphics& g){
@@ -170,11 +171,32 @@ void OscillatorComponent::resized(){
 }
 
 
-void OscillatorComponent::timerCallback()
+void OscillatorComponent::componentVisibilityChanged(Component & component)
 {
-	if (!__waveformInvalid)
+	if (component.isVisible() && __waveformInvalid) {
+		WavetableOsc os = WavetableOsc(__ID, 0, 0);
+		os.renderImage(__oscWaveform);
+		__waveformComp.repaint();
+		__waveformInvalid = false;
+	}
+}
+
+void OscillatorComponent::componentParentHierarchyChanged(Component & component)
+{
+	this->getParentComponent()->addComponentListener(this);
+	this->removeComponentListener(this);
+}
+
+void OscillatorComponent::timerCallback()
+{	
+	if (!this->getParentComponent()->isVisible())
+		return;
+
+	if (!__waveformInvalid) {
 		stopTimer();
-	WavetableOsc os = WavetableOsc(__ID, 0,0);
+		return;
+	}
+	WavetableOsc os = WavetableOsc(__ID, 0, 0);
 	os.renderImage(__oscWaveform);
 	__waveformComp.repaint();
 	__waveformInvalid = false;

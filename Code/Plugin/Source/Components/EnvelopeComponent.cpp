@@ -96,6 +96,7 @@ EnvelopeComponent::EnvelopeComponent(int ID):
 	Global->paramHandler->addParamaterListener(this, ID, "ENV_ATTACK_LEVEL");
 	Global->paramHandler->addParamaterListener(this, ID, "ENV_DECAY_LEVEL");
 	Global->paramHandler->addParamaterListener(this, ID, "ENV_SUSTAIN_LEVEL");
+	this->addComponentListener(this);
 }
 
 
@@ -213,11 +214,32 @@ void EnvelopeComponent::parametersChanged(std::vector<std::string>)
 }
 void EnvelopeComponent::timerCallback()
 {
-	if (!__envInvalid) 
+	if (!this->getParentComponent()->isVisible()) {
 		stopTimer();
-
+		return;
+	}
+	if (!__envInvalid) {
+		stopTimer();
+		return;
+	}
 		EnvelopeGenerator::RenderImage(__ID, __envImage);
 		__envImageComponent.repaint();
 		__envInvalid = false;
 
+}
+
+void EnvelopeComponent::componentVisibilityChanged(Component & component)
+{
+	if (__envInvalid && component.isVisible()) {
+		EnvelopeGenerator::RenderImage(__ID, __envImage);
+		__envImageComponent.repaint();
+		__envInvalid = false;
+	}
+
+}
+
+void EnvelopeComponent::componentParentHierarchyChanged(Component & component)
+{
+	this->getParentComponent()->addComponentListener(this);
+	this->removeComponentListener(this);
 }

@@ -31,7 +31,6 @@ void PluginGUI::InitializeGui()
 	const MessageManagerLock mmLock;
 	removeAllChildren();
 	setLookAndFeel(&ourLookAndFeel);
-
 	__tabComponent.addTab("M", Colour::fromRGB(200,200,200), new MasterComponent(), true);
 
 	for (int i = 0; i < 4; i++)
