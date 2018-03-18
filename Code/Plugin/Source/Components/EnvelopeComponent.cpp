@@ -199,7 +199,7 @@ void EnvelopeComponent::resized()
 
 	delete __envImage;
 	__envImage = nullptr;
-	__envImage = new Image(Image::PixelFormat::RGB, __envImageComponent.getWidth(), __envImageComponent.getHeight(), true);
+	__envImage = new Image(Image::PixelFormat::RGB, __envImageComponent.getWidth()*2, __envImageComponent.getHeight()*2, true);
 	EnvelopeGenerator::RenderImage(__ID, __envImage);
 	__envImageComponent.setImage(*__envImage);
 	__envImageComponent.repaint();
@@ -208,7 +208,7 @@ void EnvelopeComponent::parametersChanged(std::vector<std::string>)
 {
 	__envInvalid = true;
 	if (!isTimerRunning())
-		startTimerHz(60);
+		startTimerHz(120);
 	
 }
 void EnvelopeComponent::timerCallback()

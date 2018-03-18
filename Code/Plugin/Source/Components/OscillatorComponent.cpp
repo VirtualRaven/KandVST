@@ -128,7 +128,7 @@ void OscillatorComponent::resized(){
 		__waveformComp.setBounds(bounds.removeFromTop(jmin<int>(bounds.getWidth(), bounds.getHeight() / 2)));
 	delete __oscWaveform;
 	__oscWaveform = nullptr;
-	__oscWaveform = new Image(Image::PixelFormat::RGB, __waveformComp.getWidth(), __waveformComp.getHeight(), true);
+	__oscWaveform = new Image(Image::PixelFormat::RGB, __waveformComp.getWidth()*2, __waveformComp.getHeight()*2, true);
 	WavetableOsc os = WavetableOsc(__ID, 0,0);
 	os.renderImage(__oscWaveform);
 	__waveformComp.setImage(*__oscWaveform);
@@ -184,5 +184,5 @@ void OscillatorComponent::parametersChanged(std::vector<std::string>)
 {
 	__waveformInvalid = true;
 	if (!isTimerRunning())
-		startTimerHz(60);
+		startTimerHz(120);
 }
