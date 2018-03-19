@@ -6,7 +6,6 @@
 
 LFO* lfos[LFO_COUNT] = {};
 LFO::LFO(int maxSamples, int ID, double sampleRate) :
-	__isActive(false),
 	__wavetable(tables[WAVE_TYPE::SINE]),
 	__phase(0.0),
 	__ID(ID),
@@ -20,6 +19,9 @@ LFO::LFO(int maxSamples, int ID, double sampleRate) :
 	__ratio		 = Global->paramHandler->Get<AudioParameterInt>(ID, "LFO_RATIO");
 	__waveType	 = Global->paramHandler->Get<AudioParameterInt>(ID, "LFO_TYPE");
 	__isActive	 = Global->paramHandler->Get<AudioParameterBool>(ID, "LFO_EN");
+	for (int i = 0; i < 4096; i++) {
+		__squareTable[i] = i < 2048 ? 1 : -1;
+	}
 }
 LFO::~LFO()
 {
@@ -38,7 +40,7 @@ double LFO::calcRatio()
 void LFO::RegisterParameters(int ID)
 {
 	Global->paramHandler->RegisterBool(ID, "LFO_EN", "LFO", 0);
-	Global->paramHandler->RegisterInt(ID, "LFO_RATIO", "LFO Ratio", -8, 16, 1); //TEMP!!!
+	Global->paramHandler->RegisterInt(ID, "LFO_RATIO", "LFO Ratio", -6, 16, 1); //TEMP!!!
 	Global->paramHandler->RegisterInt(ID, "LFO_TYPE", "LFO Wave type", 0, 3, 0);
 	Global->paramHandler->RegisterFloat(ID, "LFO_AMOUNT", "LFO amount", 0.0, 1.0, 0.5);
 	Global->paramHandler->RegisterFloat(ID, "LFO_FREQ_AMOUNT", "LFO Frequency Amount",0.0,24.0,2.0);
@@ -64,7 +66,6 @@ void LFO::generate(int numSamples, AudioPlayHead::CurrentPositionInfo& posInfo)
 		delete[] __samples;
 		__nrOfSamples = numSamples;
 		__samples = new double[numSamples];
-		Global->log->Write("New lfo buffer created\n");
 	}
 
 	if (!(*__isActive)) {
@@ -74,15 +75,11 @@ void LFO::generate(int numSamples, AudioPlayHead::CurrentPositionInfo& posInfo)
 		__activeCheck = false;
 		return;
 	}
-	if (__ID == 1) {
-		double test = 0;
-		bool bla = __phase < 0;
-	}
 	//WAVE_TYPE type = toWAVE_TYPE(*__waveType);
 	
 	double freq = (posInfo.bpm)* calcRatio() / 60.0;
 
-	double inc = __wavetable->getLength() * freq / __sampleRate;
+	double inc = IWavetable::getLength() * freq / __sampleRate;
 
 	static int nrLoopsPlayed = 0;
 	static double prevPos = posInfo.ppqPosition;
@@ -93,38 +90,48 @@ void LFO::generate(int numSamples, AudioPlayHead::CurrentPositionInfo& posInfo)
 			if (prevPos > posInfo.ppqPosition) {
 				nrLoopsPlayed++;
 			}
-			__phase = fmod((nrLoopsPlayed * posInfo.timeSigNumerator + posInfo.ppqPosition) * IWavetable::getLength() * calcRatio(), IWavetable::getLength());
-			prevPos = posInfo.ppqPosition;
+			__phase = fmod((nrLoopsPlayed * posInfo.timeSigNumerator + prevPos) * IWavetable::getLength() * calcRatio(), IWavetable::getLength());
 		} else 
-			__phase = fmod(posInfo.ppqPosition * IWavetable::getLength() * calcRatio(), IWavetable::getLength());
+			__phase = fmod(prevPos * IWavetable::getLength() * calcRatio(), IWavetable::getLength());
+		prevPos = posInfo.ppqPosition;
 	}
 	else {
 		nrLoopsPlayed = 0;
 		prevPos = 0;
 	}
-
-	for (int i = 0; i < numSamples; i++)
-	{
-		auto tgt = IWavetable::getLoc(__phase, freq);
-		//__samples[i] = getSampleFromLoc<SQUARE>(tgt);
+		
 		// TMPTMPTMP
-		switch (toWAVE_TYPE(*__waveType)) {
-		case SAW	: 
-			__samples[i] = getSampleFromLoc<SAW>(tgt);
-			break;
-		case SQUARE	: 
-			__samples[i] = getSampleFromLoc<SQUARE>(tgt);
-			break;
-		case TRI	: 
-			__samples[i] = getSampleFromLoc<TRI>(tgt);
-			break;
-		case SINE	: 
+	switch (toWAVE_TYPE(*__waveType)) {
+	case SINE	:
+		for (int i = 0; i < numSamples; i++) {
+			auto tgt = IWavetable::getLoc(__phase, freq);
 			__samples[i] = getSampleFromLoc<SINE>(tgt);
-			break;
+			__phase = fmod(__phase + inc, IWavetable::getLength());
 		}
-		__phase += inc;
+		break;
+	case SQUARE	: 
+		for (int i = 0; i < numSamples; i++) {
+			auto tgt = IWavetable::getLoc(__phase, freq);
+			__samples[i] = getSampleFromLoc<SQUARE>(tgt);
+			__phase = fmod(__phase + inc, IWavetable::getLength());
+		}
+		break;
+	case TRI	: 
+		for (int i = 0; i < numSamples; i++) {
+			auto tgt = IWavetable::getLoc(__phase, freq);
+			__samples[i] = getSampleFromLoc<TRI>(tgt);
+			__phase = fmod(__phase + inc, IWavetable::getLength());
+		}
+		break;
+	case SAW	: 
+		for (int i = 0; i < numSamples; i++) {
+			auto tgt = IWavetable::getLoc(__phase, freq);
+			__samples[i] = getSampleFromLoc<SAW>(tgt);
+			__phase = fmod(__phase + inc, IWavetable::getLength());
+		}
+		break;
 	}
-	__phase = fmod(__phase, IWavetable::getLength());
+
 	__activeCheck = true;
 }
 

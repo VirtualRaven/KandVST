@@ -179,11 +179,11 @@ bool WavetableOsc::__RenderBlock(AudioBuffer<T>& buffer,int len) {
 	float lfoFreqAmount = 0.0f;
 	if (lfoFreqIndx != 0) {
 		lfofreq = lfos[lfoFreqIndx - 1]->getPointer();
-		lfoFreqAmount = lfos[lfoFreqIndx-1]->getFreqAmount();
+		lfoFreqAmount = lfos[lfoFreqIndx-1]->getAmount();
 	}
 	int lfoAmpIndx = (*__lfoamp).getIndex();
 	float lfoAmpAmount = 0.0f;
-	if (lfoAmpIndx != 0 && lfos[lfoAmpIndx - 1]->getPointer()) {
+	if (lfoAmpIndx != 0) {
 		lfoamp = lfos[lfoAmpIndx - 1]->getPointer();
 		lfoAmpAmount = lfos[lfoAmpIndx-1]->getAmount();
 	}
@@ -213,7 +213,7 @@ bool WavetableOsc::__RenderBlock(AudioBuffer<T>& buffer,int len) {
 		//Calculate lfo frequency effect if it's active
 		if (lfoFreqIndx != 0 && lfofreq)
 		{
-			tmpFreq *= pow(2, lfofreq[i]*lfoFreqAmount / 12.0);
+			tmpFreq *= pow(2, lfofreq[i]*lfoFreqAmount);
 		}
 		
 		double inc = tmpInc * tmpFreq;
