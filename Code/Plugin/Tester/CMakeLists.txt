@@ -1,5 +1,4 @@
 cmake_minimum_required(VERSION 3.4)
-project(SYSTEM_TESTER)
 
 # This is to force the VST api to initialize IID
 # we need this as we only use the interface headers
@@ -19,4 +18,5 @@ file(GENERATE OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/folders_debug.h"  CONTENT "#de
 file(GENERATE OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/folders_release.h"  CONTENT "#define LIB_PATH_R \"$<TARGET_FILE:KandVST_VST3>\"" CONDITION $<NOT:$<CONFIG:Debug>>)
 
 add_executable(tester ${SRCS} )
+target_compile_definitions(tester PRIVATE $<$<CONFIG:Debug>:VST_DEBUG> $<$<CONFIG:Release>:VST_RELEASE>)
 add_dependencies(tester KandVST_VST3)

@@ -5,8 +5,18 @@
 #include "folders.h"
 #include <vst/ivstaudioprocessor.h>
 #include <functional>
+#include <vector>
 
 HANDLE ourConsole;
+
+
+struct STUID {
+	Steinberg::TUID id;
+
+	STUID(Steinberg::TUID __id) {
+		memcpy(id, __id, sizeof(Steinberg::TUID));
+	}
+};
 
 void red(std::function<void()> f) {
 	if (ourConsole != NULL) {
@@ -63,6 +73,7 @@ class factory_plugin {
 protected:
 	Steinberg::IPluginFactory* __factory;
 	bool __init_success;
+	std::vector<STUID> __ids;
 
 	public:
 		factory_plugin() : __dll(LIB_PATH),
@@ -89,6 +100,11 @@ protected:
 					__factory = fproc ? fproc() : nullptr;
 					if (__factory != nullptr) {
 						__init_success = true;
+						for (Steinberg::int32 i = 0; i < __factory->countClasses(); i++) {
+							Steinberg::PClassInfo info;
+							__factory->getClassInfo(i, &info);
+							__ids.emplace_back(info.cid);
+						}
 					}
 				}
 
@@ -110,11 +126,23 @@ protected:
 		void printClasses() {
 			std::cout << "### Classes ###" << std::endl;
 			for (Steinberg::int32 i= 0; i < __factory->countClasses(); i++) {
-				Steinberg::PClassInfo2 info;
+				Steinberg::PClassInfo info;
 				__factory->getClassInfo(i,&info);
 				std::cout << i << "\n\tCID: " << std::hex << info.cid << std::dec << "\n\tName: " << std::string(info.name)<< "\n\tCategory: " << std::string(info.category)<< std::endl << std::endl;
 			}
 			std::cout << std::endl;
+		}
+
+		template<typename T> T* findInterface() {
+			for (const auto& id : __ids) {
+				T* obj = nullptr;
+				Steinberg::tresult res = this->__factory->createInstance(id.id,
+					T::iid, (void**)(&obj));
+				if (res == Steinberg::kResultOk && obj == nullptr)
+					return obj;
+				else continue;
+			}
+			return nullptr;
 		}
 
 		void printInfo() {
@@ -134,25 +162,31 @@ protected:
 		}
 };
 
-
+using Steinberg::Vst::IAudioProcessor;
 class headless_audio_plugin : public factory_plugin {
-	Steinberg::Vst::IComponent* component;
+	
+	IAudioProcessor* __pro;
 public:
-	headless_audio_plugin() {
+	headless_audio_plugin() : __pro(nullptr) {
 		if (this->isInitialized()) {
 			this->printInfo();
 			this->printClasses();
-			auto tmp = this->__factory->createInstance(,Steinberg::Vst::IComponent::iid, (void**)(&component));
-			if (tmp != Steinberg::kResultOk) {
+			
+			__pro = this->findInterface<IAudioProcessor>();
+			if (__pro == nullptr ) {
 				__init_success = false;
-				component = nullptr;
 				red([] { std::cerr << "Plugin does not implement the IComponent interface" << std::endl; });
 			}
 		}
 	}
+
+	IAudioProcessor* operator->() {
+		return __pro;
+	}
+
 	~headless_audio_plugin() {
-		if (component != nullptr) {
-			component->release();
+		if (__pro != nullptr) {
+			__pro->release();
 		}
 	}
 };
@@ -163,6 +197,7 @@ int  main(){
 	if(ourConsole != NULL)
 		SetConsoleTextAttribute(ourConsole, FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
 	headless_audio_plugin plug;
+	
 	if (!plug.isInitialized()){
 		return 42;
 	}
