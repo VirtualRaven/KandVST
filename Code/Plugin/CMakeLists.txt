@@ -339,3 +339,5 @@ jucer_export_target_configuration(
 )
 
 jucer_project_end()
+
+add_subdirectory("./Tester")
