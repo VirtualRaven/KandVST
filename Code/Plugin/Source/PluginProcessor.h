@@ -85,6 +85,8 @@ private:
 
 	double __sampleRate;
 	bool processorReady;
+
+	ThreadPool __wavePool;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginProcessor)
 
 	
