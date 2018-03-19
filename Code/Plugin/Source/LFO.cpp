@@ -19,9 +19,6 @@ LFO::LFO(int maxSamples, int ID, double sampleRate) :
 	__ratio		 = Global->paramHandler->Get<AudioParameterInt>(ID, "LFO_RATIO");
 	__waveType	 = Global->paramHandler->Get<AudioParameterInt>(ID, "LFO_TYPE");
 	__isActive	 = Global->paramHandler->Get<AudioParameterBool>(ID, "LFO_EN");
-	for (int i = 0; i < 4096; i++) {
-		__squareTable[i] = i < 2048 ? 1 : -1;
-	}
 }
 LFO::~LFO()
 {

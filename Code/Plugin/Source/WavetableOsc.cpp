@@ -295,7 +295,7 @@ bool WavetableOsc::__RenderBlock(AudioBuffer<T>& buffer,int len) {
 
 		//Calculate lfo amplitude effect if it's active
 		if (lfoAmpIndx != 0 && lfoamp) {
-			tmp_samp *= lfoamp[i]*lfoAmpAmount;
+			tmp_samp += tmp_samp*lfoamp[i]*lfoAmpAmount;
 		}
 
 		tmp_samp *= __envBuff[envOffset+i];
