@@ -13,7 +13,8 @@ GLOBAL * Global;
 PluginProcessor::PluginProcessor()
     : AudioProcessor (getBusesProperties()),
 	__sampleRate(0.0),
-	processorReady(false)
+	processorReady(false),
+	__wavePool(4)
 {
 	lastPosInfo.resetToDefault();
 	__pipManager.dp = nullptr;
@@ -184,7 +185,7 @@ void PluginProcessor::prepareToPlay (double newSampleRate, int maxSamplesPerBloc
 
 	if (__sampleRate != newSampleRate) {
 		
-		populateWavetable(newSampleRate);
+		populateWavetable(newSampleRate,__wavePool);
 		keyboardState.reset();
 		freePipelineManager();
 		Thread::launch([this, newSampleRate, maxSamplesPerBlock]() {
