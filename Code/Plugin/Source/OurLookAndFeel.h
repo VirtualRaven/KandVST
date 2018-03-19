@@ -17,9 +17,11 @@ public:
 
 	void drawTabButton(TabBarButton&, Graphics&, bool isMouseOverButton, bool isMouseDown) override;
 
-	void drawButtonText(Graphics& g, TextButton& button, bool isMouseOverButton, bool isButtonDown) override;
+	void drawButtonBackground(Graphics&, Button&, const Colour& backgroundColour,bool isMouseOverButton, bool isButtonDown) override;
 
 	static void createTabTextLayout(const TabBarButton& button, float length, float depth, Colour colour, TextLayout&);
+	
+	void drawButtonText(Graphics&, TextButton&, bool isMouseOverButton, bool isButtonDown) override;
 
 private :
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OurLookAndFeel)

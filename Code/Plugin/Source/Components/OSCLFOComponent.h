@@ -1,20 +1,20 @@
-#ifndef LFO_COMPONENT_H
-#define LFO_COMPONENT_H
+#ifndef OSCLFO_COMPONENT_H
+#define OSCLFO_COMPONENT_H
 
 #include "../Global.h"
 #include "../ParameterHandler.h"
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "InformationComponent.h"
-#include "ParameterSlider.h"
+#include "SelectKnob.h"
 #include "ParameterButton.h"
 #include "../IVSTParameters.h"
 
-class LFOComponent : public Component, private IVSTParameters
+class OSCLFOComponent : public Component, private IVSTParameters
 {
 public:
     //==============================================================================
-	LFOComponent(int ID);
-    ~LFOComponent();
+	OSCLFOComponent(int ID);
+    ~OSCLFOComponent();
 
     //==============================================================================
 
@@ -23,12 +23,11 @@ public:
 
 private:
 	//==============================================================================
-	ScopedPointer<ParameterSlider> __ratio, __type, __amp;
-	Label __ratioLabel, __typeLabel, __ampLabel;
-	ScopedPointer<ParameterButton> __toggleLfo;
+	ScopedPointer<SelectKnob> __freqSelcet, __ampSelect;
+	Label __freqLabel, __ampLabel;
 	Rectangle<int> __bounds;
 	int __ID, __width, __height;
 	//==============================================================================
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LFOComponent)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OSCLFOComponent)
 };
 #endif

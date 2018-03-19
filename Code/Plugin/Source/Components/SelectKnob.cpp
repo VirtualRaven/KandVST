@@ -74,7 +74,12 @@ Point<float> SelectKnob::angleToPos(float angle, float r)
 
 void SelectKnob::resized()
 {
+	Rectangle<int> b = (getLocalBounds());
+	int size = jmin<int>(b.getWidth()-60, b.getHeight()-40);
+	int paddW = jmax<int>(0, b.getWidth() - size)/2;
+	int paddh = jmax<int>(0, b.getHeight() - size) / 2;
 
+	__slider.setBounds(paddW, paddh,size,size);
 }
 
 SelectKnobSlider::SelectKnobSlider(AudioParameterChoice& p, float angleBetweenPos) :
@@ -114,7 +119,7 @@ void SelectKnobSlider::stoppedDragging()
 void SelectKnobSlider::resized()
 {
 	// Hardcoded values
-	setBounds(30, 20, 50, 50);
+	//setBounds(getLocalBounds().getX(),getLocalBounds().getY(), 50,50);
 	ParameterSlider::resized();
 }
 

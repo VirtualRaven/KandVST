@@ -76,7 +76,7 @@ ParameterSlider::ParameterSlider(AudioProcessorParameter& p):
 	
 	startTimerHz(30);
 	updateSliderPos();
-	
+	LinkCouldHaveChanged();
 }
 
 
@@ -96,10 +96,18 @@ void ParameterSlider::timerCallback()
 
 void ParameterSlider::startedDragging()
 { 
+	if (getSliderStyle() != Slider::LinearHorizontal && getSliderStyle() != Slider::LinearVertical) {
+		__mousePos = Desktop::getInstance().getMainMouseSource().getScreenPosition();
+		setMouseCursor(MouseCursor::NoCursor);
+	}
 	param.beginChangeGesture(); 
 }
 void ParameterSlider::stoppedDragging()
-{ 
+{
+	if (getSliderStyle() != Slider::LinearHorizontal && getSliderStyle() != Slider::LinearVertical) {
+		Desktop::getInstance().getMainMouseSource().setScreenPosition(__mousePos);
+		setMouseCursor(MouseCursor::NormalCursor);
+	}
 	param.endChangeGesture(); 
 }
 
@@ -128,10 +136,7 @@ void ParameterSlider::mouseDoubleClick(const MouseEvent & event)
 
 void ParameterSlider::LinkCouldHaveChanged()
 {
-	if (isLinked())
-	{
-		this->setEnabled(false);
-	}
+		this->setEnabled(!isLinked());
 }
 
 

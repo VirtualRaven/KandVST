@@ -43,6 +43,7 @@ public:
 	bool LinkParameters(int sender_intId, std::string sender, int receiver_intId,std::string receiver);
 	bool RemoveLink(AudioProcessorParameter * sender, AudioProcessorParameter * receiver);
 	bool RemoveLink(int sender_intId, std::string sender, int receiver_intId, std::string receiver);
+	void ClearLinks();
 	std::map<int,AudioProcessorParameterWithID*> FindSimilar(AudioProcessorParameterWithID*);
 	const std::map<AudioProcessorParameter*, std::vector<AudioProcessorParameter*>> GetLinks();
 	AudioProcessorParameter* GetSender(AudioProcessorParameter* link);

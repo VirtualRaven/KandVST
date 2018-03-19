@@ -26,12 +26,13 @@ ConsoleComponent::~ConsoleComponent()
 {
 }
 
+void ConsoleComponent::paint(Graphics & ) {
+}
+
 void ConsoleComponent::resized()
 {
 	__input.setBounds(getLocalBounds().removeFromBottom(25));
 	__output.setBounds(getLocalBounds().removeFromTop(getLocalBounds().getHeight() - 25));
-
-
 }
 
 bool ConsoleComponent::keyPressed(const KeyPress & key, Component * /*originatingComponent*/)

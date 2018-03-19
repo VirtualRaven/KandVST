@@ -8,7 +8,9 @@ PluginGUI::PluginGUI(PluginProcessor& owner)
 	ourLookAndFeel(),
 	__tabComponent(TabbedButtonBar::Orientation::TabsAtTop),
 	__keyboard(owner.keyboardState,MidiKeyboardComponent::Orientation::horizontalKeyboard),
-	__cc()
+	__cc(),
+	__owner(&owner),
+	__guiInit(false)
 {
 	setResizable(false, false);
 	setSize(1000, 720);
@@ -17,15 +19,18 @@ PluginGUI::PluginGUI(PluginProcessor& owner)
 	addAndMakeVisible(__loadingImage);
 	__loadingImage.setBounds(getLocalBounds());
 	addKeyListener(this);
+	startTimerHz(60);
 }
 
 
 void PluginGUI::InitializeGui()
 {
+	if (__guiInit)
+		return;
+	__guiInit = true;
 	const MessageManagerLock mmLock;
 	removeAllChildren();
 	setLookAndFeel(&ourLookAndFeel);
-
 	__tabComponent.addTab("M", Colour::fromRGB(200,200,200), new MasterComponent(), true);
 
 	for (int i = 0; i < 4; i++)
@@ -34,12 +39,9 @@ void PluginGUI::InitializeGui()
 	}
 
 	__tabComponent.addTab("Console", Colours::darkgrey, &__cc, true);
-	
 	addAndMakeVisible(__tabComponent);
 	addAndMakeVisible(__keyboard);
 	__keyboard.setKeyWidth(__keyboard.getKeyWidth() + 10.0f);
-
-	Global->paramHandler->LinkParameters(0, "OSC_SINE", 1, "OSC_SINE");
 }
 
 bool PluginGUI::keyPressed(const KeyPress & /*key*/, Component * /*originatingComponent*/)
@@ -50,6 +52,14 @@ bool PluginGUI::keyPressed(const KeyPress & /*key*/, Component * /*originatingCo
 bool PluginGUI::keyStateChanged(bool isKeyDown, Component * /*originatingComponent*/)
 {
 	return __keyboard.keyStateChanged(isKeyDown);
+}
+
+void PluginGUI::timerCallback()
+{
+	if (!__guiInit&&__owner->isReady()) {
+		InitializeGui();
+		stopTimer();
+	}
 }
 
 
