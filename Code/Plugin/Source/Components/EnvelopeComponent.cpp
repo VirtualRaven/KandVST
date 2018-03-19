@@ -96,6 +96,7 @@ EnvelopeComponent::EnvelopeComponent(int ID):
 	Global->paramHandler->addParamaterListener(this, ID, "ENV_ATTACK_LEVEL");
 	Global->paramHandler->addParamaterListener(this, ID, "ENV_DECAY_LEVEL");
 	Global->paramHandler->addParamaterListener(this, ID, "ENV_SUSTAIN_LEVEL");
+	this->addComponentListener(this);
 }
 
 
@@ -199,7 +200,7 @@ void EnvelopeComponent::resized()
 
 	delete __envImage;
 	__envImage = nullptr;
-	__envImage = new Image(Image::PixelFormat::RGB, __envImageComponent.getWidth(), __envImageComponent.getHeight(), true);
+	__envImage = new Image(Image::PixelFormat::RGB, __envImageComponent.getWidth()*2, __envImageComponent.getHeight()*2, true);
 	EnvelopeGenerator::RenderImage(__ID, __envImage);
 	__envImageComponent.setImage(*__envImage);
 	__envImageComponent.repaint();
@@ -208,16 +209,37 @@ void EnvelopeComponent::parametersChanged(std::vector<std::string>)
 {
 	__envInvalid = true;
 	if (!isTimerRunning())
-		startTimerHz(60);
+		startTimerHz(120);
 	
 }
 void EnvelopeComponent::timerCallback()
 {
-	if (!__envInvalid) 
+	if (!this->getParentComponent()->isVisible()) {
 		stopTimer();
-
+		return;
+	}
+	if (!__envInvalid) {
+		stopTimer();
+		return;
+	}
 		EnvelopeGenerator::RenderImage(__ID, __envImage);
 		__envImageComponent.repaint();
 		__envInvalid = false;
 
+}
+
+void EnvelopeComponent::componentVisibilityChanged(Component & component)
+{
+	if (__envInvalid && component.isVisible()) {
+		EnvelopeGenerator::RenderImage(__ID, __envImage);
+		__envImageComponent.repaint();
+		__envInvalid = false;
+	}
+
+}
+
+void EnvelopeComponent::componentParentHierarchyChanged(Component & component)
+{
+	this->getParentComponent()->addComponentListener(this);
+	this->removeComponentListener(this);
 }

@@ -25,6 +25,9 @@ public:
 	int GetPresetIndex(std::string name);
 	int GetCurrentPreset();
 	bool PresetExists(std::string name);
+	void LoadPreset(XmlElement * xmlState);
+	void SavePreset(XmlElement * xmlState);
+
 	std::vector<std::string> GetPresetNames();
 	JUCE_LEAK_DETECTOR(PresetManager);
 };

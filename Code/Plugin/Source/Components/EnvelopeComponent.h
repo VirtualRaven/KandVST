@@ -9,7 +9,7 @@
 #include "../OurLookAndFeel.h"
 #include "../EnvelopeGenerator.h"
 #include "../ParameterListener.h"
-class EnvelopeComponent : public  Component, private IVSTParameters, private Timer, private ParameterListener
+class EnvelopeComponent : public  Component, private IVSTParameters, private Timer, private ParameterListener,private ComponentListener
 {
 private:
 	ImageComponent __envImageComponent;
@@ -20,7 +20,8 @@ private:
 								   attackLevel, decayLevel, sustainLevel;
 	bool __envInvalid;
 	virtual void timerCallback() override;
-
+	virtual void componentVisibilityChanged(Component &component) override;
+	virtual void componentParentHierarchyChanged(Component &component) override;
 public:
 	EnvelopeComponent(int ID);
 	~EnvelopeComponent();

@@ -49,7 +49,7 @@ PluginProcessor::PluginProcessor()
 	Global->presetManager = new PresetManager(this);
 	Global->presetManager->RefreshPresets();
 	
-	//*(Global->paramHandler->Get<AudioParameterBool>(0, "OSC_MIX_EN")) = 1; //Enable default oscillator
+	*(Global->paramHandler->Get<AudioParameterBool>(0, "OSC_MIX_EN")) = 1; //Enable default oscillator
 }
 
 
@@ -63,6 +63,7 @@ PluginProcessor::~PluginProcessor()
 }
 
 void PluginProcessor::freePipelineManager() {
+	processorReady = false;
 	if (doublePrecision) {
 		delete __pipManager.dp;
 		__pipManager.dp = nullptr;
@@ -148,11 +149,8 @@ void PluginProcessor::getStateInformation(juce::MemoryBlock & destData)
 {
 	Global->log->Write("Get state\n");
 	//this needs rewrite
-	XmlElement xml("MYPLUGINSETTINGS");
-
-	for (auto* param : getParameters())
-		if (auto* p = dynamic_cast<AudioProcessorParameterWithID*> (param))
-			xml.setAttribute(String("_") + p->paramID, p->getValue());
+	XmlElement xml("KandVSTPreset");
+	Global->presetManager->SavePreset(&xml);
 
 	copyXmlToBinary(xml, destData);
 }
@@ -162,16 +160,8 @@ void PluginProcessor::setStateInformation(const void * data, int sizeInBytes)
 	//this needs rewrite
 	Global->log->Write("Set state\n");
 	ScopedPointer<XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
-
-	if (xmlState != nullptr)
-	{
-		if (xmlState->hasTagName("MYPLUGINSETTINGS"))
-		{
-			for (auto* param : getParameters())
-				if (auto* p = dynamic_cast<AudioProcessorParameterWithID*> (param))
-					p->setValue((float)xmlState->getDoubleAttribute(String("_") + p->paramID, p->getValue()));
-		}
-	}
+	xmlState->writeToFile(File("D:\\text.xml"), "");
+	Global->presetManager->LoadPreset(xmlState);
 
 }
 
@@ -189,9 +179,11 @@ template<> PipelineManager<float>* PluginProcessor::getPipeline<float>() {
 
 void PluginProcessor::prepareToPlay (double newSampleRate, int maxSamplesPerBlock)
 {
+	
 	Global->log->Write("Prepare To play\n");
 
 	if (__sampleRate != newSampleRate) {
+		
 		populateWavetable(newSampleRate);
 		keyboardState.reset();
 		freePipelineManager();
@@ -208,6 +200,7 @@ void PluginProcessor::prepareToPlay (double newSampleRate, int maxSamplesPerBloc
 
 		__sampleRate = newSampleRate;
 	}
+	
 }
 
 void PluginProcessor::releaseResources()

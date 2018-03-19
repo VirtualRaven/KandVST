@@ -76,7 +76,7 @@ ParameterSlider::ParameterSlider(AudioProcessorParameter& p):
 	
 	startTimerHz(30);
 	updateSliderPos();
-	
+	LinkCouldHaveChanged();
 }
 
 
@@ -136,10 +136,7 @@ void ParameterSlider::mouseDoubleClick(const MouseEvent & event)
 
 void ParameterSlider::LinkCouldHaveChanged()
 {
-	if (isLinked())
-	{
-		this->setEnabled(false);
-	}
+		this->setEnabled(!isLinked());
 }
 
 
