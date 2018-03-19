@@ -2,7 +2,9 @@
 #define PRESET_MANAGER_H
 #include <map>
 #include "../JuceLibraryCode/JuceHeader.h"
-class PresetManager
+#include "Global.h"
+#include "ParameterHandler.h"
+class PresetManager : public ChangeBroadcaster
 {
 private:
 	AudioProcessor* __owner;
@@ -23,6 +25,9 @@ public:
 	int GetPresetIndex(std::string name);
 	int GetCurrentPreset();
 	bool PresetExists(std::string name);
+	void LoadPreset(XmlElement * xmlState);
+	void SavePreset(XmlElement * xmlState);
+
 	std::vector<std::string> GetPresetNames();
 	JUCE_LEAK_DETECTOR(PresetManager);
 };

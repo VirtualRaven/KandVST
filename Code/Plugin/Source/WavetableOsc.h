@@ -12,6 +12,7 @@
 class WavetableOsc : public IGenerator, public IVSTParameters
 {
 private:
+	int __maxBuffHint;
 	EnvelopeGenerator __envelope;
 	int __note;
 	double __frequency;
@@ -25,6 +26,8 @@ private:
 	template<typename T>
 	bool __RenderBlock(AudioBuffer<T>& buffer,int len);
 
+	double * __envBuff;
+
 	//Random things
 	std::vector<double> __noiseBuffer;
 	Random __rand;
@@ -32,7 +35,9 @@ private:
 
 
 public:
-	WavetableOsc(int ID,double sampleRate);
+	WavetableOsc(int ID,double sampleRate,int __maxBuffHint);
+	WavetableOsc(const WavetableOsc&) = delete;
+	WavetableOsc(WavetableOsc&& ref);
 	virtual ~WavetableOsc();
 
 	// Inherited via Generator

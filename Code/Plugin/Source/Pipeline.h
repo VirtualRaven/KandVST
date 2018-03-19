@@ -41,7 +41,7 @@ public:
 	Pipeline(const Pipeline<T>&) = delete;
 	Pipeline(Pipeline<T>&&);
 	int getNoteNumber();
-	void render_block(AudioBuffer<T>& buffer);
+	void render_block(AudioBuffer<T>& buffer,int len);
 
 	~Pipeline();
 	static void RegisterParameters(int ID);

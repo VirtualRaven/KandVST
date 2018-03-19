@@ -20,6 +20,7 @@ public:
 	ConsoleComponent();
 	~ConsoleComponent();
 	void resized() override;
+	void paint(Graphics & g) override;
 
 	// Inherited via KeyListener
 	virtual bool keyPressed(const KeyPress & key, Component * originatingComponent) override;

@@ -10,7 +10,7 @@
 #include "../IVSTParameters.h"
 #include "../WavetableOsc.h"
 #include "../ParameterListener.h"
-class OscillatorComponent : public Component, private IVSTParameters, private Timer, private ParameterListener
+class OscillatorComponent : public Component, private IVSTParameters, private Timer, private ParameterListener, private ComponentListener
 {
 public:
     //==============================================================================
@@ -27,13 +27,13 @@ private:
 	Label __sineLabel, __squareLabel, __sawLabel, __triangleLabel,__noiseLabel;
 	ScopedPointer<ParameterSlider> __sineSlider, __squareSlider, __sawSlider, __triangleSlider,__noiseSlider;
 
-	Label __delayLabel, __octaveLabel, __detuneLabel, __offsetLabel;
-	ScopedPointer<ParameterSlider> __delaySlider, __octaveSlider, __detuneSlider, __offsetSlider;
-	float s, sq, sa, tr;
+	Label __delayLabel, __octaveLabel, __detuneLabel, __offsetLabel, __overtoneLabel;
+	ScopedPointer<ParameterSlider> __delaySlider, __octaveSlider, __detuneSlider, __offsetSlider, __overtoneSlider;
 	Image* __oscWaveform;
 	ImageComponent __waveformComp;
 	bool __waveformInvalid;
-
+	virtual void componentVisibilityChanged(Component &component) override;
+	virtual void componentParentHierarchyChanged(Component &component) override;
 	//==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OscillatorComponent)
 

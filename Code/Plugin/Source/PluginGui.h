@@ -9,7 +9,7 @@
 #include "Components\OscillatorPageComponent.h"
 #include "OurLookAndFeel.h"
 
-class PluginGUI  : public AudioProcessorEditor, private KeyListener               
+class PluginGUI  : public AudioProcessorEditor, private KeyListener, private Timer            
 {
 public:
 	PluginGUI(PluginProcessor& owner);
@@ -25,6 +25,7 @@ private:
 	TabbedComponent __tabComponent;
 	MidiKeyboardComponent __keyboard;
 	ConsoleComponent __cc;
+	PluginProcessor* __owner;
     //==============================================================================
 	PluginProcessor& getProcessor() const
     {
@@ -37,5 +38,9 @@ private:
 	virtual bool keyPressed(const KeyPress & key, Component * originatingComponent) override;
 	virtual bool keyStateChanged(bool isKeyDown, Component* originatingComponent);
 
+
+	// Inherited via Timer
+	virtual void timerCallback() override;
+	bool __guiInit;
 };
 #endif // !PLUGIN_GUI_H

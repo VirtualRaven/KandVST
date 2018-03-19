@@ -16,7 +16,6 @@ PluginProcessor::PluginProcessor()
 	processorReady(false)
 {
 	lastPosInfo.resetToDefault();
-	__gui = nullptr;
 	__pipManager.dp = nullptr;
 	__pipManager.fp = nullptr;
 	doublePrecision = true;
@@ -49,25 +48,29 @@ PluginProcessor::PluginProcessor()
 
 	Global->presetManager = new PresetManager(this);
 	Global->presetManager->RefreshPresets();
-	this->addListener(Global->paramHandler);
-	//*(Global->paramHandler->Get<AudioParameterBool>(0, "OSC_MIX_EN")) = 1; //Enable default oscillator
-	__gui = new PluginGUI(*this);
+	
+	*(Global->paramHandler->Get<AudioParameterBool>(0, "OSC_MIX_EN")) = 1; //Enable default oscillator
 }
 
 
 PluginProcessor::~PluginProcessor()
 {
+	Global->log->Write("Destory\n");
 	freePipelineManager();
 	freeWavetable();
 	delete Global;
+	delete getActiveEditor();
 }
 
 void PluginProcessor::freePipelineManager() {
+	processorReady = false;
 	if (doublePrecision) {
 		delete __pipManager.dp;
+		__pipManager.dp = nullptr;
 	}
 	else {
 		delete __pipManager.fp;
+		__pipManager.fp = nullptr;
 	}
 
 	
@@ -137,14 +140,17 @@ void PluginProcessor::changeProgramName(int , const String & )
 	//TODO
 }
 
+bool PluginProcessor::isReady()
+{
+	return processorReady;
+}
+
 void PluginProcessor::getStateInformation(juce::MemoryBlock & destData)
 {
+	Global->log->Write("Get state\n");
 	//this needs rewrite
-	XmlElement xml("MYPLUGINSETTINGS");
-
-	for (auto* param : getParameters())
-		if (auto* p = dynamic_cast<AudioProcessorParameterWithID*> (param))
-			xml.setAttribute(String("_") + p->paramID, p->getValue());
+	XmlElement xml("KandVSTPreset");
+	Global->presetManager->SavePreset(&xml);
 
 	copyXmlToBinary(xml, destData);
 }
@@ -152,18 +158,10 @@ void PluginProcessor::getStateInformation(juce::MemoryBlock & destData)
 void PluginProcessor::setStateInformation(const void * data, int sizeInBytes)
 {
 	//this needs rewrite
-
+	Global->log->Write("Set state\n");
 	ScopedPointer<XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
-
-	if (xmlState != nullptr)
-	{
-		if (xmlState->hasTagName("MYPLUGINSETTINGS"))
-		{
-			for (auto* param : getParameters())
-				if (auto* p = dynamic_cast<AudioProcessorParameterWithID*> (param))
-					p->setValue((float)xmlState->getDoubleAttribute(String("_") + p->paramID, p->getValue()));
-		}
-	}
+	xmlState->writeToFile(File("D:\\text.xml"), "");
+	Global->presetManager->LoadPreset(xmlState);
 
 }
 
@@ -181,19 +179,20 @@ template<> PipelineManager<float>* PluginProcessor::getPipeline<float>() {
 
 void PluginProcessor::prepareToPlay (double newSampleRate, int maxSamplesPerBlock)
 {
+	
+	Global->log->Write("Prepare To play\n");
+
 	if (__sampleRate != newSampleRate) {
+		
 		populateWavetable(newSampleRate);
 		keyboardState.reset();
 		freePipelineManager();
-		Thread::launch([this,newSampleRate,maxSamplesPerBlock]() {
+		Thread::launch([this, newSampleRate, maxSamplesPerBlock]() {
 			while (!wavetableRdy());
 			if ((doublePrecision = isUsingDoublePrecision()) == true)
 				__pipManager.dp = new PipelineManager<double>(newSampleRate, maxSamplesPerBlock);
 			else
 				__pipManager.fp = new PipelineManager<float>(newSampleRate, maxSamplesPerBlock);
-
-		
-			__gui->InitializeGui();
 			processorReady = true;
 		});
 		
@@ -201,6 +200,7 @@ void PluginProcessor::prepareToPlay (double newSampleRate, int maxSamplesPerBloc
 
 		__sampleRate = newSampleRate;
 	}
+	
 }
 
 void PluginProcessor::releaseResources()
@@ -230,7 +230,8 @@ void PluginProcessor::process (AudioBuffer<FloatType>& buffer,
 
 AudioProcessorEditor* PluginProcessor::createEditor()
 {
-    return __gui;
+	Global->log->Write("createEditor\n");
+    return new PluginGUI(*this);
 }
 AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
