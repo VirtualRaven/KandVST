@@ -17,6 +17,9 @@ private:
 	juce::dsp::Convolution __conv;
 	int __maxBuffHint;
 
+	AudioBuffer<T> __responseBuffer;
+	int __responseBufferLen;
+
 public:
 	ConvolutionReverb(int ID,double sampleRate, int maxBuffHint);
 	~ConvolutionReverb();
