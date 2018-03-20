@@ -1,11 +1,10 @@
 #ifndef MIXER_SUB_COMPONENT_H
 #define MIXER_SUB_COMPONENT_H
 
-#include "../Global.h"
+#include "Global.h"
 #include "ParameterSlider.h"
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "../JuceLibraryCode/JuceHeader.h"
-#include "../IVSTParameters.h"
+#include "IVSTParameters.h"
 class MixerSubComponent : public Component,IVSTParameters
 {
 public:

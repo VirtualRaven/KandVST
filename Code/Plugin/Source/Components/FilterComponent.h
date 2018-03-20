@@ -1,7 +1,7 @@
 #ifndef FILTER_COMPONENT_H
 #define FILTER_COMPONENT_H
 
-#include "../Global.h"
+#include "Global.h"
 #include "ParameterSlider.h"
 #include "../JuceLibraryCode/JuceHeader.h"
 

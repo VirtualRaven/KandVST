@@ -1,9 +1,8 @@
 #ifndef MIXER_COMPONENT_H
 #define MIXER_COMPONENT_H
 
-#include "../Global.h"
+#include "Global.h"
 #include "ParameterSlider.h"
-#include "../JuceLibraryCode/JuceHeader.h"
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "MixerSubComponent.h"
 class MixerComponent : public Component

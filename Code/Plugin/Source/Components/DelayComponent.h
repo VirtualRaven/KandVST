@@ -2,9 +2,9 @@
 #define DELAY_COMPONENT_H
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "../IVSTParameters.h"
+#include "IVSTParameters.h"
 #include "ParameterSlider.h"
-#include "../Global.h"
+#include "Global.h"
 
 class DelayComponent : public Component, private IVSTParameters {
 public:
