@@ -1,9 +1,11 @@
 #ifndef PRESET_ROW
 #define PRESET_ROW
 #include "JuceHeader.h"
-#include "../Global.h"
-#include "../Resources_files.h"
-class PresetRow : public Component, private Button::Listener, private MouseListener
+#include "Global.h"
+#include "PresetManager.h"
+#include "Resources_files.h"
+class PresetRow : public Component, private ButtonListener
+
 {
 private:
 	virtual void resized() override;

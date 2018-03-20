@@ -1,12 +1,14 @@
 #ifndef OSCILLATOR_PAGE_COMPONENT_H
 #define OSCILLATOR_PAGE_COMPONENT_H
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "../IVSTParameters.h"
+#include "IVSTParameters.h"
 #include "EnvelopeComponent.h"
 #include "ParameterSlider.h"
-#include "../Global.h"
+#include "Global.h"
 #include "OscillatorComponent.h"
 #include "LFOComponent.h"
+#include "FilterComponent.h"
+#include "OSCLFOComponent.h"
 class OscillatorPageComponent  : public Component, private IVSTParameters
 {
 public:
@@ -26,11 +28,10 @@ private:
 	ComboBox __oscOctave;
 	ScopedPointer<ParameterSlider> __amplitude;
 	Label __ampLabel;
-	ScopedPointer<ParameterSlider> __lpFreq;
-	Label __lpLabel;
-	ScopedPointer<ParameterSlider> __hpFreq;
-	Label __hpLabel;
 	ScopedPointer<ParameterButton> __toggleOsc;
+
+	FilterComponent __filterComponent;
+	OSCLFOComponent __osclfoComponent;
     //==============================================================================
     
 };

@@ -8,7 +8,8 @@ OscillatorComponent::~OscillatorComponent()
 }
 
 OscillatorComponent::OscillatorComponent(int ID):
-IVSTParameters(ID)
+IVSTParameters(ID),
+__waveformInvalid(false)
 {
 	__ID = ID;
 	//=====================================
@@ -38,7 +39,7 @@ IVSTParameters(ID)
 	addAndMakeVisible(__triangleSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "OSC_TRI")));
 	__triangleSlider->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
 	__triangleSlider->setTextBoxStyle(__triangleSlider->NoTextBox, true, 10, 10);
-	__triangleLabel.setText("TRIANGLE", NotificationType::dontSendNotification);
+	__triangleLabel.setText("TRI", NotificationType::dontSendNotification);
 	__triangleLabel.attachToComponent(__triangleSlider, false);
 	__triangleLabel.setJustificationType(juce::Justification::centred);
 
@@ -71,32 +72,65 @@ IVSTParameters(ID)
 	__offsetLabel.setText("OFFSET", NotificationType::dontSendNotification);
 	__offsetLabel.attachToComponent(__offsetSlider, false);
 	__offsetLabel.setJustificationType(juce::Justification::centred);
+
+	addAndMakeVisible(__overtoneSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterInt>(__ID, "OSC_OVERTONE")));
+	__overtoneSlider->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
+	__overtoneSlider->setTextBoxStyle(__overtoneSlider->NoTextBox, true, 0, 0);
+	__overtoneLabel.setText("OVERTONE", NotificationType::dontSendNotification);
+	__overtoneLabel.attachToComponent(__overtoneSlider, false);
+	__overtoneLabel.setJustificationType(juce::Justification::centred);
 	//============================================================================
 
-	
-	
-	
+	Global->paramHandler->addParamaterListener(this, __ID, "OSC_SINE");
+	Global->paramHandler->addParamaterListener(this, __ID, "OSC_SAW");
+	Global->paramHandler->addParamaterListener(this, __ID, "OSC_SQUARE");
+	Global->paramHandler->addParamaterListener(this, __ID, "OSC_TRI");
+
 	//=======
 	__oscWaveform = new Image(Image::PixelFormat::RGB, 300, 200, true);
 
 	__waveformComp.setImage(*__oscWaveform);
+
+	WavetableOsc os = WavetableOsc(__ID, 0,0);
+	os.renderImage(__oscWaveform);
+	__waveformComp.repaint();
+
 	addAndMakeVisible(__waveformComp);
-	startTimer(50);
-	timerCallback();
+	this->addComponentListener(this);
 }
 
-void OscillatorComponent::paint(Graphics&){
+void OscillatorComponent::paint(Graphics& g){
+
+	Rectangle<int> bounds(getLocalBounds());
+
+	g.setColour(Colour::fromRGB(65, 65, 65));
+	int startY = bounds.getHeight() / 2 + 10;
+	g.fillRect(Rectangle<int>(3, startY+5, 13, 80));
+	g.drawRect(Rectangle<int>(8, startY, bounds.getWidth() - 8, 90));
+
+	g.saveState();
+
+	g.setColour(Colours::white);
+	g.setFont(Font(10, Font::bold));
+
+	int translateX = -250;
+	int translateY = 515;
+	float angle = -float_Pi / 2.0f;
+	g.addTransform(AffineTransform::identity.rotated(angle).followedBy(AffineTransform::identity.translated(translateX, translateY)));
+	g.drawText("WAVES", bounds, Justification::centred, false);
 	
+	g.restoreState();
 }
 
 
 void OscillatorComponent::resized(){
+	
 	Rectangle<int> bounds(getLocalBounds());
 		__waveformComp.setBounds(bounds.removeFromTop(jmin<int>(bounds.getWidth(), bounds.getHeight() / 2)));
 	delete __oscWaveform;
 	__oscWaveform = nullptr;
-	__oscWaveform = new Image(Image::PixelFormat::RGB, __waveformComp.getWidth(), __waveformComp.getHeight(), true);
-	WavetableOsc os = WavetableOsc(__ID, 0);
+	__oscWaveform = new Image(Image::PixelFormat::RGB, __waveformComp.getWidth()*2, __waveformComp.getHeight()*2, true);
+	WavetableOsc os = WavetableOsc(__ID, 0,0);
 	os.renderImage(__oscWaveform);
 	__waveformComp.setImage(*__oscWaveform);
 	__waveformComp.repaint();
@@ -104,40 +138,73 @@ void OscillatorComponent::resized(){
 	bounds.removeFromTop(32);
 	//Rectangle<int> waveforms(bounds.removeFromTop(jmax<int>(bounds.getWidth() / 5, 100)));
 	Rectangle<int> waveforms(bounds.removeFromTop((bounds.getWidth()-100)/5));
-	waveforms.removeFromLeft(50);
-	int sliderw = (waveforms.getWidth()-50) / 5;
+	
+	int sliderw = (waveforms.getWidth()-100) / 5;
+	int gap = 15;
 
 	// waves
+	waveforms.removeFromLeft(gap+10);
 	__sineSlider->setBounds(waveforms.removeFromLeft(sliderw));
+	waveforms.removeFromLeft(gap);
 	__squareSlider->setBounds(waveforms.removeFromLeft(sliderw));
+	waveforms.removeFromLeft(gap);
 	__sawSlider->setBounds(waveforms.removeFromLeft(sliderw));
+	waveforms.removeFromLeft(gap);
 	__triangleSlider->setBounds(waveforms.removeFromLeft(sliderw));
+	waveforms.removeFromLeft(gap);
 	__noiseSlider->setBounds(waveforms.removeFromLeft(sliderw));
 
-	bounds.removeFromTop(32);
+	bounds.removeFromTop(50);
 	//Rectangle<int> atrSliders(bounds.removeFromTop(jmax<int>(bounds.getWidth() / 3,100)));
-	Rectangle<int> atrSliders(bounds.removeFromTop((bounds.getWidth() - 100) / 3));
-	atrSliders.removeFromLeft(50);
-	sliderw = (atrSliders.getWidth()-50) / 3;
+	Rectangle<int> atrSliders(bounds.removeFromTop((bounds.getWidth() - 100) / 4));
+	atrSliders.removeFromLeft(gap+10);
+	sliderw = (bounds.getWidth()-100) / 4;
 
 	// detune, offset, octave
 	__octaveSlider->setBounds(atrSliders.removeFromLeft(sliderw));
+	atrSliders.removeFromLeft(gap);
 	__detuneSlider->setBounds(atrSliders.removeFromLeft(sliderw));
+	atrSliders.removeFromLeft(gap);
 	__offsetSlider->setBounds(atrSliders.removeFromLeft(sliderw));
+	atrSliders.removeFromLeft(gap);
+	__overtoneSlider->setBounds(atrSliders.removeFromLeft(sliderw));
 }
 
 
-void OscillatorComponent::timerCallback()
+void OscillatorComponent::componentVisibilityChanged(Component & component)
 {
-	if (s != __sineSlider->getValue() || sq != __squareSlider->getValue() || sa != __sawSlider->getValue() || tr != __triangleSlider->getValue()) {
-
-		s =  (float) __sineSlider->getValue();
-		sq = (float) __squareSlider->getValue();
-		sa = (float) __sawSlider->getValue();
-		tr = (float) __triangleSlider->getValue();
-
-		WavetableOsc os = WavetableOsc(__ID, 0);
+	if (component.isVisible() && __waveformInvalid) {
+		WavetableOsc os = WavetableOsc(__ID, 0, 0);
 		os.renderImage(__oscWaveform);
 		__waveformComp.repaint();
+		__waveformInvalid = false;
 	}
+}
+
+void OscillatorComponent::componentParentHierarchyChanged(Component & component)
+{
+	this->getParentComponent()->addComponentListener(this);
+	this->removeComponentListener(this);
+}
+
+void OscillatorComponent::timerCallback()
+{	
+	if (!this->getParentComponent()->isVisible())
+		return;
+
+	if (!__waveformInvalid) {
+		stopTimer();
+		return;
+	}
+	WavetableOsc os = WavetableOsc(__ID, 0, 0);
+	os.renderImage(__oscWaveform);
+	__waveformComp.repaint();
+	__waveformInvalid = false;
+}
+
+void OscillatorComponent::parametersChanged(std::vector<std::string>)
+{
+	__waveformInvalid = true;
+	if (!isTimerRunning())
+		startTimerHz(120);
 }

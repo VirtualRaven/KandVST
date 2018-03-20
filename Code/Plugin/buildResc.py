@@ -6,8 +6,8 @@ from os import path
 writeDir='Source'
 if not os.path.exists(writeDir):
     os.makedirs(writeDir)
-__writeFile_h = open (writeDir+"/Resources_files.h",'w')
-__writeFile_cpp = open (writeDir+"/Resources_files.cpp",'w')
+__writeFile_h = open (writeDir+"/Util/Resources_files.h",'w')
+__writeFile_cpp = open (writeDir+"/Util/Resources_files.cpp",'w')
 __writeFile_h.write("#ifndef RESOURCES_FILES_H\n#define RESOURCES_FILES_H\n")
 __writeFile_cpp.write("#include \"Resources_files.h\"\n")
 rowBreak =30
