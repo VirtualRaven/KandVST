@@ -1,8 +1,8 @@
 #ifndef PRESET_ROW
 #define PRESET_ROW
 #include "JuceHeader.h"
-#include "../Global.h"
-#include "../PresetManager.h"
+#include "Global.h"
+#include "PresetManager.h"
 class PresetRow : public ListBoxModel, private KeyListener
 {
 public:

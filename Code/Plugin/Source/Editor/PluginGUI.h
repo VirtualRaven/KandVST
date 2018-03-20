@@ -4,16 +4,16 @@
 #include "PluginProcessor.h"
 #include "../JuceLibraryCode/JuceHeader.h"
 
-#include "Components\ConsoleComponent.h"
-#include "Components\MasterPageComponent.h"
-#include "Components\OscillatorPageComponent.h"
+#include "Components/ConsoleComponent.h"
+#include "Components/MasterPageComponent.h"
+#include "Components/OscillatorPageComponent.h"
 #include "OurLookAndFeel.h"
 
 class PluginGUI  : public AudioProcessorEditor, private KeyListener, private Timer            
 {
 public:
 	PluginGUI(PluginProcessor& owner);
-	~PluginGUI();
+	virtual ~PluginGUI();
 
 	void paint(Graphics& g);
 	void resized();

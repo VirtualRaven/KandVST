@@ -3,7 +3,7 @@
 #include "IWavetable.h"
 #include "PresetManager.h"
 #include "Pipeline.h"
-#include "Components\SettingsComponent.h"
+#include "Components/SettingsComponent.h"
 #include "PipelineManager.h"
 AudioProcessor* JUCE_CALLTYPE createPluginFilter();
 
@@ -13,7 +13,8 @@ GLOBAL * Global;
 PluginProcessor::PluginProcessor()
     : AudioProcessor (getBusesProperties()),
 	__sampleRate(0.0),
-	processorReady(false)
+	processorReady(false),
+	__wavePool(4)
 {
 	lastPosInfo.resetToDefault();
 	__pipManager.dp = nullptr;
@@ -184,7 +185,7 @@ void PluginProcessor::prepareToPlay (double newSampleRate, int maxSamplesPerBloc
 
 	if (__sampleRate != newSampleRate) {
 		
-		populateWavetable(newSampleRate);
+		populateWavetable(newSampleRate,__wavePool);
 		keyboardState.reset();
 		freePipelineManager();
 		Thread::launch([this, newSampleRate, maxSamplesPerBlock]() {
@@ -213,18 +214,19 @@ template <typename FloatType>
 void PluginProcessor::process (AudioBuffer<FloatType>& buffer,
                                             MidiBuffer& midiMessages)
 {
+
 	if (!processorReady)
 		return;
     const int numSamples = buffer.getNumSamples();
     keyboardState.processNextMidiBuffer (midiMessages, 0, numSamples, true);
 
+	updateCurrentTimeInfoFromHost();
 	getPipeline<FloatType>()->genSamples(buffer, midiMessages, lastPosInfo);
 
 
     for (int i = getTotalNumInputChannels(); i < getTotalNumOutputChannels(); ++i)
         buffer.clear (i, 0, numSamples);
-
-	updateCurrentTimeInfoFromHost();
+	
 }
 
 AudioProcessorEditor* PluginProcessor::createEditor()

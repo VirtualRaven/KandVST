@@ -12,6 +12,7 @@ private:
 	double __sampleRate;
 	int __ID;
 	double* __samples;
+	double __squareTable[4096];
 	int __nrOfSamples;
 	bool __activeCheck;
 	//double* __parameter; // TEMPORARY

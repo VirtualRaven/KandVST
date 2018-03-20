@@ -1,13 +1,12 @@
 #ifndef MASTER_COMPONENT_H
 #define MASTER_COMPONENT_H
 
-#include "../Global.h"
-#include "../ParameterHandler.h"
+#include "Global.h"
+#include "ParameterHandler.h"
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "InformationComponent.h"
 #include "PresetsComponent.h"
 #include "ParameterSlider.h"
-#include "../Global.h"
 #include "MixerComponent.h"
 #include "FilterComponent.h"
 #include "LFOComponent.h"

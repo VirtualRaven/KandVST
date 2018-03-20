@@ -377,7 +377,7 @@ void EnvelopeGenerator::RenderImage(int __ID, Image * image)
 			break;
 		}
 		
-		if (std::isfinite<float>(static_cast<float>(__amplitude))) {
+		if (std::isfinite(static_cast<float>(__amplitude))) {
 			if (i > 4) {
 				//g->drawLine(lastx, lasty, static_cast<float>(i), __imageHeight - static_cast<float>(__amplitude*(__imageHeight - 16)) - 6, 6.0f);
 				//p.addLineSegment(Line<float>(lastx, lasty, static_cast<float>(i), __imageHeight - static_cast<float>(__amplitude*(__imageHeight - 16)) - 6), 10.0f);

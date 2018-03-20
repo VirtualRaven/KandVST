@@ -30,9 +30,9 @@ DISCLAIMED.
 #define PARAMETER_SLIDER_H
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "../Global.h"
-#include "../Linkable.h"
-#include "../ParameterHandler.h"
+#include "Global.h"
+#include "Linkable.h"
+#include "ParameterHandler.h"
 
 class ParameterSlider: public Slider, private Timer, private Linkable
 {
