@@ -1,14 +1,15 @@
 #ifndef OSCILLATOR_PAGE_COMPONENT_H
 #define OSCILLATOR_PAGE_COMPONENT_H
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "../IVSTParameters.h"
+#include "IVSTParameters.h"
 #include "EnvelopeComponent.h"
 #include "ParameterSlider.h"
-#include "../Global.h"
+#include "Global.h"
 #include "OscillatorComponent.h"
 #include "LFOComponent.h"
 #include "FilterComponent.h"
 #include "OSCLFOComponent.h"
+#include "Swatch.h"
 class OscillatorPageComponent  : public Component, private IVSTParameters
 {
 public:

@@ -56,7 +56,7 @@ void PipelineManager<T>::genSamples(AudioBuffer<T>& buff, MidiBuffer & midiMessa
 	}
 	
 
-	std::vector<Pipeline<T>>::iterator pipIt;
+	typename std::vector<Pipeline<T>>::iterator pipIt;
 	auto it = juce::MidiBuffer::Iterator(midiMessages);
 	int pos;
 	juce::MidiMessage tmp;

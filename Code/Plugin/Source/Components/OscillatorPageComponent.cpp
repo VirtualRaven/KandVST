@@ -26,7 +26,7 @@ __osclfoComponent(ID)
 }
 
 void OscillatorPageComponent::paint(Graphics& g){
-	g.setColour(Colour::fromRGB(40, 40, 40));
+	g.setColour(Swatch::background);
 	g.fillAll();
 
 }

@@ -22,11 +22,10 @@ MasterComponent::MasterComponent() :
 
 	addAndMakeVisible(__settingsComponent);
 	addAndMakeVisible(__delayComponent);
-
 }
 
 void MasterComponent::paint(Graphics& g){
-	g.setColour(Colour::fromRGB(40, 40, 40));
+	g.setColour(Swatch::background);
 	g.fillAll();
 }
 

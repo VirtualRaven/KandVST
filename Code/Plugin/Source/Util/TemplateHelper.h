@@ -2,6 +2,8 @@
 #define TEMPLATE_HELPER
 #include <initializer_list>
 #include <vector>
+#include  <stdexcept>
+	
 template<typename F, unsigned int I> 
 class parameterArguments : parameterArguments<F, I - 1> {
 	F args;

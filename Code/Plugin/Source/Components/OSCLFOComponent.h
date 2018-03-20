@@ -1,13 +1,13 @@
 #ifndef OSCLFO_COMPONENT_H
 #define OSCLFO_COMPONENT_H
 
-#include "../Global.h"
-#include "../ParameterHandler.h"
+#include "Global.h"
+#include "ParameterHandler.h"
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "InformationComponent.h"
 #include "SelectKnob.h"
 #include "ParameterButton.h"
-#include "../IVSTParameters.h"
+#include "IVSTParameters.h"
 
 class OSCLFOComponent : public Component, private IVSTParameters
 {

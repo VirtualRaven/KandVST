@@ -4,6 +4,7 @@
 #include "IVSTParameters.h"
 #include "Global.h"
 #include <math.h>
+#include "Swatch.h"
 class EnvelopeGenerator: public IVSTParameters
 {
 private:

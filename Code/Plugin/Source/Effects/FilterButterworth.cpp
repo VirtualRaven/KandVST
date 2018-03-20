@@ -2,7 +2,7 @@
 
 template<typename T>
 FilterButterworth<T>::FilterButterworth(int ID, double sampleRate, String parameterId) :
-	IEffect(sampleRate),
+	IEffect<T>(sampleRate),
 	IVSTParameters(ID),
 	__enabled(true),
 	__firstSampleIndex(0)
