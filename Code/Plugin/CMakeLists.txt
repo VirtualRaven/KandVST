@@ -7,18 +7,17 @@ set(
     AudioPlugin_jucer_FILE "${CMAKE_SOURCE_DIR}//AudioPlugin.jucer" 
     CACHE STRING "Path to project jucere file")
 
-find_program (PYT  NAMES "python")
-message(${PYT})
-
-if(NOT PYT)
-    message(STATUS "Python not found! Install python 3")
+find_package(PythonInterp 3)
+if(EXISTS ${PYTHON_EXECUTABLE})
+    #Build Resources
+    execute_process(
+      WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
+      COMMAND ${PYTHON_EXECUTABLE}  "buildResc.py" "Resources"
+      )
+else()
+    message(STATUS "Python not found! Skipping update of resources")
 endif()
 
-#Build Resources
-execute_process(
-  WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
-  COMMAND ${PYT} "buildResc.py" "Resources"
-  )
   
 add_definitions(-DJUCE_WEB_BROWSER=0)
 
