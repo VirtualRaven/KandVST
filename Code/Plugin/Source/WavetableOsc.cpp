@@ -8,7 +8,8 @@ WavetableOsc::WavetableOsc(int ID, double sampleRate,int maxBuffHint) :
 	__maxBuffHint(maxBuffHint),
 	__envelope(__ID, sampleRate),
 	__note(0),
-	__sustain(false),
+	__sustainPedal(false),
+	__keyDown(false),
 	__phase(0),
 	__frequency(0),
 	__noiseBuffer(static_cast<int>(sampleRate * 2)),
@@ -47,7 +48,8 @@ WavetableOsc::WavetableOsc(WavetableOsc && ref) :
 	__maxBuffHint(ref.__maxBuffHint),
 	__envelope(__ID, ref.__sampleRate),
 	__note(ref.__note),
-	__sustain(ref.__sustain),
+	__sustainPedal(ref.__sustainPedal),
+	__keyDown(ref.__keyDown),
 	__phase(ref.__phase),
 	__frequency(ref.__frequency),
 	__noiseBuffer(static_cast<int>(ref.__sampleRate * 2)),
@@ -157,29 +159,28 @@ void WavetableOsc::ProccessCommand(MidiMessage msg)
 		__note = msg.getNoteNumber();
 		__frequency = MidiMessage::getMidiNoteInHertz(__note);
 		__envelope.Reset(msg.getVelocity());
-		//__sustain = true;
-		//__envelope.setSustain(__sustain);
+		__keyDown = true;
 	}
 	else if (msg.isNoteOff())
 	{
-		//__sustain = msg.getNoteNumber() != __note;
-		//__envelope.setSustain(__sustain);
+		if (msg.getNoteNumber() == __note)
+			__keyDown = false;
 	}
 	else if (msg.isSustainPedalOn())
 	{
-		__sustain = true;
-		__envelope.setSustain(__sustain);
+		__sustainPedal = true;
 	}
 	else if (msg.isSustainPedalOff())
 	{
-		__sustain = false;
-		__envelope.setSustain(__sustain);
+		__sustainPedal = false;
 	}
 	else if (msg.isPitchWheel())
 	{
 		//Convert from 14 bit unsigned int to float between -1.0 and 1.0
 		__pitchbend = ((float)msg.getPitchWheelValue() / 16383)*2.0f - 1.0f;
 	}
+
+	__envelope.setSustain(__sustainPedal || __keyDown);
 }
 
 void WavetableOsc::RegisterParameters(int ID)

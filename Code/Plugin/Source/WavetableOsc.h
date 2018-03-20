@@ -17,7 +17,8 @@ private:
 	int __note;
 	double __frequency;
 	double __phase;
-	bool __sustain;
+	bool __sustainPedal;
+	bool __keyDown;
 
 	AudioParameterInt* __waveType, *__octave,* __offset, *__overtone, *__pitchBendSens;
 	AudioParameterFloat* __detune, *__sinAmp,* __sqAmp, *__sawAmp, *__triAmp,*__noiseAmp, *__panning;
