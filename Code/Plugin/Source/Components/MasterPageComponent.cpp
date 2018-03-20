@@ -9,7 +9,7 @@ MasterComponent::MasterComponent():
 	__infoComponent()
 {
 	addAndMakeVisible(__infoComponent);
-	//addAndMakeVisible(__presetComponent);
+	addAndMakeVisible(__presetComponent);
 }
 
 void MasterComponent::paint(Graphics& g){

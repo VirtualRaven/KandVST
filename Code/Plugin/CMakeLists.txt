@@ -150,6 +150,8 @@ jucer_project_files("KandVST"
   .         .         .         "Source/OurLookAndFeel.h"
   x         .         .         "Source/Resources_files.cpp"
   .         .         .         "Source/Resources_files.h"
+  x         .         .         "Source/PresetRowModel.cpp"
+  .         .         .         "Source/PresetRowModel.h"
 )
 
 jucer_project_module(
