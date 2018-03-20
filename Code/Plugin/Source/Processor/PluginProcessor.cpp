@@ -3,7 +3,7 @@
 #include "IWavetable.h"
 #include "PresetManager.h"
 #include "Pipeline.h"
-#include "Components\SettingsComponent.h"
+#include "Components/SettingsComponent.h"
 #include "PipelineManager.h"
 AudioProcessor* JUCE_CALLTYPE createPluginFilter();
 

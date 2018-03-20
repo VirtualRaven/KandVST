@@ -3,7 +3,7 @@
 
 template<typename T>
 DelayEffect<T>::DelayEffect(int ID, double sampleRate) :
-	IEffect(sampleRate),
+	IEffect<T>(sampleRate),
 	IVSTParameters(ID),
 	__delayBuffer(2, static_cast<int>(sampleRate * 4)),	// Buffer size is max delay
 	__delayLen(0),	// Actual delay length
@@ -37,7 +37,7 @@ bool DelayEffect<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool empty)
 	float multi = *__delayMultiplier;
 	float lenmult = *__delayLenMult;
 
-	__delayLen = (__sampleRate * lenmult);
+	__delayLen = (this->__sampleRate * lenmult);
 
 	if (__delayLen != __prevDelayLen)
 	{

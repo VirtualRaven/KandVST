@@ -93,8 +93,8 @@ jucer_audio_plugin_settings(
 jucer_project_files("KandVST"
 # Compile   Xcode     Binary
 #           Resource  Resource
-x         .         .         "Source/Editor/PluginGui.cpp"
-.         .         .         "Source/Editor/PluginGui.h"
+x         .         .         "Source/Editor/PluginGUI.cpp"
+.         .         .         "Source/Editor/PluginGUI.h"
   x         .         .         "Source/Generators/EnvelopeGenerator.cpp"
   .         .         .         "Source/Generators/EnvelopeGenerator.h"
   x         .         .         "Source/Processor/PluginProcessor.cpp"

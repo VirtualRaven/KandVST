@@ -1,7 +1,7 @@
 
 
 #include "PluginProcessor.h"
-#include "PluginGui.h"
+#include "PluginGUI.h"
 //==============================================================================
 PluginGUI::PluginGUI(PluginProcessor& owner)
 	: AudioProcessorEditor(owner),

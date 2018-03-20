@@ -4,7 +4,7 @@
 
 template<typename T>
 FilterLP<T>::FilterLP(int ID, double sampleRate, String parameterId) :
-	FilterButterworth(ID, sampleRate, parameterId)
+	FilterButterworth<T>(ID, sampleRate, parameterId)
 {
 	
 }
@@ -24,26 +24,26 @@ template<typename T>
 void FilterLP<T>::CalculateCoefficients()
 {
 	// Calculate coefficients based on the current cut-off frequency
-	T wc = 2 * Constants<T>::PI * __fc;
-	wc = 2 * __fs * tan(wc / (2 * __fs));
-	T fs2 = __fs * __fs;
+	T wc = 2 * Constants<T>::PI * this->__fc;
+	wc = 2 * this->__fs * tan(wc / (2 * this->__fs));
+	T fs2 = this->__fs * this->__fs;
 	T wc2 = wc * wc;
 
-	__a[0] = 4 * (fs2) + 2 * __fs*wc*__sqrt2 + (wc2);
-	__a[1] = (2 * (wc2) - 8 * (fs2)) / __a[0];
-	__a[2] = ((wc2) - 2 * __sqrt2*wc*__fs + 4 * (fs2)) / __a[0];
+	this->__a[0] = 4 * (fs2) + 2 * this->__fs*wc*this->__sqrt2 + (wc2);
+	this->__a[1] = (2 * (wc2) - 8 * (fs2)) / this->__a[0];
+	this->__a[2] = ((wc2) - 2 * this->__sqrt2*wc*this->__fs + 4 * (fs2)) / this->__a[0];
 
-	__b[0] = (wc2) / __a[0];
-	T gain = (1 + __a[1] + __a[2]) / (__b[0] * 3);
-	__b[0] *= gain;
-	__b[1] = __b[0] * 2;
-	__b[2] = __b[0];
+	this->__b[0] = (wc2) / this->__a[0];
+	T gain = (1 + this->__a[1] + this->__a[2]) / (this->__b[0] * 3);
+	this->__b[0] *= gain;
+	this->__b[1] = this->__b[0] * 2;
+	this->__b[2] = this->__b[0];
 }
 template<typename T>
 bool FilterLP<T>::IsEnabled()
 {
 	// Disable at 20kHz
-	return (__fc < 20000.0f) && (__fc > 0.0f);
+	return (this->__fc < 20000.0f) && (this->__fc > 0.0f);
 }
 
 template class FilterLP<double>;
