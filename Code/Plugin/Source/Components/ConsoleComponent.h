@@ -1,8 +1,8 @@
 #ifndef CONSOLE_COMPONENET_H
 #define CONSOLE_COMPONENET_H
 
-#include "../Global.h"
-#include "../ParameterHandler.h"
+#include "Global.h"
+#include "ParameterHandler.h"
 #include "../JuceLibraryCode/JuceHeader.h"
 #include <iostream>
 #include <stdlib.h>

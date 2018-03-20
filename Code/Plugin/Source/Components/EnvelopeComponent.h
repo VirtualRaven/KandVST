@@ -1,14 +1,14 @@
 #ifndef ENVELOPE_COMPONENT_H
 #define ENVELOPE_COMPONENT_H
 
-#include "../Global.h"
-#include "../ParameterHandler.h"
+#include "Global.h"
+#include "ParameterHandler.h"
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "ParameterSlider.h"
-#include "../IVSTParameters.h"
-#include "../OurLookAndFeel.h"
-#include "../EnvelopeGenerator.h"
-#include "../ParameterListener.h"
+#include "IVSTParameters.h"
+#include "OurLookAndFeel.h"
+#include "EnvelopeGenerator.h"
+#include "ParameterListener.h"
 class EnvelopeComponent : public  Component, private IVSTParameters, private Timer, private ParameterListener,private ComponentListener
 {
 private:
