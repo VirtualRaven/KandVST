@@ -214,18 +214,19 @@ template <typename FloatType>
 void PluginProcessor::process (AudioBuffer<FloatType>& buffer,
                                             MidiBuffer& midiMessages)
 {
+
 	if (!processorReady)
 		return;
     const int numSamples = buffer.getNumSamples();
     keyboardState.processNextMidiBuffer (midiMessages, 0, numSamples, true);
 
+	updateCurrentTimeInfoFromHost();
 	getPipeline<FloatType>()->genSamples(buffer, midiMessages, lastPosInfo);
 
 
     for (int i = getTotalNumInputChannels(); i < getTotalNumOutputChannels(); ++i)
         buffer.clear (i, 0, numSamples);
-
-	updateCurrentTimeInfoFromHost();
+	
 }
 
 AudioProcessorEditor* PluginProcessor::createEditor()
