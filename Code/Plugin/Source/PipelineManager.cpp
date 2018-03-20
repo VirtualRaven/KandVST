@@ -20,7 +20,9 @@ PipelineManager<T>::PipelineManager(double rate, int maxBuffHint) :
 	for (size_t i = 0; i < 16; i++)
 	{
 		pipList.emplace_back(rate,maxBuffHint);
-		//pipList.push_back(Pipeline(rate));
+		
+		pipBuff[i].setSize(2, maxBuffHint, false, true, false);
+		pipBuff[i].applyGain(0);
 	}
 	
 }
@@ -34,18 +36,27 @@ template<typename T>
 void PipelineManager<T>::genSamples(AudioBuffer<T>& buff, MidiBuffer & midiMessages, AudioPlayHead::CurrentPositionInfo & posInfo)
 {
 	// Return if wavetables are not ready
-	if (!wavetableRdy())
+	if (!wavetableRdy()) 	//Why do we do this check?
 		return;
 
+	auto buffLen = buff.getNumSamples();
+
 	for (int i = 0; i < LFO_COUNT; i++) {
-		lfos[i]->generate(buff.getNumSamples(), posInfo);
+		lfos[i]->generate(buffLen, posInfo);
 	}
-	std::vector<AudioBuffer<T>> pipBuff = std::vector<AudioBuffer<T>>();
-	for (size_t i = 0; i < 16; i++)
-	{
-		pipBuff.push_back(AudioBuffer<T>(2, buff.getNumSamples()));
-		pipBuff[i].applyGain(0.0);
+	
+	//Did they lie?
+	if (__maybeMaxBuff < buffLen) {
+		//Yes, and things will probably start to crumble down the line
+		for (size_t i = 0; i < 16; i++)
+		{
+			pipBuff[i].setSize(2, buffLen);
+			pipBuff[i].applyGain(0.0);
+		}
+		__maybeMaxBuff = buffLen;
 	}
+	
+
 	std::vector<Pipeline<T>>::iterator pipIt;
 	auto it = juce::MidiBuffer::Iterator(midiMessages);
 	int pos;
@@ -87,28 +98,41 @@ void PipelineManager<T>::genSamples(AudioBuffer<T>& buff, MidiBuffer & midiMessa
 
 	int buffCount = 0;
 	for (pipIt = pipList.begin(); pipIt != pipList.end() - 1; pipIt++) {
-		std::function<void()> f = [pipIt, &pipBuff, buffCount]() {
-			pipIt->render_block(pipBuff[buffCount]);
-		};
-
-		pool.addJob(f);
-		buffCount++;
+		if (pipIt->isActive()) {
+			
+			//This assert makes sure that the buffer given to the pipeline is empty
+			//If it goes off, someone has been writing outside of array bounds 
+			//or we have failed to clear the buffer here in pipeline manager
+			jassert(this->pipBuff[buffCount].getMagnitude(0, buffLen) < 0.01);
+			
+			std::function<void()> f = [pipIt, this, buffCount,buffLen]() {
+				pipIt->render_block(this->pipBuff[buffCount],buffLen);
+			};
+			pool.addJob(f);
+			buffCount++;
+		}
 	}
 	//Run last job on this thread
-	(pipList.end() - 1)->render_block(pipBuff[buffCount]);
-
+	auto lastjob = (pipList.end() - 1);
+	if (lastjob->isActive()) {
+		lastjob->render_block(pipBuff[buffCount],buffLen);
+		buffCount++;
+	}
 	while (pool.getNumJobs()>0);
-	for (auto b : pipBuff)
+	
+	buff.clear();
+	for (int i = 0; i < buffCount; i++)
 	{
-		buff.addFrom(0, 0, b, 0, 0, buff.getNumSamples(), *__masterGain);
-		buff.addFrom(1, 0, b, 1, 0, buff.getNumSamples(), *__masterGain);
+		buff.addFrom(0, 0, pipBuff[i], 0, 0, buffLen, *__masterGain);
+		buff.addFrom(1, 0, pipBuff[i], 1, 0, buffLen, *__masterGain);
+		pipBuff[i].clear(0, buffLen);
+
 	}
 
 	__reverb.RenderBlock(buff, buff.getNumSamples(), false);
 	
 }
-//template void PipelineManager::genSamples(AudioBuffer<double>& buff, MidiBuffer & midiMessage, AudioPlayHead::CurrentPositionInfo & posInfo);
-//template void PipelineManager::genSamples(AudioBuffer<float>& buff, MidiBuffer & midiMessages, AudioPlayHead::CurrentPositionInfo & posInfo);
+
 
 template<typename T>
 void PipelineManager<T>::RegisterParameters(int ID)

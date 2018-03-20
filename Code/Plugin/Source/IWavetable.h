@@ -1,6 +1,6 @@
 #ifndef IWAVETABLE_H
 #define IWAVETABLE_H
-
+#include "JuceHeader.h"
 //#define NO_ASYNC_GEN //Comment to enable async generation of wavetabels
 
 class IWavetable
@@ -69,7 +69,7 @@ inline WAVE_TYPE toWAVE_TYPE(int a) {
 }
 
 extern const IWavetable* tables[WAVE_TYPE::__COUNT];
-extern void populateWavetable(double sampleRate);
+extern void populateWavetable(double sampleRate, ThreadPool& wavePool);
 extern void freeWavetable();
 extern bool wavetableRdy();
 #endif //!IWAVETABLE_H

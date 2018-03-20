@@ -4,8 +4,6 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 
 
-static ThreadPool wavePool;
-
 static volatile bool tableRdy[] = { false,false,false,false };
 
 /*
@@ -176,7 +174,7 @@ template float TriangleWavetable::__getSample(double idx, float frequency) const
 
 
 const IWavetable* tables[WAVE_TYPE::__COUNT] = { nullptr,nullptr,nullptr,nullptr };
-void populateWavetable(double sampleRate)
+void populateWavetable(double sampleRate,ThreadPool& wavePool)
 {
 	freeWavetable();
 

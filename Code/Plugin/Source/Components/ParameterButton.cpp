@@ -10,7 +10,7 @@ ParameterButton::ParameterButton(AudioProcessorParameter& p)
 {
 	setValue(static_cast<int>(param.getValue())); //Set Default value
 	param.setValueNotifyingHost(static_cast<float>(__value));
-	setColour(TextButton::ColourIds::buttonOnColourId, Colours::green);
+	setColour(TextButton::ColourIds::buttonOnColourId, Colour::fromRGB(60,80,110));
 	setColour(TextButton::ColourIds::buttonColourId, Colour::fromRGB(60,60,60));
 	startTimer(30);
 	addListener(this);

@@ -49,9 +49,12 @@ public:
 	const String getProgramName(int index) override;
 	void changeProgramName(int index, const String& name) override;
 
+	bool isReady();
+
 	// Inherited via AudioProcessor
 	virtual void getStateInformation(juce::MemoryBlock & destData) override;
 	virtual void setStateInformation(const void * data, int sizeInBytes) override;
+
 
     MidiKeyboardState keyboardState;
 
@@ -81,8 +84,13 @@ private:
 	void updateCurrentTimeInfoFromHost();
 
 	double __sampleRate;
-	PluginGUI * __gui;
 	bool processorReady;
+
+	bool supportsDoublePrecisionProcessing() const override {
+		return true;
+	}
+
+	ThreadPool __wavePool;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginProcessor)
 
 	

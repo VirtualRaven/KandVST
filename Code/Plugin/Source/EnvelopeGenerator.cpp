@@ -257,7 +257,7 @@ void EnvelopeGenerator::RenderImage(int __ID, Image * image)
 	g->setImageResamplingQuality(Graphics::ResamplingQuality::highResamplingQuality);
 	g->setColour(Colour::fromRGB(36, 36, 36));
 	g->fillAll();
-	g->setColour(Colour::fromRGB(26, 105, 180));
+	
 	AudioParameterFloat * __a_time, *__a_level, *__a_curve, *__h_time, *__d_time, *__d_level, *__d_curve, *__r_time, *__r_curve, *__s_level, *__s_time, *__s_curve;
 	__a_time  = Global->paramHandler->Get<AudioParameterFloat>(__ID, "ENV_ATTACK_TIME");
 	__a_level = Global->paramHandler->Get<AudioParameterFloat>(__ID, "ENV_ATTACK_LEVEL");
@@ -311,9 +311,16 @@ void EnvelopeGenerator::RenderImage(int __ID, Image * image)
 	double d_k = (decayTime)*pow(a_level - d_level, -1 / d_c);
 	double s_k = (sustainTime)*pow(d_level - s_level, -1 / s_c);
 	double r_k = (releaseTime)*pow(d_level, -1 / r_c);
+	
 
+	
+
+	Path p = Path();
+	p.startNewSubPath(0, image->getHeight());
+	
+	g->setColour(Colour::fromRGB(26, 105, 180));
 	float lastx = 0,lasty = 0;
-	for (int i = 2; i < image->getWidth()-3; i++)
+	for (int i = 4; i < image->getWidth()-6; i++)
 	{
 		switch (__state)
 		{
@@ -371,15 +378,102 @@ void EnvelopeGenerator::RenderImage(int __ID, Image * image)
 		}
 		
 		if (std::isfinite<float>(static_cast<float>(__amplitude))) {
-			if (i > 2)
-				g->drawLine(lastx, lasty, static_cast<float>(i), __imageHeight - static_cast<float>(__amplitude*(__imageHeight-16))-3, 3.0f);
+			if (i > 4) {
+				//g->drawLine(lastx, lasty, static_cast<float>(i), __imageHeight - static_cast<float>(__amplitude*(__imageHeight - 16)) - 6, 6.0f);
+				//p.addLineSegment(Line<float>(lastx, lasty, static_cast<float>(i), __imageHeight - static_cast<float>(__amplitude*(__imageHeight - 16)) - 6), 10.0f);
+				p.lineTo(static_cast<float>(i), __imageHeight - static_cast<float>(__amplitude*(__imageHeight - 24)) -8 );
+			}
 			lastx = static_cast<float>(i);
-			lasty = __imageHeight - static_cast<float>(__amplitude*(__imageHeight - 16))-3;
+			lasty = __imageHeight - static_cast<float>(__amplitude*(__imageHeight - 16))-6;
+			
 		}
 		__counter++;
 	}
+	p.lineTo(image->getWidth(), image->getHeight());
+	p.closeSubPath();
+	//p.addLineSegment(Line<float>(image->getWidth(), image->getHeight(), 0, image->getHeight()), 1.0f);
+	p = p.createPathWithRoundedCorners(12.0f);
+	g->strokePath(p, PathStrokeType(6.0f,PathStrokeType::JointStyle::curved,PathStrokeType::EndCapStyle::rounded));
+	g->setFillType(FillType(ColourGradient(Colour::fromRGBA(26, 105, 180, 80), 0, 0, Colour::fromRGBA(26, 105, 180, 10), 0, image->getHeight(), false)));
+	g->fillPath(p);
+
+
+	int sumX = 6;
+	Font f(g->getCurrentFont());
+	f.setHeight(f.getHeight() * 1.5);
+	g->setFont(f);
+	g->setColour(Colour::fromRGBA(150, 150, 255, 15));
+	for (size_t i = 1; i <= 10; i++)
+	{
+		g->drawLine((image->getWidth()/10)*i, 0, (image->getWidth() / 10)*i, image->getHeight());
+	}
+	for (size_t i = 1; i <= 10; i++)
+	{
+		g->drawLine(0,(image->getHeight() / 10)*i,image->getWidth(), (image->getHeight() / 10)*i );
+	}
+	g->setColour(Colour::fromRGBA(255, 255, 255, 40));
+	const float dashes[2] = { 30.0f,20.0f };
+	if (attackTime > 0) {
+		if (g->getCurrentFont().getStringWidth("ATTACK") < attackTime) {
+			g->drawText("ATTACK", sumX, image->getHeight() - g->getCurrentFont().getHeight() - 12, attackTime, g->getCurrentFont().getHeight(), Justification::centred, false);
+		}
+		else if (g->getCurrentFont().getStringWidth("A") < attackTime) {
+			g->drawText("A", sumX, image->getHeight() - g->getCurrentFont().getHeight() - 12, attackTime, g->getCurrentFont().getHeight(), Justification::centred, false);
+		}
+		sumX += attackTime;
+		g->drawDashedLine(Line<float>(sumX, 0, sumX, image->getHeight()), dashes, 2);
+		//g->drawLine(sumX, 0, sumX, image->getHeight());
+
+	}
+	if (holdTime > 0) {
+		if (g->getCurrentFont().getStringWidth("HOLD") < holdTime) {
+			g->drawText("HOLD", sumX, image->getHeight() - g->getCurrentFont().getHeight() - 12, holdTime, g->getCurrentFont().getHeight(), Justification::centred, false);
+		}
+		else if (g->getCurrentFont().getStringWidth("H") < holdTime) {
+			g->drawText("H", sumX, image->getHeight() - g->getCurrentFont().getHeight() - 12, holdTime, g->getCurrentFont().getHeight(), Justification::centred, false);
+		}
+
+		sumX += holdTime;
+		g->drawDashedLine(Line<float>(sumX, 0, sumX, image->getHeight()), dashes, 2);
+
+	}
+	if (decayTime > 0) {
+		if (g->getCurrentFont().getStringWidth("DECAY") < decayTime) {
+			g->drawText("DECAY", sumX, image->getHeight() - g->getCurrentFont().getHeight() - 12, decayTime, g->getCurrentFont().getHeight(), Justification::centred, false);
+		}
+		else if (g->getCurrentFont().getStringWidth("D") < decayTime) {
+			g->drawText("D", sumX, image->getHeight() - g->getCurrentFont().getHeight() - 12, decayTime, g->getCurrentFont().getHeight(), Justification::centred, false);
+		}
+		sumX += decayTime;
+		g->drawDashedLine(Line<float>(sumX, 0, sumX, image->getHeight()), dashes, 2);
+
+	}
+	if (sustainTime > 0) {
+		if (g->getCurrentFont().getStringWidth("SUSTAIN") < sustainTime) {
+			g->drawText("SUSTAIN", sumX, image->getHeight() - g->getCurrentFont().getHeight() - 12, sustainTime, g->getCurrentFont().getHeight(), Justification::centred, false);
+		}
+		else if (g->getCurrentFont().getStringWidth("S") < sustainTime) {
+			g->drawText("S", sumX, image->getHeight() - g->getCurrentFont().getHeight() - 12, sustainTime, g->getCurrentFont().getHeight(), Justification::centred, false);
+		}
+		sumX += sustainTime;
+		g->drawDashedLine(Line<float>(sumX, 0, sumX, image->getHeight()), dashes, 2);
+
+	}
+	if (releaseTime > 0)
+	{
+		if (g->getCurrentFont().getStringWidth("RELEASE") < releaseTime) {
+			g->drawText("RELEASE", sumX, image->getHeight() - g->getCurrentFont().getHeight() - 12, releaseTime, g->getCurrentFont().getHeight(), Justification::centred, false);
+		}
+		else if (g->getCurrentFont().getStringWidth("R") < releaseTime) {
+			g->drawText("R", sumX, image->getHeight() - g->getCurrentFont().getHeight() - 12, releaseTime, g->getCurrentFont().getHeight(), Justification::centred, false);
+		}
+	}
+
+
 	g->setColour(Colour::fromRGB(26, 26, 26));
-	g->drawRect(0, 0, image->getWidth(), image->getHeight(), 3);
+	g->drawRect(0, 0, image->getWidth(), image->getHeight(), 6);
+
+	
 }
 
 void EnvelopeGenerator::RegisterParameters(int ID)

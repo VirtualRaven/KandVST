@@ -58,21 +58,60 @@ void PresetManager::LoadPreset(int index)
 {
 	XmlElement *xmlState;
 	xmlState = std::get<1>(__presets.at(index)); 
+	LoadPreset(xmlState);
+	
 
+	__currentPreset = index;
+}
+
+void PresetManager::LoadPreset(XmlElement * xmlState)
+{
 	if (xmlState != nullptr)
 	{
 		if (xmlState->hasTagName("KandVSTPreset"))
 		{
+			Global->paramHandler->ClearLinks();
 			for (auto* param : __owner->getParameters())
 				if (auto* p = dynamic_cast<AudioProcessorParameterWithID*> (param)) {
 					XmlElement* child = xmlState->getChildByName(String("_") + p->paramID);
 					if (child != nullptr && child->hasAttribute("value"))
 						p->setValue((float)child->getDoubleAttribute("value", p->getValue()));
+					if (child != nullptr && child->hasAttribute("sender"))
+					{
+						auto sender = Global->paramHandler->GetParameter(child->getStringAttribute("sender").toStdString());
+						auto rec = Global->paramHandler->GetParameter(p->paramID.toStdString());
+						if (sender != nullptr && rec != nullptr)
+						{
+							Global->paramHandler->LinkParameters(sender, rec);
+						}
+
+					}
 				}
 		}
 	}
 
-	__currentPreset = index;
+	sendChangeMessage();
+}
+
+void PresetManager::SavePreset(XmlElement * xmlState)
+{
+	auto links = Global->paramHandler->GetLinks();
+	for (auto&& param : __owner->getParameters())
+	{
+		if (auto* p = dynamic_cast<AudioProcessorParameterWithID*> (param)) {
+			XmlElement* paramEl = new XmlElement(String("_") + p->paramID);
+			paramEl->setAttribute("value", p->getValue());
+			auto link = Global->paramHandler->GetSender(param);
+			if (link != nullptr)
+			{
+
+				if (auto* linkSender = dynamic_cast<AudioProcessorParameterWithID*> (link)) {
+					paramEl->setAttribute("sender", linkSender->paramID);
+				}
+			}
+			xmlState->addChildElement(paramEl);
+		}
+	}
 }
 
 void PresetManager::SavePreset(std::string name)
@@ -87,16 +126,8 @@ void PresetManager::SavePreset(std::string name)
 	}
 
 	XmlElement* el = new XmlElement("KandVSTPreset");
+	SavePreset(el);
 	el->setAttribute("name", name);
-	for (auto&& param : __owner->getParameters())
-	{
-		if (auto* p = dynamic_cast<AudioProcessorParameterWithID*> (param)) {
-			XmlElement* paramEl = new XmlElement(String("_") + p->paramID);
-			paramEl->setAttribute("value",p->getValue());
-			el->addChildElement(paramEl);
-		}
-	}
-
 	el->writeToFile(File(getPresetPath() + String("/") + name + String(".xml")), "");
 	
 	if (PresetExists(name))
@@ -150,6 +181,8 @@ bool PresetManager::PresetExists(std::string name)
 	}
 	return false;
 }
+
+
 
 std::vector<std::string> PresetManager::GetPresetNames()
 {
