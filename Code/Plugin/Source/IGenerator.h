@@ -5,7 +5,7 @@
 class IGenerator
 {
 private:
-	struct noteMessage {
+	/*struct noteMessage {
 		int offset;
 		int note;
 		uint8 vel;
@@ -20,22 +20,32 @@ private:
 			note(0),
 			vel(0),
 			isOn(true) {}
+	};*/
+
+	struct midiCommand {
+		MidiMessage msg;
+		int offset;
+		midiCommand(MidiMessage msg, int offset) :
+			msg(msg),
+			offset(offset) {}
 	};
+
 	IGenerator();
-	std::queue<noteMessage> __messages;
+	std::queue<midiCommand> __messages;
 protected:
 	double __sampleRate;
 public:
+	virtual ~IGenerator() {};
 	IGenerator(double sampleRate) : __messages(), 
 									__sampleRate(sampleRate) {};
-	virtual void RenderBlock(AudioBuffer<float>& buffer) = 0;
-	virtual void RenderBlock(AudioBuffer<double>& buffer) = 0;
+	virtual bool RenderBlock(AudioBuffer<float>& buffer, int len) = 0;
+	virtual bool RenderBlock(AudioBuffer<double>& buffer,int len) = 0;
 
-	virtual void ProccesNoteCommand( int note, uint8 vel, bool isOn) = 0;
-	virtual void AddNoteCommand(int offset, int note, uint8 vel, bool isOn);
+	virtual void AddCommand(MidiMessage msg, int offset);
+	virtual const char * name() const =0;
 	int HandleEvent(); //Processes the current event and returns the index of the next event to be handled
 	int getNextEventOffset(); //Get the buffer offset of the next event to occur
-	virtual void ProccessCommand(MidiMessage message) = 0;
+	virtual void ProccessCommand(MidiMessage msg) = 0;
 };
 
 #endif //IGENERATOR_H

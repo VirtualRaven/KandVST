@@ -7,10 +7,9 @@
 #include "PipelineManager.h"
 #include "Global.h"
 #include "TemplateHelper.h"
-#include "OscillatorMixer.h"
 #include "ParameterHandler.h"
-
-class PluginProcessor  : public AudioProcessor
+class PluginGUI;
+class PluginProcessor  : public AudioProcessor, private Timer
 {
 public:
 	PluginProcessor();
@@ -44,29 +43,61 @@ public:
     double getTailLengthSeconds() const override                                { return 0.0; }
 
   
-    int getNumPrograms() override                                               { return 0; }
-    int getCurrentProgram() override                                            { return 0; }
-    void setCurrentProgram (int /*index*/) override                             {}
-    const String getProgramName (int /*index*/) override                        { return String(); }
-    void changeProgramName (int /*index*/, const String& /*name*/) override     {}
+	int getNumPrograms() override;
+	int getCurrentProgram() override;
+	void setCurrentProgram(int index) override;
+	const String getProgramName(int index) override;
+	void changeProgramName(int index, const String& name) override;
+
+	bool isReady();
 
 	// Inherited via AudioProcessor
 	virtual void getStateInformation(juce::MemoryBlock & destData) override;
 	virtual void setStateInformation(const void * data, int sizeInBytes) override;
 
+
     MidiKeyboardState keyboardState;
+
+	AudioPlayHead::CurrentPositionInfo lastPosInfo;
 private:
     template <typename FloatType>
     void process (AudioBuffer<FloatType>& buffer, MidiBuffer& midiMessages);
 
-	PipelineManager* __pipManager;
+	union PipUnion {
+		PipelineManager<double>* dp;
+		PipelineManager<float>* fp;
+	};
+
+	template<typename T>  PipelineManager<T>* getPipeline();
+
+	bool doublePrecision;
+
+	void freePipelineManager();
+
+	PipUnion __pipManager;
+	
+	int __currentPreset = 0;
 
     Synthesiser synth;
     static BusesProperties getBusesProperties();
 
+	void updateCurrentTimeInfoFromHost();
+
+	double __sampleRate;
+	bool processorReady;
+
+	bool supportsDoublePrecisionProcessing() const override {
+		return true;
+	}
+
+	ThreadPool __wavePool;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginProcessor)
 
 	
+
+		// Inherited via Timer
+		virtual void timerCallback() override;
+
 };
 
 #endif // !PLUGIN_PROCESSOR_H

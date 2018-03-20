@@ -8,50 +8,46 @@
 
 
 // Generic 2:nd order Butterwroth filter class
+template<typename T>
 class FilterButterworth :
-	public IEffect,
+	public IEffect<T>,
 	public IVSTParameters
 {
 
 private:
-	template<typename T>
-	void __RenderBlock(AudioBuffer<T>& buffer);
 	virtual void CalculateCoefficients() = 0;
+	virtual bool IsEnabled() = 0;
+	bool __enabled;
+	int __firstSampleIndex;
 
 	double __prevFc;
 
-	double __prevX1[2] = { 0, 0 };
-	double __prevX2[2] = { 0, 0 };
+	T __prevX1[2] = { 0, 0 };
+	T __prevX2[2] = { 0, 0 };
 
-	double __prevY1[2] = { 0, 0 };
-	double __prevY2[2] = { 0, 0 };
+	T __prevY1[2] = { 0, 0 };
+	T __prevY2[2] = { 0, 0 };
 
-	double __currentLeft = 0;
-	double __currentRight = 0;
+	T __currentLeft = 0;
+	T __currentRight = 0;
 
 protected:
-	double __a[3] = { 1, 0, 0 };
-	double __b[3] = { 0, 0, 0 };
+	T __a[3] = { 1, 0, 0 };
+	T __b[3] = { 0, 0, 0 };
 
 	float __fc;
-	float __fs;
-	double __sqrt2;
+	T __fs;
+	T __sqrt2;
 
 	AudioParameterFloat* lpFrequency;
+	AudioParameterInt* lfoIndex;
 	
 public:
-	FilterButterworth(int ID, double sampleRate, String parameterLabel, String parameterId);
+	FilterButterworth(int ID, double sampleRate, String parameterId);
 	~FilterButterworth();
 
-	// Inherited via IEffect
-	virtual void RenderBlock(AudioBuffer<float>& buffer) override 
-	{
-		__RenderBlock(buffer);
-	}
-	virtual void RenderBlock(AudioBuffer<double>& buffer) override
-	{
-		__RenderBlock(buffer);
-	}
+	static void RegisterParameters(int ID, String parameterLabel, String parameterId, float defaultValue);
+	bool RenderBlock(AudioBuffer<T>& buffer, int len, bool empty) override;
 	virtual void ProccessCommand(MidiMessage message) override;
 };
 

@@ -5,21 +5,21 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "ParameterHandler.h"
 
-
+template<typename T>
 class FilterLP :
-	public FilterButterworth
+	public FilterButterworth<T>
 {
 
 private:
-	void __calculateCoefficients();
-	virtual void CalculateCoefficients() override
-	{
-		__calculateCoefficients();
-	}
+	void CalculateCoefficients() override;
+	bool IsEnabled() override;
 	
 public:
 	FilterLP(int ID, double sampleRate, String parameterId);
 	~FilterLP();
+
+	static void RegisterParameters(int ID);
+
 };
 
 

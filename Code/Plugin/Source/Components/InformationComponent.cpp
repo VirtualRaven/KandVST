@@ -6,34 +6,48 @@ InformationComponent::~InformationComponent()
 }
 
 InformationComponent::InformationComponent(){
+    
+	addAndMakeVisible(__presetComponent);
 
+	// variables
+	x = 310; //starting x position
+	y = 20; //starting y position
+	midX = 500;
+	midY = 225;
+	w = 380; //width of component
+	h = 250; //height of component
+
+	// shadow stuff
+	startAlpha = 0.3f;
+	endAlpha = 0.05f;
+	offset = 10;
 }
 
-// variables
-int x = 490; //starting x position
-int y = 150; //starting y position
-int midX = 640;
-int midY = 225;
-int w = 300; //width of component
-int h = 150; //height of component
-
-float startAlpha = 0.3f;
-float endAlpha = 0.05f;
-int offset = 10;
 
 void InformationComponent::paint (Graphics& g){
     
     //Path to draw the rectangle
     Path myPath;
-    Rectangle<int> infoWindow(x,y,w,h);
-    myPath.addRoundedRectangle(infoWindow,5.0f);
-    g.setColour(Colour::fromRGB(43,68,78));
+    Rectangle<int> infoWindow = getLocalBounds();
+	x = infoWindow.getX();
+	y = infoWindow.getY();
+	midX = infoWindow.getCentreX();
+	midY = infoWindow.getCentreY();
+	w = infoWindow.getWidth();
+	h = infoWindow.getHeight();
+	myPath.addRectangle(infoWindow);
+    g.setColour(Colour::fromRGB(40,60,90));
     g.fillPath(myPath);
+
+	g.setColour(Colours::white);
+	g.setFont(Font (20, Font::bold));
+	g.drawText("PRESETS", Rectangle<int>(x + 15, y + offset * 2, w - offset * 3, 30.0f),
+		Justification::centred, false);
 
     // == adding inner shadows using gradients == 
     //shadow for top
-    ColourGradient shadowTop(Colours::black.withAlpha(startAlpha), midX, y,
-                    Colours::black.withAlpha(endAlpha), midX, y+offset, false);
+    ColourGradient shadowTop(
+		Colours::black.withAlpha(startAlpha), midX, y,Colours::black.withAlpha(endAlpha), midX, y+offset, false);
                     
     g.setGradientFill(shadowTop);
     g.fillPath(myPath);
@@ -60,8 +74,16 @@ void InformationComponent::paint (Graphics& g){
     g.setColour(Colours::black);
     g.strokePath(myPath,PathStrokeType (0.8f));
 
+	g.setColour(Colours::white);
+	g.drawRect(__presetComponent.getBounds().reduced(6), 1.2f);
+	g.drawRect(Rectangle<int>(x + 15, y + offset * 2, w - offset * 3, 30.0f), 1.2f);
+	
 
 }
 void InformationComponent::resized(){
-    //set the bounds of any child components here.
+	Rectangle<int> bounds = getLocalBounds();
+	bounds.removeFromTop(offset+30);
+	bounds.removeFromTop(8);
+
+	__presetComponent.setBounds(bounds.reduced(9));
 }

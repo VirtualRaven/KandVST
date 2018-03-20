@@ -1,21 +1,17 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
-
-#include "ParameterHandler.h"
-#include "Log.h"
 #include "../JuceLibraryCode/JuceHeader.h"
+class PresetManager;
+class ParameterHandler;
+class Log;
+
 class GLOBAL {
 public:
+	PresetManager* presetManager;
 	ParameterHandler* paramHandler;
 	Log* log;
 	JUCE_LEAK_DETECTOR(GLOBAL);
-	~GLOBAL()
-	{
-		delete paramHandler;
-		delete log;
-		paramHandler = nullptr;
-		log = nullptr;
-	}
+	~GLOBAL();
 };
 extern GLOBAL* Global;
 

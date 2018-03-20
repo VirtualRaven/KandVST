@@ -7,40 +7,56 @@
 #include "IVSTParameters.h"
 #include "../JuceLibraryCode/JuceHeader.h"
 
+
+
 class WavetableOsc : public IGenerator, public IVSTParameters
 {
 private:
+	int __maxBuffHint;
 	EnvelopeGenerator __envelope;
 	int __note;
 	double __frequency;
 	double __phase;
-	//double __inc;
 	bool __sustain;
-	const IWavetable* __wavetable;
-	AudioParameterInt* __waveType;
-	AudioParameterInt* __octave;
-	AudioParameterInt* __offset;
-	AudioParameterFloat* __detune;
+
+	AudioParameterInt* __waveType, *__octave,* __offset, *__overtone, *__pitchBendSens;
+	AudioParameterFloat* __detune, *__sinAmp,* __sqAmp, *__sawAmp, *__triAmp,*__noiseAmp, *__panning;
+	AudioParameterChoice* __lfofreq, *__lfoamp;
+	float __pitchbend;
 	template<typename T>
-	void __RenderBlock(AudioBuffer<T>& buffer);
+	bool __RenderBlock(AudioBuffer<T>& buffer,int len);
+
+	double * __envBuff;
+
+	//Random things
+	std::vector<double> __noiseBuffer;
+	Random __rand;
+	size_t __rand_index;
+
 
 public:
-	WavetableOsc(int ID,double sampleRate);
-	~WavetableOsc();
+	WavetableOsc(int ID,double sampleRate,int __maxBuffHint);
+	WavetableOsc(const WavetableOsc&) = delete;
+	WavetableOsc(WavetableOsc&& ref);
+	virtual ~WavetableOsc();
 
 	// Inherited via Generator
-	virtual void ProccesNoteCommand(int note, uint8 vel, bool isOn) override;
-	virtual void ProccessCommand(MidiMessage message) override;
+	virtual void ProccessCommand(MidiMessage msg) override;
 	static void RegisterParameters(int ID);
-	virtual void RenderBlock(AudioBuffer<float>& buffer) override
+	virtual bool RenderBlock(AudioBuffer<float>& buffer,int len) override
 	{
-		__RenderBlock(buffer);
+		return __RenderBlock(buffer, len);
 	}
-	virtual void RenderBlock(AudioBuffer<double>& buffer) override
+	virtual bool RenderBlock(AudioBuffer<double>& buffer, int len) override
 	{
-		__RenderBlock(buffer);
+		return __RenderBlock(buffer, len);
 	}
-	void setWaveform(WAVE_TYPE t);
+
+	virtual const char * name() const override {
+		return "Wavetable osc";
+	}
+	void renderImage(Image* image);
+	JUCE_LEAK_DETECTOR(WavetableOsc);
 };
 
 #endif //!WAVETABLEOSC_H
