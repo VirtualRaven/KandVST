@@ -176,7 +176,7 @@ x         .         .         "Source/Editor/PluginGUI.cpp"
   .         .         .         "Source/Components/OSCLFOComponent.h"
   x         .         .         "Source/Components/MixerSubComponent.cpp"
   .         .         .         "Source/Components/MixerSubComponent.h"
-  .         .         .         "Source/Swatch.h"
+  .         .         .         "Source/Util/Swatch.h"
 
 )
 
