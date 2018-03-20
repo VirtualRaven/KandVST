@@ -177,7 +177,8 @@ x         .         .         "Source/Editor/PluginGUI.cpp"
   x         .         .         "Source/Components/MixerSubComponent.cpp"
   .         .         .         "Source/Components/MixerSubComponent.h"
   .         .         .         "Source/Util/Swatch.h"
-
+  x         .         .         "Source/Components/PresetRowModel.cpp"
+  .         .         .         "Source/Components/PresetRowModel.h"
 )
 
 jucer_project_module(

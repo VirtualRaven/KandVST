@@ -2,8 +2,10 @@
 #define RESOURCES_FILES_H
 namespace Resources{
 namespace Icons{
+extern unsigned char delete_png[542];
 extern unsigned char knobs_png[10266];
 extern unsigned char refresh_png[8494];
+extern unsigned char save_png[1216];
 extern unsigned char sliderthumb_png[10575];
 extern unsigned char tb_active_png[4316];
 extern unsigned char tb_active_master_png[4240];

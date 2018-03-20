@@ -6,8 +6,10 @@
 #include "Resources_files.h"
 #include "PresetRow.h"
 #include "OurLookAndFeel.h"
+#include "PresetRowModel.h"
 
 class PresetsComponent  : public Component, private Button::Listener
+
 {
 public:
 	PresetsComponent();
@@ -16,11 +18,11 @@ public:
 private:
 	ImageButton __refresh;
 	ListBox __presets;
-	PresetRow __rowModel;
+	PresetRowModel __rowModel;
 	// Inherited via Listener
 	virtual void buttonClicked(Button *) override;
-	
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PresetsComponent)
 };
 
 #endif // !PRESETS_COMPONENT_H
+	

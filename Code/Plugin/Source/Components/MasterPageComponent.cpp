@@ -22,7 +22,6 @@ MasterComponent::MasterComponent() :
 
 	addAndMakeVisible(__settingsComponent);
 	addAndMakeVisible(__delayComponent);
-
 }
 
 void MasterComponent::paint(Graphics& g){
