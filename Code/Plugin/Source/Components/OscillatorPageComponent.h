@@ -9,6 +9,7 @@
 #include "LFOComponent.h"
 #include "FilterComponent.h"
 #include "OSCLFOComponent.h"
+#include "../Swatch.h"
 class OscillatorPageComponent  : public Component, private IVSTParameters
 {
 public:

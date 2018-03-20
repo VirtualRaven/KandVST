@@ -13,7 +13,7 @@
 #include "LFOComponent.h"
 #include "SettingsComponent.h"
 #include "DelayComponent.h"
-
+#include "../Swatch.h"
 class MasterComponent : public Component
 {
 public:

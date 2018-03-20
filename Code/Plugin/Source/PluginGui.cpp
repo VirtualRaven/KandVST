@@ -31,6 +31,10 @@ void PluginGUI::InitializeGui()
 	const MessageManagerLock mmLock;
 	removeAllChildren();
 	setLookAndFeel(&ourLookAndFeel);
+	__tabComponent.setColour(TabbedComponent::ColourIds::outlineColourId, Colour::fromRGBA(0, 0, 0, 0));
+	__tabComponent.setTabBarDepth(35);
+	__tabComponent.setOutline(0);
+	__tabComponent.getTabbedButtonBar().setColour(TabbedButtonBar::ColourIds::tabOutlineColourId, Colours::transparentWhite);
 	__tabComponent.addTab("M", Colour::fromRGB(200,200,200), new MasterComponent(), true);
 
 	for (int i = 0; i < 4; i++)
@@ -38,7 +42,7 @@ void PluginGUI::InitializeGui()
 		__tabComponent.addTab(std::to_string(i + 1), Colour::fromRGB(1,1,1), new OscillatorPageComponent(i), true);
 	}
 
-	__tabComponent.addTab("Console", Colours::darkgrey, &__cc, true);
+	__tabComponent.addTab("C", Colours::darkgrey, &__cc, true);
 	addAndMakeVisible(__tabComponent);
 	addAndMakeVisible(__keyboard);
 	__keyboard.setKeyWidth(__keyboard.getKeyWidth() + 10.0f);
@@ -79,6 +83,7 @@ void PluginGUI::paint (Graphics& g)
 	Image titleImage = ImageFileFormat::loadFrom(Resources::Images::Title3_png, sizeof(Resources::Images::Title3_png));
 	g.setOpacity(1.0f);
 	g.drawImageAt(titleImage, 780, 0, false);
+
 }
 
 void PluginGUI::resized()

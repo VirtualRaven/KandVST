@@ -255,7 +255,7 @@ void EnvelopeGenerator::RenderImage(int __ID, Image * image)
 {
 	ScopedPointer<Graphics> g = new Graphics(*image);
 	g->setImageResamplingQuality(Graphics::ResamplingQuality::highResamplingQuality);
-	g->setColour(Colour::fromRGB(36, 36, 36));
+	g->setColour(Swatch::background);
 	g->fillAll();
 	
 	AudioParameterFloat * __a_time, *__a_level, *__a_curve, *__h_time, *__d_time, *__d_level, *__d_curve, *__r_time, *__r_curve, *__s_level, *__s_time, *__s_curve;
@@ -318,7 +318,7 @@ void EnvelopeGenerator::RenderImage(int __ID, Image * image)
 	Path p = Path();
 	p.startNewSubPath(0, image->getHeight());
 	
-	g->setColour(Colour::fromRGB(26, 105, 180));
+	g->setColour(Swatch::accentBlue);
 	float lastx = 0,lasty = 0;
 	for (int i = 4; i < image->getWidth()-6; i++)
 	{
