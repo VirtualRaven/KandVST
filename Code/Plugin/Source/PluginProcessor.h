@@ -86,6 +86,10 @@ private:
 	double __sampleRate;
 	bool processorReady;
 
+	bool supportsDoublePrecisionProcessing() const override {
+		return true;
+	}
+
 	ThreadPool __wavePool;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginProcessor)
 
