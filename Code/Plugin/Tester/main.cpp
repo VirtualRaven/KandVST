@@ -2,12 +2,15 @@
 #include <iostream>
 #include <string>
 #include "base/ipluginbase.h"
+#include "base/funknown.h"
 #include "folders.h"
 #include <vst/ivstaudioprocessor.h>
+#include <vst/ivsthostapplication.h>
 #include <functional>
 #include <vector>
-
+#define APP_NAME u"AUTOMATIC TESTER"
 HANDLE ourConsole;
+
 
 
 struct STUID {
@@ -138,7 +141,7 @@ protected:
 				T* obj = nullptr;
 				Steinberg::tresult res = this->__factory->createInstance(id.id,
 					T::iid, (void**)(&obj));
-				if (res == Steinberg::kResultOk && obj == nullptr)
+				if (res == Steinberg::kResultOk && obj != nullptr)
 					return obj;
 				else continue;
 			}
@@ -164,7 +167,6 @@ protected:
 
 using Steinberg::Vst::IAudioProcessor;
 class headless_audio_plugin : public factory_plugin {
-	
 	IAudioProcessor* __pro;
 public:
 	headless_audio_plugin() : __pro(nullptr) {
@@ -175,7 +177,7 @@ public:
 			__pro = this->findInterface<IAudioProcessor>();
 			if (__pro == nullptr ) {
 				__init_success = false;
-				red([] { std::cerr << "Plugin does not implement the IComponent interface" << std::endl; });
+				red([] { std::cerr << "Plugin does not implement the IAudioProcessor interface" << std::endl; });
 			}
 		}
 	}
@@ -190,6 +192,33 @@ public:
 		}
 	}
 };
+using Steinberg::TUID;
+class TesterHost : public Steinberg::Vst::IHostApplication {
+	size_t __refs;
+public:
+		TesterHost () : __refs(1)  {}
+		virtual Steinberg::tresult PLUGIN_API getName(Steinberg::Vst::String128  name) override{
+			memcpy(name, APP_NAME,sizeof(APP_NAME));
+			return Steinberg::kResultOk;
+		}
+		virtual Steinberg::tresult PLUGIN_API createInstance(TUID cid, TUID _iid, void ** obj) {
+			return Steinberg::kResultFalse;
+		}
+
+		virtual Steinberg::tresult PLUGIN_API queryInterface(const TUID _iid, void **obj) override {
+			QUERY_INTERFACE(iid, obj, Steinberg::FUnknown::iid, Steinberg::FUnknown)
+				QUERY_INTERFACE(iid, obj, Steinberg::Vst::IHostApplication::iid, Steinberg::Vst::IHostApplication);
+			 *obj = nullptr;
+			return Steinberg::kNoInterface;
+		}
+
+		virtual Steinberg::uint32 PLUGIN_API addRef() override {
+			return ++__refs;
+		}
+		virtual Steinberg::uint32 PLUGIN_API release() override {
+			return __refs = __refs > 0 ? --__refs : 0;
+		}
+};
 
 
 int  main(){
@@ -197,9 +226,30 @@ int  main(){
 	if(ourConsole != NULL)
 		SetConsoleTextAttribute(ourConsole, FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
 	headless_audio_plugin plug;
-	
-	if (!plug.isInitialized()){
+	TesterHost host;
+	if (!plug.isInitialized()) {
 		return 42;
 	}
+	if (false) {
+
+	}
+
+
+
+	Steinberg::Vst::ProcessSetup config = {
+		Steinberg::Vst::kRealtime,
+		Steinberg::Vst::kSample64,
+		1024,
+		44100.0	
+	};
+	if (plug->setupProcessing(config) != Steinberg::kResultOk) {
+		return 43;
+	}
+
+	plug->setProcessing(true);
+	plug->setProcessing(false);
+
+	
+
 	return 0;
 }
