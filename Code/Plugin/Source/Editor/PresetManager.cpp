@@ -116,14 +116,6 @@ void PresetManager::SavePreset(XmlElement * xmlState)
 
 void PresetManager::SavePreset(std::string name)
 {	
-	for (size_t i = 0; i < __presets.size(); i++)
-	{
-		if (std::get<0>(__presets.at(i)) == name)
-		{
-			delete std::get<1>(__presets.at(i));
-			__presets.erase(__presets.begin() + i);
-		}
-	}
 
 	XmlElement* el = new XmlElement("KandVSTPreset");
 	SavePreset(el);
@@ -132,18 +124,20 @@ void PresetManager::SavePreset(std::string name)
 	
 	if (PresetExists(name))
 	{
-		for (auto preset : __presets)
+		for (auto& preset : __presets)
 		{
 			if (std::get<0>(preset) == name)
 			{
-				std::get<1>(preset) = el;
+				auto temp = std::get<1>(preset);
+				preset = std::make_tuple(name, el);
+				delete temp;
 				continue;
 			}
 		}
 	}
 	else
 	{
-		std::make_tuple(name, el);
+		__presets.push_back(std::make_tuple(name, el));
 	}
 }
 
