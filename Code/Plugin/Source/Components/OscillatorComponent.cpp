@@ -54,28 +54,28 @@ __waveformInvalid(false)
 	//===============================
 	addAndMakeVisible(__octaveSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterInt>(__ID, "OSC_OCTAVE")));
 	__octaveSlider->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
-	__octaveSlider->setTextBoxStyle(__octaveSlider->NoTextBox, true, 0, 0);
+	__octaveSlider->setTextBoxStyle(__octaveSlider->TextBoxBelow, true, 50, 15);
 	__octaveLabel.setText("OCTAVE", NotificationType::dontSendNotification);
 	__octaveLabel.attachToComponent(__octaveSlider, false);
 	__octaveLabel.setJustificationType(juce::Justification::centred);
 
 	addAndMakeVisible(__detuneSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "OSC_DETUNE")));
 	__detuneSlider->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
-	__detuneSlider->setTextBoxStyle(__detuneSlider->NoTextBox, true, 0, 0);
+	__detuneSlider->setTextBoxStyle(__detuneSlider->NoTextBox, true, 50, 15);
 	__detuneLabel.setText("DETUNE", NotificationType::dontSendNotification);
 	__detuneLabel.attachToComponent(__detuneSlider, false);
 	__detuneLabel.setJustificationType(juce::Justification::centred);
 
 	addAndMakeVisible(__offsetSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterInt>(__ID, "OSC_OFFSET")));
 	__offsetSlider->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
-	__offsetSlider->setTextBoxStyle(__offsetSlider->NoTextBox, true, 0, 0);
+	__offsetSlider->setTextBoxStyle(__offsetSlider->TextBoxBelow, true, 50, 15);
 	__offsetLabel.setText("OFFSET", NotificationType::dontSendNotification);
 	__offsetLabel.attachToComponent(__offsetSlider, false);
 	__offsetLabel.setJustificationType(juce::Justification::centred);
 
 	addAndMakeVisible(__overtoneSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterInt>(__ID, "OSC_OVERTONE")));
 	__overtoneSlider->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
-	__overtoneSlider->setTextBoxStyle(__overtoneSlider->NoTextBox, true, 0, 0);
+	__overtoneSlider->setTextBoxStyle(__overtoneSlider->TextBoxBelow, true, 50, 15);
 	__overtoneLabel.setText("OVERTONE", NotificationType::dontSendNotification);
 	__overtoneLabel.attachToComponent(__overtoneSlider, false);
 	__overtoneLabel.setJustificationType(juce::Justification::centred);
@@ -157,13 +157,13 @@ void OscillatorComponent::resized(){
 	bounds.removeFromTop(50);
 	//Rectangle<int> atrSliders(bounds.removeFromTop(jmax<int>(bounds.getWidth() / 3,100)));
 	Rectangle<int> atrSliders(bounds.removeFromTop((bounds.getWidth() - 100) / 4));
-	atrSliders.removeFromLeft(gap+10);
+	atrSliders.removeFromLeft(gap);
 	sliderw = (bounds.getWidth()-100) / 4;
 
-	// detune, offset, octave
-	__octaveSlider->setBounds(atrSliders.removeFromLeft(sliderw));
-	atrSliders.removeFromLeft(gap);
+	// detune, octave, offset, overtone
 	__detuneSlider->setBounds(atrSliders.removeFromLeft(sliderw));
+	atrSliders.removeFromLeft(gap);
+	__octaveSlider->setBounds(atrSliders.removeFromLeft(sliderw));
 	atrSliders.removeFromLeft(gap);
 	__offsetSlider->setBounds(atrSliders.removeFromLeft(sliderw));
 	atrSliders.removeFromLeft(gap);
