@@ -88,7 +88,13 @@ void PipelineManager<T>::genSamples(AudioBuffer<T>& buff, MidiBuffer & midiMessa
 		else if (tmp.isPitchWheel() || tmp.isSustainPedalOn() || tmp.isSustainPedalOff())
 		{
 			for (pipIt = pipList.begin(); pipIt != pipList.end(); pipIt++) {
-				pipIt->midiCommand(tmp, pos);
+				if (pipIt->isActive()) {
+					// Regular midi command
+					pipIt->midiCommand(tmp, pos);
+				} else {
+					// Force for inactive pipelines
+					pipIt->forceMidiCommand(tmp);
+				}
 			}
 		}
 		else {

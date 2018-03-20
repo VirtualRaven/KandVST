@@ -35,6 +35,7 @@ public:
 	bool isActive();
 
 	void midiCommand(MidiMessage msg, int offset);
+	void forceMidiCommand(MidiMessage msg);
 
 
 	Pipeline(double rate,int maxBuffHint);
