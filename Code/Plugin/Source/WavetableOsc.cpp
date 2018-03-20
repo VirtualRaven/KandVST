@@ -88,6 +88,7 @@ void WavetableOsc::renderImage(Image* image)
 	double max = 0.0;
 	double* data = new double[width];
 
+
 	for (int i = 0; i < width; i++)
 	{
 		int ind = (i * tables[0]->getLength() / width);
@@ -106,14 +107,24 @@ void WavetableOsc::renderImage(Image* image)
 	Graphics g(*image);
 	g.setColour(Colour::fromRGB(36, 36, 36));
 	g.fillAll();
+
+	g.setColour(Colour::fromRGBA(255, 255, 255, 15));
+	for (size_t i = 1; i <= 10; i++)
+	{
+		g.drawLine((image->getWidth() / 10)*i, 0, (image->getWidth() / 10)*i, image->getHeight());
+	}
+	for (size_t i = 1; i <= 10; i++)
+	{
+		g.drawLine(0, (image->getHeight() / 10)*i, image->getWidth(), (image->getHeight() / 10)*i);
+	}
 	g.setColour(Colour::fromRGB(26,105,180));
 	g.setImageResamplingQuality(Graphics::highResamplingQuality);
 
-	double hMul = (static_cast<double>(height - 16)/2.0) / (max);
+	double hMul = (static_cast<double>(height - 32)/2.0) / (max);
 	if (max < 0.0001 || max < 1.00)
-		hMul = (height - 16) / 2.0;
+		hMul = (height - 32) / 2.0;
 
-	double lastx = 0, lasty=(height - 16)/2;
+	double lastx = 0, lasty=(height - 32)/2;
 	for (int i = 0; i < width; i++)
 	{
 		if (i > 0)
@@ -123,13 +134,13 @@ void WavetableOsc::renderImage(Image* image)
 				static_cast<float>(lasty),
 				static_cast<float>(i),
 				static_cast<float>(height / 2 - hMul*data[i]),
-				3);
+				6);
 		lastx = i;
 		lasty = height / 2 - hMul*data[i];
 	}
 
 	g.setColour(Colour::fromRGB(26, 26, 26));
-	g.drawRect(0, 0, width, height, 3);
+	g.drawRect(0, 0, width, height, 6);
 	delete data;
 
 }
@@ -229,11 +240,11 @@ bool WavetableOsc::__RenderBlock(AudioBuffer<T>& buffer,int len) {
 	float lfoFreqAmount = 0.0f;
 	if (lfoFreqIndx != 0) {
 		lfofreq = lfos[lfoFreqIndx - 1]->getPointer();
-		lfoFreqAmount = lfos[lfoFreqIndx-1]->getFreqAmount();
+		lfoFreqAmount = lfos[lfoFreqIndx-1]->getAmount();
 	}
 	int lfoAmpIndx = (*__lfoamp).getIndex();
 	float lfoAmpAmount = 0.0f;
-	if (lfoAmpIndx != 0 && lfos[lfoAmpIndx - 1]->getPointer()) {
+	if (lfoAmpIndx != 0) {
 		lfoamp = lfos[lfoAmpIndx - 1]->getPointer();
 		lfoAmpAmount = lfos[lfoAmpIndx-1]->getAmount();
 	}
@@ -273,7 +284,7 @@ bool WavetableOsc::__RenderBlock(AudioBuffer<T>& buffer,int len) {
 		//Calculate lfo frequency effect if it's active
 		if (lfoFreqIndx != 0 && lfofreq)
 		{
-			tmpFreq *= pow(2, lfofreq[i]*lfoFreqAmount / 12.0);
+			tmpFreq *= pow(2, lfofreq[i]*lfoFreqAmount);
 		}
 		
 		double inc = tmpInc * tmpFreq;
@@ -294,7 +305,7 @@ bool WavetableOsc::__RenderBlock(AudioBuffer<T>& buffer,int len) {
 
 		//Calculate lfo amplitude effect if it's active
 		if (lfoAmpIndx != 0 && lfoamp) {
-			tmp_samp *= lfoamp[i]*lfoAmpAmount;
+			tmp_samp += tmp_samp*lfoamp[i]*lfoAmpAmount;
 		}
 
 		tmp_samp *= __envBuff[envOffset+i];

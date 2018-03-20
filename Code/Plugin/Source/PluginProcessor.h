@@ -84,8 +84,13 @@ private:
 	void updateCurrentTimeInfoFromHost();
 
 	double __sampleRate;
-	PluginGUI * __gui;
 	bool processorReady;
+
+	bool supportsDoublePrecisionProcessing() const override {
+		return true;
+	}
+
+	ThreadPool __wavePool;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginProcessor)
 
 	

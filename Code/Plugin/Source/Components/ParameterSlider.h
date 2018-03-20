@@ -38,6 +38,7 @@ class ParameterSlider: public Slider, private Timer, private Linkable
 {
 private:
 	virtual void mouseUp(const MouseEvent& event) override;
+	Point<float> __mousePos;
 public:
 	ParameterSlider(AudioProcessorParameter& p);
 	~ParameterSlider();

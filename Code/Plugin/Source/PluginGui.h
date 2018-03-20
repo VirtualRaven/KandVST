@@ -13,7 +13,7 @@ class PluginGUI  : public AudioProcessorEditor, private KeyListener, private Tim
 {
 public:
 	PluginGUI(PluginProcessor& owner);
-	~PluginGUI();
+	virtual ~PluginGUI();
 
 	void paint(Graphics& g);
 	void resized();
@@ -41,6 +41,6 @@ private:
 
 	// Inherited via Timer
 	virtual void timerCallback() override;
-
+	bool __guiInit;
 };
 #endif // !PLUGIN_GUI_H

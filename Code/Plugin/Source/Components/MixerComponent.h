@@ -5,7 +5,7 @@
 #include "ParameterSlider.h"
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "../JuceLibraryCode/JuceHeader.h"
-
+#include "MixerSubComponent.h"
 class MixerComponent : public Component
 {
 public:
@@ -15,10 +15,8 @@ public:
 private: 
 	void paint(Graphics& g) override;
 	void resized() override;
-
-	ScopedPointer<ParameterSlider> __osc1, __osc2, __osc3, __osc4, __masterMixer;
-	Label __osc1Label, __osc2Label, __osc3Label, __osc4Label, __masterLabel;
-
+	std::vector<MixerSubComponent*> __mixers;
+	Rectangle<int> __bounds;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MixerComponent)
 };

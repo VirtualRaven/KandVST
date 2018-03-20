@@ -160,6 +160,10 @@ bool ParameterHandler::RemoveLink(int sender_intId, std::string sender, int rece
 	}
 	return false;
 }
+void ParameterHandler::ClearLinks()
+{
+	__parameterLinks.clear();
+}
 std::map<int,AudioProcessorParameterWithID *> ParameterHandler::FindSimilar(AudioProcessorParameterWithID* ID)
 {
 	std::string baseId = ID->paramID.toStdString().substr(ID->paramID.toStdString().find_first_of('_')+1);

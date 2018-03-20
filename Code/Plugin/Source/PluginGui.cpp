@@ -9,7 +9,8 @@ PluginGUI::PluginGUI(PluginProcessor& owner)
 	__tabComponent(TabbedButtonBar::Orientation::TabsAtTop),
 	__keyboard(owner.keyboardState,MidiKeyboardComponent::Orientation::horizontalKeyboard),
 	__cc(),
-	__owner(&owner)
+	__owner(&owner),
+	__guiInit(false)
 {
 	setResizable(false, false);
 	setSize(1000, 720);
@@ -24,10 +25,12 @@ PluginGUI::PluginGUI(PluginProcessor& owner)
 
 void PluginGUI::InitializeGui()
 {
+	if (__guiInit)
+		return;
+	__guiInit = true;
 	const MessageManagerLock mmLock;
 	removeAllChildren();
 	setLookAndFeel(&ourLookAndFeel);
-
 	__tabComponent.addTab("M", Colour::fromRGB(200,200,200), new MasterComponent(), true);
 
 	for (int i = 0; i < 4; i++)
@@ -36,12 +39,9 @@ void PluginGUI::InitializeGui()
 	}
 
 	__tabComponent.addTab("Console", Colours::darkgrey, &__cc, true);
-	
 	addAndMakeVisible(__tabComponent);
 	addAndMakeVisible(__keyboard);
 	__keyboard.setKeyWidth(__keyboard.getKeyWidth() + 10.0f);
-
-	Global->paramHandler->LinkParameters(0, "OSC_SINE", 1, "OSC_SINE");
 }
 
 bool PluginGUI::keyPressed(const KeyPress & /*key*/, Component * /*originatingComponent*/)
@@ -56,7 +56,7 @@ bool PluginGUI::keyStateChanged(bool isKeyDown, Component * /*originatingCompone
 
 void PluginGUI::timerCallback()
 {
-	if (__owner->isReady()) {
+	if (!__guiInit&&__owner->isReady()) {
 		InitializeGui();
 		stopTimer();
 	}

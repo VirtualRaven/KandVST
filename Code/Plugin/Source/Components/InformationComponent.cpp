@@ -7,16 +7,7 @@ InformationComponent::~InformationComponent()
 
 InformationComponent::InformationComponent(){
     
-	Font f;
-	f.setHeight(20.0f);
-
-	addAndMakeVisible(__version);
-    __version.setFont(f);
-    __version.setText("Version X 2018", NotificationType::dontSendNotification);
-
-    addAndMakeVisible(__authors);
-    __authors.setFont(f);
-    __authors.setText("Anton, Andreas, Klas, Lukas, Sarosh, Stas", NotificationType::dontSendNotification);
+	addAndMakeVisible(__presetComponent);
 
 	// variables
 	x = 310; //starting x position
@@ -24,7 +15,7 @@ InformationComponent::InformationComponent(){
 	midX = 500;
 	midY = 225;
 	w = 380; //width of component
-	h = 200; //height of component
+	h = 250; //height of component
 
 	// shadow stuff
 	startAlpha = 0.3f;
@@ -37,10 +28,21 @@ void InformationComponent::paint (Graphics& g){
     
     //Path to draw the rectangle
     Path myPath;
-    Rectangle<float> infoWindow(x,y,w,h);
+    Rectangle<int> infoWindow = getLocalBounds();
+	x = infoWindow.getX();
+	y = infoWindow.getY();
+	midX = infoWindow.getCentreX();
+	midY = infoWindow.getCentreY();
+	w = infoWindow.getWidth();
+	h = infoWindow.getHeight();
 	myPath.addRectangle(infoWindow);
     g.setColour(Colour::fromRGB(40,60,90));
     g.fillPath(myPath);
+
+	g.setColour(Colours::white);
+	g.setFont(Font (20, Font::bold));
+	g.drawText("PRESETS", Rectangle<int>(x + 15, y + offset * 2, w - offset * 3, 30.0f),
+		Justification::centred, false);
 
     // == adding inner shadows using gradients == 
     //shadow for top
@@ -72,14 +74,16 @@ void InformationComponent::paint (Graphics& g){
     g.setColour(Colours::black);
     g.strokePath(myPath,PathStrokeType (0.8f));
 
+	g.setColour(Colours::white);
+	g.drawRect(__presetComponent.getBounds().reduced(6), 1.2f);
+	g.drawRect(Rectangle<int>(x + 15, y + offset * 2, w - offset * 3, 30.0f), 1.2f);
+	
+
 }
 void InformationComponent::resized(){
-    //set the bounds of any child components here.
-    Rectangle<int> r (static_cast<int>(x), static_cast<int>(y), static_cast<int>(w), static_cast<int>(h));
-	r.removeFromTop(60);
-    __version.setBounds(r);
-	__version.setCentrePosition(static_cast<int>(midX) + 10, r.getY());
-    r.removeFromTop(40);
-    __authors.setBounds(r);
-    __authors.setCentrePosition(static_cast<int>(midX) + 10, r.getY());
+	Rectangle<int> bounds = getLocalBounds();
+	bounds.removeFromTop(offset+30);
+	bounds.removeFromTop(8);
+
+	__presetComponent.setBounds(bounds.reduced(9));
 }
