@@ -1,10 +1,9 @@
 cmake_minimum_required(VERSION 3.4)
 
 if(TARGET KandVST_VST3)
-    # This is to force the VST api to initialize IID
-    # we need this as we only use the interface headers
-    add_definitions(-DINIT_CLASS_IID)
     
+	include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+
     # VST header files
     include_directories(${CMAKE_SOURCE_DIR}/../VST/)
     include_directories(${CMAKE_SOURCE_DIR}/../VST/pluginterfaces/)
@@ -12,7 +11,8 @@ if(TARGET KandVST_VST3)
     #To include folders_*.h  
     include_directories(${CMAKE_CURRENT_BINARY_DIR})
     
-    SET ( SRCS  main.cpp folders.h )
+
+    SET ( SRCS  main.cpp folders.h wrapperVST.cpp util.cpp)
     
     #Generate files containing paths to our VST3 dll
     file(GENERATE OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/folders_debug.h"  
