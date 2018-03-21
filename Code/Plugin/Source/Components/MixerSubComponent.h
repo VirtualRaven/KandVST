@@ -9,12 +9,14 @@ class MixerSubComponent : public Component,IVSTParameters
 {
 public:
 	MixerSubComponent(int ID,String  label);
-	MixerSubComponent(int ID, String  label, String overridePanId,String overrideGainId);
+	MixerSubComponent(int ID, String  label, String overridePanId,String overrideGainId, bool isMaster);
 	~MixerSubComponent();
 
 private: 
 	void paint(Graphics& g) override;
 	void resized() override;
+
+	bool __isMaster;
 
 	ScopedPointer<ParameterSlider> __gain;
 	Label __label;

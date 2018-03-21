@@ -1,8 +1,8 @@
 #include "SelectKnob.h"
 
 SelectKnob::SelectKnob(AudioParameterChoice& p) :
-	__angleBetweenPos((float_Pi / 4.0f) * 0.9f), // *0.9 for esthetic purposes
 	__param(p),
+	__angleBetweenPos((float_Pi / 4.0f) * (-0.2f * p.choices.size() + 1.9f)), // *0.9 for esthetic purposes
 	__snapAngles(),
 	__slider(p, __angleBetweenPos)
 {
@@ -50,8 +50,8 @@ void SelectKnob::paint(Graphics& g)
 
 		// Y-offset based on angle
 		int mul = -1;
-		if (currentAngle > 0) mul = 1;
-		textP.setY(textP.getY() + mul * currentAngle * 3);
+		//if (currentAngle > 0) mul = 1;
+		textP.setY(textP.getY() + mul * currentAngle * 1);
 
 		// Draw text
 		g.setColour(Colour::fromRGB(255, 255, 255));
@@ -90,6 +90,7 @@ SelectKnobSlider::SelectKnobSlider(AudioParameterChoice& p, float angleBetweenPo
 	updateSliderPos();
 	setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
 	setTextBoxStyle(Slider::NoTextBox, false, 0, 0);
+	setMouseDragSensitivity(getMouseDragSensitivity()/2);
 	
 	// Set the knob's limits according to __angleBetweenPos
 	float halfMaxAngle = (__angleBetweenPos * (__param.choices.size() - 1)) / 2.0f;
@@ -107,19 +108,8 @@ void SelectKnobSlider::valueChanged()
 	param.setValueNotifyingHost((float)Slider::getValue()); 
 }
 
-void SelectKnobSlider::startedDragging()
-{ 
-	param.beginChangeGesture(); 
-}
-void SelectKnobSlider::stoppedDragging()
-{ 
-	param.endChangeGesture(); 
-}
-
 void SelectKnobSlider::resized()
 {
-	// Hardcoded values
-	//setBounds(getLocalBounds().getX(),getLocalBounds().getY(), 50,50);
 	ParameterSlider::resized();
 }
 

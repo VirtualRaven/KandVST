@@ -8,6 +8,8 @@
 #include <list>
 #include <array>
 #include "LFO.h"
+#include "FilterHP.h"
+#include "FilterLP.h"
 
 template<typename T>
 class PipelineManager
@@ -20,6 +22,8 @@ private:
 	std::array<AudioBuffer<T>,NUM_PIPELINES> pipBuff;
 	AudioParameterFloat* __masterGain;
 	ThreadPool pool;
+	FilterHP<T> __filterHP;
+	FilterLP<T> __filterLP;
 public:
 	PipelineManager(double rate, int maxBuffHint);
 	~PipelineManager();	

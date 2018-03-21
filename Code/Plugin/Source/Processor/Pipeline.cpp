@@ -53,6 +53,18 @@ void Pipeline<T>::midiCommand(MidiMessage msg, int offset)
 }
 
 template<typename T>
+void Pipeline<T>::forceMidiCommand(MidiMessage msg)
+{
+	if (__active)
+		return;
+
+	for (auto osc : __oscs)
+	{
+		std::get<0>(osc)->ProccessCommand(msg);
+	}
+}
+
+template<typename T>
 Pipeline<T>::Pipeline(Pipeline<T>&& ref) :
 __rate(ref.__rate),
 __delay(0, ref.__rate),
