@@ -1,4 +1,5 @@
 #include "FilterButterworth.h"
+#include "LFO.h"
 
 template<typename T>
 FilterButterworth<T>::FilterButterworth(int ID, double sampleRate, String parameterId) :
@@ -72,24 +73,25 @@ bool FilterButterworth<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 
 	auto buff = buffer.getArrayOfWritePointers();
 	
-/*	double* lfo = nullptr;
+	double* lfo = nullptr;
 	double amount = 0;
-	if ((*lfoIndex) > 0 && (*lpFrequency) < 10000.0f) {
+	bool tmpbool = 2 * (*lpFrequency) < 20000.0f;
+	if ((*lfoIndex) > 0 && tmpbool) {
 		static double lastAmount = 0.0;
 		lfo = lfos[(*lfoIndex) - 1]->getPointer();
 		amount = lfos[(*lfoIndex) - 1]->getAmount();
-		amount = pow(2, amount)*(*lpFrequency) > 10000.0f ? lastAmount : amount;
+		amount = pow(2, amount)*(*lpFrequency) >= 20000.0f ? lastAmount : amount;
 		lastAmount = amount;
-	}*/
+	}
 		 
 
 	for (int i = __firstSampleIndex; i < len; i++)
 	{
 		__firstSampleIndex = 0;
-	/*	if ((*lfoIndex) > 0) {
-//			__fc = (*lpFrequency) * pow(2, lfo[i] * amount);
+		if ((*lfoIndex) > 0 && tmpbool) {
+			__fc = (*lpFrequency) * pow(2, lfo[i] * amount);
 			CalculateCoefficients();
-		}*/
+		}
 		// Current y[i-2] is the previous y[i-1]
 		__prevY2[0] = __prevY1[0];
 		__prevY2[1] = __prevY1[1];

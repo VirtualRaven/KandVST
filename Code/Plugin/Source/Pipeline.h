@@ -8,7 +8,7 @@
 #include "LFO.h"
 #include "FilterLP.h"
 #include "FilterHP.h"
-
+#include "DistEffect.h"
 
 #include <tuple>
 #include <array>
@@ -26,6 +26,7 @@ private:
 	double __rate;
 	int __note;
 	DelayEffect<T> __delay;
+	DistEffect<T> __dist;
 	bool __active;
 	const int __maxBuffHint;
 

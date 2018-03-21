@@ -87,9 +87,9 @@ void LFO::generate(int numSamples, AudioPlayHead::CurrentPositionInfo& posInfo)
 			if (prevPos > posInfo.ppqPosition) {
 				nrLoopsPlayed++;
 			}
-			__phase = fmod((nrLoopsPlayed * posInfo.timeSigNumerator + prevPos) * IWavetable::getLength() * calcRatio(), IWavetable::getLength());
+			__phase = fmod((nrLoopsPlayed * posInfo.timeSigNumerator + posInfo.ppqPosition) * IWavetable::getLength() * calcRatio(), IWavetable::getLength());
 		} else 
-			__phase = fmod(prevPos * IWavetable::getLength() * calcRatio(), IWavetable::getLength());
+			__phase = fmod(posInfo.ppqPosition * IWavetable::getLength() * calcRatio(), IWavetable::getLength());
 		prevPos = posInfo.ppqPosition;
 	}
 	else {
