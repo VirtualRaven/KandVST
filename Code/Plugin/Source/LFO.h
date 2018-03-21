@@ -17,7 +17,7 @@ private:
 	bool __activeCheck;
 	//double* __parameter; // TEMPORARY
 	const IWavetable* __wavetable;
-	AudioParameterFloat* __amount, *__freqamount;
+	AudioParameterFloat* __amount;
 	AudioParameterBool* __isActive;
 	AudioParameterInt* __ratio;
 	AudioParameterInt* __waveType;
@@ -32,7 +32,6 @@ public:
 	static void RegisterParameters(int ID);
 	void generate(int numSamples, AudioPlayHead::CurrentPositionInfo& posInfo);
 	double* getPointer();
-	float getFreqAmount();
 	float getAmount();
 };
 extern LFO* lfos[LFO_COUNT];

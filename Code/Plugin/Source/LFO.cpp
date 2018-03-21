@@ -15,7 +15,6 @@ LFO::LFO(int maxSamples, int ID, double sampleRate) :
 {
 	__samples = new double[maxSamples];
 	__amount	 = Global->paramHandler->Get<AudioParameterFloat>(ID, "LFO_AMOUNT");
-	__freqamount = Global->paramHandler->Get<AudioParameterFloat>(ID, "LFO_FREQ_AMOUNT");
 	__ratio		 = Global->paramHandler->Get<AudioParameterInt>(ID, "LFO_RATIO");
 	__waveType	 = Global->paramHandler->Get<AudioParameterInt>(ID, "LFO_TYPE");
 	__isActive	 = Global->paramHandler->Get<AudioParameterBool>(ID, "LFO_EN");
@@ -40,7 +39,6 @@ void LFO::RegisterParameters(int ID)
 	Global->paramHandler->RegisterInt(ID, "LFO_RATIO", "LFO Ratio", -6, 16, 1); //TEMP!!!
 	Global->paramHandler->RegisterInt(ID, "LFO_TYPE", "LFO Wave type", 0, 3, 0);
 	Global->paramHandler->RegisterFloat(ID, "LFO_AMOUNT", "LFO amount", 0.0, 1.0, 0.5);
-	Global->paramHandler->RegisterFloat(ID, "LFO_FREQ_AMOUNT", "LFO Frequency Amount",0.0,24.0,2.0);
 }
 
 double* LFO::getPointer()
@@ -48,12 +46,9 @@ double* LFO::getPointer()
 	if (!__activeCheck) return nullptr;
 	return __samples;
 }
-float LFO::getFreqAmount()
-{
-	return (*__freqamount);
-}
 float LFO::getAmount()
 {
+	if (!__activeCheck) return 0.0f;
 	return (*__amount);
 }
 

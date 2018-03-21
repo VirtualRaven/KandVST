@@ -6,7 +6,9 @@ FilterButterworth<T>::FilterButterworth(int ID, double sampleRate, String parame
 	IEffect(sampleRate),
 	IVSTParameters(ID),
 	__enabled(true),
-	__firstSampleIndex(0)
+	__firstSampleIndex(0),
+	__upperLimit(24000.0f),
+	__lowerLimit(20.0f)
 {
 	__fs = sampleRate;
 	__prevFc = -1;
@@ -22,7 +24,7 @@ FilterButterworth<T>::~FilterButterworth()
 template<typename T>
 void FilterButterworth<T>::RegisterParameters(int ID, String parameterLabel, String parameterId, float defaultValue)
 {
-	Global->paramHandler->RegisterFloat(ID, parameterId, parameterLabel, 1.0f, 20000.0f, defaultValue);
+	Global->paramHandler->RegisterFloat(ID, parameterId, parameterLabel, 20.0f, 24000.0f, defaultValue);
 	Global->paramHandler->RegisterInt(ID, parameterId + "_LFO", parameterLabel + " lfo", 0, 2, 0);
 }
 
@@ -74,13 +76,13 @@ bool FilterButterworth<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 	auto buff = buffer.getArrayOfWritePointers();
 	
 	double* lfo = nullptr;
-	double amount = 0;
-	bool tmpbool = 2 * (*lpFrequency) < 20000.0f;
+	float amount = 0.0f;
+	bool tmpbool = (2 * (*lpFrequency) < __upperLimit) && (0.5 * (*lpFrequency) > __lowerLimit);
 	if ((*lfoIndex) > 0 && tmpbool) {
 		static double lastAmount = 0.0;
 		lfo = lfos[(*lfoIndex) - 1]->getPointer();
 		amount = lfos[(*lfoIndex) - 1]->getAmount();
-		amount = pow(2, amount)*(*lpFrequency) >= 20000.0f ? lastAmount : amount;
+		amount = (pow(2, amount)*(*lpFrequency) >= __upperLimit) || (pow(2, amount)*(*lpFrequency) <= __lowerLimit) ? lastAmount : amount;
 		lastAmount = amount;
 	}
 		 

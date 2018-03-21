@@ -170,6 +170,8 @@ jucer_project_files("KandVST"
   .         .         .         "Source/Components/OSCLFOComponent.h"
   x         .         .         "Source/Components/MixerSubComponent.cpp"
   .         .         .         "Source/Components/MixerSubComponent.h"
+  x         .         .         "Source/DistEffect.cpp"
+  .         .         .         "Source/DistEffect.h"
 )
 
 jucer_project_module(
