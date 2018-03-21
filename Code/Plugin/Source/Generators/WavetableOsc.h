@@ -6,7 +6,7 @@
 #include "IWavetable.h"
 #include "IVSTParameters.h"
 #include "../JuceLibraryCode/JuceHeader.h"
-
+#include "Swatch.h"
 
 
 class WavetableOsc : public IGenerator, public IVSTParameters

@@ -123,7 +123,7 @@ void EnvelopeComponent::paint(Graphics & g) {
 		}else {
 			g.drawRect(Rectangle<int>(startX, startY, 65, height));
 		}
-		startX += 70;
+		startX += 69;
 	}
 	g.saveState();
 
