@@ -55,20 +55,16 @@ void OurLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int width, int 
 			
 			Path dots;
 			Path blueDot;
+
+			float ang = 0.0f;
 			Range<int> range = intParam->getRange();
 			float angDelta = (rotaryStartAngle - rotaryEndAngle) / intParam->getRange().getLength();
-			for (size_t i = 0; i <= intParam->getRange().getLength()+1; i++)
+			for (int i = 0; i <= intParam->getRange().getLength()+1; i++)
 			{
-				if ((i +range.getStart()) == (*intParam))
-				{
-					blueDot.addEllipse(centreX - 2, 0, 4, 4);
-					blueDot.applyTransform(AffineTransform::rotation(-angDelta*i + rotaryStartAngle, centreX, centreY));
-				}
-
-				
 				dots.addEllipse(centreX-2, 0, 4, 4);
 				dots.applyTransform(AffineTransform::rotation(angDelta*(i>0), centreX, centreY));			
 			}
+			
 			dots.applyTransform(AffineTransform::rotation(rotaryEndAngle- angDelta, centreX, centreY));
 			Colour dotColour = Swatch::background.darker(0.2);
 			Path dark = Path(dots);
@@ -85,11 +81,47 @@ void OurLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int width, int 
 			g.setColour(dotColour);
 			g.fillPath(dots);
 
-			
 			g.setColour(Swatch::accentBlue);
-			g.fillPath(blueDot);
+			for (int i = 0; i <= intParam->getRange().getLength() + 1; i++)
+			{
+				switch (ps->getDrawProgress())
+				{
+				case ParameterSlider::ProgressStart::SingleDot:
+					if ((i + range.getStart()) == (*intParam))
+					{
+						blueDot.addEllipse(centreX - 2, 0, 4, 4);
+						blueDot.applyTransform(AffineTransform::rotation(-angDelta * i + rotaryStartAngle, centreX, centreY));
+						g.fillPath(blueDot);
+						blueDot.clear();
+					}
+					break;
+				case ParameterSlider::ProgressStart::Start:
 
+					if ((i + range.getStart()) <= (*intParam))
+					{
+						blueDot.addEllipse(centreX - 2, 0, 4, 4);
+						blueDot.applyTransform(AffineTransform::rotation(-angDelta * i + rotaryStartAngle, centreX, centreY));
+						g.fillPath(blueDot);
+						blueDot.clear();
+					}
+					break;
+				case ParameterSlider::ProgressStart::Center:
 
+					if (((i + range.getStart()) >= (*intParam) && (i + range.getStart()) <= 0) || ((i + range.getStart()) <= (*intParam) && (i + range.getStart()) >= 0))
+					{
+						blueDot.addEllipse(centreX - 2, 0, 4, 4);
+						blueDot.applyTransform(AffineTransform::rotation(-angDelta * i + rotaryStartAngle, centreX, centreY));
+
+						g.fillPath(blueDot);
+						blueDot.clear();
+
+					}
+
+					break;
+				default:
+					break;
+				}
+			}
 			
 		}
 		else if (auto floatParam = dynamic_cast<AudioParameterFloat*>(&(ps->param)) && ps->getDrawProgress()!=ParameterSlider::ProgressStart::Disabled)
