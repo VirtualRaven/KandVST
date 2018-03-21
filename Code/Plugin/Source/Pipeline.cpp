@@ -127,7 +127,7 @@ void Pipeline<T>::render_block(AudioBuffer<T>& buffer,int len) {
 		}
 
 		soundGenerated = __delay.RenderBlock(buffer, len, !soundGenerated);
-		//soundGenerated = __dist.RenderBlock(buffer, len, !soundGenerated);
+	//	soundGenerated = __dist.RenderBlock(buffer, len, !soundGenerated);
 
 		if (!oscActive && !soundGenerated)
 			__active = false;

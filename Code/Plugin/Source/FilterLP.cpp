@@ -17,7 +17,7 @@ FilterLP<T>::~FilterLP()
 template<typename T>
 void FilterLP<T>::RegisterParameters(int ID)
 {
-	FilterButterworth<T>::RegisterParameters(ID, "LP Frequency", "FILTER_LP", 20000.0f);
+	FilterButterworth<T>::RegisterParameters(ID, "LP Frequency", "FILTER_LP", 24000.0f);
 }
 
 template<typename T>
@@ -43,7 +43,7 @@ template<typename T>
 bool FilterLP<T>::IsEnabled()
 {
 	// Disable at 20kHz
-	return (__fc < __upperLimit) && (__fc > __lowerLimit);
+	return (__fc < 20000.0f) && (__fc >= __lowerLimit);
 }
 
 template class FilterLP<double>;
