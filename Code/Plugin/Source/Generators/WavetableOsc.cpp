@@ -110,16 +110,19 @@ void WavetableOsc::renderImage(Image* image)
 	g.setColour(Colour::fromRGB(36, 36, 36));
 	g.fillAll();
 
+	Path p;
+
 	g.setColour(Colour::fromRGBA(255, 255, 255, 15));
 	for (size_t i = 1; i <= 10; i++)
 	{
+		
 		g.drawLine((image->getWidth() / 10)*i, 0, (image->getWidth() / 10)*i, image->getHeight());
 	}
 	for (size_t i = 1; i <= 10; i++)
 	{
 		g.drawLine(0, (image->getHeight() / 10)*i, image->getWidth(), (image->getHeight() / 10)*i);
 	}
-	g.setColour(Colour::fromRGB(26,105,180));
+	g.setColour(Swatch::accentBlue);
 	g.setImageResamplingQuality(Graphics::highResamplingQuality);
 
 	double hMul = (static_cast<double>(height - 32)/2.0) / (max);
@@ -130,16 +133,30 @@ void WavetableOsc::renderImage(Image* image)
 	for (int i = 0; i < width; i++)
 	{
 		if (i > 0)
-			
-			g.drawLine(
+			p.lineTo(static_cast<float>(i), static_cast<float>(height / 2 - hMul * data[i]));
+			/*g.drawLine(
 				static_cast<float>(lastx),
 				static_cast<float>(lasty),
 				static_cast<float>(i),
 				static_cast<float>(height / 2 - hMul*data[i]),
-				6);
+				6);*/
+		else
+		{
+			p.startNewSubPath(i, height / 2 - hMul * data[i]);
+		}
 		lastx = i;
 		lasty = height / 2 - hMul*data[i];
 	}
+
+	PathStrokeType pst(6.0f);
+	pst.setJointStyle(PathStrokeType::JointStyle::curved);
+	g.strokePath(p, pst);
+	p.lineTo(image->getWidth(), image->getHeight());
+	p.lineTo(0, image->getHeight());
+
+	p.closeSubPath();
+	//g.setFillType(FillType(ColourGradient(Colour::fromRGBA(26, 105, 180, 80), 0, 0, Colour::fromRGBA(26, 105, 180, 10), 0, image->getHeight(), false)));
+	//g.fillPath(p);
 
 	g.setColour(Colour::fromRGB(26, 26, 26));
 	g.drawRect(0, 0, width, height, 6);
