@@ -48,7 +48,7 @@ bool FilterButterworth<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 				__prevY2[i] = 0;
 
 				// This will become y[i-2]
-				__prevX1[i] = buffer.getSample(i, 0);
+				__prevY1[i] = buffer.getSample(i, 0);
 				__prevY1[i] = buffer.getSample(i, 0);
 			}
 
@@ -103,7 +103,7 @@ bool FilterButterworth<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 
 		__currentLeft = __b[0] * __currentLeft + __b[1] * __prevX1[0] + __b[2] * __prevX2[0] 
 					  - __a[1] * __prevY1[0] - __a[2] * __prevY2[0];
-		__currentRight = __b[0] * __currentLeft + __b[1] * __prevX1[1] + __b[2] * __prevX2[1] 
+		__currentRight = __b[0] * __currentRight + __b[1] * __prevX1[1] + __b[2] * __prevX2[1]
 					   - __a[1] * __prevY1[1] - __a[2] * __prevY2[1];
 
 		// Next x[i-2] will be the current x[i-1]
@@ -116,7 +116,7 @@ bool FilterButterworth<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 
 		// Change the sample
 		buff[0][i]=  static_cast<T>(__currentLeft);
-		buff[1][i] = static_cast<T>(__currentLeft);
+		buff[1][i] = static_cast<T>(__currentRight);
 
 	}
 
