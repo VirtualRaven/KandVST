@@ -12,9 +12,6 @@ public:
 	void valueChanged() override;
 	void resized() override;
 
-	void startedDragging() override;
-	void stoppedDragging() override;
-
 private:
 	AudioParameterChoice& __param;
 	float __angleBetweenPos;

@@ -108,15 +108,6 @@ void SelectKnobSlider::valueChanged()
 	param.setValueNotifyingHost((float)Slider::getValue()); 
 }
 
-void SelectKnobSlider::startedDragging()
-{ 
-	ParameterSlider::startedDragging();
-}
-void SelectKnobSlider::stoppedDragging()
-{ 
-	ParameterSlider::stoppedDragging();
-}
-
 void SelectKnobSlider::resized()
 {
 	ParameterSlider::resized();
