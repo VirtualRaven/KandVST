@@ -33,6 +33,7 @@ public:
 	void generate(int numSamples, AudioPlayHead::CurrentPositionInfo& posInfo);
 	double* getPointer();
 	float getAmount();
+	bool isActive();
 };
 extern LFO* lfos[LFO_COUNT];
 #endif //!LFO_H

@@ -77,8 +77,10 @@ bool FilterButterworth<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 	
 	double* lfo = nullptr;
 	float amount = 0.0f;
+	bool active = false;
 	bool tmpbool = (2 * (*lpFrequency) < __upperLimit) && (0.5 * (*lpFrequency) > __lowerLimit);
 	if ((*lfoIndex) > 0 && tmpbool) {
+		if (lfos[(*lfoIndex) - 1]->isActive()) active = true;;
 		static double lastAmount = 0.0;
 		lfo = lfos[(*lfoIndex) - 1]->getPointer();
 		amount = lfos[(*lfoIndex) - 1]->getAmount();
@@ -90,7 +92,7 @@ bool FilterButterworth<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 	for (int i = __firstSampleIndex; i < len; i++)
 	{
 		__firstSampleIndex = 0;
-		if ((*lfoIndex) > 0 && tmpbool) {
+		if (active && (*lfoIndex) > 0 && tmpbool) {
 			__fc = (*lpFrequency) * pow(2, lfo[i] * amount);
 			CalculateCoefficients();
 		}

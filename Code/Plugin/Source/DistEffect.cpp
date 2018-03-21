@@ -14,10 +14,11 @@ bool DistEffect<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool empty) {
 	if (empty) return false;
 	auto buff = buffer.getArrayOfWritePointers();
 	for (int i = 0; i < len; i++) {
-		double x = buff[0][i];
-		double samp = x*3.0/2.0 * (1.0 - pow(x,2)/2.0);
-		buff[0][i] = std::min(x, 0.01);
-		buff[1][i] = std::min(x, 0.01);
+		double samp0 = buff[0][i];
+		double samp1 = buff[1][i];
+		int mul = samp0 < 0 ? -1 : 1;
+		buff[0][i] = std::min(abs(samp0), 0.01) * mul;
+		buff[1][i] = std::min(abs(samp1), 0.01) * mul;
 	}
 	return true;
 }

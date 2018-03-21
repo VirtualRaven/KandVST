@@ -51,7 +51,9 @@ float LFO::getAmount()
 	if (!__activeCheck) return 0.0f;
 	return (*__amount);
 }
-
+bool LFO::isActive() {
+	return __activeCheck;
+}
 void LFO::generate(int numSamples, AudioPlayHead::CurrentPositionInfo& posInfo)
 {
 	if (numSamples > __nrOfSamples) {
