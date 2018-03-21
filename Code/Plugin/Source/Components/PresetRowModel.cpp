@@ -42,6 +42,8 @@ bool PresetRowModel::keyPressed(const KeyPress & key, Component * originatingCom
 			if (t->getText() != "") {
 				Global->presetManager->SavePreset(t->getText().toStdString());
 				t->setText("");
+				Global->presetManager->RefreshPresets();
+				__owner->updateContent();
 			}
 			return true;
 		}

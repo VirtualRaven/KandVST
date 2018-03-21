@@ -20,12 +20,14 @@ public:
 	void LoadPreset(std::string name);
 	void LoadPreset(int index);
 	void SavePreset(std::string name);
+	void DeletePreset(std::string name);
 	int GetPresetCount();
 	int GetPresetIndex(std::string name);
 	int GetCurrentPreset();
 	bool PresetExists(std::string name);
 	void LoadPreset(XmlElement * xmlState);
 	void SavePreset(XmlElement * xmlState);
+	void DeletePreset(XmlElement * xmlState);
 
 	std::vector<std::string> GetPresetNames();
 	JUCE_LEAK_DETECTOR(PresetManager);

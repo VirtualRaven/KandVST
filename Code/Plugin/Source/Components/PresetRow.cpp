@@ -40,13 +40,15 @@ PresetRow::~PresetRow()
 }*/
 
 void PresetRow::buttonClicked(Button * btn) {
-	if (btn = &__save)
+	if (btn == &__save)
 	{
 		Global->presetManager->SavePreset(Global->presetManager->GetPresetNames()[__rowNr]);
+		__owner->updateContent();
 	}
-	else if (btn = &__delete)
+	else if (btn == &__delete)
 	{
-		// add deletefunction in presetmanager
+		Global->presetManager->DeletePreset(Global->presetManager->GetPresetNames()[__rowNr]);
+		__owner->updateContent();
 	}
 	
 }
