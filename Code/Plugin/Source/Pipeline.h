@@ -19,14 +19,13 @@ class Pipeline
 	typedef std::tuple<IGenerator*, AudioParameterFloat*, AudioParameterBool*> OscTripple;
 private:
 	static const size_t __num_osc = 4;
-	static const size_t __num_effects = 2;
+	static const size_t __num_effects = 3;
 	std::array<OscTripple, __num_osc> __oscs;
 	std::array<IEffect<T>*, __num_osc*__num_effects> __effects;
 	AudioBuffer<T> tmpBuff;
 	double __rate;
 	int __note;
 	DelayEffect<T> __delay;
-	DistEffect<T> __dist;
 	bool __active;
 	const int __maxBuffHint;
 

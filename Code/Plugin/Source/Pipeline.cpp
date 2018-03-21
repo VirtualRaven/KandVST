@@ -6,8 +6,7 @@ Pipeline<T>::Pipeline(double rate,int maxBuffHint) :
 	__rate(rate),
 	__delay(0,rate),
 	__active(false),
-	__maxBuffHint(maxBuffHint),
-	__dist(0,rate)
+	__maxBuffHint(maxBuffHint)
 {
 	for (int i = 0; i < this->__num_osc; i++) {
 		__oscs[i] = std::make_tuple(
@@ -17,7 +16,7 @@ Pipeline<T>::Pipeline(double rate,int maxBuffHint) :
 			);
 		__effects[i*__num_effects] = new FilterLP<T>(i, rate, "FILTER_LP");
 		__effects[i*__num_effects + 1] = new FilterHP<T>(i, rate, "FILTER_HP");
-
+		__effects[i*__num_effects + 2] = new DistEffect<T>(i, rate);
 	}
 
 	tmpBuff.setSize(2, maxBuffHint);
@@ -56,7 +55,6 @@ template<typename T>
 Pipeline<T>::Pipeline(Pipeline<T>&& ref) :
 __rate(ref.__rate),
 __delay(0, ref.__rate),
-__dist(0,ref.__rate),
 __active(ref.__active),
 __maxBuffHint(ref.__maxBuffHint){
 	for (size_t i = 0; i < this->__num_osc; i++) {
@@ -127,7 +125,6 @@ void Pipeline<T>::render_block(AudioBuffer<T>& buffer,int len) {
 		}
 
 		soundGenerated = __delay.RenderBlock(buffer, len, !soundGenerated);
-		__dist.RenderBlock(buffer, len, !soundGenerated);
 
 		if (!oscActive && !soundGenerated)
 			__active = false;

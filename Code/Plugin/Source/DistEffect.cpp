@@ -25,10 +25,11 @@ bool DistEffect<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool empty) {
 	for (int i = 0; i < len; i++) {
 		double samp0 = buff[0][i];
 		double samp1 = buff[1][i];
-		int mul = samp0 < 0 ? -1 : 1;
+		int mul1 = samp0 < 0 ? -1 : 1;
+		int mul2 = samp1 < 0 ? -1 : 1;
 		double t = (*__threshold);
-		buff[0][i] = std::min(abs(samp0),t) * mul;
-		buff[1][i] = std::min(abs(samp1),t) * mul;
+		buff[0][i] = std::min(abs(samp0),t) * mul1;
+		buff[1][i] = std::min(abs(samp1),t) * mul2;
 	}
 	return true;
 }
