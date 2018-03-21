@@ -12,6 +12,7 @@ class DistEffect :
 {
 private:
 	AudioParameterFloat* __threshold;
+	AudioParameterBool* __isActive;
 public:
 	DistEffect(int ID, double samplerate);
 	~DistEffect();
