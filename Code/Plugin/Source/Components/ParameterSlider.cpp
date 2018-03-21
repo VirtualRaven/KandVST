@@ -70,7 +70,8 @@ void ParameterSlider::mouseUp(const MouseEvent & event)
 
 ParameterSlider::ParameterSlider(AudioProcessorParameter& p):
 	 Slider(p.getName(256)), param(p),
-	Linkable(&p)
+	Linkable(&p),
+	__progressStart(ParameterSlider::ProgressStart::Start)
 {
 	setRange(0.0, 1.0, 0.0);
 	
@@ -92,6 +93,7 @@ void ParameterSlider::valueChanged()
 void ParameterSlider::timerCallback()
 { 
 	updateSliderPos(); 
+	this->setTooltip(getTextFromValue(param.getValue()));
 }
 
 void ParameterSlider::startedDragging()
@@ -109,6 +111,16 @@ void ParameterSlider::stoppedDragging()
 		setMouseCursor(MouseCursor::NormalCursor);
 	}
 	param.endChangeGesture(); 
+}
+
+void ParameterSlider::setDrawProgress(ProgressStart startLocation)
+{
+	__progressStart = startLocation;
+}
+
+ParameterSlider::ProgressStart ParameterSlider::getDrawProgress()
+{
+	return __progressStart;
 }
 
 double ParameterSlider::getValueFromText(const String& text)

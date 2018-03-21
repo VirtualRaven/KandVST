@@ -43,7 +43,7 @@ MixerSubComponent::MixerSubComponent(int ID, String label, String overridePanId,
 	//Pans
 	__pan->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
 	__pan->setTextBoxStyle(__pan->NoTextBox, true, 10, 10);
-
+	__pan->setDrawProgress(ParameterSlider::ProgressStart::Center);
 	//====================================
 	// Pan labels
 	__panL.setText("L", NotificationType::dontSendNotification);

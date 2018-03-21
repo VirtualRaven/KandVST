@@ -62,6 +62,7 @@ __waveformInvalid(false)
 	addAndMakeVisible(__detuneSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "OSC_DETUNE")));
 	__detuneSlider->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
 	__detuneSlider->setTextBoxStyle(__detuneSlider->NoTextBox, true, 0, 0);
+	__detuneSlider->setDrawProgress(ParameterSlider::ProgressStart::Center);
 	__detuneLabel.setText("DETUNE", NotificationType::dontSendNotification);
 	__detuneLabel.attachToComponent(__detuneSlider, false);
 	__detuneLabel.setJustificationType(juce::Justification::centred);

@@ -16,6 +16,7 @@ FilterComponent::FilterComponent(int ID)
 	__lpFilter->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
 	__lpFilter->setTextBoxStyle(__lpFilter->NoTextBox, true, 10, 10);
 	__lpFilter->setSkewFactorFromMidPoint(0.15);
+	__lpFilter->setDrawProgress(ParameterSlider::ProgressStart::End);
 	__lpLabel.setText("LP", NotificationType::dontSendNotification);
 	__lpLabel.attachToComponent(__lpFilter, false);
 	__lpLabel.setJustificationType(juce::Justification::horizontallyCentred);
@@ -23,6 +24,8 @@ FilterComponent::FilterComponent(int ID)
 	__hpFilter->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
 	__hpFilter->setTextBoxStyle(__hpFilter->NoTextBox, true, 10, 10);
 	__hpFilter->setSkewFactorFromMidPoint(0.15);
+	__hpFilter->setDrawProgress();
+
 	__hpLabel.setText("HP", NotificationType::dontSendNotification);
 	__hpLabel.attachToComponent(__hpFilter, false);
 	__hpLabel.setJustificationType(juce::Justification::horizontallyCentred);

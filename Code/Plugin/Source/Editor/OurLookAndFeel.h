@@ -3,7 +3,8 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "Resources_files.h"
-
+#include "Swatch.h"
+#include "Components\ParameterSlider.h"
 class OurLookAndFeel : public LookAndFeel_V4
 {
 public:
