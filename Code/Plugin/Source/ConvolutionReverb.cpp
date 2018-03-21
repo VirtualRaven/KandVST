@@ -19,12 +19,9 @@ ConvolutionReverb<T>::ConvolutionReverb(int ID, double sampleRate, int maxBuffHi
 	manager.registerBasicFormats();
 	ScopedPointer<AudioFormatReader> reader = manager.createReaderFor(resp);
 
-	AudioSampleBuffer buffer = AudioSampleBuffer();
-	buffer.setSize(2, reader->lengthInSamples, false, false, false);
-	reader->read(&buffer, 0, 400, 0, true, true);
+	__responseBuffer.setSize(2, reader->lengthInSamples, false, false, false);
+	reader->read(&__responseBuffer, 0, reader->lengthInSamples, 0, true, true);
 
-	// Convert to <T>
-	__responseBuffer.makeCopyOf(buffer);
 	__responseBufferLen = reader->lengthInSamples;
 }
 
@@ -40,25 +37,35 @@ void ConvolutionReverb<T>::RegisterParameters(int ID)
 template<typename T>
 bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool empty)
 {
-	for (int i = 0; i < len; i++)
+	// Divide impulse response
+	ScopedPointer<dsp::FFT> fft = new dsp::FFT(len);
+
+	AudioSampleBuffer output = AudioSampleBuffer(1, len * 2);
+	output.clear();
+
+	for (int i = 0; i < __responseBufferLen / len; i++)
 	{
-		for (int h = 0; h < __responseBufferLen; h++)
-		{
-			
-			T currentLeft = 0;
-			T currentRight = 0;
+		AudioSampleBuffer h = AudioSampleBuffer(1, len * 2);
+		h.copyFrom(0, 0, __responseBuffer, 0, i * len, len);
 
-			if (i - h > 0)
-			{
-				currentLeft = buffer.getSample(0, i - h);
-				currentRight = buffer.getSample(1, i - h);
-			}
+		fft->performRealOnlyForwardTransform(h.getArrayOfWritePointers()[0], true);
 
-			buffer.setSample(0, i, currentLeft * __responseBuffer.getSample(0, h));
-			buffer.setSample(1, i, currentRight * __responseBuffer.getSample(1, h));
-		}
+		AudioSampleBuffer in = AudioSampleBuffer();
+		in.makeCopyOf(buffer, false);
+		in.setSize(1, len * 2, true, true, false);
+
+		fft->performRealOnlyForwardTransform(in.getArrayOfWritePointers()[0]);
+
+		FloatVectorOperations::addWithMultiply(output.getArrayOfWritePointers()[0], in.getArrayOfWritePointers()[0], h.getArrayOfWritePointers()[0], len);
 	}
 
+	fft->performRealOnlyInverseTransform(output.getArrayOfWritePointers()[0]);
+
+	for (int i = 0; i < len; i++)
+	{
+		buffer.setSample(0, i, output.getSample(0, i));
+		buffer.setSample(1, i, output.getSample(0, i));
+	}
 	return true;
 }
 

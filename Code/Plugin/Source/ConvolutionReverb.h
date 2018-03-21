@@ -17,7 +17,7 @@ private:
 	juce::dsp::Convolution __conv;
 	int __maxBuffHint;
 
-	AudioBuffer<T> __responseBuffer;
+	AudioSampleBuffer __responseBuffer;
 	int __responseBufferLen;
 
 public:
