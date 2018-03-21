@@ -1,7 +1,6 @@
 #ifndef LFO_H
 #define LFO_H
 #include "Wavetable.h"
-#include <vector>
 
 const unsigned int LFO_COUNT = 2;
 

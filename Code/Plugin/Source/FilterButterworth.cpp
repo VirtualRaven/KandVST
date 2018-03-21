@@ -24,7 +24,7 @@ FilterButterworth<T>::~FilterButterworth()
 template<typename T>
 void FilterButterworth<T>::RegisterParameters(int ID, String parameterLabel, String parameterId, float defaultValue)
 {
-	Global->paramHandler->RegisterFloat(ID, parameterId, parameterLabel, 21.0f, 23990.0f, defaultValue);
+	Global->paramHandler->RegisterFloat(ID, parameterId, parameterLabel, 20.0f, 23990.0f, defaultValue);
 	Global->paramHandler->RegisterInt(ID, parameterId + "_LFO", parameterLabel + " lfo", 0, 2, 0);
 }
 

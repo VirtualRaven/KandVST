@@ -7,7 +7,7 @@ Pipeline<T>::Pipeline(double rate,int maxBuffHint) :
 	__delay(0,rate),
 	__active(false),
 	__maxBuffHint(maxBuffHint),
-	__dist(rate)
+	__dist(0,rate)
 {
 	for (int i = 0; i < this->__num_osc; i++) {
 		__oscs[i] = std::make_tuple(
@@ -56,7 +56,7 @@ template<typename T>
 Pipeline<T>::Pipeline(Pipeline<T>&& ref) :
 __rate(ref.__rate),
 __delay(0, ref.__rate),
-__dist(ref.__rate),
+__dist(0,ref.__rate),
 __active(ref.__active),
 __maxBuffHint(ref.__maxBuffHint){
 	for (size_t i = 0; i < this->__num_osc; i++) {
@@ -127,7 +127,7 @@ void Pipeline<T>::render_block(AudioBuffer<T>& buffer,int len) {
 		}
 
 		soundGenerated = __delay.RenderBlock(buffer, len, !soundGenerated);
-		//soundGenerated = __dist.RenderBlock(buffer, len, !soundGenerated);
+		__dist.RenderBlock(buffer, len, !soundGenerated);
 
 		if (!oscActive && !soundGenerated)
 			__active = false;
