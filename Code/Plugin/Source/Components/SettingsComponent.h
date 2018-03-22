@@ -18,7 +18,7 @@ private:
 	void resized() override;
 
 	ScopedPointer<ParameterSlider> __pitchBendSens;
-	ScopedPointer<SelectKnob> __selectKnob;
+	ScopedPointer<SelectKnob> __selectKnob, __modChoice;
 	Label __pitchBendLabel;
 	Rectangle<int> __bounds;
 

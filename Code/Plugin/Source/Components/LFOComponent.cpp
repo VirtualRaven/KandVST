@@ -35,8 +35,6 @@ IVSTParameters(ID)
 	addAndMakeVisible(__toggleLfo = new ParameterButton(*Global->paramHandler->Get<AudioParameterBool>(__ID, "LFO_EN")));
 	__toggleLfo->setButtonText("LFO " + std::to_string(__ID+1));
 
-	addAndMakeVisible(__toggleSync = new ParameterButton(*Global->paramHandler->Get<AudioParameterBool>(__ID, "LFO_EN")));
-	__toggleSync->setButtonText("SYNC");
 	setSize(260, 140);
 }
 
@@ -58,14 +56,10 @@ void LFOComponent::resized(){
 	__toggleLfo->setBounds(lfoButtonBounds);
 
 	Rectangle<int> sliders(__bounds.reduced(8));
-	int size = sliders.getWidth() / 3.8;
+	int size = sliders.getWidth() / 3;
 	sliders.removeFromTop(fontHeight);
 	sliders.removeFromTop(__ampLabel.getFont().getHeight());
 	__ratio->setBounds(sliders.removeFromLeft(size));
 	__type->setBounds(sliders.removeFromLeft(size));
 	__amp->setBounds(sliders.removeFromLeft(size));
-
-	sliders.removeFromLeft(size * 0.1);
-	sliders.removeFromTop(size * 0.3);
-	__toggleSync->setBounds(sliders.removeFromLeft(size).removeFromTop(size / 3));
 }

@@ -26,8 +26,8 @@ void SettingsComponent::paint(Graphics& g) {
 
 	int width = __bounds.getWidth();
 	int height = __bounds.getHeight();
-	int fontHeight = __bounds.getHeight() * 0.2;
-	int fontSize = __bounds.getHeight() * 0.14;
+	int fontHeight = __bounds.getHeight() * 0.1;
+	int fontSize = __bounds.getHeight() * 0.06;
 
 	g.setColour(Colour::fromRGB(60, 60, 60));
 	g.drawRect(Rectangle<int>(0, 0, width, height), 2.0f);
@@ -44,18 +44,21 @@ void SettingsComponent::resized()
 {
 	
 	__bounds = getLocalBounds();
-	int fontHeight = __bounds.getHeight() * 0.2;
-	int size = __bounds.getWidth();
-	Rectangle<int> sliders(__bounds.reduced(8));
-	sliders.removeFromTop(fontHeight);
-	sliders.removeFromTop(__pitchBendLabel.getFont().getHeight());
-	__pitchBendSens->setBounds(sliders.removeFromLeft(size));
+	int fontHeight = __bounds.getHeight() * 0.1;
+	Rectangle<int> settings(__bounds.reduced(8));
+	settings.removeFromTop(fontHeight);
+	settings.removeFromTop(__pitchBendLabel.getFont().getHeight());
+	int space = settings.getHeight() * 0.4;
+	settings.removeFromBottom(settings.getHeight() * 0.1);
+	__pitchBendSens->setBounds(settings.removeFromBottom(space));
+	settings.removeFromBottom(settings.getHeight() * 0.1);
+	__selectKnob->setBounds(settings);
 
 }
 
 void SettingsComponent::RegisterParameters(int ID)
 {
 	Global->paramHandler->RegisterInt(ID, "PITCH_BEND_SENS", "Pitch bend sensitivity", 1, 12, 2);
-        auto tmp = StringArray("One", "Two", "Three", "Four", "Five");
+        auto tmp = StringArray("1", "2", "3", "4", "5");
 	Global->paramHandler->RegisterChoice(ID, "SELECT_KNOB_VALUE", "Select Knob",tmp , 1);
 }
