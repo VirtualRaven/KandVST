@@ -10,7 +10,8 @@ IVSTParameters(ID),
 __envComponent(ID),
 __oscillator(ID),
 __filterComponent(ID),
-__osclfoComponent(ID)
+__osclfoComponent(ID),
+__dist(ID)
 {
 	__amplitude = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(ID,"OSC_MIX_AMP"));
 
@@ -19,6 +20,7 @@ __osclfoComponent(ID)
 	addAndMakeVisible(__amplitude);
 	addAndMakeVisible(__filterComponent);
 	addAndMakeVisible(__osclfoComponent);
+	addAndMakeVisible(__dist);
 
 	addAndMakeVisible(__toggleOsc = new ParameterButton(*Global->paramHandler->Get<AudioParameterBool>(__ID, "OSC_MIX_EN")));
 	__toggleOsc->setButtonText("Oscillator");
@@ -45,6 +47,12 @@ void OscillatorPageComponent::resized(){
 	Rectangle<int> filterBounds(bounds.removeFromBottom(105));
 	//__filterComponent.setBounds(Rectangle<int>(820,450,150,105));
 	__filterComponent.setBounds(filterBounds);
+
+
+	bounds.removeFromBottom(8);
+	__dist.setBounds(bounds.removeFromBottom(130));
 	bounds.removeFromBottom(8);
 	__osclfoComponent.setBounds(bounds);
+
+
 }

@@ -172,6 +172,8 @@ jucer_project_files("KandVST"
   .         .         .         "Source/Components/MixerSubComponent.h"
   x         .         .         "Source/DistEffect.cpp"
   .         .         .         "Source/DistEffect.h"
+  x         .         .         "Source/Components/DistComponent.cpp"
+  .         .         .         "Source/Components/DistComponent.h"
 )
 
 jucer_project_module(
