@@ -56,5 +56,6 @@ void SettingsComponent::resized()
 void SettingsComponent::RegisterParameters(int ID)
 {
 	Global->paramHandler->RegisterInt(ID, "PITCH_BEND_SENS", "Pitch bend sensitivity", 1, 12, 2);
-	Global->paramHandler->RegisterChoice(ID, "SELECT_KNOB_VALUE", "Select Knob", StringArray("One", "Two", "Three", "Four", "Five"), 1);
+        auto tmp = StringArray("One", "Two", "Three", "Four", "Five");
+	Global->paramHandler->RegisterChoice(ID, "SELECT_KNOB_VALUE", "Select Knob",tmp , 1);
 }

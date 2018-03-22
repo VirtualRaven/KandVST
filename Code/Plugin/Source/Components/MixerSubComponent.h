@@ -1,11 +1,10 @@
 #ifndef MIXER_SUB_COMPONENT_H
 #define MIXER_SUB_COMPONENT_H
 
-#include "../Global.h"
+#include "Global.h"
 #include "ParameterSlider.h"
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "../JuceLibraryCode/JuceHeader.h"
-#include "../IVSTParameters.h"
+#include "IVSTParameters.h"
 class MixerSubComponent : public Component,IVSTParameters
 {
 public:
@@ -27,4 +26,4 @@ private:
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MixerSubComponent)
 };
 
-#endif MIXER_SUB_COMPONENT_H
+#endif //MIXER_SUB_COMPONENT_H
