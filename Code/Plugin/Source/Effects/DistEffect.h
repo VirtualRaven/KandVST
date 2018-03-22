@@ -4,7 +4,6 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "Global.h"
 #include "ParameterHandler.h"
-#include "IVSTParameters.h"
 
 template<typename T>
 class DistEffect :
@@ -12,6 +11,7 @@ class DistEffect :
 {
 private:
 	AudioParameterFloat* __threshold;
+	AudioParameterInt* __lfoIndex;
 	AudioParameterBool* __isActive;
 public:
 	DistEffect(int ID, double samplerate);
