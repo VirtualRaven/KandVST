@@ -23,7 +23,7 @@ public:
 
 private:
 	//==============================================================================
-	ScopedPointer<SelectKnob> __freqSelcet, __ampSelect;
+	ScopedPointer<SelectKnob> __freqSelect, __ampSelect;
 	Label __freqLabel, __ampLabel;
 	Rectangle<int> __bounds;
 	int __ID, __width, __height;

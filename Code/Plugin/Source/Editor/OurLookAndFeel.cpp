@@ -15,8 +15,10 @@ OurLookAndFeel::OurLookAndFeel() {
 void OurLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int width, int height
 	, float sliderPos, const float rotaryStartAngle, const float rotaryEndAngle, Slider & slider)
 {
-	//g.setColour(Colour::fromFloatRGBA(1.0f, 0.0f, 0.0f, 0.3f));
-	//g.fillRect(x, y, width, height);
+
+
+
+
 	const float radius = jmin(width / 2, height / 2) - 4.0f;
 	const float centreX = x + width * 0.5f;
 	const float centreY = y + height * 0.5f;
@@ -26,7 +28,7 @@ void OurLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int width, int 
 	const float angle = rotaryStartAngle + sliderPos * (rotaryEndAngle - rotaryStartAngle);
 
 	Image knobRef = ImageFileFormat::loadFrom(Resources::Icons::knobs_png, sizeof(Resources::Icons::knobs_png));
-	int size = jmin<int>(height, width);
+	int size = jmin<int>(height, width)-12;
 
 	x = jmax<int>(x, (width - size)/2);
 	y = jmax<int>(y, (height - size)/2);
@@ -40,13 +42,133 @@ void OurLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int width, int 
 	Path p;
 	const float pointerLength = radius * 0.3f;
 	const float pointerThickness = pointerLength * 0.6f;
-	p.addRectangle(-pointerThickness * 0.5f, -radius, pointerThickness, pointerLength);
+	p.addRectangle(-pointerThickness * 0.5f, -radius+4, pointerThickness, pointerLength);
 	p.applyTransform(AffineTransform::rotation(angle).translated(centreX, centreY));
+
+	
+
+	//Only applies to parameterSlider
+	if (auto ps = dynamic_cast<ParameterSlider*>(&slider))
+	{
+		if (auto intParam = dynamic_cast<AudioParameterInt*>(&(ps->param))) {
+			
+			
+			Path dots;
+			Path blueDot;
+
+			float ang = 0.0f;
+			Range<int> range = intParam->getRange();
+			float angDelta = (rotaryStartAngle - rotaryEndAngle) / intParam->getRange().getLength();
+			for (int i = 0; i <= intParam->getRange().getLength()+1; i++)
+			{
+				dots.addEllipse(centreX-2, 0, 4, 4);
+				dots.applyTransform(AffineTransform::rotation(angDelta*(i>0), centreX, centreY));			
+			}
+			
+			dots.applyTransform(AffineTransform::rotation(rotaryEndAngle- angDelta, centreX, centreY));
+			Colour dotColour = Swatch::background.darker(0.2);
+			Path dark = Path(dots);
+			Path light = Path(dots);
+
+			dark.applyTransform(AffineTransform::translation(-1.0f,-1.0f));
+			g.setColour(dotColour.darker().withAlpha(0.4f));
+			g.fillPath(dark);
+
+			light.applyTransform(AffineTransform::translation(1.0f, 1.0f));
+			g.setColour(dotColour.brighter().withAlpha(0.4f));
+			g.fillPath(light);
+
+			g.setColour(dotColour);
+			g.fillPath(dots);
+
+			g.setColour(Swatch::accentBlue);
+			for (int i = 0; i <= intParam->getRange().getLength() + 1; i++)
+			{
+				switch (ps->getDrawProgress())
+				{
+				case ParameterSlider::ProgressStart::SingleDot:
+					if ((i + range.getStart()) == (*intParam))
+					{
+						blueDot.addEllipse(centreX - 2, 0, 4, 4);
+						blueDot.applyTransform(AffineTransform::rotation(-angDelta * i + rotaryStartAngle, centreX, centreY));
+						g.fillPath(blueDot);
+						blueDot.clear();
+					}
+					break;
+				case ParameterSlider::ProgressStart::Start:
+
+					if ((i + range.getStart()) <= (*intParam))
+					{
+						blueDot.addEllipse(centreX - 2, 0, 4, 4);
+						blueDot.applyTransform(AffineTransform::rotation(-angDelta * i + rotaryStartAngle, centreX, centreY));
+						g.fillPath(blueDot);
+						blueDot.clear();
+					}
+					break;
+				case ParameterSlider::ProgressStart::Center:
+
+					if (((i + range.getStart()) >= (*intParam) && (i + range.getStart()) <= 0) || ((i + range.getStart()) <= (*intParam) && (i + range.getStart()) >= 0))
+					{
+						blueDot.addEllipse(centreX - 2, 0, 4, 4);
+						blueDot.applyTransform(AffineTransform::rotation(-angDelta * i + rotaryStartAngle, centreX, centreY));
+
+						g.fillPath(blueDot);
+						blueDot.clear();
+
+					}
+
+					break;
+				default:
+					break;
+				}
+			}
+			
+		}
+		else if (auto floatParam = dynamic_cast<AudioParameterFloat*>(&(ps->param)) && ps->getDrawProgress()!=ParameterSlider::ProgressStart::Disabled)
+		{
+			Colour dotColour = Swatch::background.darker(0.2);
+
+			Path pFill;
+			Path pL,pD,pB;
+			switch (ps->getDrawProgress())
+			{
+			case ParameterSlider::ProgressStart::Start:
+				pFill.addCentredArc(centreX, centreY, radius, radius, 0, rotaryStartAngle, angle, true);
+				break;
+			case ParameterSlider::ProgressStart::Center:
+				pFill.addCentredArc(centreX, centreY, radius, radius, 0, 0, angle - 2 * 3.14f, true);
+				break;
+			case ParameterSlider::ProgressStart::End:
+				pFill.addCentredArc(centreX, centreY, radius, radius, 0, rotaryEndAngle, angle, true);
+				break;
+			}
+			
+			pL.addCentredArc(centreX, centreY, radius, radius, 0, rotaryStartAngle, rotaryEndAngle, true);
+			pD = Path(pL);
+			pB = Path(pL);
+
+			pL.applyTransform(AffineTransform::translation(1.0f, 1.0f));
+			pD.applyTransform(AffineTransform::translation(-1.0f, -1.0f));
+
+			PathStrokeType pst(4.0f);
+
+			g.setColour(dotColour.darker().withAlpha(0.2f));
+			g.strokePath(pD,pst);
+
+			g.setColour(dotColour.brighter().withAlpha(0.2f));
+			g.strokePath(pL, pst);
+
+			g.setColour(dotColour);
+			g.strokePath(pB, pst);
+
+			g.setColour(Swatch::accentBlue);
+			g.strokePath(pFill, pst);
+		}
+	}
+
 
 	g.setColour(Colours::white);
 	g.fillPath(p);
-
-
 	//DEBUG
 
 }

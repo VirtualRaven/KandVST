@@ -1,8 +1,9 @@
 #include "SelectKnob.h"
+#include "Swatch.h"
 
 SelectKnob::SelectKnob(AudioParameterChoice& p) :
-	__angleBetweenPos((float_Pi / 4.0f) * 0.9f), // *0.9 for esthetic purposes
 	__param(p),
+	__angleBetweenPos((float_Pi / 4.0f) * (-0.2f * p.choices.size() + 1.9f)), // Magic numbers
 	__snapAngles(),
 	__slider(p, __angleBetweenPos)
 {
@@ -27,9 +28,6 @@ SelectKnob::~SelectKnob()
 
 void SelectKnob::paint(Graphics& g)
 {
-	//g.setColour(Colour::fromRGB(255, 40, 40));
-	//g.drawRect(0, 0, 120, 100);
-	
 	Font font(10, Font::FontStyleFlags::plain);
 	g.setFont(font);
 
@@ -40,18 +38,45 @@ void SelectKnob::paint(Graphics& g)
 
 		// Draw dots
 		Point<float> p = angleToPos(currentAngle, 27);
-		g.setColour(Colour::fromRGB(120, 120, 120));
-		g.drawEllipse(p.getX(), p.getY(), 1, 1, 2);
 
-		Point<float> textP = angleToPos(currentAngle, 33);
+		// New dots
+		Path dot;
+		dot.addEllipse(p.getX() - 2, p.getY() - 2, 4, 4);
+
+		Colour dotColour = Swatch::background.darker(0.2);
+		Path dark = Path(dot);
+		Path light = Path(dot);
+
+		dark.applyTransform(AffineTransform::translation(-1.0f, -1.0f));
+		g.setColour(dotColour.darker().withAlpha(0.4f));
+		g.fillPath(dark);
+
+		light.applyTransform(AffineTransform::translation(1.0f, 1.0f));
+		g.setColour(dotColour.brighter().withAlpha(0.4f));
+		g.fillPath(light);
+
+		g.setColour(dotColour);
+		g.fillPath(dot);
+
+		// Blue dot
+		if (__param.choices[i] == __param.getCurrentChoiceName())
+		{
+			g.setColour(Swatch::accentBlue);
+			Path blueDot;
+			blueDot.addEllipse(p.getX() - 2, p.getY() - 2, 4, 4);
+			g.fillPath(blueDot);
+		}
+
+
+		Point<float> textP = angleToPos(currentAngle, 35);
 
 		// X-offset based on angle
 		textP.setX(textP.getX() + currentAngle * 6);
 
 		// Y-offset based on angle
 		int mul = -1;
-		if (currentAngle > 0) mul = 1;
-		textP.setY(textP.getY() + mul * currentAngle * 3);
+		//if (currentAngle > 0) mul = 1;
+		textP.setY(textP.getY() + mul * currentAngle * 1);
 
 		// Draw text
 		g.setColour(Colour::fromRGB(255, 255, 255));
@@ -83,19 +108,19 @@ void SelectKnob::resized()
 }
 
 SelectKnobSlider::SelectKnobSlider(AudioParameterChoice& p, float angleBetweenPos) :
-	__angleBetweenPos(angleBetweenPos),
 	ParameterSlider(p),
+	__angleBetweenPos(angleBetweenPos),
 	__param(p)
 {
 	updateSliderPos();
 	setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
 	setTextBoxStyle(Slider::NoTextBox, false, 0, 0);
+	setMouseDragSensitivity(getMouseDragSensitivity()/2);
 	
 	// Set the knob's limits according to __angleBetweenPos
 	float halfMaxAngle = (__angleBetweenPos * (__param.choices.size() - 1)) / 2.0f;
 	setRotaryParameters((2.0f*float_Pi) - halfMaxAngle, (2.0f*float_Pi) + halfMaxAngle, true);
 }
-
 
 SelectKnobSlider::~SelectKnobSlider()
 {
@@ -107,20 +132,14 @@ void SelectKnobSlider::valueChanged()
 	param.setValueNotifyingHost((float)Slider::getValue()); 
 }
 
-void SelectKnobSlider::startedDragging()
-{ 
-	param.beginChangeGesture(); 
-}
-void SelectKnobSlider::stoppedDragging()
-{ 
-	param.endChangeGesture(); 
-}
-
 void SelectKnobSlider::resized()
 {
-	// Hardcoded values
-	//setBounds(getLocalBounds().getX(),getLocalBounds().getY(), 50,50);
 	ParameterSlider::resized();
+}
+
+void SelectKnobSlider::paint(Graphics& g)
+{
+	ParameterSlider::paint(g);
 }
 
 
