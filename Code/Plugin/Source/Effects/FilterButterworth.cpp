@@ -75,27 +75,22 @@ bool FilterButterworth<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 
 	auto buff = buffer.getArrayOfWritePointers();
 	
-	double* lfo = nullptr;
-	float amount = 0.0f;
-	bool active = false;
-	bool tmpbool = (2 * (*lpFrequency) < __upperLimit) && (0.5 * (*lpFrequency) > __lowerLimit);
-	if ((*lfoIndex) > 0 && tmpbool) {
-		if (lfos[(*lfoIndex) - 1]->isActive()) active = true;;
-		static double lastAmount = 0.0;
-		lfo = lfos[(*lfoIndex) - 1]->getPointer();
-		amount = lfos[(*lfoIndex) - 1]->getAmount();
-		amount = (pow(2, amount)*(*lpFrequency) >= __upperLimit) || (pow(2, amount)*(*lpFrequency) <= __lowerLimit) ? lastAmount : amount;
-		lastAmount = amount;
+
+	if ((*lfoIndex) > 0) {
+		double amount = lfos[(*lfoIndex) - 1]->getAmount();
+		if (amount > 0.0) {
+			double lfoSamp = (lfos[(*lfoIndex) - 1]->getPointer()[0] + 1.0) / 2.0;
+			__fc = (*lpFrequency) - ((*lpFrequency)-__lowerLimit)*lfoSamp*amount;
+			CalculateCoefficients();
+		}
+
 	}
 		 
 
 	for (int i = __firstSampleIndex; i < len; i++)
 	{
 		__firstSampleIndex = 0;
-		if (active && (*lfoIndex) > 0 && tmpbool) {
-			__fc = (*lpFrequency) * pow(2, lfo[i] * amount);
-			CalculateCoefficients();
-		}
+
 		// Current y[i-2] is the previous y[i-1]
 		__prevY2[0] = __prevY1[0];
 		__prevY2[1] = __prevY1[1];
