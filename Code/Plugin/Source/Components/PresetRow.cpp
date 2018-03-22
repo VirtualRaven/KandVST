@@ -1,37 +1,32 @@
+#include "../JuceLibraryCode/JuceHeader.h"
 #include "PresetRow.h"
 
-PresetRow::PresetRow()
+PresetRow::PresetRow(int s, bool isSelected, ListBox* owner):
+	__isSelected(isSelected),
+	__lbl("", Global->presetManager->GetPresetNames()[s]),
+	__rowNr(s),
+	__owner(owner)
 {
+	__lbl.addMouseListener(this, true);
+	addAndMakeVisible(__lbl);
+	__delete.addListener(this);
+	__save.addListener(this);
+	Image delImage = ImageFileFormat::loadFrom(Resources::Icons::delete_png, sizeof(Resources::Icons::delete_png));
+	Image saveImage = ImageFileFormat::loadFrom(Resources::Icons::save_png, sizeof(Resources::Icons::save_png));
+	__delete.setImages(false, true, true, delImage, 1.0f, Colours::transparentBlack, delImage, 0.7f, Colours::transparentBlack, delImage, 0.5f, Colours::transparentBlack);
+	__save.setImages(false, true, true, saveImage, 1.0f, Colours::transparentBlack, saveImage, 0.7f, Colours::transparentBlack, saveImage, 0.5f, Colours::transparentBlack);
+	if (isSelected) {
+		addAndMakeVisible(__save);
+		addAndMakeVisible(__delete);
+	}
+	
+	
 }
-
-
 PresetRow::~PresetRow()
 {
 }
 
-void PresetRow::paintListBoxItem(int /*rowNumber*/, Graphics & /*g*/, int /*width*/, int /*height*/, bool /*rowIsSelected*/)
-{
-}
-
-Component* PresetRow::refreshComponentForRow(int rowNumber, bool isRowSelected, Component * existingComponentToUpdate)
-{
-	Component* l;
-	delete existingComponentToUpdate;
-	if (rowNumber > 0 && static_cast<size_t>( rowNumber) < Global->presetManager->GetPresetNames().size()) {
-		l = new Label("", Global->presetManager->GetPresetNames()[rowNumber]);
-		l->setInterceptsMouseClicks(false, false);
-		if (isRowSelected)
-			l->setColour(Label::backgroundColourId, Colours::green);
-	}
-	else {
-		l = new TextEditor();
-		l->addKeyListener(this);
-	}
-
-	return l;
-}
-
-bool PresetRow::keyPressed(const KeyPress & key, Component * originatingComponent) {
+/*bool PresetRow::keyPressed(const KeyPress & key, Component * originatingComponent) {
 	if (key == KeyPress::returnKey) {
 		if (TextEditor * t = dynamic_cast<TextEditor*>(originatingComponent)) {
 			if (t->getText() != "") {
@@ -42,10 +37,55 @@ bool PresetRow::keyPressed(const KeyPress & key, Component * originatingComponen
 		}
 	}
 	return false;
+}*/
+
+void PresetRow::buttonClicked(Button * btn) {
+	if (btn = &__save)
+	{
+		Global->presetManager->SavePreset(Global->presetManager->GetPresetNames()[__rowNr]);
+	}
+	else if (btn = &__delete)
+	{
+		// add deletefunction in presetmanager
+	}
+	
 }
 
-void PresetRow::listBoxItemDoubleClicked(int row, const MouseEvent &)
+void PresetRow::mouseDoubleClick(const MouseEvent & event)
 {
-	if ( row > 0 &&  static_cast<size_t>(row) < Global->presetManager->GetPresetNames().size())
-		Global->presetManager->LoadPreset(Global->presetManager->GetPresetNames()[row]);
+		Global->presetManager->LoadPreset(Global->presetManager->GetPresetNames()[__rowNr]);
 }
+
+void PresetRow::mouseDown(const MouseEvent & event)
+{
+	__owner->selectRow(__rowNr, false, true);
+
+}
+
+
+
+
+
+void PresetRow::resized()
+{
+	Rectangle<int> localBounds(getLocalBounds());
+	__delete.setBounds(localBounds.removeFromRight(localBounds.getHeight()));
+	__save.setBounds(localBounds.removeFromRight(localBounds.getHeight()));
+	__lbl.setBounds(localBounds);
+}
+
+
+
+
+
+
+
+/*void PresetRow::listBoxItemClicked(int row, const MouseEvent &) 
+{
+	if (row > 0 && static_cast<size_t>(row) < Global->presetManager->GetPresetNames().size())
+	{
+
+	}	
+}*/
+
+

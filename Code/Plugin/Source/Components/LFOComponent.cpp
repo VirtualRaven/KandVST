@@ -20,6 +20,7 @@ IVSTParameters(ID)
 	addAndMakeVisible(__type = new ParameterSlider(*Global->paramHandler->Get<AudioParameterInt>(__ID, "LFO_TYPE")));
 	__type->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
 	__type->setTextBoxStyle(Slider::TextEntryBoxPosition::TextBoxBelow, true, boxWidth, 15);
+	__type->setDrawProgress(ParameterSlider::ProgressStart::SingleDot);
 	__typeLabel.setText("TYPE", NotificationType::dontSendNotification);
 	__typeLabel.attachToComponent(__type, false);
 	__typeLabel.setJustificationType(Justification::centred);

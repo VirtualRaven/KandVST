@@ -55,6 +55,7 @@ __waveformInvalid(false)
 	addAndMakeVisible(__octaveSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterInt>(__ID, "OSC_OCTAVE")));
 	__octaveSlider->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
 	__octaveSlider->setTextBoxStyle(__octaveSlider->NoTextBox, true, 0, 0);
+	__octaveSlider->setDrawProgress(ParameterSlider::ProgressStart::Center);
 	__octaveLabel.setText("OCTAVE", NotificationType::dontSendNotification);
 	__octaveLabel.attachToComponent(__octaveSlider, false);
 	__octaveLabel.setJustificationType(juce::Justification::centred);
@@ -62,6 +63,7 @@ __waveformInvalid(false)
 	addAndMakeVisible(__detuneSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "OSC_DETUNE")));
 	__detuneSlider->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
 	__detuneSlider->setTextBoxStyle(__detuneSlider->NoTextBox, true, 0, 0);
+	__detuneSlider->setDrawProgress(ParameterSlider::ProgressStart::Center);
 	__detuneLabel.setText("DETUNE", NotificationType::dontSendNotification);
 	__detuneLabel.attachToComponent(__detuneSlider, false);
 	__detuneLabel.setJustificationType(juce::Justification::centred);
@@ -69,6 +71,7 @@ __waveformInvalid(false)
 	addAndMakeVisible(__offsetSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterInt>(__ID, "OSC_OFFSET")));
 	__offsetSlider->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
 	__offsetSlider->setTextBoxStyle(__offsetSlider->NoTextBox, true, 0, 0);
+	__offsetSlider->setDrawProgress(ParameterSlider::ProgressStart::Center);
 	__offsetLabel.setText("OFFSET", NotificationType::dontSendNotification);
 	__offsetLabel.attachToComponent(__offsetSlider, false);
 	__offsetLabel.setJustificationType(juce::Justification::centred);

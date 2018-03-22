@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../Global.h"
-#include "../ParameterHandler.h"
+#include "Global.h"
+#include "ParameterHandler.h"
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "PresetsComponent.h"
 

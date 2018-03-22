@@ -1,9 +1,8 @@
 #ifndef MIXER_COMPONENT_H
 #define MIXER_COMPONENT_H
 
-#include "../Global.h"
+#include "Global.h"
 #include "ParameterSlider.h"
-#include "../JuceLibraryCode/JuceHeader.h"
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "MixerSubComponent.h"
 class MixerComponent : public Component
@@ -21,4 +20,4 @@ private:
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MixerComponent)
 };
 
-#endif MIXER_COMPONENT_H
+#endif //MIXER_COMPONENT_H

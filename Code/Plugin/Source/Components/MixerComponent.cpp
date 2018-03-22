@@ -11,7 +11,7 @@ MixerComponent::~MixerComponent()
 
 MixerComponent::MixerComponent()
 {
-	__mixers.push_back(new MixerSubComponent(-1, "MASTER", "MASTER_GAIN", "MASTER_GAIN"));
+	__mixers.push_back(new MixerSubComponent(-1, "MASTER", "MASTER_GAIN", "MASTER_GAIN", true));
 	for (size_t i = 0; i < 4; i++)
 	{
 		__mixers.push_back(new MixerSubComponent(i, String("OSC ")+String(i+1)));
