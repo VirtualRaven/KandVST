@@ -16,7 +16,7 @@ FilterHP<T>::~FilterHP()
 template<typename T>
 void FilterHP<T>::RegisterParameters(int ID)
 {
-	FilterButterworth<T>::RegisterParameters(ID, "HP Frequency", "FILTER_HP", 1.0f);
+	FilterButterworth<T>::RegisterParameters(ID, "HP Frequency", "FILTER_HP", 21.0f);
 }
 template<typename T>
 void FilterHP<T>::CalculateCoefficients()
@@ -40,7 +40,7 @@ template<typename T>
 bool FilterHP<T>::IsEnabled()
 {
 	// Disable under 20Hz
-	return this->__fc >= 20.0f;
+	return this->__fc >= __lowerLimit;
 }
 
 template class FilterHP<double>;

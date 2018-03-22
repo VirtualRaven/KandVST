@@ -9,7 +9,9 @@
 #include "LFOComponent.h"
 #include "FilterComponent.h"
 #include "OSCLFOComponent.h"
+#include "DistComponent.h"
 #include "Swatch.h"
+
 class OscillatorPageComponent  : public Component, private IVSTParameters
 {
 public:
@@ -26,6 +28,7 @@ private:
     //==============================================================================
 	EnvelopeComponent __envComponent;
 	OscillatorComponent __oscillator;
+	DistComponent __dist;
 	ComboBox __oscOctave;
 	ScopedPointer<ParameterSlider> __amplitude;
 	Label __ampLabel;

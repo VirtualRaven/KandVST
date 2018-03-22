@@ -39,6 +39,8 @@ protected:
 	T __fs;
 	T __sqrt2;
 
+	float __upperLimit, __lowerLimit;
+
 	AudioParameterFloat* lpFrequency;
 	AudioParameterInt* lfoIndex;
 	

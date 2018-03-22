@@ -43,7 +43,7 @@ template<typename T>
 bool FilterLP<T>::IsEnabled()
 {
 	// Disable at 20kHz
-	return (this->__fc < 20000.0f) && (this->__fc > 0.0f);
+	return (this->__fc < __upperLimit) && (this->__fc >= __lowerLimit);
 }
 
 template class FilterLP<double>;

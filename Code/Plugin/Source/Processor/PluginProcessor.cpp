@@ -27,6 +27,7 @@ PluginProcessor::PluginProcessor()
 
 	setParameters<int,	EnvelopeGenerator, 
 						DelayEffect<double>, 
+						DistEffect<double>,
 						WavetableOsc,
 						Pipeline<double>, 
 						LFO,
@@ -38,8 +39,9 @@ PluginProcessor::PluginProcessor()
 			{0,1,2,3},
 			{0},
 			{0,1,2,3},
-			{ 0 },
 			{0,1,2,3},
+			{ 0 },
+			{0,1},
 			{-1,0,1,2,3},
 			{-1,0,1,2,3},
 			{-1},
