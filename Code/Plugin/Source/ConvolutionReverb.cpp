@@ -6,9 +6,10 @@ template<typename T>
 ConvolutionReverb<T>::ConvolutionReverb(int ID, double sampleRate, int maxBuffHint) :
 	IEffect(sampleRate),
 	IVSTParameters(ID),
-	__conv(),
 	__maxBuffHint(maxBuffHint),
-	__responseBuffer()
+	__overlapBuffer(),
+	__responseBuffer(),
+	__overlapBufferLen(0)
 {
 
 
@@ -37,35 +38,63 @@ void ConvolutionReverb<T>::RegisterParameters(int ID)
 template<typename T>
 bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool empty)
 {
-	// Divide impulse response
-	ScopedPointer<dsp::FFT> fft = new dsp::FFT(len);
+	int fftSize = nextPowerOfTwo(len + __responseBufferLen - 1);
 
-	AudioSampleBuffer output = AudioSampleBuffer(1, len * 2);
-	output.clear();
-
-	for (int i = 0; i < __responseBufferLen / len; i++)
+	// Set overlapBuffer size
+	if (__overlapBufferLen == 0)
 	{
-		AudioSampleBuffer h = AudioSampleBuffer(1, len * 2);
-		h.copyFrom(0, 0, __responseBuffer, 0, i * len, len);
-
-		fft->performRealOnlyForwardTransform(h.getArrayOfWritePointers()[0], true);
-
-		AudioSampleBuffer in = AudioSampleBuffer();
-		in.makeCopyOf(buffer, false);
-		in.setSize(1, len * 2, true, true, false);
-
-		fft->performRealOnlyForwardTransform(in.getArrayOfWritePointers()[0]);
-
-		FloatVectorOperations::addWithMultiply(output.getArrayOfWritePointers()[0], in.getArrayOfWritePointers()[0], h.getArrayOfWritePointers()[0], len);
+		__overlapBuffer.setSize(1, fftSize, false, false, true);
+		__overlapBuffer.clear();
+		__overlapBufferLen = fftSize;
 	}
 
-	fft->performRealOnlyInverseTransform(output.getArrayOfWritePointers()[0]);
+	ScopedPointer<dsp::FFT> fft = new dsp::FFT(roundDoubleToInt(log2(fftSize)));
 
+	// h: Impulse response buffer padded with 0 at the end
+	AudioSampleBuffer h = AudioSampleBuffer(1, 2*fftSize);
+	h.clear();
+	h.copyFrom(0, 0, __responseBuffer, 0, 0, __responseBufferLen);
+
+	fft->performRealOnlyForwardTransform(h.getWritePointer(0));
+
+	// x: input padded with 0
+	AudioSampleBuffer x = AudioSampleBuffer(1, 2*fftSize);
+	x.clear();
 	for (int i = 0; i < len; i++)
 	{
-		buffer.setSample(0, i, output.getSample(0, i));
-		buffer.setSample(1, i, output.getSample(0, i));
+		// Add with overlap buffer (double -> float)
+		x.setSample(0, i, buffer.getSample(0, i) + __overlapBuffer.getSample(0, i));
 	}
+
+	fft->performRealOnlyForwardTransform(x.getWritePointer(0));
+
+	// Multiply to output
+	AudioSampleBuffer convOutput = AudioSampleBuffer(1, 2 * fftSize);
+	convOutput.clear();
+	FloatVectorOperations::addWithMultiply(convOutput.getWritePointer(0), x.getWritePointer(0), h.getWritePointer(0), 2 * fftSize);
+
+	// Inverse tranform
+	fft->performRealOnlyInverseTransform(convOutput.getWritePointer(0));
+
+	// The first len samples is the output
+	for (int i = 0; i < len; i++)
+	{
+		// float -> double
+		buffer.setSample(0, i, convOutput.getSample(0, i));
+		buffer.setSample(1, i, convOutput.getSample(0, i));
+	}
+
+	// The rest needs to be added to the overlapBuffer
+	AudioSampleBuffer shiftedOverlap = AudioSampleBuffer(1, __overlapBufferLen);
+	shiftedOverlap.copyFrom(0, 0, __overlapBuffer, 0, len, __overlapBufferLen - len);
+	__overlapBuffer.clear();
+
+	AudioSampleBuffer newOverlap = AudioSampleBuffer(1, __overlapBufferLen);
+	newOverlap.copyFrom(0, 0, convOutput, 0, len, __overlapBufferLen - len);
+
+	FloatVectorOperations::addWithMultiply(__overlapBuffer.getWritePointer(0), shiftedOverlap.getWritePointer(0), newOverlap.getWritePointer(0), __overlapBufferLen);
+
+
 	return true;
 }
 

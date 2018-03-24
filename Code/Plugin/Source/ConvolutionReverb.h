@@ -14,10 +14,11 @@ class ConvolutionReverb :
 {
 
 private:
-	juce::dsp::Convolution __conv;
 	int __maxBuffHint;
 
 	AudioSampleBuffer __responseBuffer;
+	AudioSampleBuffer __overlapBuffer;
+	int __overlapBufferLen;
 	int __responseBufferLen;
 
 public:
