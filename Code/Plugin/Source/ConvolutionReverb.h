@@ -5,7 +5,7 @@
 #include "Global.h"
 #include "ParameterHandler.h"
 #include "IVSTParameters.h"
-#include "juce_dsp\juce_dsp.h"
+#include "juce_dsp/juce_dsp.h"
 
 template<typename T>
 class ConvolutionReverb :
@@ -18,8 +18,11 @@ private:
 
 	AudioSampleBuffer __responseBuffer;
 	AudioSampleBuffer __overlapBuffer;
+	AudioSampleBuffer __resTransform;
+	ScopedPointer<dsp::FFT> __fft;
 	int __overlapBufferLen;
 	int __responseBufferLen;
+	int __prevBlockSize;
 
 public:
 	ConvolutionReverb(int ID,double sampleRate, int maxBuffHint);

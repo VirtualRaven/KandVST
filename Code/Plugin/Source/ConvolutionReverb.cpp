@@ -1,6 +1,5 @@
 #include "ConvolutionReverb.h"
 #include "juce_dsp\juce_dsp.h"
-#define FADE 0.3
 
 template<typename T>
 ConvolutionReverb<T>::ConvolutionReverb(int ID, double sampleRate, int maxBuffHint) :
@@ -9,7 +8,9 @@ ConvolutionReverb<T>::ConvolutionReverb(int ID, double sampleRate, int maxBuffHi
 	__maxBuffHint(maxBuffHint),
 	__overlapBuffer(),
 	__responseBuffer(),
-	__overlapBufferLen(0)
+	__resTransform(),
+	__overlapBufferLen(0),
+	__prevBlockSize(0)
 {
 
 
@@ -48,14 +49,18 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 		__overlapBufferLen = fftSize;
 	}
 
-	ScopedPointer<dsp::FFT> fft = new dsp::FFT(roundDoubleToInt(log2(fftSize)));
+	// Create impulse transform
+	if (__prevBlockSize != len)
+	{
+		__fft = new dsp::FFT(roundDoubleToInt(log2(fftSize)));
 
-	// h: Impulse response buffer padded with 0 at the end
-	AudioSampleBuffer h = AudioSampleBuffer(1, 2*fftSize);
-	h.clear();
-	h.copyFrom(0, 0, __responseBuffer, 0, 0, __responseBufferLen);
+		__resTransform = AudioSampleBuffer(1, 2*fftSize);
+		__resTransform.clear();
+		__resTransform.copyFrom(0, 0, __responseBuffer, 0, 0, __responseBufferLen);
+		__fft->performRealOnlyForwardTransform(__resTransform.getWritePointer(0));
 
-	fft->performRealOnlyForwardTransform(h.getWritePointer(0));
+		__prevBlockSize = len;
+	}
 
 	// x: input padded with 0
 	AudioSampleBuffer x = AudioSampleBuffer(1, 2*fftSize);
@@ -66,15 +71,15 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 		x.setSample(0, i, buffer.getSample(0, i) + __overlapBuffer.getSample(0, i));
 	}
 
-	fft->performRealOnlyForwardTransform(x.getWritePointer(0));
+	__fft->performRealOnlyForwardTransform(x.getWritePointer(0));
 
 	// Multiply to output
-	AudioSampleBuffer convOutput = AudioSampleBuffer(1, 2 * fftSize);
+	AudioSampleBuffer convOutput = AudioSampleBuffer(1, 2*fftSize);
 	convOutput.clear();
-	FloatVectorOperations::addWithMultiply(convOutput.getWritePointer(0), x.getWritePointer(0), h.getWritePointer(0), 2 * fftSize);
+	FloatVectorOperations::addWithMultiply(convOutput.getWritePointer(0), x.getWritePointer(0), __resTransform.getWritePointer(0), 2 * fftSize);
 
 	// Inverse tranform
-	fft->performRealOnlyInverseTransform(convOutput.getWritePointer(0));
+	__fft->performRealOnlyInverseTransform(convOutput.getWritePointer(0));
 
 	// The first len samples is the output
 	for (int i = 0; i < len; i++)
