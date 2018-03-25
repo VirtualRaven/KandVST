@@ -18,37 +18,28 @@ __waveformInvalid(false)
 	addAndMakeVisible(__sineSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "OSC_SINE")));
 	__sineSlider->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
 	__sineSlider->setTextBoxStyle(__sineSlider->NoTextBox, true, 10, 10);
-	__sineLabel.setText("SINE", NotificationType::dontSendNotification);
-	__sineLabel.attachToComponent(__sineSlider,false);
-	__sineLabel.setJustificationType(juce::Justification::centred);
+	__sineSlider->setWaveType(1);
 
 	addAndMakeVisible(__squareSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "OSC_SQUARE")));
 	__squareSlider->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
 	__squareSlider->setTextBoxStyle(__squareSlider->NoTextBox, true, 10, 10);
-	__squareLabel.setText("SQUARE", NotificationType::dontSendNotification);
-	__squareLabel.attachToComponent(__squareSlider, false);
-	__squareLabel.setJustificationType(juce::Justification::centred);
+	__squareSlider->setWaveType(2);
 
 	addAndMakeVisible(__sawSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "OSC_SAW")));
 	__sawSlider->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
 	__sawSlider->setTextBoxStyle(__sawSlider->NoTextBox, true, 10, 10);
-	__sawLabel.setText("SAW", NotificationType::dontSendNotification);
-	__sawLabel.attachToComponent(__sawSlider, false);
-	__sawLabel.setJustificationType(juce::Justification::centred);
+	__sawSlider->setWaveType(3);
 
 	addAndMakeVisible(__triangleSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "OSC_TRI")));
 	__triangleSlider->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
 	__triangleSlider->setTextBoxStyle(__triangleSlider->NoTextBox, true, 10, 10);
-	__triangleLabel.setText("TRI", NotificationType::dontSendNotification);
-	__triangleLabel.attachToComponent(__triangleSlider, false);
-	__triangleLabel.setJustificationType(juce::Justification::centred);
+	__triangleSlider->setWaveType(4);
 
 	addAndMakeVisible(__noiseSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "OSC_NOISE"))); 
 	__noiseSlider->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
 	__noiseSlider->setTextBoxStyle(__noiseSlider->NoTextBox, true, 10, 10);
-	__noiseLabel.setText("NOISE", NotificationType::dontSendNotification);
-	__noiseLabel.attachToComponent(__noiseSlider, false);
-	__noiseLabel.setJustificationType(juce::Justification::centred);
+	__noiseSlider->setWaveType(5);
+
 	//=========================================================================
 	// add and make visible detune, octaves, etc
 	//===============================
@@ -109,16 +100,18 @@ void OscillatorComponent::paint(Graphics& g){
 
 	g.setColour(Colour::fromRGB(65, 65, 65));
 	int startY = bounds.getHeight() / 2 + 10;
-	g.fillRect(Rectangle<int>(3, startY+5, 13, 80));
-	g.drawRect(Rectangle<int>(8, startY, bounds.getWidth() - 8, 90));
-
+	g.fillRect(Rectangle<int>(3, startY+5, 13, 65));
+	g.drawRect(Rectangle<int>(8, startY, bounds.getWidth() - 8, 75));
+	g.drawRect(Rectangle<int>(8, startY, bounds.getWidth() - 8, bounds.getHeight() / 2 - 22));
+	
+	//==========================================================
 	g.saveState();
 
 	g.setColour(Colours::white);
 	g.setFont(Font(10, Font::bold));
 
-	int translateX = -250;
-	int translateY = 515;
+	int translateX = -248;
+	int translateY = 505;
 	float angle = -float_Pi / 2.0f;
 	g.addTransform(AffineTransform::identity.rotated(angle).followedBy(AffineTransform::identity.translated(translateX, translateY)));
 	g.drawText("WAVES", bounds, Justification::centred, false);
@@ -139,15 +132,15 @@ void OscillatorComponent::resized(){
 	__waveformComp.setImage(*__oscWaveform);
 	__waveformComp.repaint();
 
-	bounds.removeFromTop(32);
+	bounds.removeFromTop(20);
 	//Rectangle<int> waveforms(bounds.removeFromTop(jmax<int>(bounds.getWidth() / 5, 100)));
 	Rectangle<int> waveforms(bounds.removeFromTop((bounds.getWidth()-100)/5));
 	
-	int sliderw = (waveforms.getWidth()-100) / 5;
-	int gap = 15;
+	int sliderw = (waveforms.getWidth()) / 5;
+	int gap = sliderw * 0.01 - 5;
 
 	// waves
-	waveforms.removeFromLeft(gap+10);
+	waveforms.removeFromLeft(gap+20);
 	__sineSlider->setBounds(waveforms.removeFromLeft(sliderw));
 	waveforms.removeFromLeft(gap);
 	__squareSlider->setBounds(waveforms.removeFromLeft(sliderw));
@@ -161,6 +154,7 @@ void OscillatorComponent::resized(){
 	bounds.removeFromTop(50);
 	//Rectangle<int> atrSliders(bounds.removeFromTop(jmax<int>(bounds.getWidth() / 3,100)));
 	Rectangle<int> atrSliders(bounds.removeFromTop((bounds.getWidth() - 100) / 4));
+	gap = 15;
 	atrSliders.removeFromLeft(gap);
 	sliderw = (bounds.getWidth()-100) / 4;
 

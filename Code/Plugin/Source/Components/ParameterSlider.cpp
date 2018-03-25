@@ -151,4 +151,12 @@ void ParameterSlider::LinkCouldHaveChanged()
 		this->setEnabled(!isLinked());
 }
 
+void ParameterSlider::setWaveType(int wave) {
+	__wave = wave;
+}
+
+int ParameterSlider::getWaveType() {
+	return __wave;
+}
+
 

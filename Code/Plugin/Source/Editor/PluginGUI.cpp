@@ -41,6 +41,7 @@ void PluginGUI::InitializeGui()
 	{
 		__tabComponent.addTab(std::to_string(i + 1), Colour::fromRGB(1,1,1), new OscillatorPageComponent(i), true);
 	}
+	__tabComponent.setCurrentTabIndex(1);
 
 	__tabComponent.addTab("C", Colours::darkgrey, &__cc, true);
 	addAndMakeVisible(__tabComponent);

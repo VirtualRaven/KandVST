@@ -110,21 +110,18 @@ void EnvelopeComponent::paint(Graphics & g) {
 	
 	g.setColour(Colour::fromRGB(60, 60, 60));
 	int startY = getLocalBounds().getHeight() / 2 + 13;
-	int startX = 22;
+	int startX = 24;
 	int height = (getLocalBounds().getHeight() / 2) * 0.88;
 	
 	for (int i = 0; i < 5; i++) {
-		g.fillRect(Rectangle<int>(startX, startY, 65, 15));
-
-		if (i == 1) {
-			g.drawRect(Rectangle<int>(startX, startY, 65, height * 0.38));
-		} else if (i == 4) {
-			g.drawRect(Rectangle<int>(startX, startY, 65, height * 0.69));
-		}else {
-			g.drawRect(Rectangle<int>(startX, startY, 65, height));
-		}
+		g.fillRect(Rectangle<int>(startX, startY, 60, 15));
 		startX += 69;
 	}
+
+	Rectangle<int> bounds(getLocalBounds().reduced(8));
+	g.drawRect(Rectangle<int>(18, startY + 7.5, bounds.getWidth()-2, height));
+
+	//=============================================================================
 	g.saveState();
 
 	g.setColour(Colours::white);
@@ -150,6 +147,7 @@ void EnvelopeComponent::paint(Graphics & g) {
 		Justification::centred, false);
 
 	g.restoreState();
+	//=============================================================================
 }
 
 void EnvelopeComponent::resized()
@@ -163,7 +161,7 @@ void EnvelopeComponent::resized()
 
 	Rectangle<int> labels(bounds.removeFromTop(20));
 	int knobWidth = jmin<int>((bounds.getHeight()-20)/3, bounds.getWidth() / 5);
-	labels.removeFromLeft(20);
+	labels.removeFromLeft(19);
 	attackLabel.setBounds(labels.removeFromLeft(knobWidth));
 	holdLabel.setBounds(labels.removeFromLeft(knobWidth));
 	decayLabel.setBounds(labels.removeFromLeft(knobWidth));

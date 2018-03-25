@@ -49,9 +49,14 @@ private:
 	virtual void mouseUp(const MouseEvent& event) override;
 	Point<float> __mousePos;
 	ProgressStart __progressStart;
+	int __wave; // 1  = sine, 2 = square, 3 = saw, 4 = triangle, 5 = noise; 0 = no wave
+
 public:
 	ParameterSlider(AudioProcessorParameter& p);
 	~ParameterSlider();
+
+	void setWaveType(int);
+	int getWaveType();
 	void valueChanged() override;
 
 	void timerCallback() override;
