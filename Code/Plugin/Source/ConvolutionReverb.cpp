@@ -22,9 +22,10 @@ ConvolutionReverb<T>::ConvolutionReverb(int ID, double sampleRate, int maxBuffHi
 	ScopedPointer<AudioFormatReader> reader = manager.createReaderFor(resp);
 
 	__responseBuffer.setSize(2, reader->lengthInSamples, false, false, false);
+	__responseBuffer.clear();
 	reader->read(&__responseBuffer, 0, reader->lengthInSamples, 0, true, true);
 
-	__responseBufferLen = reader->lengthInSamples;
+	__responseBufferLen = reader->lengthInSamples/10;
 }
 
 template<typename T>
@@ -67,8 +68,8 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 	x.clear();
 	for (int i = 0; i < len; i++)
 	{
-		// Add with overlap buffer (double -> float)
-		x.setSample(0, i, buffer.getSample(0, i) + __overlapBuffer.getSample(0, i));
+		// double -> float
+		x.setSample(0, i, buffer.getSample(0, i));
 	}
 
 	__fft->performRealOnlyForwardTransform(x.getWritePointer(0));
@@ -84,20 +85,22 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 	// The first len samples is the output
 	for (int i = 0; i < len; i++)
 	{
-		// float -> double
-		buffer.setSample(0, i, convOutput.getSample(0, i));
-		buffer.setSample(1, i, convOutput.getSample(0, i));
+		// Add overlap (float -> double)
+		buffer.setSample(0, i, convOutput.getSample(0, i) + __overlapBuffer.getSample(0, i));
+		buffer.setSample(1, i, convOutput.getSample(0, i) + __overlapBuffer.getSample(0, i));
 	}
 
 	// The rest needs to be added to the overlapBuffer
 	AudioSampleBuffer shiftedOverlap = AudioSampleBuffer(1, __overlapBufferLen);
+	shiftedOverlap.clear();
 	shiftedOverlap.copyFrom(0, 0, __overlapBuffer, 0, len, __overlapBufferLen - len);
-	__overlapBuffer.clear();
 
 	AudioSampleBuffer newOverlap = AudioSampleBuffer(1, __overlapBufferLen);
+	newOverlap.clear();
 	newOverlap.copyFrom(0, 0, convOutput, 0, len, __overlapBufferLen - len);
 
-	FloatVectorOperations::addWithMultiply(__overlapBuffer.getWritePointer(0), shiftedOverlap.getWritePointer(0), newOverlap.getWritePointer(0), __overlapBufferLen);
+	// New overlap
+	FloatVectorOperations::add(__overlapBuffer.getWritePointer(0), shiftedOverlap.getWritePointer(0), newOverlap.getWritePointer(0), __overlapBufferLen);
 
 
 	return true;
