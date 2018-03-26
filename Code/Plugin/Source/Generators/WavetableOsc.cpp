@@ -163,6 +163,10 @@ void WavetableOsc::renderImage(Image* image)
 	delete data;
 
 }
+void WavetableOsc::Reset()
+{
+	__envelope.Stop();
+}
 /*void WavetableOsc::setOctave(int o)
 {
 	if (o > 3 || o < -3) return;

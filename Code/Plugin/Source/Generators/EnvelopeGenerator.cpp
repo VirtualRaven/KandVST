@@ -131,6 +131,8 @@ void EnvelopeGenerator::RenderBlock(double * buffer, size_t size)
 					__counter = 0;
 					__state++;
 				}
+				if (!isfinite(__amplitude)) 
+					__amplitude = a_level;
 				break;
 			case 1://Hold
 				__amplitude = a_level;
@@ -248,6 +250,13 @@ EnvelopeGenerator::~EnvelopeGenerator()
 
 bool EnvelopeGenerator::isActive() const {
 	return __state != 5;
+}
+
+void EnvelopeGenerator::Stop()
+{
+	__amplitude = 0.0;
+	__sustain = 0;
+	__state = 5;
 }
 
 

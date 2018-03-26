@@ -90,6 +90,12 @@ void DelayEffect<T>::ProccessCommand(MidiMessage message)
 {
 }
 
+template<typename T>
+void DelayEffect<T>::Reset()
+{
+	__delayBuffer.clear();
+}
+
 template class DelayEffect<double>;
 template class DelayEffect<float>;
 

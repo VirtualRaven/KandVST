@@ -19,5 +19,6 @@ public:
 	static void RegisterParameters(int ID);
 	bool RenderBlock(AudioBuffer<T>& buffer, int len, bool empty) override;
 	virtual void ProccessCommand(MidiMessage message) override;
+	virtual void Reset() override;
 };
 #endif

@@ -31,8 +31,9 @@ public:
 	static void RegisterParameters(int ID);
 	EnvelopeGenerator(int ID,double sampleRate);
 	bool isActive() const;
-
+	void Stop();
 	static void RenderImage(int __ID, Image * image);
+
 	~EnvelopeGenerator();
 };
 #endif //ENVELOPE_GENERATOR_H

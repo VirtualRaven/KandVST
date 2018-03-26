@@ -149,6 +149,14 @@ void PipelineManager<T>::RegisterParameters(int ID)
 	Global->paramHandler->RegisterFloat(ID, "MASTER_GAIN", "Master Volume", 0.0f, 1.0f, 1.0f);
 }
 
+template<typename T>
+void PipelineManager<T>::Reset()
+{
+	for (auto& p : pipList) {
+		p.Reset();
+	}
+}
+
 template class PipelineManager<double>;
 template class PipelineManager<float>;
 

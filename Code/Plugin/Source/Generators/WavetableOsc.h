@@ -57,6 +57,9 @@ public:
 		return "Wavetable osc";
 	}
 	void renderImage(Image* image);
+
+	virtual void Reset() override;
+
 	JUCE_LEAK_DETECTOR(WavetableOsc);
 };
 

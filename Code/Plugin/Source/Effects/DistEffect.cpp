@@ -1,4 +1,5 @@
 #include "DistEffect.h"
+#include "DistEffect.h"
 #include "LFO.h"
 #include <stdlib.h>
 
@@ -48,6 +49,11 @@ bool DistEffect<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool empty) {
 template<typename T>
 void DistEffect<T>::ProccessCommand(MidiMessage message) {
 
+}
+
+template<typename T>
+void DistEffect<T>::Reset()
+{
 }
 
 template class DistEffect<double>;

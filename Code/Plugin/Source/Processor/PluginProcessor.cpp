@@ -82,6 +82,10 @@ void PluginProcessor::freePipelineManager() {
 void PluginProcessor::reset()
 {
 	Global->log->Write("Reset\n");
+	if (__pipManager.dp != nullptr)
+		__pipManager.dp->Reset();
+	if (__pipManager.fp != nullptr)
+		__pipManager.fp->Reset();
 }
 
 

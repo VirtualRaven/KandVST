@@ -28,6 +28,7 @@ public:
 	PipelineManager(double rate, int maxBuffHint);
 	~PipelineManager();	
 	static void RegisterParameters(int ID);
+	void Reset();
 
 void genSamples(
 		AudioBuffer<T>& buff, 

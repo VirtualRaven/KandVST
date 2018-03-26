@@ -51,6 +51,8 @@ public:
 	static void RegisterParameters(int ID, String parameterLabel, String parameterId, float defaultValue);
 	bool RenderBlock(AudioBuffer<T>& buffer, int len, bool empty) override;
 	virtual void ProccessCommand(MidiMessage message) override;
+	virtual void Reset() override;
+
 };
 
 

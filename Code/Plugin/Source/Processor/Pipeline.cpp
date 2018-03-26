@@ -157,5 +157,18 @@ void Pipeline<T>::RegisterParameters(int ID)
 	}
 }
 
+template<typename T>
+void Pipeline<T>::Reset()
+{
+	for (auto e : __effects)
+	{
+		e->Reset();
+	}
+	for (auto& o : __oscs)
+	{
+		std::get<0>(o)->Reset();
+	}
+}
+
 template class Pipeline<double>;
 template class Pipeline<float>;

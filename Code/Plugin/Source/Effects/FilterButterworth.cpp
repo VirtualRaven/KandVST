@@ -136,5 +136,10 @@ void FilterButterworth<T>::ProccessCommand(MidiMessage message)
 {
 }
 
+template<typename T>
+void FilterButterworth<T>::Reset()
+{
+}
+
 template class FilterButterworth<double>;
 template class FilterButterworth<float>;

@@ -29,6 +29,8 @@ public:
 
 
 	virtual void ProccessCommand(MidiMessage message) override;
+	virtual void Reset() override;
+
 };
 
 

@@ -46,6 +46,9 @@ public:
 
 	~Pipeline();
 	static void RegisterParameters(int ID);
+
+	void Reset();
+
 };
 
 #endif
