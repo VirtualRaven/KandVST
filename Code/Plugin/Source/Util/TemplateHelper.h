@@ -49,9 +49,7 @@ struct setParameters<F, arg0, argN...> : setParameters<F, argN...> {
 
 template<typename F, typename arg0> 
 struct setParameters<F, arg0> {
-	GLOBAL*Global;
 	setParameters(parameterArguments<std::vector<F>, 1> list,GLOBAL*global) {
-		Global = global;
 		for (auto it : list.current())
 			arg0::RegisterParameters(it,global);
 	}
