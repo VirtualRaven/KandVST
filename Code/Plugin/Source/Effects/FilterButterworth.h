@@ -45,13 +45,14 @@ protected:
 	AudioParameterInt* lfoIndex;
 	
 public:
-	FilterButterworth(int ID, double sampleRate, String parameterId);
+	FilterButterworth(int ID, double sampleRate, String parameterId,GLOBAL*global);
 	~FilterButterworth();
 
-	static void RegisterParameters(int ID, String parameterLabel, String parameterId, float defaultValue);
+	static void RegisterParameters(int ID, String parameterLabel, String parameterId, float defaultValue,GLOBAL*Global);
 	bool RenderBlock(AudioBuffer<T>& buffer, int len, bool empty) override;
 	virtual void ProccessCommand(MidiMessage message) override;
 	virtual void Reset() override;
+	GLOBAL * Global;
 
 };
 

@@ -2,11 +2,11 @@
 #include "Wavetable.h"
 #include "LFO.h" 
 
-WavetableOsc::WavetableOsc(int ID, double sampleRate,int maxBuffHint) :
+WavetableOsc::WavetableOsc(int ID, double sampleRate,int maxBuffHint,GLOBAL*global) :
 	IGenerator(sampleRate),
 	IVSTParameters(ID),
 	__maxBuffHint(maxBuffHint),
-	__envelope(__ID, sampleRate),
+	__envelope(__ID, sampleRate,global),
 	__note(0),
 	__sustainPedal(false),
 	__keyDown(false),
@@ -17,6 +17,7 @@ WavetableOsc::WavetableOsc(int ID, double sampleRate,int maxBuffHint) :
 	__rand_index(0),
 	__pitchbend(0)
 {
+	Global = global;
 	__waveType = Global->paramHandler->Get<AudioParameterInt>(__ID, "WAVE_TYPE");
 	__octave = Global->paramHandler->Get<AudioParameterInt>(__ID, "OSC_OCTAVE");
 	__offset = Global->paramHandler->Get<AudioParameterInt>(__ID, "OSC_OFFSET");
@@ -46,7 +47,7 @@ WavetableOsc::WavetableOsc(WavetableOsc && ref) :
 	IGenerator(ref.__sampleRate),
 	IVSTParameters(ref.__ID),
 	__maxBuffHint(ref.__maxBuffHint),
-	__envelope(__ID, ref.__sampleRate),
+	__envelope(__ID, ref.__sampleRate,ref.Global),
 	__note(ref.__note),
 	__sustainPedal(ref.__sustainPedal),
 	__keyDown(ref.__keyDown),
@@ -204,7 +205,7 @@ void WavetableOsc::ProccessCommand(MidiMessage msg)
 	__envelope.setSustain(__sustainPedal || __keyDown);
 }
 
-void WavetableOsc::RegisterParameters(int ID)
+void WavetableOsc::RegisterParameters(int ID, GLOBAL*Global)
 {
 	Global->paramHandler->RegisterInt(ID, "WAVE_TYPE", "Wave type", 0, 3, 0);
 	Global->paramHandler->RegisterInt(ID, "OSC_OCTAVE", "Octave", -3, 3, 0);

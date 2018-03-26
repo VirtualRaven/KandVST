@@ -22,9 +22,9 @@ public:
 	ImageButton __save;
 	ImageButton __delete;
 	
-	PresetRow(int s, bool isSelected, ListBox* owner);
+	PresetRow(int s, bool isSelected, ListBox* owner,GLOBAL*global);
 	~PresetRow();
-
+	GLOBAL * Global;
 	
 };
 

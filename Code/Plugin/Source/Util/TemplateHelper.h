@@ -3,7 +3,7 @@
 #include <initializer_list>
 #include <vector>
 #include  <stdexcept>
-	
+#include "Global.h"
 template<typename F, unsigned int I> 
 class parameterArguments : parameterArguments<F, I - 1> {
 	F args;
@@ -38,20 +38,22 @@ struct setParameters {};
 template<typename F, typename arg0, typename... argN> 
 struct setParameters<F, arg0, argN...> : setParameters<F, argN...> {
 	
-	setParameters(std::initializer_list<std::vector<F>> list) :
-		setParameters<F, arg0, argN...>(parameterArguments<std::vector<F>, sizeof...(argN)+1>(list)) {}
+	setParameters(std::initializer_list<std::vector<F>> list,GLOBAL*global) :
+		setParameters<F, arg0, argN...>(parameterArguments<std::vector<F>, sizeof...(argN)+1>(list),global) {}
 
-	setParameters(parameterArguments<std::vector<F>, 1 + sizeof...(argN)> list) : setParameters<F, argN...>(list.split()) {
+	setParameters(parameterArguments<std::vector<F>, 1 + sizeof...(argN)> list,GLOBAL*global) : setParameters<F, argN...>(list.split(),global) {
 		for (auto it : list.current())
-			arg0::RegisterParameters(it);
+			arg0::RegisterParameters(it,global);
 	}
 };
 
 template<typename F, typename arg0> 
 struct setParameters<F, arg0> {
-	setParameters(parameterArguments<std::vector<F>, 1> list) {
+	GLOBAL*Global;
+	setParameters(parameterArguments<std::vector<F>, 1> list,GLOBAL*global) {
+		Global = global;
 		for (auto it : list.current())
-			arg0::RegisterParameters(it);
+			arg0::RegisterParameters(it,global);
 	}
 };
 

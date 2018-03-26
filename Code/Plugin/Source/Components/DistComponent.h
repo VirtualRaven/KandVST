@@ -13,14 +13,14 @@ class DistComponent : public Component, private IVSTParameters
 {
 public:
 	//==============================================================================
-	DistComponent(int ID);
+	DistComponent(int ID,GLOBAL*global);
 	~DistComponent();
 
 	//==============================================================================
 
 	void paint(Graphics& g) override;
 	void resized() override;
-
+	GLOBAL * Global;
 private:
 	//==============================================================================
 	ScopedPointer<ParameterSlider> __threshold;

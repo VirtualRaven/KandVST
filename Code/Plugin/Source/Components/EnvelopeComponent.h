@@ -22,8 +22,9 @@ private:
 	virtual void timerCallback() override;
 	virtual void componentVisibilityChanged(Component &component) override;
 	virtual void componentParentHierarchyChanged(Component &component) override;
+	GLOBAL * Global;
 public:
-	EnvelopeComponent(int ID);
+	EnvelopeComponent(int ID,GLOBAL*global);
 	~EnvelopeComponent();
 	void resized() override;
 	void paint(Graphics & g) override;

@@ -9,9 +9,10 @@ String PresetManager::getPresetPath()
 	return appData.getFullPathName();
 }
 
-PresetManager::PresetManager(AudioProcessor* owner):
+PresetManager::PresetManager(AudioProcessor* owner,GLOBAL* global):
 __owner(owner)
 {
+	Global = global;
 }
 PresetManager::~PresetManager()
 {

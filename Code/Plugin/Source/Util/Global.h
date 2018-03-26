@@ -10,9 +10,9 @@ public:
 	PresetManager* presetManager;
 	ParameterHandler* paramHandler;
 	Log* log;
-	JUCE_LEAK_DETECTOR(GLOBAL);
+	GLOBAL(AudioProcessor* owner);
 	~GLOBAL();
+	JUCE_LEAK_DETECTOR(GLOBAL);
 };
-extern GLOBAL* Global;
 
 #endif // !GLOBAL_H

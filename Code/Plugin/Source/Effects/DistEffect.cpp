@@ -4,8 +4,9 @@
 #include <stdlib.h>
 
 template<typename T>
-DistEffect<T>::DistEffect(int ID, double samplerate) : IEffect(samplerate)
+DistEffect<T>::DistEffect(int ID, double samplerate,GLOBAL*global) : IEffect(samplerate)
 {
+	Global = global;
 	__threshold = Global->paramHandler->Get<AudioParameterFloat>(ID, "DIST_TRSH");
 	__isActive = Global->paramHandler->Get<AudioParameterBool>(ID, "DIST_EN");
 	__lfoIndex = Global->paramHandler->Get<AudioParameterInt>(ID, "DIST_LFO");
@@ -17,7 +18,7 @@ DistEffect<T>::~DistEffect()
 }
 
 template<typename T>
-void DistEffect<T>::RegisterParameters(int ID)
+void DistEffect<T>::RegisterParameters(int ID, GLOBAL*Global)
 {
 	Global->paramHandler->RegisterFloat(ID, "DIST_TRSH", "Distortion threshold",0.0f,1.0f,1.0f);
 	Global->paramHandler->RegisterBool(ID, "DIST_EN", "Distortion enable", false);

@@ -15,10 +15,12 @@ private:
 	bool IsEnabled() override;
 	
 public:
-	FilterHP(int ID, double sampleRate, String parameterId);
+	FilterHP(int ID, double sampleRate, String parameterId,GLOBAL*global);
 	~FilterHP();
 
-	static void RegisterParameters(int ID);
+	static void RegisterParameters(int ID, GLOBAL*Global);
+	GLOBAL * Global;
+
 };
 
 

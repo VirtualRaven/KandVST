@@ -8,7 +8,7 @@
 class MixerComponent : public Component
 {
 public:
-	MixerComponent();
+	MixerComponent(GLOBAL*global);
 	~MixerComponent();
 
 private: 
@@ -16,7 +16,7 @@ private:
 	void resized() override;
 	std::vector<MixerSubComponent*> __mixers;
 	Rectangle<int> __bounds;
-
+	GLOBAL * Global;
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MixerComponent)
 };
 

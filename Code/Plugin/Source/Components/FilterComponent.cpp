@@ -4,11 +4,11 @@ FilterComponent::~FilterComponent()
 {
 
 }
-FilterComponent::FilterComponent(int ID)
+FilterComponent::FilterComponent(int ID,GLOBAL*global)
 {
-
-	__hpFilter = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(ID, "FILTER_HP"));
-	__lpFilter = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(ID, "FILTER_LP"));
+	Global = global;
+	__hpFilter = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(ID, "FILTER_HP"), Global);
+	__lpFilter = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(ID, "FILTER_LP"), Global);
 
 	addAndMakeVisible(__hpFilter);
 	addAndMakeVisible(__lpFilter);

@@ -1,9 +1,9 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "PresetRowModel.h"
-PresetRowModel::PresetRowModel(ListBox* owner):
+PresetRowModel::PresetRowModel(ListBox* owner,GLOBAL*global):
 	__owner(owner)
 {
-	
+	Global = global;
 }
 PresetRowModel::~PresetRowModel()
 {
@@ -20,7 +20,7 @@ Component* PresetRowModel::refreshComponentForRow(int rowNumber, bool isRowSelec
 	Component* R;
 	
 	if (rowNumber >= 0 && static_cast<size_t>(rowNumber) < Global->presetManager->GetPresetNames().size()) {
-		R = new PresetRow(rowNumber, isRowSelected, __owner);
+		R = new PresetRow(rowNumber, isRowSelected, __owner,Global);
 	}
 	else {
 		R = new TextEditor();

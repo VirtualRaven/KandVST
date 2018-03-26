@@ -15,10 +15,11 @@ private:
 	bool IsEnabled() override;
 	
 public:
-	FilterLP(int ID, double sampleRate, String parameterId);
+	FilterLP(int ID, double sampleRate, String parameterId,GLOBAL*global);
 	~FilterLP();
 
-	static void RegisterParameters(int ID);
+	static void RegisterParameters(int ID, GLOBAL*Global);
+	GLOBAL * Global;
 
 };
 

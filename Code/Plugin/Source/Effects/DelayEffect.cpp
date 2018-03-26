@@ -2,7 +2,7 @@
 #define FADE 0.3
 
 template<typename T>
-DelayEffect<T>::DelayEffect(int ID, double sampleRate) :
+DelayEffect<T>::DelayEffect(int ID, double sampleRate,GLOBAL*global) :
 	IEffect<T>(sampleRate),
 	IVSTParameters(ID),
 	__delayBuffer(2, static_cast<int>(sampleRate * 4)),	// Buffer size is max delay
@@ -10,6 +10,7 @@ DelayEffect<T>::DelayEffect(int ID, double sampleRate) :
 	__prevDelayLen(0),
 	__delayPos(0)
 {
+	Global = global;
 	__delayMultiplier = Global->paramHandler->Get<AudioParameterFloat>(ID, "EX_DELAYMULTI");
 	__delayLenMult = Global->paramHandler->Get<AudioParameterFloat>(ID, "EX_DELAYLENGTH");
 
@@ -25,7 +26,7 @@ DelayEffect<T>::~DelayEffect()
 {
 }
 template<typename T>
-void DelayEffect<T>::RegisterParameters(int ID)
+void DelayEffect<T>::RegisterParameters(int ID,GLOBAL*Global)
 {
 	Global->paramHandler->RegisterFloat(ID, "EX_DELAYMULTI", "Delay", 0.0f, 1.0f, 0.2f);
 	Global->paramHandler->RegisterFloat(ID, "EX_DELAYLENGTH", "Delay Length", 0.125f, 4.0f, 0.25f);
@@ -34,8 +35,8 @@ void DelayEffect<T>::RegisterParameters(int ID)
 template<typename T>
 bool DelayEffect<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool empty)
 {
-	float multi = *__delayMultiplier;
-	float lenmult = *__delayLenMult;
+	float multi =*__delayMultiplier;
+	float lenmult =  *__delayLenMult;
 
 	__delayLen = (this->__sampleRate * lenmult);
 

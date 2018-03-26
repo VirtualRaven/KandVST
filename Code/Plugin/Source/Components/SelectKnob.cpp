@@ -1,12 +1,13 @@
 #include "SelectKnob.h"
 #include "Swatch.h"
 
-SelectKnob::SelectKnob(AudioParameterChoice& p) :
+SelectKnob::SelectKnob(AudioParameterChoice& p,GLOBAL*global) :
 	__param(p),
 	__angleBetweenPos((float_Pi / 4.0f) * (-0.2f * p.choices.size() + 1.9f)), // Magic numbers
 	__snapAngles(),
-	__slider(p, __angleBetweenPos)
+	__slider(p, __angleBetweenPos,global)
 {
+	Global = global;
 	// The knob needs tweaking to work with more parameters
 	jassert(__param.choices.size() <= 5);
 
@@ -107,11 +108,12 @@ void SelectKnob::resized()
 	__slider.setBounds(paddW, paddh,size,size);
 }
 
-SelectKnobSlider::SelectKnobSlider(AudioParameterChoice& p, float angleBetweenPos) :
-	ParameterSlider(p),
+SelectKnobSlider::SelectKnobSlider(AudioParameterChoice& p, float angleBetweenPos,GLOBAL*global) :
+	ParameterSlider(p,global),
 	__angleBetweenPos(angleBetweenPos),
 	__param(p)
 {
+	Global = global;
 	updateSliderPos();
 	setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
 	setTextBoxStyle(Slider::NoTextBox, false, 0, 0);

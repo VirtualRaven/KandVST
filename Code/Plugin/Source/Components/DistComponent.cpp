@@ -5,11 +5,12 @@ DistComponent::~DistComponent()
 {
 }
 
-DistComponent::DistComponent(int ID) :
+DistComponent::DistComponent(int ID, GLOBAL * global) :
 	IVSTParameters(ID),
 	__ID(ID)
 {
-	addAndMakeVisible(__threshold = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "DIST_TRSH")));
+	Global=global;
+	addAndMakeVisible(__threshold = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "DIST_TRSH"), Global));
 	__threshold->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
 	__threshold->setTextBoxStyle(Slider::TextEntryBoxPosition::TextBoxBelow, true, 50, 15);
 

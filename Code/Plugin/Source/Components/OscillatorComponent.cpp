@@ -7,43 +7,44 @@ OscillatorComponent::~OscillatorComponent()
 	//__toggleOsc.removeListener(this);
 }
 
-OscillatorComponent::OscillatorComponent(int ID):
+OscillatorComponent::OscillatorComponent(int ID,GLOBAL*global):
 IVSTParameters(ID),
 __waveformInvalid(false)
 {
 	__ID = ID;
+	Global = global;
 	//=====================================
 	// add and make visible wave sliders
 	//=====================================
-	addAndMakeVisible(__sineSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "OSC_SINE")));
+	addAndMakeVisible(__sineSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "OSC_SINE"), Global));
 	__sineSlider->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
 	__sineSlider->setTextBoxStyle(__sineSlider->NoTextBox, true, 10, 10);
 	__sineLabel.setText("SINE", NotificationType::dontSendNotification);
 	__sineLabel.attachToComponent(__sineSlider,false);
 	__sineLabel.setJustificationType(juce::Justification::centred);
 
-	addAndMakeVisible(__squareSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "OSC_SQUARE")));
+	addAndMakeVisible(__squareSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "OSC_SQUARE"), Global));
 	__squareSlider->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
 	__squareSlider->setTextBoxStyle(__squareSlider->NoTextBox, true, 10, 10);
 	__squareLabel.setText("SQUARE", NotificationType::dontSendNotification);
 	__squareLabel.attachToComponent(__squareSlider, false);
 	__squareLabel.setJustificationType(juce::Justification::centred);
 
-	addAndMakeVisible(__sawSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "OSC_SAW")));
+	addAndMakeVisible(__sawSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "OSC_SAW"), Global));
 	__sawSlider->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
 	__sawSlider->setTextBoxStyle(__sawSlider->NoTextBox, true, 10, 10);
 	__sawLabel.setText("SAW", NotificationType::dontSendNotification);
 	__sawLabel.attachToComponent(__sawSlider, false);
 	__sawLabel.setJustificationType(juce::Justification::centred);
 
-	addAndMakeVisible(__triangleSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "OSC_TRI")));
+	addAndMakeVisible(__triangleSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "OSC_TRI"), Global));
 	__triangleSlider->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
 	__triangleSlider->setTextBoxStyle(__triangleSlider->NoTextBox, true, 10, 10);
 	__triangleLabel.setText("TRI", NotificationType::dontSendNotification);
 	__triangleLabel.attachToComponent(__triangleSlider, false);
 	__triangleLabel.setJustificationType(juce::Justification::centred);
 
-	addAndMakeVisible(__noiseSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "OSC_NOISE"))); 
+	addAndMakeVisible(__noiseSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "OSC_NOISE"), Global));
 	__noiseSlider->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
 	__noiseSlider->setTextBoxStyle(__noiseSlider->NoTextBox, true, 10, 10);
 	__noiseLabel.setText("NOISE", NotificationType::dontSendNotification);
@@ -52,7 +53,7 @@ __waveformInvalid(false)
 	//=========================================================================
 	// add and make visible detune, octaves, etc
 	//===============================
-	addAndMakeVisible(__octaveSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterInt>(__ID, "OSC_OCTAVE")));
+	addAndMakeVisible(__octaveSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterInt>(__ID, "OSC_OCTAVE"), Global));
 	__octaveSlider->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
 	__octaveSlider->setTextBoxStyle(__octaveSlider->NoTextBox, true, 0, 0);
 	__octaveSlider->setDrawProgress(ParameterSlider::ProgressStart::Center);
@@ -60,7 +61,7 @@ __waveformInvalid(false)
 	__octaveLabel.attachToComponent(__octaveSlider, false);
 	__octaveLabel.setJustificationType(juce::Justification::centred);
 
-	addAndMakeVisible(__detuneSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "OSC_DETUNE")));
+	addAndMakeVisible(__detuneSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "OSC_DETUNE"), Global));
 	__detuneSlider->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
 	__detuneSlider->setTextBoxStyle(__detuneSlider->NoTextBox, true, 0, 0);
 	__detuneSlider->setDrawProgress(ParameterSlider::ProgressStart::Center);
@@ -68,7 +69,7 @@ __waveformInvalid(false)
 	__detuneLabel.attachToComponent(__detuneSlider, false);
 	__detuneLabel.setJustificationType(juce::Justification::centred);
 
-	addAndMakeVisible(__offsetSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterInt>(__ID, "OSC_OFFSET")));
+	addAndMakeVisible(__offsetSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterInt>(__ID, "OSC_OFFSET"), Global));
 	__offsetSlider->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
 	__offsetSlider->setTextBoxStyle(__offsetSlider->NoTextBox, true, 0, 0);
 	__offsetSlider->setDrawProgress(ParameterSlider::ProgressStart::Center);
@@ -76,7 +77,7 @@ __waveformInvalid(false)
 	__offsetLabel.attachToComponent(__offsetSlider, false);
 	__offsetLabel.setJustificationType(juce::Justification::centred);
 
-	addAndMakeVisible(__overtoneSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterInt>(__ID, "OSC_OVERTONE")));
+	addAndMakeVisible(__overtoneSlider = new ParameterSlider(*Global->paramHandler->Get<AudioParameterInt>(__ID, "OSC_OVERTONE"), Global));
 	__overtoneSlider->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
 	__overtoneSlider->setTextBoxStyle(__overtoneSlider->NoTextBox, true, 0, 0);
 	__overtoneLabel.setText("OVERTONE", NotificationType::dontSendNotification);
@@ -94,7 +95,7 @@ __waveformInvalid(false)
 
 	__waveformComp.setImage(*__oscWaveform);
 
-	WavetableOsc os = WavetableOsc(__ID, 0,0);
+	WavetableOsc os = WavetableOsc(__ID, 0,0,Global);
 	os.renderImage(__oscWaveform);
 	__waveformComp.repaint();
 
@@ -133,7 +134,7 @@ void OscillatorComponent::resized(){
 	delete __oscWaveform;
 	__oscWaveform = nullptr;
 	__oscWaveform = new Image(Image::PixelFormat::RGB, __waveformComp.getWidth()*2, __waveformComp.getHeight()*2, true);
-	WavetableOsc os = WavetableOsc(__ID, 0,0);
+	WavetableOsc os = WavetableOsc(__ID, 0,0, Global);
 	os.renderImage(__oscWaveform);
 	__waveformComp.setImage(*__oscWaveform);
 	__waveformComp.repaint();
@@ -177,7 +178,7 @@ void OscillatorComponent::resized(){
 void OscillatorComponent::componentVisibilityChanged(Component & component)
 {
 	if (component.isVisible() && __waveformInvalid) {
-		WavetableOsc os = WavetableOsc(__ID, 0, 0);
+		WavetableOsc os = WavetableOsc(__ID, 0, 0, Global);
 		os.renderImage(__oscWaveform);
 		__waveformComp.repaint();
 		__waveformInvalid = false;
@@ -199,7 +200,7 @@ void OscillatorComponent::timerCallback()
 		stopTimer();
 		return;
 	}
-	WavetableOsc os = WavetableOsc(__ID, 0, 0);
+	WavetableOsc os = WavetableOsc(__ID, 0, 0, Global);
 	os.renderImage(__oscWaveform);
 	__waveformComp.repaint();
 	__waveformInvalid = false;

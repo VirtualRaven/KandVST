@@ -7,20 +7,22 @@
 
 
 template<typename T>
-PipelineManager<T>::PipelineManager(double rate, int maxBuffHint) :
+PipelineManager<T>::PipelineManager(double rate, int maxBuffHint,GLOBAL*global) :
 	__sampleRate(rate),
 	__maybeMaxBuff(maxBuffHint),
-	__filterLP(-1, rate, "FILTER_LP"),
-	__filterHP(-1, rate, "FILTER_HP")
+	__filterLP(-1, rate, "FILTER_LP",global),
+	__filterHP(-1, rate, "FILTER_HP",global),
+	__delay(-1,rate,global)
 {
+	Global = global;
 	__masterGain = Global->paramHandler->Get<AudioParameterFloat>(-1, "MASTER_GAIN");
 
 	for (int i = 0; i < LFO_COUNT; i++) {
-		lfos[i] = new LFO(maxBuffHint, i, rate);
+		lfos[i] = new LFO(maxBuffHint, i, rate,Global);
 	}
 	for (size_t i = 0; i < 16; i++)
 	{
-		pipList.emplace_back(rate,maxBuffHint);
+		pipList.emplace_back(rate,maxBuffHint, Global);
 		
 		pipBuff[i].setSize(2, maxBuffHint, false, true, false);
 		pipBuff[i].applyGain(0);
@@ -139,12 +141,12 @@ void PipelineManager<T>::genSamples(AudioBuffer<T>& buff, MidiBuffer & midiMessa
 	//Effects
 	__filterLP.RenderBlock(buff, buffLen, false);
 	__filterHP.RenderBlock(buff, buffLen, false);
-	
+	__delay.RenderBlock(buff, buffLen, false);
 }
 
 
 template<typename T>
-void PipelineManager<T>::RegisterParameters(int ID)
+void PipelineManager<T>::RegisterParameters(int ID, GLOBAL*Global)
 {
 	Global->paramHandler->RegisterFloat(ID, "MASTER_GAIN", "Master Volume", 0.0f, 1.0f, 1.0f);
 }

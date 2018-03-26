@@ -22,15 +22,15 @@ private:
 	AudioParameterFloat* __delayMultiplier;
 	
 public:
-	DelayEffect(int ID,double sampleRate);
+	DelayEffect(int ID,double sampleRate,GLOBAL*global);
 	~DelayEffect();
 	bool RenderBlock(AudioBuffer<T>& buffer, int len, bool empty) override;
-	static void RegisterParameters(int ID);
+	static void RegisterParameters(int ID, GLOBAL*Global);
 
 
 	virtual void ProccessCommand(MidiMessage message) override;
 	virtual void Reset() override;
-
+	GLOBAL * Global;
 };
 
 

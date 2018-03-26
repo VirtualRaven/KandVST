@@ -8,9 +8,9 @@
 class FilterComponent : public Component
 {
 public:
-	FilterComponent(int ID);
+	FilterComponent(int ID,GLOBAL*global);
 	~FilterComponent();
-
+	GLOBAL * Global;
 private:
 	void paint(Graphics& g) override;
 	void resized() override;

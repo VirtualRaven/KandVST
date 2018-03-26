@@ -3,15 +3,16 @@
 #include "PluginProcessor.h"
 #include "PluginGUI.h"
 //==============================================================================
-PluginGUI::PluginGUI(PluginProcessor& owner)
+PluginGUI::PluginGUI(PluginProcessor& owner, GLOBAL* global)
 	: AudioProcessorEditor(owner),
 	ourLookAndFeel(),
 	__tabComponent(TabbedButtonBar::Orientation::TabsAtTop),
 	__keyboard(owner.keyboardState,MidiKeyboardComponent::Orientation::horizontalKeyboard),
-	__cc(),
+	__cc(global),
 	__owner(&owner),
 	__guiInit(false)
 {
+	Global=global;
 	setResizable(false, false);
 	setSize(1000, 720);
 	__loadingImage.setImage(ImageFileFormat::loadFrom(Resources::Images::loading_png,sizeof(Resources::Images::loading_png)));
@@ -35,11 +36,11 @@ void PluginGUI::InitializeGui()
 	__tabComponent.setTabBarDepth(35);
 	__tabComponent.setOutline(0);
 	__tabComponent.getTabbedButtonBar().setColour(TabbedButtonBar::ColourIds::tabOutlineColourId, Colours::transparentWhite);
-	__tabComponent.addTab("M", Colour::fromRGB(200,200,200), new MasterComponent(), true);
+	__tabComponent.addTab("M", Colour::fromRGB(200,200,200), new MasterComponent(Global), true);
 
 	for (int i = 0; i < 4; i++)
 	{
-		__tabComponent.addTab(std::to_string(i + 1), Colour::fromRGB(1,1,1), new OscillatorPageComponent(i), true);
+		__tabComponent.addTab(std::to_string(i + 1), Colour::fromRGB(1,1,1), new OscillatorPageComponent(i, Global), true);
 	}
 
 	__tabComponent.addTab("C", Colours::darkgrey, &__cc, true);

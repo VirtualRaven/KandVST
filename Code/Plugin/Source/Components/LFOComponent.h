@@ -13,14 +13,14 @@ class LFOComponent : public Component, private IVSTParameters
 {
 public:
     //==============================================================================
-	LFOComponent(int ID);
+	LFOComponent(int ID,GLOBAL*global);
     ~LFOComponent();
 
     //==============================================================================
 
     void paint (Graphics& g) override;
     void resized() override;
-
+	GLOBAL * Global;
 private:
 	//==============================================================================
 	ScopedPointer<ParameterSlider> __ratio, __type, __amp;
