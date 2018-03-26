@@ -26,7 +26,7 @@ ConvolutionReverb<T>::ConvolutionReverb(int ID, double sampleRate, int maxBuffHi
 	__responseBuffer.clear();
 	reader->read(&__responseBuffer, 0, reader->lengthInSamples, 0, true, true);
 
-	//__responseBufferLen /= 4;
+	__responseBufferLen /= 2;
 }
 
 template<typename T>
@@ -52,10 +52,14 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 		// Create impulse response blocks
 		for (int i = 0; i < roundDoubleToInt((__responseBufferLen / blockSize)); i++)
 		{
-			AudioSampleBuffer nextBlock = AudioSampleBuffer(1, 4 * blockSize);
+			AudioSampleBuffer nextBlock = AudioSampleBuffer(2, 4 * blockSize);
 			nextBlock.clear();
+
 			nextBlock.copyFrom(0, 0, __responseBuffer, 0, i*blockSize, blockSize);
+			nextBlock.copyFrom(1, 0, __responseBuffer, 1, i*blockSize, blockSize);
 			__fft->performRealOnlyForwardTransform(nextBlock.getWritePointer(0));
+			__fft->performRealOnlyForwardTransform(nextBlock.getWritePointer(1));
+
 			__responseBlocks.push_back(nextBlock);
 		}
 
@@ -63,67 +67,77 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 	}
 
 	// x: input padded with 0
-	AudioSampleBuffer x = AudioSampleBuffer(1, 4*blockSize);
+	AudioSampleBuffer x = AudioSampleBuffer(2, 4*blockSize);
 	x.clear();
 	
+	// Set the first len samples to prevInput
 	if (__prevInput.getNumSamples() != 0)
+	{
 		x.copyFrom(0, 0, __prevInput, 0, 0, len);
+		x.copyFrom(1, 0, __prevInput, 1, 0, len);
+	}
 
 	__prevInput.makeCopyOf(buffer, true);
 
+	// The second block is the current input
 	for (int i = 0; i < len; i++)
 	{
 		// double -> float
 		x.setSample(0, i + blockSize, buffer.getSample(0, i));
+		x.setSample(1, i + blockSize, buffer.getSample(1, i));
 	}
 
 	__fft->performRealOnlyForwardTransform(x.getWritePointer(0));
+	__fft->performRealOnlyForwardTransform(x.getWritePointer(1));
 
 	// Put the new input block in front of the list, remove the last if nessesary
 	__inputBlocks.push_front(x);
-	if (__inputBlocks.size() > __responseBlocks.size())
+	if (__inputBlocks.size() >= __responseBlocks.size())
 		__inputBlocks.pop_back();
 
 
 	// Multiply to output
-	AudioSampleBuffer convOutput = AudioSampleBuffer(1, 4*blockSize);
+	AudioSampleBuffer convOutput = AudioSampleBuffer(2, 4*blockSize);
 	convOutput.clear();
 
 	int b = 0;
 	for (auto currentIn : __inputBlocks)
 	{
-		// Complex multiplication
-		float *y = convOutput.getWritePointer(0);
-		const float *in = currentIn.getWritePointer(0);
-		const float *h = __responseBlocks.at(b).getReadPointer(0);
-
-		for (int i = 0; i < blockSize; i+=2)
+		// Complex multiplication (stereo)
+		for (int channel = 0; channel < 2; channel++)
 		{
-			// (a + bi)(c + di) = (ac - bd) + (bc + ad)i
-			float xr = in[i];
-			float xi = in[i + 1];
-			float hr = h[i];
-			float hi = h[i + 1];
+			float *y = convOutput.getWritePointer(channel);
+			const float *in = currentIn.getWritePointer(channel);
+			const float *h = __responseBlocks.at(b).getReadPointer(channel);
 
-			// Real
-			y[i] += xr * hr - xi * hi;
+			for (int i = 0; i < blockSize; i += 2)
+			{
+				// (a + bi)(c + di) = (ac - bd) + (bc + ad)i
+				float xr = in[i];
+				float xi = in[i + 1];
+				float hr = h[i];
+				float hi = h[i + 1];
 
-			// Imaginary
-			y[i + 1] += xi * hr + xr * hi;
+				// Real
+				y[i] += xr * hr - xi * hi;
+
+				// Imaginary
+				y[i + 1] += xi * hr + xr * hi;
+			}
 		}
-
 		b++;
 	}
 
 	// Inverse tranform
 	__ifft->performRealOnlyInverseTransform(convOutput.getWritePointer(0));
+	__ifft->performRealOnlyInverseTransform(convOutput.getWritePointer(1));
 
 	// The first len samples is the output
 	for (int i = 0; i < len; i++)
 	{
 		// Add overlap (float -> double)
 		buffer.setSample(0, i, convOutput.getSample(0, i + blockSize));
-	    buffer.setSample(1, i, convOutput.getSample(0, i + blockSize));
+	    buffer.setSample(1, i, convOutput.getSample(1, i + blockSize));
 	}
 
 	return true;
