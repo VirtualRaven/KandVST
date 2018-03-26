@@ -20,6 +20,9 @@ private:
 	AudioSampleBuffer __responseBuffer;
 	AudioSampleBuffer __overlapBuffer;
 	AudioSampleBuffer __resTransform;
+
+	AudioSampleBuffer __prevInput;
+
 	ScopedPointer<dsp::FFT> __fft;
 	ScopedPointer<dsp::FFT> __ifft;
 	std::vector<AudioSampleBuffer> __responseBlocks;

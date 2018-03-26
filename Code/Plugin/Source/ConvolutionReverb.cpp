@@ -26,7 +26,7 @@ ConvolutionReverb<T>::ConvolutionReverb(int ID, double sampleRate, int maxBuffHi
 	__responseBuffer.clear();
 	reader->read(&__responseBuffer, 0, reader->lengthInSamples, 0, true, true);
 
-	__responseBufferLen /= 8;
+	//__responseBufferLen /= 4;
 }
 
 template<typename T>
@@ -65,10 +65,16 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 	// x: input padded with 0
 	AudioSampleBuffer x = AudioSampleBuffer(1, 4*blockSize);
 	x.clear();
+	
+	if (__prevInput.getNumSamples() != 0)
+		x.copyFrom(0, 0, __prevInput, 0, 0, len);
+
+	__prevInput.makeCopyOf(buffer, true);
+
 	for (int i = 0; i < len; i++)
 	{
 		// double -> float
-		x.setSample(0, i, buffer.getSample(0, i));
+		x.setSample(0, i + blockSize, buffer.getSample(0, i));
 	}
 
 	__fft->performRealOnlyForwardTransform(x.getWritePointer(0));
@@ -86,13 +92,12 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 	int b = 0;
 	for (auto currentIn : __inputBlocks)
 	{
-		//FloatVectorOperations::addWithMultiply(convOutput.getWritePointer(0), x.getWritePointer(0), __responseBlocks.at(b).getWritePointer(0), blockSize);
 		// Complex multiplication
 		float *y = convOutput.getWritePointer(0);
 		const float *in = currentIn.getWritePointer(0);
 		const float *h = __responseBlocks.at(b).getReadPointer(0);
 
-		for (int i = 0; i < blockSize + 1; i+=2)
+		for (int i = 0; i < blockSize; i+=2)
 		{
 			// (a + bi)(c + di) = (ac - bd) + (bc + ad)i
 			float xr = in[i];
