@@ -20,9 +20,14 @@ private:
 	AudioSampleBuffer __overlapBuffer;
 	AudioSampleBuffer __resTransform;
 	ScopedPointer<dsp::FFT> __fft;
+	ScopedPointer<dsp::FFT> __ifft;
+	std::vector<AudioSampleBuffer> __responseBlocks;
 	int __overlapBufferLen;
 	int __responseBufferLen;
 	int __prevBlockSize;
+
+	void fft(float *samples, int len);
+	void ifft(float *samples, int len);
 
 public:
 	ConvolutionReverb(int ID,double sampleRate, int maxBuffHint);
