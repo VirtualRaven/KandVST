@@ -5,6 +5,7 @@
 #include "Global.h"
 #include "ParameterHandler.h"
 #include "IVSTParameters.h"
+#include <list>
 #include "juce_dsp/juce_dsp.h"
 
 template<typename T>
@@ -22,12 +23,12 @@ private:
 	ScopedPointer<dsp::FFT> __fft;
 	ScopedPointer<dsp::FFT> __ifft;
 	std::vector<AudioSampleBuffer> __responseBlocks;
+	std::list<AudioSampleBuffer> __inputBlocks;
+	
 	int __overlapBufferLen;
 	int __responseBufferLen;
-	int __prevBlockSize;
 
-	void fft(float *samples, int len);
-	void ifft(float *samples, int len);
+	int __prevBlockSize;
 
 public:
 	ConvolutionReverb(int ID,double sampleRate, int maxBuffHint);

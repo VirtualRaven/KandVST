@@ -25,6 +25,8 @@ ConvolutionReverb<T>::ConvolutionReverb(int ID, double sampleRate, int maxBuffHi
 	__responseBuffer.setSize(2, __responseBufferLen, false, false, false);
 	__responseBuffer.clear();
 	reader->read(&__responseBuffer, 0, reader->lengthInSamples, 0, true, true);
+
+	__responseBufferLen /= 8;
 }
 
 template<typename T>
@@ -37,29 +39,9 @@ void ConvolutionReverb<T>::RegisterParameters(int ID)
 }
 
 template<typename T>
-void ConvolutionReverb<T>::fft(float *samples, int len)
-{
-	__fft->performRealOnlyForwardTransform(samples, false);
-	// Reorganize?
-}
-
-template<typename T>
-void ConvolutionReverb<T>::ifft(float *samples, int len)
-{
-}
-
-template<typename T>
 bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool empty)
 {
 	int blockSize = nextPowerOfTwo(len);
-
-	/*/ Set overlapBuffer size
-	if (__overlapBufferLen == 0)
-	{
-		__overlapBuffer.setSize(1, fftSize, false, false, true);
-		__overlapBuffer.clear();
-		__overlapBufferLen = fftSize;
-	}*/
 
 	// Create impulse transform
 	if (__prevBlockSize != len)
@@ -81,7 +63,7 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 	}
 
 	// x: input padded with 0
-	AudioSampleBuffer x = AudioSampleBuffer(1, 2*blockSize);
+	AudioSampleBuffer x = AudioSampleBuffer(1, 4*blockSize);
 	x.clear();
 	for (int i = 0; i < len; i++)
 	{
@@ -89,22 +71,28 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 		x.setSample(0, i, buffer.getSample(0, i));
 	}
 
-	__fft->performRealOnlyForwardTransform(x.getWritePointer(0), false);
+	__fft->performRealOnlyForwardTransform(x.getWritePointer(0));
+
+	// Put the new input block in front of the list, remove the last if nessesary
+	__inputBlocks.push_front(x);
+	if (__inputBlocks.size() > __responseBlocks.size())
+		__inputBlocks.pop_back();
+
 
 	// Multiply to output
 	AudioSampleBuffer convOutput = AudioSampleBuffer(1, 4*blockSize);
 	convOutput.clear();
 
-	for (int b = 0; b < __responseBlocks.size(); b++)
+	int b = 0;
+	for (auto currentIn : __inputBlocks)
 	{
 		//FloatVectorOperations::addWithMultiply(convOutput.getWritePointer(0), x.getWritePointer(0), __responseBlocks.at(b).getWritePointer(0), blockSize);
-
 		// Complex multiplication
 		float *y = convOutput.getWritePointer(0);
-		const float *in = x.getReadPointer(0);
+		const float *in = currentIn.getWritePointer(0);
 		const float *h = __responseBlocks.at(b).getReadPointer(0);
 
-		for (int i = 0; i < blockSize; i+=2)
+		for (int i = 0; i < blockSize + 1; i+=2)
 		{
 			// (a + bi)(c + di) = (ac - bd) + (bc + ad)i
 			float xr = in[i];
@@ -118,6 +106,8 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 			// Imaginary
 			y[i + 1] += xi * hr + xr * hi;
 		}
+
+		b++;
 	}
 
 	// Inverse tranform
@@ -127,22 +117,9 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 	for (int i = 0; i < len; i++)
 	{
 		// Add overlap (float -> double)
-		buffer.setSample(0, i, convOutput.getSample(0, i));
-		buffer.setSample(1, i, convOutput.getSample(0, i));
+		buffer.setSample(0, i, convOutput.getSample(0, i + blockSize));
+	    buffer.setSample(1, i, convOutput.getSample(0, i + blockSize));
 	}
-
-	/* The rest needs to be added to the overlapBuffer
-	AudioSampleBuffer shiftedOverlap = AudioSampleBuffer(1, __overlapBufferLen);
-	shiftedOverlap.clear();
-	shiftedOverlap.copyFrom(0, 0, __overlapBuffer, 0, len, __overlapBufferLen - len);
-
-	AudioSampleBuffer newOverlap = AudioSampleBuffer(1, __overlapBufferLen);
-	newOverlap.clear();
-	newOverlap.copyFrom(0, 0, convOutput, 0, len, __overlapBufferLen - len);
-
-	// New overlap
-	FloatVectorOperations::add(__overlapBuffer.getWritePointer(0), shiftedOverlap.getWritePointer(0), newOverlap.getWritePointer(0), __overlapBufferLen);
-	*/
 
 	return true;
 }
