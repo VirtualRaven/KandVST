@@ -1,8 +1,8 @@
 #ifndef CONSOLE_COMPONENET_H
 #define CONSOLE_COMPONENET_H
 
-#include "../Global.h"
-#include "../ParameterHandler.h"
+#include "Global.h"
+#include "ParameterHandler.h"
 #include "../JuceLibraryCode/JuceHeader.h"
 #include <iostream>
 #include <stdlib.h>
@@ -17,11 +17,11 @@ private:
 	size_t __lastCounter;
 	void setParam(String id, std::string value);
 public:
-	ConsoleComponent();
+	ConsoleComponent(GLOBAL* global);
 	~ConsoleComponent();
 	void resized() override;
 	void paint(Graphics & g) override;
-
+	GLOBAL * Global;
 	// Inherited via KeyListener
 	virtual bool keyPressed(const KeyPress & key, Component * originatingComponent) override;
 };

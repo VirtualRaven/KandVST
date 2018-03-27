@@ -2,8 +2,9 @@
 
 
 
-ConsoleComponent::ConsoleComponent()
+ConsoleComponent::ConsoleComponent(GLOBAL * global)
 {
+	Global = global;
 	__input.setMultiLine(false);
 	__input.setReadOnly(false);
 	__input.setText("Input");

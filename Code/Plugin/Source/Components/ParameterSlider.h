@@ -30,17 +30,27 @@ DISCLAIMED.
 #define PARAMETER_SLIDER_H
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "../Global.h"
-#include "../Linkable.h"
-#include "../ParameterHandler.h"
+#include "Global.h"
+#include "Linkable.h"
+#include "ParameterHandler.h"
 
 class ParameterSlider: public Slider, private Timer, private Linkable
 {
+public:
+	enum ProgressStart {
+		Disabled,
+		Start,
+		End,
+		Center,
+		DotsOnly,
+		SingleDot
+	};
 private:
 	virtual void mouseUp(const MouseEvent& event) override;
 	Point<float> __mousePos;
+	ProgressStart __progressStart;
 public:
-	ParameterSlider(AudioProcessorParameter& p);
+	ParameterSlider(AudioProcessorParameter& p,GLOBAL*global);
 	~ParameterSlider();
 	void valueChanged() override;
 
@@ -49,6 +59,8 @@ public:
 	void startedDragging() override;
 	void stoppedDragging() override;
 
+	void setDrawProgress(ProgressStart startLocation = ProgressStart::Start);
+	ProgressStart getDrawProgress();
 	double getValueFromText(const String& text) override;
 	String getTextFromValue(double value) override;
 
@@ -58,6 +70,9 @@ public:
 
 	// Inherited via Linkable
 	virtual void LinkCouldHaveChanged() override;
+
+	GLOBAL*Global;
+
 };
 
 

@@ -1,30 +1,34 @@
 #ifndef OSCILLATOR_PAGE_COMPONENT_H
 #define OSCILLATOR_PAGE_COMPONENT_H
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "../IVSTParameters.h"
+#include "IVSTParameters.h"
 #include "EnvelopeComponent.h"
 #include "ParameterSlider.h"
-#include "../Global.h"
+#include "Global.h"
 #include "OscillatorComponent.h"
 #include "LFOComponent.h"
 #include "FilterComponent.h"
 #include "OSCLFOComponent.h"
+#include "DistComponent.h"
+#include "Swatch.h"
+
 class OscillatorPageComponent  : public Component, private IVSTParameters
 {
 public:
     //==============================================================================
-    OscillatorPageComponent (int ID);
+    OscillatorPageComponent (int ID,GLOBAL * global);
     ~OscillatorPageComponent();
 
     //==============================================================================
 
     void paint (Graphics& g) override;
     void resized() override;
-
+	GLOBAL * Global;
 private:
     //==============================================================================
 	EnvelopeComponent __envComponent;
 	OscillatorComponent __oscillator;
+	DistComponent __dist;
 	ComboBox __oscOctave;
 	ScopedPointer<ParameterSlider> __amplitude;
 	Label __ampLabel;

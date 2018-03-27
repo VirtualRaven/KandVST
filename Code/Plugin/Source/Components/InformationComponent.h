@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../Global.h"
-#include "../ParameterHandler.h"
+#include "Global.h"
+#include "ParameterHandler.h"
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "PresetsComponent.h"
 
@@ -9,13 +9,14 @@ class InformationComponent  : public Component
 {
 public:
     //==============================================================================
-    InformationComponent ();
+    InformationComponent (GLOBAL*global);
     ~InformationComponent();
 
     //==============================================================================
 
     void paint (Graphics& g) override;
     void resized() override;
+	GLOBAL* Global;
 private:
     //==============================================================================
     Label __version, __authors;

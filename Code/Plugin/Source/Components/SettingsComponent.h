@@ -1,7 +1,7 @@
 #ifndef SETTINGS_COMPONENT_H
 #define SETTINGS_COMPONENT_H
 
-#include "../Global.h"
+#include "Global.h"
 #include "ParameterSlider.h"
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "SelectKnob.h"
@@ -9,10 +9,10 @@
 class SettingsComponent : public Component
 {
 public:
-	SettingsComponent();
+	SettingsComponent(GLOBAL*global);
 	~SettingsComponent();
-	static void RegisterParameters(int ID);
-
+	static void RegisterParameters(int ID, GLOBAL*Global);
+	GLOBAL * Global;
 private:
 	void paint(Graphics& g) override;
 	void resized() override;
@@ -25,4 +25,4 @@ private:
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SettingsComponent)
 };
 
-#endif SETTINGS_COMPONENT_H
+#endif //SETTINGS_COMPONENT_H

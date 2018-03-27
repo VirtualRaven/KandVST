@@ -5,8 +5,10 @@ InformationComponent::~InformationComponent()
 {
 }
 
-InformationComponent::InformationComponent(){
-    
+InformationComponent::InformationComponent(GLOBAL*global):
+__presetComponent(global)
+{
+	Global = global;
 	addAndMakeVisible(__presetComponent);
 
 	// variables

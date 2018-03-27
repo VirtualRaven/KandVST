@@ -1,26 +1,26 @@
 #ifndef LFO_COMPONENT_H
 #define LFO_COMPONENT_H
 
-#include "../Global.h"
-#include "../ParameterHandler.h"
+#include "Global.h"
+#include "ParameterHandler.h"
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "InformationComponent.h"
 #include "ParameterSlider.h"
 #include "ParameterButton.h"
-#include "../IVSTParameters.h"
+#include "IVSTParameters.h"
 
 class LFOComponent : public Component, private IVSTParameters
 {
 public:
     //==============================================================================
-	LFOComponent(int ID);
+	LFOComponent(int ID,GLOBAL*global);
     ~LFOComponent();
 
     //==============================================================================
 
     void paint (Graphics& g) override;
     void resized() override;
-
+	GLOBAL * Global;
 private:
 	//==============================================================================
 	ScopedPointer<ParameterSlider> __ratio, __type, __amp;

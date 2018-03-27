@@ -5,15 +5,16 @@ OSCLFOComponent::~OSCLFOComponent()
 {
 }
 
-OSCLFOComponent::OSCLFOComponent(int ID):
+OSCLFOComponent::OSCLFOComponent(int ID,GLOBAL*global):
 IVSTParameters(ID)
 {
-	addAndMakeVisible(__freqSelcet = new SelectKnob(*Global->paramHandler->Get<AudioParameterChoice>(ID, "OSC_LFO_FREQ")));
+	Global = global;
+	addAndMakeVisible(__freqSelect = new SelectKnob(*Global->paramHandler->Get<AudioParameterChoice>(ID, "OSC_LFO_FREQ"),global));
 	__freqLabel.setText("FREQUENCY", NotificationType::dontSendNotification);
-	__freqLabel.attachToComponent(__freqSelcet, false);
+	__freqLabel.attachToComponent(__freqSelect, false);
 	__freqLabel.setJustificationType(Justification::centred);
 
-	addAndMakeVisible(__ampSelect = new SelectKnob(*Global->paramHandler->Get<AudioParameterChoice>(ID, "OSC_LFO_AMP")));
+	addAndMakeVisible(__ampSelect = new SelectKnob(*Global->paramHandler->Get<AudioParameterChoice>(ID, "OSC_LFO_AMP"),global));
 	__ampLabel.setText("AMPLITUDE", NotificationType::dontSendNotification);
 	__ampLabel.attachToComponent(__ampSelect, false);
 	__ampLabel.setJustificationType(Justification::centred);
@@ -38,7 +39,7 @@ void OSCLFOComponent::resized(){
 	sliders.removeFromTop(fontHeight);
 	sliders.removeFromTop(__freqLabel.getFont().getHeight()+8);
 	int size = __bounds.getWidth();
-	__freqSelcet->setBounds(sliders.removeFromTop(90));
+	__freqSelect->setBounds(sliders.removeFromTop(90));
 	sliders.removeFromTop(__freqLabel.getFont().getHeight());
 	__ampSelect->setBounds(sliders.removeFromTop(90));
 

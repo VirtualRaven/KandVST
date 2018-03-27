@@ -5,26 +5,28 @@ LFOComponent::~LFOComponent()
 {
 }
 
-LFOComponent::LFOComponent(int ID):
+LFOComponent::LFOComponent(int ID,GLOBAL * global):
 IVSTParameters(ID)
 {
+	Global=global;
 	__ID = ID;
 	int boxWidth = 50;
-	addAndMakeVisible(__ratio = new ParameterSlider(*Global->paramHandler->Get<AudioParameterInt>(__ID, "LFO_RATIO")));
+	addAndMakeVisible(__ratio = new ParameterSlider(*Global->paramHandler->Get<AudioParameterInt>(__ID, "LFO_RATIO"),Global));
 	__ratio->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
 	__ratio->setTextBoxStyle(Slider::TextEntryBoxPosition::TextBoxBelow, true, boxWidth, 15);
 	__ratioLabel.setText("RATIO", NotificationType::dontSendNotification);
 	__ratioLabel.attachToComponent(__ratio, false);
 	__ratioLabel.setJustificationType(Justification::centred);
 
-	addAndMakeVisible(__type = new ParameterSlider(*Global->paramHandler->Get<AudioParameterInt>(__ID, "LFO_TYPE")));
+	addAndMakeVisible(__type = new ParameterSlider(*Global->paramHandler->Get<AudioParameterInt>(__ID, "LFO_TYPE"), Global));
 	__type->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
 	__type->setTextBoxStyle(Slider::TextEntryBoxPosition::TextBoxBelow, true, boxWidth, 15);
+	__type->setDrawProgress(ParameterSlider::ProgressStart::SingleDot);
 	__typeLabel.setText("TYPE", NotificationType::dontSendNotification);
 	__typeLabel.attachToComponent(__type, false);
 	__typeLabel.setJustificationType(Justification::centred);
 
-	addAndMakeVisible(__amp = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "LFO_AMOUNT")));
+	addAndMakeVisible(__amp = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "LFO_AMOUNT"), Global));
 	__amp->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
 	__amp->setTextBoxStyle(Slider::TextEntryBoxPosition::TextBoxBelow, true, boxWidth, 15);
 	__ampLabel.setText("GAIN", NotificationType::dontSendNotification);

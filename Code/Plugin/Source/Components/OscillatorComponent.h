@@ -1,26 +1,27 @@
 #ifndef OSCILLATOR_COMPONENT_H
 #define OSCILLATOR_COMPONENT_H
 
-#include "../Global.h"
-#include "../ParameterHandler.h"
+#include "Global.h"
+#include "ParameterHandler.h"
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "InformationComponent.h"
 #include "ParameterSlider.h"
 #include "ParameterButton.h"
-#include "../IVSTParameters.h"
-#include "../WavetableOsc.h"
-#include "../ParameterListener.h"
+#include "IVSTParameters.h"
+#include "WavetableOsc.h"
+#include "ParameterListener.h"
 class OscillatorComponent : public Component, private IVSTParameters, private Timer, private ParameterListener, private ComponentListener
 {
 public:
     //==============================================================================
-    OscillatorComponent (int ID);
+    OscillatorComponent (int ID,GLOBAL*global);
     ~OscillatorComponent();
 
     //==============================================================================
 
     void paint (Graphics& g) override;
     void resized() override;
+	GLOBAL * Global;
 private:
 	//==============================================================================
 

@@ -1,240 +1,81 @@
-#include <Windows.h>
+#include "wrapperVST.h"
+#include "util.h"
 #include <iostream>
-#include <string>
-#include "base/ipluginbase.h"
-#include "base/funknown.h"
-#include "folders.h"
-#include <vst/ivstaudioprocessor.h>
-#include <vst/ivsthostapplication.h>
-#include <functional>
 #include <vector>
-#define APP_NAME u"AUTOMATIC TESTER"
-HANDLE ourConsole;
+#include <algorithm>
+#include <string>
+#include  <iomanip>
+#include <wchar.h>
+#define MIDI_PRE L"MIDI CC"
 
-
-
-struct STUID {
-	Steinberg::TUID id;
-
-	STUID(Steinberg::TUID __id) {
-		memcpy(id, __id, sizeof(Steinberg::TUID));
+void printParameter(const Steinberg::Vst::ParameterInfo& i, bool verbose=false) {
+	using namespace Steinberg::Vst;
+	std::wcout << i.unitId << L" " << std::setfill(L'0') << std::setw(sizeof(decltype(i.id)) * 2) << std::hex << i.id << std::dec << L": " << i.title << L" ";
+	
+		if (i.stepCount == 0)
+			std::cout << "R [0,1]"
+			<<  " D: " << i.defaultNormalizedValue << std::endl;
+		else if (i.stepCount == 1)
+			std::cout << "On/Off D: "
+			<< (((int)std::min(1.0, 2 * i.defaultNormalizedValue) == 0) ? "Off" : "On") << std::endl;
+		else
+			std::cout << "N [0," << i.stepCount << "] D: "
+			<< ((int)std::min(1.0, i.stepCount * i.defaultNormalizedValue) == 0) << std::endl;
+		using Steinberg::Vst::ParameterInfo;
+		if (verbose) {
+#define FLAG_STR(V,F) "\t\t" << #F << (V & F ? ": true" : ": false")
+		std::cout << "\tFlags:\n"
+			<< "\t\t" << FLAG_STR(i.flags, ParameterInfo::kCanAutomate) << std::endl
+			<< "\t\t" << FLAG_STR(i.flags, ParameterInfo::kIsBypass) << std::endl
+			<< "\t\t" << FLAG_STR(i.flags, ParameterInfo::kIsList) << std::endl
+			<< "\t\t" << FLAG_STR(i.flags, ParameterInfo::kIsProgramChange) << std::endl
+			<< "\t\t" << FLAG_STR(i.flags, ParameterInfo::kIsReadOnly) << std::endl
+			<< "\t\t" << FLAG_STR(i.flags, ParameterInfo::kIsWrapAround) << std::endl;
+#undef FLAG_STR
 	}
-};
-
-void red(std::function<void()> f) {
-	if (ourConsole != NULL) {
-		SetConsoleTextAttribute(ourConsole, FOREGROUND_RED);
-		f();
-		SetConsoleTextAttribute(ourConsole, FOREGROUND_BLUE | FOREGROUND_GREEN |  FOREGROUND_RED);
-	}
-	else f();
 }
 
 
-class dll {
-	HMODULE __hdll;
-	DWORD __err_code;
-public:
-	dll(LPCTSTR file) : __hdll(LoadLibrary(file)) {
-			__err_code = (__hdll == NULL) ?  GetLastError() : 0;
-			if (isLoaded()) {
-				std::cout << "Loaded DLL: " << LIB_PATH << std::endl;
-			}
-	}
-	~dll() {
-		FreeLibrary(__hdll);
-	}
-	bool isLoaded() {
-		return __hdll != NULL;
-	}
-
-	FARPROC getPtr(LPCSTR name) {
-		if (isLoaded()) {
-			auto tmp = GetProcAddress(__hdll,name);
-			if (tmp == NULL) {
-				__err_code = GetLastError();
-			}
-			else {
-				return tmp;
-			}
-		}
-		return nullptr;
-	}
-
-	DWORD getErrCode() {
-		return __err_code;
-	}
-	
-
-};
-
-class factory_plugin {
-	dll __dll;
-	typedef bool(*DLL_FUNC)();
-	DLL_FUNC __init;
-	DLL_FUNC __exit;
-protected:
-	Steinberg::IPluginFactory* __factory;
-	bool __init_success;
-	std::vector<STUID> __ids;
-
-	public:
-		factory_plugin() : __dll(LIB_PATH),
-		__init(nullptr),
-		__exit(nullptr),
-			__factory(nullptr),
-		__init_success(false) {
-			if (__dll.isLoaded()) {
-				
-				__init = reinterpret_cast<DLL_FUNC>(__dll.getPtr("InitDll"));
-				if (__init == nullptr) {
-					red([] {std::cerr << "Failed to find symbol InitDll" << std::endl; });
-					return;
-				}
-				
-				__exit = reinterpret_cast<DLL_FUNC>(__dll.getPtr("ExitDll"));
-				if (__exit == nullptr) {
-					red([] {std::cerr << "Failed to find symbol ExitDll" << std::endl; });
-					return;
-				}
-
-				if (__init()) {
-					GetFactoryProc fproc = reinterpret_cast<GetFactoryProc>(__dll.getPtr("GetPluginFactory"));
-					__factory = fproc ? fproc() : nullptr;
-					if (__factory != nullptr) {
-						__init_success = true;
-						for (Steinberg::int32 i = 0; i < __factory->countClasses(); i++) {
-							Steinberg::PClassInfo info;
-							__factory->getClassInfo(i, &info);
-							__ids.emplace_back(info.cid);
-						}
-					}
-				}
-
-			}
-			else
-				red([] {std::cerr << "Failed to load plugin " << LIB_PATH << std::endl; });
-		}
-		~factory_plugin() {
-			if (__factory != nullptr)
-				__factory->release();
-			if (__exit != nullptr)
-				__exit();
-		}
-
-		bool isInitialized() {
-			return __init_success;
-		}
-
-		void printClasses() {
-			std::cout << "### Classes ###" << std::endl;
-			for (Steinberg::int32 i= 0; i < __factory->countClasses(); i++) {
-				Steinberg::PClassInfo info;
-				__factory->getClassInfo(i,&info);
-				std::cout << i << "\n\tCID: " << std::hex << info.cid << std::dec << "\n\tName: " << std::string(info.name)<< "\n\tCategory: " << std::string(info.category)<< std::endl << std::endl;
-			}
-			std::cout << std::endl;
-		}
-
-		template<typename T> T* findInterface() {
-			for (const auto& id : __ids) {
-				T* obj = nullptr;
-				Steinberg::tresult res = this->__factory->createInstance(id.id,
-					T::iid, (void**)(&obj));
-				if (res == Steinberg::kResultOk && obj != nullptr)
-					return obj;
-				else continue;
-			}
-			return nullptr;
-		}
-
-		void printInfo() {
-			using Steinberg::PFactoryInfo;
-			Steinberg::PFactoryInfo info;
-			__factory->getFactoryInfo(&info);
-			std::cout << "### Plugin info ###" << std::endl;
-			std::cout << "Vendor:" << info.vendor << std::endl;
-			std::cout << "Email: " << info.email << std::endl;
-			std::cout << "Flags: \n"
-				<< "\tkClassesDiscardable:"		<< (PFactoryInfo::kClassesDiscardable & info.flags ? "true" : "false")		<< std::endl
-				<< "\tkLicenseCheck:"			<< (PFactoryInfo::kLicenseCheck & info.flags ? "true" : "false")			<< std::endl
-				<< "\tkComponentNonDiscardable:"<< (PFactoryInfo::kComponentNonDiscardable & info.flags ? "true" : "false") << std::endl
-				<< "\tkUnicode:"				<< (PFactoryInfo::kUnicode & info.flags ? "true" : "false") << std::endl;
-			std::cout << std::endl;
-			
-		}
-};
-
-using Steinberg::Vst::IAudioProcessor;
-class headless_audio_plugin : public factory_plugin {
-	IAudioProcessor* __pro;
-public:
-	headless_audio_plugin() : __pro(nullptr) {
-		if (this->isInitialized()) {
-			this->printInfo();
-			this->printClasses();
-			
-			__pro = this->findInterface<IAudioProcessor>();
-			if (__pro == nullptr ) {
-				__init_success = false;
-				red([] { std::cerr << "Plugin does not implement the IAudioProcessor interface" << std::endl; });
-			}
-		}
-	}
-
-	IAudioProcessor* operator->() {
-		return __pro;
-	}
-
-	~headless_audio_plugin() {
-		if (__pro != nullptr) {
-			__pro->release();
-		}
-	}
-};
-using Steinberg::TUID;
-class TesterHost : public Steinberg::Vst::IHostApplication {
-	size_t __refs;
-public:
-		TesterHost () : __refs(1)  {}
-		virtual Steinberg::tresult PLUGIN_API getName(Steinberg::Vst::String128  name) override{
-			memcpy(name, APP_NAME,sizeof(APP_NAME));
-			return Steinberg::kResultOk;
-		}
-		virtual Steinberg::tresult PLUGIN_API createInstance(TUID cid, TUID _iid, void ** obj) {
-			return Steinberg::kResultFalse;
-		}
-
-		virtual Steinberg::tresult PLUGIN_API queryInterface(const TUID _iid, void **obj) override {
-			QUERY_INTERFACE(iid, obj, Steinberg::FUnknown::iid, Steinberg::FUnknown)
-				QUERY_INTERFACE(iid, obj, Steinberg::Vst::IHostApplication::iid, Steinberg::Vst::IHostApplication);
-			 *obj = nullptr;
-			return Steinberg::kNoInterface;
-		}
-
-		virtual Steinberg::uint32 PLUGIN_API addRef() override {
-			return ++__refs;
-		}
-		virtual Steinberg::uint32 PLUGIN_API release() override {
-			return __refs = __refs > 0 ? --__refs : 0;
-		}
-};
-
-
 int  main(){
-	ourConsole = GetStdHandle(STD_ERROR_HANDLE);
-	if(ourConsole != NULL)
-		SetConsoleTextAttribute(ourConsole, FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
-	headless_audio_plugin plug;
-	TesterHost host;
-	if (!plug.isInitialized()) {
+	util::init_colour();
+	wrapperVST vst;
+
+	if (!vst.isInitialized()) {
 		return 42;
 	}
-	if (false) {
+	vst.printInfo();
+	vst.printClasses();
 
+	std::vector<Steinberg::Vst::ParameterInfo> params;
+	std::vector<Steinberg::Vst::ParameterInfo> midi_params;
+	//Print info about parameters
+	auto count = vst.edit()->getParameterCount();
+	for ( decltype(count) i = 0; i < count; i++) {
+		Steinberg::Vst::ParameterInfo info;
+		if (vst.edit()->getParameterInfo(i, info) == Steinberg::kResultOk) {
+			size_t len = std::min(sizeof(MIDI_PRE) / sizeof(wchar_t)-1, wcslen(info.title));
+			if (0 != wmemcmp(info.title, MIDI_PRE, len))
+				params.push_back(info);
+			else
+				midi_params.push_back(info);
+
+		}
+		else util::red([i] {std::cerr << "Parameter " << i << " failed to to be fetched" << std::endl; });
 	}
+	std::sort(params.begin(), params.end() - 1, 
+		[](Steinberg::Vst::ParameterInfo a, Steinberg::Vst::ParameterInfo b) {return wcscmp(a.title, b.title) == -1; });
+
+	util::cyan([] {std::cout << "### Parameters ###" << std::endl; });
+	for (const auto& p : params)
+		printParameter(p);
 
 
+	Steinberg::Vst::SpeakerArrangement inspeakers = Steinberg::Vst::SpeakerArr::kEmpty;
+	Steinberg::Vst::SpeakerArrangement outspeakers = Steinberg::Vst::SpeakerArr::kStereo;
+	
+	if (vst.proc()->setBusArrangements(&inspeakers, 0, &outspeakers, 1) != Steinberg::kResultTrue) {
+		return 44;
+	}
 
 	Steinberg::Vst::ProcessSetup config = {
 		Steinberg::Vst::kRealtime,
@@ -242,12 +83,16 @@ int  main(){
 		1024,
 		44100.0	
 	};
-	if (plug->setupProcessing(config) != Steinberg::kResultOk) {
+
+	if (vst.proc()->setupProcessing(config) != Steinberg::kResultOk) {
 		return 43;
 	}
 
-	plug->setProcessing(true);
-	plug->setProcessing(false);
+
+	vst.proc()->setProcessing(true);
+	Steinberg::Vst::ProcessData data = {};
+
+	vst.proc()->setProcessing(false);
 
 	
 

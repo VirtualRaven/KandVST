@@ -7,25 +7,23 @@
 class SelectKnobSlider: public ParameterSlider
 {
 public:
-	SelectKnobSlider(AudioParameterChoice& p, float angleBetweenPos);
+	SelectKnobSlider(AudioParameterChoice& p, float angleBetweenPos,GLOBAL*global);
 	~SelectKnobSlider();
 	void valueChanged() override;
 	void resized() override;
-
-	void startedDragging() override;
-	void stoppedDragging() override;
-
+	GLOBAL*Global;
 private:
 	AudioParameterChoice& __param;
 	float __angleBetweenPos;
+	void paint(Graphics& g) override;
 };
 
 class SelectKnob : public Component
 {
 public:
-	SelectKnob(AudioParameterChoice& p);
+	SelectKnob(AudioParameterChoice& p,GLOBAL*global);
 	~SelectKnob();
-
+	GLOBAL*Global;
 private:
 	float __angleBetweenPos;
 	SelectKnobSlider __slider;
