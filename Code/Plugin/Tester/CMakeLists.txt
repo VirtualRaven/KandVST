@@ -11,18 +11,24 @@ if(TARGET KandVST_VST3)
     #To include folders_*.h  
     include_directories(${CMAKE_CURRENT_BINARY_DIR})
     
+	#Tests
+	include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Tests/)
 
-    SET ( SRCS  main.cpp folders.h wrapperVST.cpp util.cpp)
+    SET ( SRCS  main.cpp folders.h wrapperVST.cpp util.cpp hostVST.cpp IID_defs.cpp TestHost.cpp)
     
     #Generate files containing paths to our VST3 dll
     file(GENERATE OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/folders_debug.h"  
-        CONTENT "#define LIB_PATH_D \"$<TARGET_FILE:KandVST_VST3>\"" 
+        CONTENT 
+			"#define LIB_PATH_D \"$<TARGET_FILE:KandVST_VST3>\" 
+			 #define TEST_PATH_D \"${CMAKE_CURRENT_SOURCE_DIR}/Tests/\" " 
         CONDITION $<CONFIG:Debug>)
 
     file(GENERATE OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/folders_release.h"  
-        CONTENT "#define LIB_PATH_R \"$<TARGET_FILE:KandVST_VST3>\"" 
+        CONTENT "#define LIB_PATH_R \"$<TARGET_FILE:KandVST_VST3>\"
+				 #define TEST_PATH_R \"${CMAKE_CURRENT_SOURCE_DIR}/Tests/\" "
         CONDITION $<NOT:$<CONFIG:Debug>>)
-    
+    file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/Tests/)
+
     add_executable(tester ${SRCS} )
     target_compile_definitions(tester 
         PRIVATE $<$<CONFIG:Debug>:VST_DEBUG> 

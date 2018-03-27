@@ -1,6 +1,3 @@
-//This is to force the VST api to initialize IID
-//we need this as we only use the interface headers
-#define INIT_CLASS_IID
 
 #include <Windows.h>
 #include "wrapperVST.h"
@@ -327,6 +324,10 @@ public:
 		return __cont;
 	}
 
+	IComponent* com() {
+		return __com;
+	}
+
 	bool connectComponents() {
 	
 		disconnectComponents();
@@ -421,6 +422,10 @@ IAudioProcessor* wrapperVST::proc() {
 }
 IEditController* wrapperVST::edit() {
 	return __plug->edit();
+}
+
+IComponent* wrapperVST::com() {
+	return __plug->com();
 }
 
 bool wrapperVST::isInitialized() {
