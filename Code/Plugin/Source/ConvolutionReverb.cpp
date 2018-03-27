@@ -5,21 +5,19 @@ template<typename T>
 ConvolutionReverb<T>::ConvolutionReverb(int ID, double sampleRate, int maxBuffHint) :
 	IEffect(sampleRate),
 	IVSTParameters(ID),
-	__maxBuffHint(maxBuffHint),
-	__overlapBuffer(),
+	__prevBlockSize(maxBuffHint),
 	__responseBuffer(),
-	__resTransform(),
 	__overlapBufferLen(0),
-	__prevBlockSize(0)
+	__maxBuffHint(maxBuffHint)
 {
-	__responseBlocks.clear();
+}
 
-	// Read response
-	File resp = File(File::getSpecialLocation(juce::File::SpecialLocationType::userApplicationDataDirectory).getFullPathName() + String("/KandVST/resp.wav"));
-
+template<typename T>
+void ConvolutionReverb<T>::LoadInputResponse(File file)
+{
 	AudioFormatManager manager;
 	manager.registerBasicFormats();
-	ScopedPointer<AudioFormatReader> reader = manager.createReaderFor(resp);
+	ScopedPointer<AudioFormatReader> reader = manager.createReaderFor(file);
 
 	__responseBufferLen = nextPowerOfTwo(reader->lengthInSamples);
 	__responseBuffer.setSize(2, __responseBufferLen, false, false, false);
@@ -27,6 +25,31 @@ ConvolutionReverb<T>::ConvolutionReverb(int ID, double sampleRate, int maxBuffHi
 	reader->read(&__responseBuffer, 0, reader->lengthInSamples, 0, true, true);
 
 	__responseBufferLen /= 2;
+
+	__createResponseBlocks(__maxBuffHint);
+}
+
+template<typename T>
+void ConvolutionReverb<T>::__createResponseBlocks(int len)
+{
+	int blockSize = nextPowerOfTwo(len);
+
+	__fft = new dsp::FFT(roundDoubleToInt(log2(2 * blockSize)));
+	__ifft = new dsp::FFT(roundDoubleToInt(log2(2 * blockSize)));
+
+	// Create impulse response blocks
+	for (int i = 0; i < roundDoubleToInt((__responseBufferLen / len)); i++)
+	{
+		AudioSampleBuffer nextBlock = AudioSampleBuffer(2, 4 * blockSize);
+		nextBlock.clear();
+
+		nextBlock.copyFrom(0, 0, __responseBuffer, 0, i*len, len);
+		nextBlock.copyFrom(1, 0, __responseBuffer, 1, i*len, len);
+		__fft->performRealOnlyForwardTransform(nextBlock.getWritePointer(0));
+		__fft->performRealOnlyForwardTransform(nextBlock.getWritePointer(1));
+
+		__responseBlocks.push_back(nextBlock);
+	}
 }
 
 template<typename T>
@@ -44,9 +67,11 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 	// Block size needs to be a power of two
 	int blockSize = nextPowerOfTwo(len);
 
-	// Create impulse transform
+	// If len has changed
 	if (__prevBlockSize != len)
 	{
+		__prevBlockSize = len;
+
 		__prevInput.clear();
 		__prevInputs.clear();
 		__responseBlocks.clear();
@@ -54,31 +79,16 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 		__fft = new dsp::FFT(roundDoubleToInt(log2(2*blockSize)));
 		__ifft = new dsp::FFT(roundDoubleToInt(log2(2*blockSize)));
 
-
-		// Create impulse response blocks
-		for (int i = 0; i < roundDoubleToInt((__responseBufferLen / len)); i++)
-		{
-			AudioSampleBuffer nextBlock = AudioSampleBuffer(2, 4 * blockSize);
-			nextBlock.clear();
-
-			nextBlock.copyFrom(0, 0, __responseBuffer, 0, i*len, len);
-			nextBlock.copyFrom(1, 0, __responseBuffer, 1, i*len, len);
-			__fft->performRealOnlyForwardTransform(nextBlock.getWritePointer(0));
-			__fft->performRealOnlyForwardTransform(nextBlock.getWritePointer(1));
-
-			__responseBlocks.push_back(nextBlock);
-		}
-
-		__prevBlockSize = len;
+		__createResponseBlocks(len);
 	}
 
 	// x: Input of length 2*blockSize
 	AudioSampleBuffer x = AudioSampleBuffer(2, 4*blockSize);
 	x.clear();
 
-	// in: The actual current input of length len
+	// in: The actual current input of length len (does not need to be cleaned)
 	AudioSampleBuffer in = AudioSampleBuffer(2, len);
-	in.clear();
+
 	for (int i = 0; i < len; i++)
 	{
 		// double -> float
@@ -91,7 +101,7 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 	if (__prevInputs.size() > roundDoubleToInt((2 * blockSize) / len))
 		__prevInputs.pop_back();
 
-	// Make x contain the current input to the right and previous input to the left of it
+	// Make x contain the current input to the right and previous inputs to the left of it
 	int i = 1;
 	for (auto prev : __prevInputs)
 	{

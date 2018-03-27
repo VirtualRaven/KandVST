@@ -14,6 +14,11 @@ PipelineManager<T>::PipelineManager(double rate, int maxBuffHint) :
 {
 	__masterGain = Global->paramHandler->Get<AudioParameterFloat>(-1, "MASTER_GAIN");
 
+	// Input response for reverb
+	File resp = File(File::getSpecialLocation(juce::File::SpecialLocationType::userApplicationDataDirectory).getFullPathName() + String("/KandVST/resp.wav"));
+	__reverb.LoadInputResponse(resp);
+
+
 	for (int i = 0; i < LFO_COUNT; i++) {
 		lfos[i] = new LFO(maxBuffHint, i, rate);
 	}
