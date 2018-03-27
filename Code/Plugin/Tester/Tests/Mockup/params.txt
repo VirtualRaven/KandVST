@@ -1,0 +1,3 @@
+Enable Oscillator 0 = 1.0
+Sine 0 = 0.0
+Saw 0 = 1.0
