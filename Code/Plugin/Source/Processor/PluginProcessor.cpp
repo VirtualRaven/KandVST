@@ -7,7 +7,7 @@
 #include "PipelineManager.h"
 AudioProcessor* JUCE_CALLTYPE createPluginFilter();
 
-GLOBAL * Global;
+
 //==============================================================================
 
 PluginProcessor::PluginProcessor()
@@ -20,9 +20,7 @@ PluginProcessor::PluginProcessor()
 	__pipManager.dp = nullptr;
 	__pipManager.fp = nullptr;
 	doublePrecision = true;
-	Global = new GLOBAL();
-	Global->paramHandler =  new ParameterHandler(*this);
-	Global->log = new Log("log.txt");
+	Global = new GLOBAL(this);
 	// -1 = master
 
 	setParameters<int,	EnvelopeGenerator, 
@@ -37,7 +35,7 @@ PluginProcessor::PluginProcessor()
 						PipelineManager<double>
 			>({
 			{0,1,2,3},
-			{0},
+			{-1},
 			{0,1,2,3},
 			{0,1,2,3},
 			{ 0 },
@@ -46,10 +44,8 @@ PluginProcessor::PluginProcessor()
 			{-1,0,1,2,3},
 			{-1},
 			{-1} 
-			});
+			}, Global);
 
-
-	Global->presetManager = new PresetManager(this);
 	Global->presetManager->RefreshPresets();
 	
 	*(Global->paramHandler->Get<AudioParameterBool>(0, "OSC_MIX_EN")) = 1; //Enable default oscillator
@@ -82,6 +78,10 @@ void PluginProcessor::freePipelineManager() {
 void PluginProcessor::reset()
 {
 	Global->log->Write("Reset\n");
+	if (__pipManager.dp != nullptr)
+		__pipManager.dp->Reset();
+	if (__pipManager.fp != nullptr)
+		__pipManager.fp->Reset();
 }
 
 
@@ -197,9 +197,9 @@ void PluginProcessor::prepareToPlay (double newSampleRate, int maxSamplesPerBloc
 		Thread::launch([this, newSampleRate, maxSamplesPerBlock]() {
 			while (!wavetableRdy());
 			if ((doublePrecision = isUsingDoublePrecision()) == true)
-				__pipManager.dp = new PipelineManager<double>(newSampleRate, maxSamplesPerBlock);
+				__pipManager.dp = new PipelineManager<double>(newSampleRate, maxSamplesPerBlock,Global);
 			else
-				__pipManager.fp = new PipelineManager<float>(newSampleRate, maxSamplesPerBlock);
+				__pipManager.fp = new PipelineManager<float>(newSampleRate, maxSamplesPerBlock,Global);
 			processorReady = true;
 		});
 		
@@ -239,7 +239,7 @@ void PluginProcessor::process (AudioBuffer<FloatType>& buffer,
 AudioProcessorEditor* PluginProcessor::createEditor()
 {
 	Global->log->Write("createEditor\n");
-    return new PluginGUI(*this);
+    return new PluginGUI(*this,Global);
 }
 AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {

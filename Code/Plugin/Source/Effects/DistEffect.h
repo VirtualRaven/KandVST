@@ -14,10 +14,13 @@ private:
 	AudioParameterInt* __lfoIndex;
 	AudioParameterBool* __isActive;
 public:
-	DistEffect(int ID, double samplerate);
+	DistEffect(int ID, double samplerate,GLOBAL*global);
 	~DistEffect();
-	static void RegisterParameters(int ID);
+	static void RegisterParameters(int ID, GLOBAL*Global);
 	bool RenderBlock(AudioBuffer<T>& buffer, int len, bool empty) override;
 	virtual void ProccessCommand(MidiMessage message) override;
+	virtual void Reset() override;
+	GLOBAL * Global;
+
 };
 #endif

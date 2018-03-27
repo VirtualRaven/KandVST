@@ -24,10 +24,13 @@ private:
 	ThreadPool pool;
 	FilterHP<T> __filterHP;
 	FilterLP<T> __filterLP;
+	DelayEffect<T>__delay;
 public:
-	PipelineManager(double rate, int maxBuffHint);
+	PipelineManager(double rate, int maxBuffHint,GLOBAL*global);
 	~PipelineManager();	
-	static void RegisterParameters(int ID);
+	static void RegisterParameters(int ID, GLOBAL*Global);
+	void Reset();
+	GLOBAL * Global;
 
 void genSamples(
 		AudioBuffer<T>& buff, 

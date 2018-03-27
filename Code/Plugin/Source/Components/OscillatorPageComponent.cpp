@@ -5,15 +5,16 @@ OscillatorPageComponent::~OscillatorPageComponent()
 }
 
 
-OscillatorPageComponent::OscillatorPageComponent(int ID):
+OscillatorPageComponent::OscillatorPageComponent(int ID,GLOBAL*global):
 IVSTParameters(ID),
-__envComponent(ID),
-__oscillator(ID),
-__filterComponent(ID),
-__osclfoComponent(ID),
-__dist(ID)
+__envComponent(ID,global),
+__oscillator(ID,global),
+__filterComponent(ID,global),
+__osclfoComponent(ID,global),
+__dist(ID,global)
 {
-	__amplitude = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(ID,"OSC_MIX_AMP"));
+	Global = global;
+	__amplitude = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(ID,"OSC_MIX_AMP"),Global);
 
 	addAndMakeVisible(__envComponent);
 	addAndMakeVisible(__oscillator);

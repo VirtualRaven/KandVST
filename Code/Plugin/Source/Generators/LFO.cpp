@@ -5,7 +5,7 @@
 #include <sstream>
 
 LFO* lfos[LFO_COUNT] = {};
-LFO::LFO(int maxSamples, int ID, double sampleRate) :
+LFO::LFO(int maxSamples, int ID, double sampleRate, GLOBAL*global):
 	__wavetable(tables[WAVE_TYPE::SINE]),
 	__phase(0.0),
 	__ID(ID),
@@ -13,6 +13,7 @@ LFO::LFO(int maxSamples, int ID, double sampleRate) :
 	__activeCheck(false),
 	__nrOfSamples(maxSamples)
 {
+	Global = global;
 	__samples = new double[maxSamples];
 	__amount	 = Global->paramHandler->Get<AudioParameterFloat>(ID, "LFO_AMOUNT");
 	__ratio		 = Global->paramHandler->Get<AudioParameterInt>(ID, "LFO_RATIO");
@@ -33,7 +34,7 @@ double LFO::calcRatio()
 	};
 }
 
-void LFO::RegisterParameters(int ID)
+void LFO::RegisterParameters(int ID, GLOBAL*Global)
 {
 	Global->paramHandler->RegisterBool(ID, "LFO_EN", "LFO", 0);
 	Global->paramHandler->RegisterInt(ID, "LFO_RATIO", "LFO Ratio", -6, 16, 1); //TEMP!!!

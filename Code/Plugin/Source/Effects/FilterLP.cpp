@@ -3,10 +3,10 @@
 #include "TemplateHelper.h"
 
 template<typename T>
-FilterLP<T>::FilterLP(int ID, double sampleRate, String parameterId) :
-	FilterButterworth<T>(ID, sampleRate, parameterId)
+FilterLP<T>::FilterLP(int ID, double sampleRate, String parameterId,GLOBAL*global) :
+	FilterButterworth<T>(ID, sampleRate, parameterId,global)
 {
-	
+	Global = global;
 }
 
 template<typename T>
@@ -15,9 +15,9 @@ FilterLP<T>::~FilterLP()
 
 }
 template<typename T>
-void FilterLP<T>::RegisterParameters(int ID)
+void FilterLP<T>::RegisterParameters(int ID, GLOBAL*Global)
 {
-	FilterButterworth<T>::RegisterParameters(ID, "LP Frequency", "FILTER_LP", 20000.0f);
+	FilterButterworth<T>::RegisterParameters(ID, "LP Frequency", "FILTER_LP", 20000.0f,Global);
 }
 
 template<typename T>

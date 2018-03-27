@@ -2,22 +2,22 @@
 #include <math.h>
 
 template<typename T>
-Pipeline<T>::Pipeline(double rate,int maxBuffHint) :
+Pipeline<T>::Pipeline(double rate,int maxBuffHint,GLOBAL*global) :
 	__rate(rate),
-	__delay(0,rate),
 	__active(false),
 	__maxBuffHint(maxBuffHint)
 {
+	Global = global;
 	for (int i = 0; i < this->__num_osc; i++) {
 		__oscs[i] = std::make_tuple(
-				new WavetableOsc(i, rate,maxBuffHint),
+				new WavetableOsc(i, rate,maxBuffHint,Global),
 				Global->paramHandler->Get<AudioParameterFloat>(i, "OSC_MIX_AMP"),
 				Global->paramHandler->Get<AudioParameterBool>(i, "OSC_MIX_EN")
 			);
 
-		__effects[i*__num_effects] = new DistEffect<T>(i, rate);
-		__effects[i*__num_effects + 1] = new FilterLP<T>(i, rate, "FILTER_LP");
-		__effects[i*__num_effects + 2] = new FilterHP<T>(i, rate, "FILTER_HP");
+		__effects[i*__num_effects] = new DistEffect<T>(i, rate,Global);
+		__effects[i*__num_effects + 1] = new FilterLP<T>(i, rate, "FILTER_LP", Global);
+		__effects[i*__num_effects + 2] = new FilterHP<T>(i, rate, "FILTER_HP", Global);
 	}
 
 	tmpBuff.setSize(2, maxBuffHint);
@@ -67,7 +67,6 @@ void Pipeline<T>::forceMidiCommand(MidiMessage msg)
 template<typename T>
 Pipeline<T>::Pipeline(Pipeline<T>&& ref) :
 __rate(ref.__rate),
-__delay(0, ref.__rate),
 __active(ref.__active),
 __maxBuffHint(ref.__maxBuffHint){
 	for (size_t i = 0; i < this->__num_osc; i++) {
@@ -137,8 +136,6 @@ void Pipeline<T>::render_block(AudioBuffer<T>& buffer,int len) {
 			}
 		}
 
-		soundGenerated = __delay.RenderBlock(buffer, len, !soundGenerated);
-
 		if (!oscActive && !soundGenerated)
 			__active = false;
 		else
@@ -148,12 +145,25 @@ void Pipeline<T>::render_block(AudioBuffer<T>& buffer,int len) {
 
 
 template<typename T>
-void Pipeline<T>::RegisterParameters(int ID)
+void Pipeline<T>::RegisterParameters(int ID, GLOBAL*Global)
 {
 	for (size_t i = 0; i < Pipeline::__num_osc; i++)
 	{
 		Global->paramHandler->RegisterBool(Pipeline::__num_osc*ID + i, "OSC_MIX_EN", "Enable Oscillator", false);
 		Global->paramHandler->RegisterFloat(Pipeline::__num_osc * ID + i, "OSC_MIX_AMP", "Oscillator Amplitude", 0.0f, 1.0f, 0.5f);
+	}
+}
+
+template<typename T>
+void Pipeline<T>::Reset()
+{
+	for (auto e : __effects)
+	{
+		e->Reset();
+	}
+	for (auto& o : __oscs)
+	{
+		std::get<0>(o)->Reset();
 	}
 }
 

@@ -12,9 +12,10 @@ class PresetsComponent  : public Component, private Button::Listener
 
 {
 public:
-	PresetsComponent();
+	PresetsComponent(GLOBAL * global);
 	~PresetsComponent();
     void resized() override;
+	GLOBAL * Global;
 private:
 	ImageButton __refresh;
 	ListBox __presets;

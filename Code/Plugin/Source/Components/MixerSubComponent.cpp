@@ -5,20 +5,21 @@ MixerSubComponent::~MixerSubComponent()
 }
 
 
-MixerSubComponent::MixerSubComponent(int ID, String  label):
-	MixerSubComponent(ID, label, "OSC_PAN", "OSC_MIX_AMP", false)
+MixerSubComponent::MixerSubComponent(int ID, String  label,GLOBAL*global):
+	MixerSubComponent(ID, label, "OSC_PAN", "OSC_MIX_AMP", false,global)
 {
 
 }
 
-MixerSubComponent::MixerSubComponent(int ID, String label, String overridePanId, String overrideGainId, bool isMaster) :
+MixerSubComponent::MixerSubComponent(int ID, String label, String overridePanId, String overrideGainId, bool isMaster,GLOBAL*global) :
 	IVSTParameters(ID),
 	__isMaster(isMaster)
 {
-	__gain = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(ID, overrideGainId));
+	Global=global;
+	__gain = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(ID, overrideGainId),Global);
 	
 	if (!__isMaster)
-		__pan = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(ID, overridePanId));
+		__pan = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(ID, overridePanId), Global);
 	
 
 

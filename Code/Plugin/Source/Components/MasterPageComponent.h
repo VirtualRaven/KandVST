@@ -17,14 +17,14 @@ class MasterComponent : public Component
 {
 public:
     //==============================================================================
-    MasterComponent ();
+    MasterComponent (GLOBAL*global);
     ~MasterComponent();
 
     //==============================================================================
 
     void paint (Graphics& g) override;
     void resized() override;
-
+	GLOBAL * Global;
 private:
 	InformationComponent __infoComponent;
 	MixerComponent __mixerComponent;

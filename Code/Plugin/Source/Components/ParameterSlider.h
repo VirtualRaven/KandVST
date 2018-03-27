@@ -50,7 +50,7 @@ private:
 	Point<float> __mousePos;
 	ProgressStart __progressStart;
 public:
-	ParameterSlider(AudioProcessorParameter& p);
+	ParameterSlider(AudioProcessorParameter& p,GLOBAL*global);
 	~ParameterSlider();
 	void valueChanged() override;
 
@@ -71,7 +71,8 @@ public:
 	// Inherited via Linkable
 	virtual void LinkCouldHaveChanged() override;
 
-	
+	GLOBAL*Global;
+
 };
 
 

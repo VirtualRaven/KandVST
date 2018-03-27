@@ -5,9 +5,10 @@ PresetsComponent::~PresetsComponent()
 {
 }
 
-PresetsComponent::PresetsComponent():
-__rowModel(&__presets)
+PresetsComponent::PresetsComponent(GLOBAL*global):
+__rowModel(&__presets,global)
 { 
+	Global = global;
 	__refresh.addListener(this);
 	Image refImage = ImageFileFormat::loadFrom(Resources::Icons::refresh_png, sizeof(Resources::Icons::refresh_png));
 	__refresh.setImages(false, true, true, refImage, 1.0f, Colours::transparentBlack, refImage, 0.7f, Colours::transparentBlack, refImage, 0.5f, Colours::transparentBlack);
