@@ -43,6 +43,9 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 {
 	int blockSize = nextPowerOfTwo(len);
 
+	__overlapBuffer.setSize(2, blockSize, false, false, true);
+	__overlapBuffer.clear();
+
 	// Create impulse transform
 	if (__prevBlockSize != len)
 	{
@@ -136,9 +139,12 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 	for (int i = 0; i < len; i++)
 	{
 		// Add overlap (float -> double)
-		buffer.setSample(0, i, convOutput.getSample(0, i + blockSize));
-	    buffer.setSample(1, i, convOutput.getSample(1, i + blockSize));
+		buffer.setSample(0, i, convOutput.getSample(0, i + blockSize) + __overlapBuffer.getSample(0, i));
+	    buffer.setSample(1, i, convOutput.getSample(1, i + blockSize) + __overlapBuffer.getSample(0, i));
 	}
+
+	__overlapBuffer.copyFrom(0, 0, convOutput, 0, blockSize, blockSize - len);
+	__overlapBuffer.copyFrom(1, 0, convOutput, 1, blockSize, blockSize - len);
 
 	return true;
 }
