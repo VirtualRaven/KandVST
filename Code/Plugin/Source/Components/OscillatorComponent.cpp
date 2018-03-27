@@ -3,6 +3,8 @@
 
 OscillatorComponent::~OscillatorComponent()
 {
+	Global->paramHandler->removeParamaterListener(this);
+
 	delete __oscWaveform;
 	//__toggleOsc.removeListener(this);
 }

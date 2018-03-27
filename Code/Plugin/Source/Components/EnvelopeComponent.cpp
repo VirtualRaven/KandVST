@@ -103,6 +103,7 @@ EnvelopeComponent::EnvelopeComponent(int ID, GLOBAL * global):
 
 EnvelopeComponent::~EnvelopeComponent()
 {
+	Global->paramHandler->removeParamaterListener(this);
 	delete __envImage;
 	__envImage = nullptr;
 }
