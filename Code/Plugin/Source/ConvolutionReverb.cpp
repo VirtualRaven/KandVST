@@ -41,11 +41,16 @@ void ConvolutionReverb<T>::RegisterParameters(int ID)
 template<typename T>
 bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool empty)
 {
+	// Block size needs to be a power of two
 	int blockSize = nextPowerOfTwo(len);
 
 	// Create impulse transform
 	if (__prevBlockSize != len)
 	{
+		__prevInput.clear();
+		__prevInputs.clear();
+		__responseBlocks.clear();
+
 		__fft = new dsp::FFT(roundDoubleToInt(log2(2*blockSize)));
 		__ifft = new dsp::FFT(roundDoubleToInt(log2(2*blockSize)));
 
@@ -67,24 +72,26 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 		__prevBlockSize = len;
 	}
 
-	// x: input padded with 0
+	// x: Input of length 2*blockSize
 	AudioSampleBuffer x = AudioSampleBuffer(2, 4*blockSize);
 	x.clear();
 
-	// The last len samples is current input
+	// in: The actual current input of length len
 	AudioSampleBuffer in = AudioSampleBuffer(2, len);
 	in.clear();
 	for (int i = 0; i < len; i++)
 	{
 		// double -> float
-		x.setSample(0, i, buffer.getSample(0, i));
-		x.setSample(1, i, buffer.getSample(1, i));
+		in.setSample(0, i, buffer.getSample(0, i));
+		in.setSample(1, i, buffer.getSample(1, i));
 	}
 
+	// Put the new input block in front of the list, remove the last if nessesary
 	__prevInputs.push_front(in);
-	if (__prevInputs.size() >= roundDoubleToInt((2 * blockSize) / len))
+	if (__prevInputs.size() > roundDoubleToInt((2 * blockSize) / len))
 		__prevInputs.pop_back();
 
+	// Make x contain the current input to the right and previous input to the left of it
 	int i = 1;
 	for (auto prev : __prevInputs)
 	{
@@ -96,34 +103,14 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 			x.setSample(0, (2 * blockSize - i * len) + j, prev.getSample(0, j));
 			x.setSample(1, (2 * blockSize - i * len) + j, prev.getSample(1, j));
 		}
-		
-		//x.copyFrom(0, 2 * blockSize - i * len, prev, 0, 0, len);
-		//x.copyFrom(1, 2 * blockSize - i * len, prev, 1, 0, len);
 
 		i++;
 	}
-	
-	/*/ Set the first len samples to prevInput
-	if (__prevInput.getNumSamples() != 0)
-	{
-		x.copyFrom(0, 0, __prevInput, 0, 0, len);
-		x.copyFrom(1, 0, __prevInput, 1, 0, len);
-	}
-
-	__prevInput.makeCopyOf(buffer, true);
-
-	// The second block is the current input
-	for (int i = 0; i < len; i++)
-	{
-		// double -> float
-		x.setSample(0, i + blockSize, buffer.getSample(0, i));
-		x.setSample(1, i + blockSize, buffer.getSample(1, i));
-	}*/
 
 	__fft->performRealOnlyForwardTransform(x.getWritePointer(0));
 	__fft->performRealOnlyForwardTransform(x.getWritePointer(1));
 
-	// Put the new input block in front of the list, remove the last if nessesary
+	// Put the new TRANSFORMED input block in front of the list, remove the last if nessesary
 	__inputBlocks.push_front(x);
 	if (__inputBlocks.size() >= __responseBlocks.size())
 		__inputBlocks.pop_back();
