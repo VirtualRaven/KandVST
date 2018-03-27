@@ -20,7 +20,8 @@ PipelineManager<T>::PipelineManager(double rate, int maxBuffHint,GLOBAL*global) 
 
 	// Input response for reverb
 	File resp = File(File::getSpecialLocation(juce::File::SpecialLocationType::userApplicationDataDirectory).getFullPathName() + String("/KandVST/resp.wav"));
-	__reverb.LoadInputResponse(resp);
+	if (resp.existsAsFile())
+		__reverb.LoadInputResponse(resp);
 
 
 	for (int i = 0; i < LFO_COUNT; i++) {

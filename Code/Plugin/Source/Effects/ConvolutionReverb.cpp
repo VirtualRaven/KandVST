@@ -65,6 +65,9 @@ void ConvolutionReverb<T>::RegisterParameters(int ID)
 template<typename T>
 bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool empty)
 {
+	if (__responseBlocks.size() == 0)
+		return false;
+
 	// Block size needs to be a power of two
 	int blockSize = nextPowerOfTwo(len);
 
