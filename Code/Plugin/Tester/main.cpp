@@ -17,14 +17,19 @@ int  main(){
 	for (auto& t : tests)
 		owner.emplace_back(t);
 
+	//Initialize colour functions
 	util::init_colour();
+
+
 	TestHost test;
 	if (!test.isInitialized()) {
 		return 2;
 	}
+
 	for (auto& t : tests) {
 		test.addTest(t);
 	}
+	
 	return test.runTests();
 	
 }

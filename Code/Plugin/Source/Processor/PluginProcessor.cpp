@@ -182,10 +182,14 @@ template<> PipelineManager<float>* PluginProcessor::getPipeline<float>() {
 
 void PluginProcessor::prepareToPlay (double newSampleRate, int maxSamplesPerBlock)
 {
-	
+	static int lastMaxSamples = 0;
 	Global->log->Write("Prepare To play\n");
 
-	if (__sampleRate != newSampleRate) {
+	//Have any of the values updated?
+	if (__sampleRate != newSampleRate || 
+		doublePrecision != isUsingDoublePrecision() ||
+		maxSamplesPerBlock != lastMaxSamples
+		) {
 		
 		populateWavetable(newSampleRate,__wavePool);
 		keyboardState.reset();
@@ -202,6 +206,7 @@ void PluginProcessor::prepareToPlay (double newSampleRate, int maxSamplesPerBloc
 		
 
 		__sampleRate = newSampleRate;
+		lastMaxSamples = maxSamplesPerBlock;
 	}
 	
 }

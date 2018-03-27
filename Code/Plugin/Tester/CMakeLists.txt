@@ -27,7 +27,8 @@ if(TARGET KandVST_VST3)
         CONTENT "#define LIB_PATH_R \"$<TARGET_FILE:KandVST_VST3>\"
 				 #define TEST_PATH_R \"${CMAKE_CURRENT_SOURCE_DIR}/Tests/\" "
         CONDITION $<NOT:$<CONFIG:Debug>>)
-    
+    file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/Tests/)
+
     add_executable(tester ${SRCS} )
     target_compile_definitions(tester 
         PRIVATE $<$<CONFIG:Debug>:VST_DEBUG> 
