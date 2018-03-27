@@ -27,6 +27,7 @@ private:
 	ScopedPointer<dsp::FFT> __ifft;
 	std::vector<AudioSampleBuffer> __responseBlocks;
 	std::list<AudioSampleBuffer> __inputBlocks;
+	std::list<AudioSampleBuffer> __prevInputs;
 	
 	int __overlapBufferLen;
 	int __responseBufferLen;
