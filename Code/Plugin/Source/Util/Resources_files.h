@@ -25,5 +25,10 @@ namespace Images{
 extern unsigned char loading_png[35309];
 extern unsigned char Title3_png[12272];
 }
+namespace IR{
+extern unsigned char bathtub_wav[429624];
+extern unsigned char living_room1_wav[189676];
+extern unsigned char living_room2_wav[234836];
+}
 }
 #endif
