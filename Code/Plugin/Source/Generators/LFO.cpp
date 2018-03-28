@@ -11,7 +11,8 @@ LFO::LFO(int maxSamples, int ID, double sampleRate, GLOBAL*global):
 	__ID(ID),
 	__sampleRate(sampleRate),
 	__activeCheck(false),
-	__nrOfSamples(maxSamples)
+	__nrOfSamples(maxSamples),
+	__phaseCheck(false)
 {
 	Global = global;
 	__samples = new double[maxSamples];
@@ -20,6 +21,7 @@ LFO::LFO(int maxSamples, int ID, double sampleRate, GLOBAL*global):
 	__waveType	 = Global->paramHandler->Get<AudioParameterInt>(ID, "LFO_TYPE");
 	__isActive	 = Global->paramHandler->Get<AudioParameterBool>(ID, "LFO_EN");
 	__invert	 = Global->paramHandler->Get<AudioParameterBool>(ID, "LFO_INV");
+	__onPress	 = Global->paramHandler->Get<AudioParameterBool>(ID, "LFO_PRESS");
 }
 LFO::~LFO()
 {
@@ -39,6 +41,7 @@ void LFO::RegisterParameters(int ID, GLOBAL*Global)
 {
 	Global->paramHandler->RegisterBool(ID, "LFO_EN", "LFO", 0);
 	Global->paramHandler->RegisterBool(ID, "LFO_INV", "LFO Invert", 0);
+	Global->paramHandler->RegisterBool(ID, "LFO_PRESS", "LFO On Press Sync", 0);
 	Global->paramHandler->RegisterInt(ID, "LFO_RATIO", "LFO Ratio", -6, 16, 1); //TEMP!!!
 	Global->paramHandler->RegisterInt(ID, "LFO_TYPE", "LFO Wave type", 0, 3, 0);
 	Global->paramHandler->RegisterFloat(ID, "LFO_AMOUNT", "LFO amount", 0.0, 1.0, 0.5);
@@ -57,6 +60,10 @@ float LFO::getAmount()
 bool LFO::isActive() {
 	return __activeCheck;
 }
+void LFO::keyPressed()
+{
+	if (*__onPress) __phase = 0.0;
+}
 void LFO::generate(int numSamples, AudioPlayHead::CurrentPositionInfo& posInfo)
 {
 	if (numSamples > __nrOfSamples) {
@@ -65,7 +72,7 @@ void LFO::generate(int numSamples, AudioPlayHead::CurrentPositionInfo& posInfo)
 		__samples = new double[numSamples];
 	}
 
-	if (!(*__isActive)) {
+	if (!(*__isActive) && !(*__onPress)) {
 		if (!posInfo.isPlaying) {
 			__phase = fmod(__phase + (IWavetable::getLength() * ((posInfo.bpm)* calcRatio() / 60.0) / __sampleRate) * numSamples, IWavetable::getLength());
 		}
@@ -81,7 +88,8 @@ void LFO::generate(int numSamples, AudioPlayHead::CurrentPositionInfo& posInfo)
 	static int nrLoopsPlayed = 0;
 	static double prevPos = posInfo.ppqPosition;
 
-	if (posInfo.isPlaying) {
+
+	if (posInfo.isPlaying && !(*__onPress)) {
 		if (posInfo.isLooping) {
 
 			if (prevPos > posInfo.ppqPosition) {

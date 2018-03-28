@@ -13,14 +13,12 @@ private:
 	double* __samples;
 	double __squareTable[4096];
 	int __nrOfSamples;
-	bool __activeCheck;
+	bool __activeCheck, __phaseCheck;
 	//double* __parameter; // TEMPORARY
 	const IWavetable* __wavetable;
 	AudioParameterFloat* __amount;
-	AudioParameterBool* __isActive;
-	AudioParameterInt* __ratio;
-	AudioParameterInt* __waveType;
-	AudioParameterBool* __invert;
+	AudioParameterBool* __isActive, *__invert,*__onPress;
+	AudioParameterInt* __ratio, *__waveType;
 
 	double calcRatio();
 
@@ -34,6 +32,7 @@ public:
 	double* getPointer();
 	float getAmount();
 	bool isActive();
+	void keyPressed();
 	GLOBAL* Global;
 
 };
