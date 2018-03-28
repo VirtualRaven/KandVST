@@ -47,12 +47,12 @@ void OSCLFOComponent::resized(){
 	int fontHeight = jmin<int>(__bounds.getHeight() * 0.2, 25);
 	Rectangle<int> sliders(__bounds);
 	sliders.removeFromTop(fontHeight);
-	sliders.removeFromTop(__freqLabel.getFont().getHeight()+8);
+	sliders.removeFromTop(__freqLabel.getFont().getHeight()+10);
 	int size = __bounds.getWidth() / 2.0;
-	Rectangle<int> lfo(sliders.removeFromTop(90));
+	Rectangle<int> lfo(sliders.removeFromTop(100));
 	__freqSelect->setBounds(lfo.removeFromRight(size));
 	__ampSelect->setBounds(lfo.removeFromRight(size));
-	sliders.removeFromTop(10);
+	sliders.removeFromTop(15);
 	Rectangle<int> filters(sliders);
 	__lpSelect->setBounds(filters.removeFromRight(size));
 	__hpSelect->setBounds(filters.removeFromRight(size));
