@@ -25,7 +25,7 @@ private:
 	//==============================================================================
 	ScopedPointer<ParameterSlider> __ratio, __type, __amp;
 	Label __ratioLabel, __typeLabel, __ampLabel;
-	ScopedPointer<ParameterButton> __toggleLfo, __toggleInvert;
+	ScopedPointer<ParameterButton> __toggleLfo, __toggleInvert, __onPress;
 	Rectangle<int> __bounds;
 	int __ID, __width, __height;
 	//==============================================================================

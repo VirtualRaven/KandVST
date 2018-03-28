@@ -39,6 +39,9 @@ IVSTParameters(ID)
 	addAndMakeVisible(__toggleInvert = new ParameterButton(*Global->paramHandler->Get<AudioParameterBool>(__ID, "LFO_INV")));
 	__toggleInvert->setButtonText("INVERT");
 
+	addAndMakeVisible(__onPress = new ParameterButton(*Global->paramHandler->Get<AudioParameterBool>(__ID, "LFO_PRESS")));
+	__onPress->setButtonText("ON PRESS");
+
 	//setSize(260, 140);
 }
 
@@ -66,7 +69,7 @@ void LFOComponent::resized(){
 	__ratio->setBounds(sliders.removeFromLeft(size));
 	__type->setBounds(sliders.removeFromLeft(size));
 	__amp->setBounds(sliders.removeFromLeft(size));
-	sliders.removeFromTop(sliders.getHeight() / 5);
-	sliders.removeFromBottom(sliders.getHeight() / 2);
-	__toggleInvert->setBounds(sliders.removeFromLeft(size));
+	__toggleInvert->setBounds(sliders.removeFromTop(20));
+	sliders.removeFromTop(20);
+	__onPress->setBounds(sliders.removeFromTop(20));
 }
