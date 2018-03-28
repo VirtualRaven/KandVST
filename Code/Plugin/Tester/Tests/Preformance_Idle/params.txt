@@ -1,3 +1,4 @@
+#Enable all osc
 Enable Oscillator 0 = 1.0
 Enable Oscillator 1 = 1.0
 Enable Oscillator 2 = 1.0
