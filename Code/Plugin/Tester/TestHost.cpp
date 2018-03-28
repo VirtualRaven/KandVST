@@ -13,7 +13,7 @@
 #include <vst/ivstaudioprocessor.h>
 #include <fstream>
 #include "folders.h"
-
+#include <cstdlib>
 
 void printParameter(const Steinberg::Vst::ParameterInfo& i, bool verbose=false) {
 	using namespace Steinberg::Vst;
@@ -306,17 +306,20 @@ bool TestHost::runTest(size_t i)
 			for (size_t i = 0; i < TestHost::TEST_BLOCK_SIZE-1; i++) {
 				data1 << test->block.left[i] << ',';
 				data2 << test->block.right[i] << ',';
-				if (i % 5 == 0) {
-					data1 << std::endl;
-					data2 << std::endl;
-				}
 			}
-			data1 << test->block.left[TestHost::TEST_BLOCK_SIZE-1] << '\n';
-			data2 << test->block.right[TestHost::TEST_BLOCK_SIZE-1] << '\n';
+			data1 << test->block.left[TestHost::TEST_BLOCK_SIZE-1];
+			data2 << test->block.right[TestHost::TEST_BLOCK_SIZE-1];
 			data1.close();
 			data2.close();
 			if (test->hasPythonStep() ) {
-			//Execute python on test data
+				const std::string testPyPath = std::string(TEST_PATH) + std::string("verify.py");
+				//Execute python on test data
+				int ret = system((std::string(PY_PATH) +std::string(" ")+ testPyPath +  std::string(" ") + testPath).c_str());
+				if (ret == 42)
+					return true;
+				else {
+					util::red([&] {std::cout << "Test " << testName << " failed" << std::endl << "Python verification signaled error" << std::endl; });
+				}
 			}
 		}
 		else {
