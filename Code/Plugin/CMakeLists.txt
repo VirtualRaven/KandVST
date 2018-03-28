@@ -185,6 +185,8 @@ x         .         .         "Source/Editor/PluginGUI.cpp"
   .         .         .         "Source/Util/Swatch.h"
   x         .         .         "Source/Components/PresetRowModel.cpp"
   .         .         .         "Source/Components/PresetRowModel.h"
+  x         .         .         "Source/Effects/ConvolutionReverb.cpp"
+  .         .         .         "Source/Effects/ConvolutionReverb.h"
 )
 
 jucer_project_module(
@@ -246,6 +248,12 @@ jucer_project_module(
   juce_gui_extra
   PATH "../Juce/modules"
 )
+
+jucer_project_module(
+  juce_dsp
+  PATH "../Juce/modules"
+)
+
 
 jucer_appconfig_header(
   USER_CODE_SECTION

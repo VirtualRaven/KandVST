@@ -8,6 +8,7 @@
 #include "LFO.h"
 #include "FilterLP.h"
 #include "FilterHP.h"
+#include "ConvolutionReverb.h"
 #include "DistEffect.h"
 
 #include <tuple>

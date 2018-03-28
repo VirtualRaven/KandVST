@@ -10,12 +10,19 @@ template<typename T>
 PipelineManager<T>::PipelineManager(double rate, int maxBuffHint,GLOBAL*global) :
 	__sampleRate(rate),
 	__maybeMaxBuff(maxBuffHint),
+	__reverb(-1, rate, maxBuffHint, global),
 	__filterLP(-1, rate, "FILTER_LP",global),
 	__filterHP(-1, rate, "FILTER_HP",global),
 	__delay(-1,rate,global)
 {
 	Global = global;
 	__masterGain = Global->paramHandler->Get<AudioParameterFloat>(-1, "MASTER_GAIN");
+
+	// Input response for reverb
+	File resp = File(File::getSpecialLocation(juce::File::SpecialLocationType::userApplicationDataDirectory).getFullPathName() + String("/KandVST/resp.wav"));
+	if (resp.existsAsFile())
+		__reverb.LoadInputResponse(resp);
+
 
 	for (int i = 0; i < LFO_COUNT; i++) {
 		lfos[i] = new LFO(maxBuffHint, i, rate,Global);
@@ -137,6 +144,8 @@ void PipelineManager<T>::genSamples(AudioBuffer<T>& buff, MidiBuffer & midiMessa
 		buff.addFrom(1, 0, pipBuff[i], 1, 0, buffLen, *__masterGain);
 		pipBuff[i].clear(0, buffLen);
 	}
+
+	__reverb.RenderBlock(buff, buff.getNumSamples(), false);
 
 	//Effects
 	__filterLP.RenderBlock(buff, buffLen, false);

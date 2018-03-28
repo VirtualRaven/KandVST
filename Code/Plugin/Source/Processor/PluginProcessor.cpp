@@ -5,6 +5,7 @@
 #include "Pipeline.h"
 #include "Components/SettingsComponent.h"
 #include "PipelineManager.h"
+#include "ConvolutionReverb.h"
 AudioProcessor* JUCE_CALLTYPE createPluginFilter();
 
 
@@ -32,6 +33,7 @@ PluginProcessor::PluginProcessor()
 						FilterHP<double>,
 						FilterLP<double>,
 						SettingsComponent,
+						ConvolutionReverb<double>,
 						PipelineManager<double>
 			>({
 			{0,1,2,3},
@@ -42,6 +44,7 @@ PluginProcessor::PluginProcessor()
 			{0,1},
 			{-1,0,1,2,3},
 			{-1,0,1,2,3},
+			{-1},
 			{-1},
 			{-1} 
 			}, Global);

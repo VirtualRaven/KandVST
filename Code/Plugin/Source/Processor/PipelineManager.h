@@ -10,6 +10,7 @@
 #include "LFO.h"
 #include "FilterHP.h"
 #include "FilterLP.h"
+#include "ConvolutionReverb.h"
 
 template<typename T>
 class PipelineManager
@@ -25,6 +26,7 @@ private:
 	FilterHP<T> __filterHP;
 	FilterLP<T> __filterLP;
 	DelayEffect<T>__delay;
+	ConvolutionReverb<T> __reverb;
 public:
 	PipelineManager(double rate, int maxBuffHint,GLOBAL*global);
 	~PipelineManager();	
