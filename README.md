@@ -25,17 +25,24 @@ the following components
   Each line of this file either contains a comment, marked by a #, or
   it contains a parameter assigment:  
   `PARAM_NAME = 0.1`
-  The right-hand side must be a valid floating point that represent the unormalised parameter value. 
-  And the left hand side must be a name of parameter that the plugin export.
+  The right-hand side must be a valid value of the parameter.
+  If the parameter is of continuous type the value must a floating point value.
+  If the parameter is of toggle type it must be one of On,Off,True,False.
+  If the parameter is discrete the value must be an integer inside the parameters range.
+  
+  T left hand side must be a name of parameter that the plugin export.
   For example:
   ```
    #Enable all osc
-   Enable Oscillator 0 = 1.0
-   Enable Oscillator 1 = 1.0
-   Enable Oscillator 2 = 1.0
-   Enable Oscillator 3 = 1.0
+   Enable Oscillator 0 = On
+   Enable Oscillator 1 = On
+   Enable Oscillator 2 = On
+   Enable Oscillator 3 = On
   ```
   To list available parameters, run the tester with the argument `params` or `Params` for a more detailed output.
+  
+  The comment #NORMALIZED inteprets the file as setting normalized floating point values. This will ignore types.
+  Equaly #UNNORMALIZED reenables type checking for until next #NORMALIZED.
 
 ## Dependencies
 
