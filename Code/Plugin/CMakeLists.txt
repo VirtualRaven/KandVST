@@ -3,9 +3,11 @@
 cmake_minimum_required(VERSION 3.4)
 project(KandVST)
 
-set(
-    AudioPlugin_jucer_FILE "${CMAKE_SOURCE_DIR}//AudioPlugin.jucer" 
+set(ALLOW_PARITAL_TEST true 
+	CACHE BOOL "Allow tester to run a subset of tests if python is not available")
+set(AudioPlugin_jucer_FILE "${CMAKE_SOURCE_DIR}//AudioPlugin.jucer" 
     CACHE STRING "Path to project jucere file")
+
 
 find_package(PythonInterp 3)
 if(EXISTS ${PYTHON_EXECUTABLE})

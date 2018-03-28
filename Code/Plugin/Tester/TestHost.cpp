@@ -161,12 +161,34 @@ void TestHost::addTest(Test * test)
 bool TestHost::runTests()
 {
 	bool acc = true;
-	for (size_t i = 0; i < tests.size(); i++) {
+	auto test_len = tests.size();
+	for (size_t i = 0; i < test_len; i++) {
+#ifdef NO_PY_FOUND
+		if (tests[i]->hasPythonStep()) {
+			util::yellow([&] {std::cout << "Skipping test (" << i+1 <<"/"<< test_len <<") as it requiers python."  << std::endl; });
+			continue;
+		}
+#endif
+
 		if (!this->resetParameters()) {
-			util::red([&] {std::cerr << "Failed to clear parameters before runing test" << i + 1 << "." << std::endl; });
+			util::red([&] {std::cerr << "Failed to clear parameters before running test" << i + 1 << "." << std::endl; });
 			return false;
 		}
-		acc &= this->runTest(i);
+
+		if (this->vst.proc()->setProcessing(true) != Steinberg::kResultOk) {
+			util::red([&] {std::cerr << "Failed to start processing before running test" << i + 1 << "." << std::endl; });
+			return false;
+		}
+		bool tmp = this->runTest(i);
+		if (this->vst.proc()->setProcessing(false) != Steinberg::kResultOk) {
+			util::red([&] {std::cerr << "Failed to stop processing after running test" << i + 1 << "." << std::endl; });
+			return false;
+		}
+		if (tmp)
+			util::cyan([&] {std::cout << "Test (" << i+1 << "/" << test_len << ") was successful" << std::endl; });
+		else
+			util::red([&] {std::cout << "Test (" << i+1 << "/" << test_len << ") failed" << std::endl; });
+		acc &= tmp;
 
 	}
 	return acc;
@@ -210,7 +232,7 @@ std::vector<TestHost::PARAM_TUP> TestHost::readParamFile(std::string filename,bo
 		try{
 			fvalue = std::stod(value);
 		}
-		catch (std::invalid_argument& arg) {
+		catch (std::invalid_argument& ) {
 				util::red([&] {std::cerr << "Syntax error in file " << filename << " at line " << line << std::endl << "Value after equality sign is not an valid floating point number." << std::endl; });
 				sucess = false;
 				return val;
@@ -230,6 +252,8 @@ std::vector<TestHost::PARAM_TUP> TestHost::readParamFile(std::string filename,bo
 		sucess = true;
 		return val;
 	}
+	sucess = false;
+	return val;
 
 }
 
@@ -237,6 +261,7 @@ bool TestHost::runTest(size_t i)
 {
 	const auto count = tests.size();
 	auto& test = tests[i];
+	const std::string testPath = std::string(TEST_BUILD_PATH) + std::string(test->name()) + std::string("/");
 	std::string testName = test->name();
 	util::cyan([&] {std::cout << "Running test (" << (i+1) << "/" << count << ") " << testName << std::endl; });
 	if (test->hasParameterFile()) {
@@ -250,21 +275,53 @@ bool TestHost::runTest(size_t i)
 			}
 		}
 		else {
-			util::red([&] {std::cout << "Test " << testName << " failed" << std::endl; });
+			util::red([&] {std::cout << "Test " << testName << " failed" << std::endl << "Could not read test parameters. " << std::endl; });
 			return false;
 		}
 	}
 	std::stringstream ss;
 	if (!test->run(&this->vst, ss, this->pdata)) {
 		
-		util::red([&] {std::cout << "Test process" << testName << " failed with message: " << ss.str() << std::endl; });
+		util::red([&] {std::cout << "Test process" << testName << " failed" << std::endl; });
 		return false;
+	}
+	auto test_msg = ss.str();
+	if (test_msg.size() > 0) {
+		std::ofstream log(testPath + std::string("log.txt"), std::ios_base::trunc);
+		if (log.is_open()) {
+			log << test_msg;
+			log.close();
+		}
+		else {
+			util::red([&] {std::cout << "Test " << testName << " failed" << std::endl << "Could not write test log. " << std::endl; });
+			return false;
+		}
 	}
 
 	if (test->exportTestData()) {
 		//Export the test data
-		if (test->hasPythonStep()) {
+		std::ofstream data1(testPath + std::string("data_1.txt"),std::ios_base::trunc);
+		std::ofstream data2(testPath + std::string("data_2.txt"),std::ios_base::trunc);
+		if (data1.is_open() && data2.is_open()) {
+			for (size_t i = 0; i < TestHost::TEST_BLOCK_SIZE-1; i++) {
+				data1 << test->block.left[i] << ',';
+				data2 << test->block.right[i] << ',';
+				if (i % 5 == 0) {
+					data1 << std::endl;
+					data2 << std::endl;
+				}
+			}
+			data1 << test->block.left[TestHost::TEST_BLOCK_SIZE-1] << '\n';
+			data2 << test->block.right[TestHost::TEST_BLOCK_SIZE-1] << '\n';
+			data1.close();
+			data2.close();
+			if (test->hasPythonStep() ) {
 			//Execute python on test data
+			}
+		}
+		else {
+			util::red([&] {std::cout << "Test " << testName << " failed" << std::endl << "Could not write test data. " << std::endl; });
+			return false;
 		}
 
 	}

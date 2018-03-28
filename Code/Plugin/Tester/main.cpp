@@ -3,18 +3,14 @@
 #include "TestHost.h"
 #include <array>
 
+#include "Tests.h"
 //Tests
-#include "Tests/Mockup/Mockup.h"
 int  main(){
-	//Create tests
-	std::vector<TestHost::Test*> tests = {
-		new Mockup
-	};
 
 
 	//Create manager for ptrs
 	std::vector<std::unique_ptr<TestHost::Test>> owner;
-	for (auto& t : tests)
+	for (auto& t : test_list)
 		owner.emplace_back(t);
 
 	//Initialize colour functions
@@ -26,7 +22,7 @@ int  main(){
 		return 2;
 	}
 
-	for (auto& t : tests) {
+	for (auto& t : test_list) {
 		test.addTest(t);
 	}
 	
