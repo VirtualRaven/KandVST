@@ -402,8 +402,7 @@ void AudioProcessor::setPlayConfigDetails (const int newNumIns,
     success &= disableNonMainBuses();
     jassert (success);
 
-    // the processor may not support this arrangement at all
-    jassert (success && newNumIns == getTotalNumInputChannels() && newNumOuts == getTotalNumOutputChannels());
+    // the processor may not support this arrangement at all    jassert (success && newNumIns == getTotalNumInputChannels() && newNumOuts == getTotalNumOutputChannels());
 
     setRateAndBufferSizeDetails (newSampleRate, newBlockSize);
 }

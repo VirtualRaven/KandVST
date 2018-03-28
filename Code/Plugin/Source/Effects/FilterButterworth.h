@@ -42,7 +42,7 @@ protected:
 	float __upperLimit, __lowerLimit;
 
 	AudioParameterFloat* lpFrequency;
-	AudioParameterInt* lfoIndex;
+	AudioParameterChoice* lfoIndex;
 	
 public:
 	FilterButterworth(int ID, double sampleRate, String parameterId,GLOBAL*global);
