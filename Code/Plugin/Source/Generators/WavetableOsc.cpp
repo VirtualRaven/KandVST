@@ -167,6 +167,7 @@ void WavetableOsc::renderImage(Image* image)
 void WavetableOsc::Reset()
 {
 	__envelope.Stop();
+	this->clearMidi();
 }
 /*void WavetableOsc::setOctave(int o)
 {

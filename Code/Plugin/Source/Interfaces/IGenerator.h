@@ -46,7 +46,7 @@ public:
 	int HandleEvent(); //Processes the current event and returns the index of the next event to be handled
 	int getNextEventOffset(); //Get the buffer offset of the next event to occur
 	virtual void ProccessCommand(MidiMessage msg) = 0;
-
+	void clearMidi();
 	virtual void Reset()=0;
 
 };
