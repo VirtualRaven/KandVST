@@ -47,7 +47,8 @@ void PluginGUI::InitializeGui()
 	__tabComponent.addTab("C", Colours::darkgrey, &__cc, true);
 	addAndMakeVisible(__tabComponent);
 	addAndMakeVisible(__keyboard);
-	__keyboard.setKeyWidth(__keyboard.getKeyWidth() + 10.0f);
+	__keyboard.setKeyWidth(__keyboard.getKeyWidth() + 20.0f);
+	__keyboard.setOctaveForMiddleC(6);
 }
 
 bool PluginGUI::keyPressed(const KeyPress & /*key*/, Component * /*originatingComponent*/)
@@ -84,7 +85,7 @@ void PluginGUI::paint (Graphics& g)
 
 	Image titleImage = ImageFileFormat::loadFrom(Resources::Images::Title3_png, sizeof(Resources::Images::Title3_png));
 	g.setOpacity(1.0f);
-	g.drawImageAt(titleImage, 780, 0, false);
+	g.drawImageAt(titleImage, getLocalBounds().getWidth() - titleImage.getBounds().getWidth() - 10, 2, false);
 
 }
 

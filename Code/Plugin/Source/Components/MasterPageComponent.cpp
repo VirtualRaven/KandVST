@@ -35,13 +35,13 @@ void MasterComponent::resized() {
 
 	__mixerComponent.setBounds(bounds.removeFromBottom(260));
 	bounds.removeFromBottom(8);
-	Rectangle<int> lfoBounds = bounds.removeFromLeft(250);
+	Rectangle<int> lfoBounds = bounds.removeFromLeft(350);
 	int lfoH = (lfoBounds.getHeight() - 8) / 2;
 	__lfoComponent1.setBounds(lfoBounds.removeFromTop(lfoH));
 	lfoBounds.removeFromTop(8);
 	__lfoComponent2.setBounds(lfoBounds.removeFromTop(lfoH));
 
-	Rectangle<int> rightColumn = bounds.removeFromRight(250);
+	Rectangle<int> rightColumn = bounds.removeFromRight(350);
 	__settingsComponent.setBounds(rightColumn.removeFromLeft(rightColumn.getWidth()*0.40f));
 	
 	Rectangle<int> topPart = rightColumn.removeFromTop(rightColumn.getHeight()*0.5f);

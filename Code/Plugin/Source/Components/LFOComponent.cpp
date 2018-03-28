@@ -36,7 +36,11 @@ IVSTParameters(ID)
 	addAndMakeVisible(__toggleLfo = new ParameterButton(*Global->paramHandler->Get<AudioParameterBool>(__ID, "LFO_EN")));
 	__toggleLfo->setButtonText("LFO " + std::to_string(__ID+1));
 
-	setSize(260, 140);
+	addAndMakeVisible(__toggleInvert = new ParameterButton(*Global->paramHandler->Get<AudioParameterBool>(__ID, "LFO_EN")));
+	__toggleInvert->setButtonText("INVERT");
+	__toggleInvert->setSize(80, 30);
+
+	//setSize(260, 140);
 }
 
 void LFOComponent::paint(Graphics& g){
@@ -57,10 +61,13 @@ void LFOComponent::resized(){
 	__toggleLfo->setBounds(lfoButtonBounds);
 
 	Rectangle<int> sliders(__bounds.reduced(8));
-	int size = sliders.getWidth() / 3;
+	int size = sliders.getWidth() / 4;
 	sliders.removeFromTop(fontHeight);
 	sliders.removeFromTop(__ampLabel.getFont().getHeight());
 	__ratio->setBounds(sliders.removeFromLeft(size));
 	__type->setBounds(sliders.removeFromLeft(size));
 	__amp->setBounds(sliders.removeFromLeft(size));
+	sliders.removeFromTop(sliders.getHeight() / 5);
+	sliders.removeFromBottom(sliders.getHeight() / 2);
+	__toggleInvert->setBounds(sliders.removeFromLeft(size));
 }
