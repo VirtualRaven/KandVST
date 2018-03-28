@@ -14,7 +14,7 @@ PluginGUI::PluginGUI(PluginProcessor& owner, GLOBAL* global)
 {
 	Global=global;
 	setResizable(false, false);
-	setSize(1000, 720);
+	setSize(1280, 720);
 	__loadingImage.setImage(ImageFileFormat::loadFrom(Resources::Images::loading_png,sizeof(Resources::Images::loading_png)));
 
 	addAndMakeVisible(__loadingImage);
