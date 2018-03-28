@@ -29,3 +29,8 @@ int IGenerator::getNextEventOffset() {
 	else
 		return -1;
 }
+
+void IGenerator::clearMidi() {
+	while (!this->__messages.empty())
+		this->__messages.pop();
+}

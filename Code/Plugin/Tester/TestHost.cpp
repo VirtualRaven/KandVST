@@ -214,7 +214,15 @@ std::vector<TestHost::PARAM_TUP> TestHost::readParamFile(std::string filename,bo
 	std::wstring str;
 	int line = 0;
 	while (++line,std::getline(file, str)) {
-		//Parse the line
+		
+		//Ignore comment
+		{
+			auto res = trim(str);
+			if (str[0] == L'#') {
+				continue;
+			}
+		}
+		//No comment, parse the line
 		auto res = str.find(L"=");
 		if (res == std::wstring::npos) {
 			util::red([&] {std::cerr << "Syntax error in file " << filename << " at line " << line << std::endl << "Expected equality sign." << std::endl ; });

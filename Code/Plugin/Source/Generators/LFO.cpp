@@ -11,7 +11,8 @@ LFO::LFO(int maxSamples, int ID, double sampleRate, GLOBAL*global):
 	__ID(ID),
 	__sampleRate(sampleRate),
 	__activeCheck(false),
-	__nrOfSamples(maxSamples)
+	__nrOfSamples(maxSamples),
+	__phaseCheck(false)
 {
 	Global = global;
 	__samples = new double[maxSamples];
@@ -19,6 +20,8 @@ LFO::LFO(int maxSamples, int ID, double sampleRate, GLOBAL*global):
 	__ratio		 = Global->paramHandler->Get<AudioParameterInt>(ID, "LFO_RATIO");
 	__waveType	 = Global->paramHandler->Get<AudioParameterInt>(ID, "LFO_TYPE");
 	__isActive	 = Global->paramHandler->Get<AudioParameterBool>(ID, "LFO_EN");
+	__invert	 = Global->paramHandler->Get<AudioParameterBool>(ID, "LFO_INV");
+	__onPress	 = Global->paramHandler->Get<AudioParameterBool>(ID, "LFO_PRESS");
 }
 LFO::~LFO()
 {
@@ -37,6 +40,8 @@ double LFO::calcRatio()
 void LFO::RegisterParameters(int ID, GLOBAL*Global)
 {
 	Global->paramHandler->RegisterBool(ID, "LFO_EN", "LFO", 0);
+	Global->paramHandler->RegisterBool(ID, "LFO_INV", "LFO Invert", 0);
+	Global->paramHandler->RegisterBool(ID, "LFO_PRESS", "LFO On Press Sync", 0);
 	Global->paramHandler->RegisterInt(ID, "LFO_RATIO", "LFO Ratio", -6, 16, 1); //TEMP!!!
 	Global->paramHandler->RegisterInt(ID, "LFO_TYPE", "LFO Wave type", 0, 3, 0);
 	Global->paramHandler->RegisterFloat(ID, "LFO_AMOUNT", "LFO amount", 0.0, 1.0, 0.5);
@@ -55,6 +60,10 @@ float LFO::getAmount()
 bool LFO::isActive() {
 	return __activeCheck;
 }
+void LFO::keyPressed()
+{
+	if (*__onPress) __phase = 0.0;
+}
 void LFO::generate(int numSamples, AudioPlayHead::CurrentPositionInfo& posInfo)
 {
 	if (numSamples > __nrOfSamples) {
@@ -64,7 +73,7 @@ void LFO::generate(int numSamples, AudioPlayHead::CurrentPositionInfo& posInfo)
 	}
 
 	if (!(*__isActive)) {
-		if (!posInfo.isPlaying) {
+		if (!posInfo.isPlaying && !(*__onPress)) {
 			__phase = fmod(__phase + (IWavetable::getLength() * ((posInfo.bpm)* calcRatio() / 60.0) / __sampleRate) * numSamples, IWavetable::getLength());
 		}
 		__activeCheck = false;
@@ -79,7 +88,8 @@ void LFO::generate(int numSamples, AudioPlayHead::CurrentPositionInfo& posInfo)
 	static int nrLoopsPlayed = 0;
 	static double prevPos = posInfo.ppqPosition;
 
-	if (posInfo.isPlaying) {
+
+	if (posInfo.isPlaying && !(*__onPress)) {
 		if (posInfo.isLooping) {
 
 			if (prevPos > posInfo.ppqPosition) {
@@ -94,34 +104,34 @@ void LFO::generate(int numSamples, AudioPlayHead::CurrentPositionInfo& posInfo)
 		nrLoopsPlayed = 0;
 		prevPos = 0;
 	}
-		
+	int invert = (*__invert) ? -1 : 1;
 		// TMPTMPTMP
 	switch (toWAVE_TYPE(*__waveType)) {
 	case SINE	:
 		for (int i = 0; i < numSamples; i++) {
 			auto tgt = IWavetable::getLoc(__phase, freq);
-			__samples[i] = getSampleFromLoc<SINE>(tgt);
+			__samples[i] = getSampleFromLoc<SINE>(tgt) * invert;
 			__phase = fmod(__phase + inc, IWavetable::getLength());
 		}
 		break;
 	case SQUARE	: 
 		for (int i = 0; i < numSamples; i++) {
 			auto tgt = IWavetable::getLoc(__phase, freq);
-			__samples[i] = getSampleFromLoc<SQUARE>(tgt);
+			__samples[i] = getSampleFromLoc<SQUARE>(tgt) * invert;
 			__phase = fmod(__phase + inc, IWavetable::getLength());
 		}
 		break;
 	case TRI	: 
 		for (int i = 0; i < numSamples; i++) {
 			auto tgt = IWavetable::getLoc(__phase, freq);
-			__samples[i] = getSampleFromLoc<TRI>(tgt);
+			__samples[i] = getSampleFromLoc<TRI>(tgt) * invert;
 			__phase = fmod(__phase + inc, IWavetable::getLength());
 		}
 		break;
 	case SAW	: 
 		for (int i = 0; i < numSamples; i++) {
 			auto tgt = IWavetable::getLoc(__phase, freq);
-			__samples[i] = getSampleFromLoc<SAW>(tgt);
+			__samples[i] = getSampleFromLoc<SAW>(tgt) * invert;
 			__phase = fmod(__phase + inc, IWavetable::getLength());
 		}
 		break;

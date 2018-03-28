@@ -16,9 +16,6 @@ void OurLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int width, int 
 	, float sliderPos, const float rotaryStartAngle, const float rotaryEndAngle, Slider & slider)
 {
 
-
-
-
 	const float radius = jmin(width / 2, height / 2) - 4.0f;
 	const float centreX = x + width * 0.5f;
 	const float centreY = y + height * 0.5f;
@@ -40,7 +37,7 @@ void OurLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int width, int 
 	g.drawImage(knobRef, Rectangle<float>(static_cast<float>(x), static_cast<float>(y), static_cast<float>(size), static_cast<float>(size)), RectanglePlacement::stretchToFit, false);
 
 	Path p;
-	const float pointerLength = radius * 0.3f;
+	const float pointerLength = radius * 0.2f;
 	const float pointerThickness = pointerLength * 0.6f;
 	p.addRectangle(-pointerThickness * 0.5f, -radius+4, pointerThickness, pointerLength);
 	p.applyTransform(AffineTransform::rotation(angle).translated(centreX, centreY));
@@ -164,8 +161,34 @@ void OurLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int width, int 
 			g.setColour(Swatch::accentBlue);
 			g.strokePath(pFill, pst);
 		}
+		Image waveImage;
+		switch (ps->getWaveType()) {
+			case 1: // sine
+				waveImage = ImageFileFormat::loadFrom(Resources::Icons::sine_white_png, sizeof(Resources::Icons::sine_white_png));
+				g.drawImageWithin(waveImage, x + 4, y + 12, width*0.5, height*0.35, RectanglePlacement::centred, false);
+				break;
+			case 2: // square
+				waveImage = ImageFileFormat::loadFrom(Resources::Icons::square_white_png, sizeof(Resources::Icons::square_white_png));
+				g.drawImageWithin(waveImage, x + 4, y + 14, width*0.5, height*0.3, RectanglePlacement::centred, false);
+				break;
+			case 3: // saw
+				waveImage = ImageFileFormat::loadFrom(Resources::Icons::saw_white_png, sizeof(Resources::Icons::saw_white_png));
+				g.drawImageWithin(waveImage, x, y + 14, width*0.6, height*0.3, RectanglePlacement::centred, false);
+				break;
+			case 4: // triangle
+				waveImage = ImageFileFormat::loadFrom(Resources::Icons::triangle_white_png, sizeof(Resources::Icons::triangle_white_png));
+				g.drawImageWithin(waveImage, x, y + 12, width*0.6, height*0.35, RectanglePlacement::centred, false);
+				break;
+			case 5: // noise
+				waveImage = ImageFileFormat::loadFrom(Resources::Icons::noise_white_png, sizeof(Resources::Icons::noise_white_png));
+				g.drawImageWithin(waveImage, x + 2, y + 10, width*0.55, height*0.4, RectanglePlacement::centred, false);
+				break;
+			default: 
+				break;
+		}
 	}
 
+	
 
 	g.setColour(Colours::white);
 	g.fillPath(p);

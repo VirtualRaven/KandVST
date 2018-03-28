@@ -23,8 +23,8 @@ public:
 	GLOBAL * Global;
 private:
 	//==============================================================================
-	ScopedPointer<SelectKnob> __freqSelect, __ampSelect;
-	Label __freqLabel, __ampLabel;
+	ScopedPointer<SelectKnob> __freqSelect, __ampSelect, __lpSelect, __hpSelect;
+	Label __freqLabel, __ampLabel, __lpLabel, __hpLabel;
 	Rectangle<int> __bounds;
 	int __ID, __width, __height;
 	//==============================================================================
