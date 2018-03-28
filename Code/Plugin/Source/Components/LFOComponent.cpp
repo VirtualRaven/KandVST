@@ -38,7 +38,6 @@ IVSTParameters(ID)
 
 	addAndMakeVisible(__toggleInvert = new ParameterButton(*Global->paramHandler->Get<AudioParameterBool>(__ID, "LFO_INV")));
 	__toggleInvert->setButtonText("INVERT");
-	__toggleInvert->setSize(80, 30);
 
 	//setSize(260, 140);
 }
