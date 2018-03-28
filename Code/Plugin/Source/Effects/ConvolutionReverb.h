@@ -31,14 +31,20 @@ private:
 	int __responseBufferLen;
 	int __prevBlockSize;
 
+	AudioParameterBool *__isEnabled;
+	AudioParameterFloat *__dryGain;
+	AudioParameterFloat *__wetGain;
+
+	bool __prevIsEnabled;
+
 	void __createResponseBlocks(int len);
 
 public:
-	ConvolutionReverb(int ID,double sampleRate, int maxBuffHint);
+	ConvolutionReverb(int ID,double sampleRate, int maxBuffHint, GLOBAL *global);
 	void LoadInputResponse(File file);
 	~ConvolutionReverb();
 	bool RenderBlock(AudioBuffer<T>& buffer, int len, bool empty) override;
-	static void RegisterParameters(int ID);
+	static void RegisterParameters(int ID, GLOBAL *global);
 
 	virtual void ProccessCommand(MidiMessage message) override;
 	virtual void Reset() override;

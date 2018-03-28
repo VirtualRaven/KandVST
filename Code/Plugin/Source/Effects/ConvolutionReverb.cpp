@@ -2,14 +2,18 @@
 #include "juce_dsp\juce_dsp.h"
 
 template<typename T>
-ConvolutionReverb<T>::ConvolutionReverb(int ID, double sampleRate, int maxBuffHint) :
+ConvolutionReverb<T>::ConvolutionReverb(int ID, double sampleRate, int maxBuffHint, GLOBAL *global) :
 	IEffect(sampleRate),
 	IVSTParameters(ID),
 	__prevBlockSize(maxBuffHint),
 	__responseBuffer(),
 	__overlapBufferLen(0),
-	__maxBuffHint(maxBuffHint)
+	__maxBuffHint(maxBuffHint),
+	__prevIsEnabled(true)
 {
+	__isEnabled = global->paramHandler->Get<AudioParameterBool>(ID, "REVERB_EN");
+	__dryGain = global->paramHandler->Get<AudioParameterFloat>(ID, "REVERB_DRY");
+	__wetGain = global->paramHandler->Get<AudioParameterFloat>(ID, "REVERB_WET");
 }
 
 template<typename T>
@@ -58,13 +62,32 @@ ConvolutionReverb<T>::~ConvolutionReverb()
 }
 
 template<typename T>
-void ConvolutionReverb<T>::RegisterParameters(int ID)
+void ConvolutionReverb<T>::RegisterParameters(int ID, GLOBAL *global)
 {
+	global->paramHandler->RegisterBool(ID, "REVERB_EN", "REVERB", 0);
+	global->paramHandler->RegisterFloat(ID, "REVERB_DRY", "DRY", 0.0, 1.0, 1.0);
+	global->paramHandler->RegisterFloat(ID, "REVERB_WET", "WET", 0.0, 1.0, 0.6);
 }
 
 template<typename T>
 bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool empty)
 {
+	//Check if enabled
+	if (*__isEnabled == false && __prevIsEnabled)
+	{
+		// Clean everything
+		__prevInput.clear();
+		__prevInputs.clear();
+
+		__prevIsEnabled = *__isEnabled;
+		return false;
+	}
+
+	if (*__isEnabled == false)
+	{
+		return false;
+	}
+
 	if (__responseBlocks.size() == 0)
 		return false;
 
@@ -166,12 +189,24 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 	__ifft->performRealOnlyInverseTransform(convOutput.getWritePointer(0));
 	__ifft->performRealOnlyInverseTransform(convOutput.getWritePointer(1));
 
-	// The first len samples is the output
+	// Output dry/wet mix
+	float wet = *__wetGain;
+	float dry = *__dryGain;
+
 	for (int i = 0; i < len; i++)
 	{
-		// Add overlap (float -> double)
-		buffer.setSample(0, i, convOutput.getSample(0, i + 2*blockSize - len));
-	    buffer.setSample(1, i, convOutput.getSample(1, i + 2*blockSize - len));
+		// Last len samples are the wet output (float -> double)
+		float wetOutLeft = convOutput.getSample(0, i + 2 * blockSize - len);
+		float wetOutRight = convOutput.getSample(1, i + 2 * blockSize - len);
+
+		float dryOutLeft = buffer.getSample(0, i);
+		float dryOutRight = buffer.getSample(1, i);
+
+		float outLeft = (wetOutLeft*wet + dryOutLeft*dry) / 2;
+		float outRight = (wetOutRight*wet + dryOutRight*dry) / 2;
+
+		buffer.setSample(0, i, outLeft);
+	    buffer.setSample(1, i, outRight);
 	}
 
 	return true;

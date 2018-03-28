@@ -10,7 +10,7 @@ template<typename T>
 PipelineManager<T>::PipelineManager(double rate, int maxBuffHint,GLOBAL*global) :
 	__sampleRate(rate),
 	__maybeMaxBuff(maxBuffHint),
-	__reverb(0, rate, maxBuffHint),
+	__reverb(-1, rate, maxBuffHint, global),
 	__filterLP(-1, rate, "FILTER_LP",global),
 	__filterHP(-1, rate, "FILTER_HP",global),
 	__delay(-1,rate,global)
