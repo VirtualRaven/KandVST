@@ -165,7 +165,7 @@ bool TestHost::runTests()
 	for (size_t i = 0; i < test_len; i++) {
 #ifdef NO_PY_FOUND
 		if (tests[i]->hasPythonStep()) {
-			util::yellow([&] {std::cout << "Skipping test (" << i+1 <<"/"<< test_len <<") as it requiers python."  << std::endl; });
+			util::yellow([&] {std::cout << "Skipping test (" << i+1 <<"/"<< test_len <<") as it requires python."  << std::endl; });
 			continue;
 		}
 #endif

@@ -82,6 +82,9 @@ if(TARGET KandVST_VST3)
                 $<$<CONFIG:Release>:VST_RELEASE>)
 
     add_dependencies(tester KandVST_VST3)
+
+	add_test(NAME TESTER_TOOL COMMAND tester)
+
 else(TARGET KandVST_VST3)
     message(WARNING "Skipping tester tool as VST3 is not available")
 endif(TARGET KandVST_VST3)

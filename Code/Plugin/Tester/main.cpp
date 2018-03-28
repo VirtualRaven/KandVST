@@ -35,7 +35,7 @@ int  main(int argc, char** argv){
 	}
 
 	if (argc == 1) {
-		return test.runTests();
+		return test.runTests() ? 0 : -1;
 	}
 	if (argc == 2) {
 		auto command = trim(argv[1]);
@@ -49,15 +49,16 @@ int  main(int argc, char** argv){
 		}
 		else if (command == "tests") {
 			for (auto t : test_list)
-				std::cout << t->name()<< std::endl;
+				std::cout << t->name() << std::endl;
 			return 0;
 		}
+	}
 		std::cout << "Unknown command!" << std::endl << "Usage: tester [param|Params|tests]" << std::endl
 			<< "Omitting command will run tests." << std::endl
 			<< "Command param, lists plugin parameters." << std::endl
 			<< "Command Param, lists pluing parameters in verbose mode." << std::endl
 			<< "Command tests, lists test names." << std::endl;
-	}
+		return 0;
 	
 	
 }
