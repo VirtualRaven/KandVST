@@ -68,11 +68,12 @@ void ParameterSlider::mouseUp(const MouseEvent & event)
 	}
 }
 
-ParameterSlider::ParameterSlider(AudioProcessorParameter& p):
+ParameterSlider::ParameterSlider(AudioProcessorParameter& p,GLOBAL*global):
 	 Slider(p.getName(256)), param(p),
-	Linkable(&p),
+	Linkable(&p,global),
 	__progressStart(ParameterSlider::ProgressStart::Start)
 {
+	Global = global;
 	setRange(0.0, 1.0, 0.0);
 	
 	startTimerHz(30);

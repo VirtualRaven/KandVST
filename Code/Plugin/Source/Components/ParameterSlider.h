@@ -52,7 +52,7 @@ private:
 	int __wave; // 1  = sine, 2 = square, 3 = saw, 4 = triangle, 5 = noise; 0 = no wave
 
 public:
-	ParameterSlider(AudioProcessorParameter& p);
+	ParameterSlider(AudioProcessorParameter& p,GLOBAL*global);
 	~ParameterSlider();
 
 	void setWaveType(int);
@@ -76,7 +76,8 @@ public:
 	// Inherited via Linkable
 	virtual void LinkCouldHaveChanged() override;
 
-	
+	GLOBAL*Global;
+
 };
 
 

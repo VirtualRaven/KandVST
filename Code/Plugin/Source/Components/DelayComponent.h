@@ -8,7 +8,7 @@
 
 class DelayComponent : public Component, private IVSTParameters {
 public:
-	DelayComponent();
+	DelayComponent(GLOBAL * global);
 	~DelayComponent();
 	//========
 	void paint(Graphics& g) override;
@@ -19,6 +19,7 @@ private:
 	ScopedPointer<ParameterSlider> __delaySpeed, __delaySeconds;
 	Label __speedLabel, __secondsLabel;
 	Rectangle<int> __bounds;
+	GLOBAL * Global;
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DelayComponent);
 };
 

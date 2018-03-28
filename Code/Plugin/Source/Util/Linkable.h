@@ -11,8 +11,8 @@ private:
 	std::vector<AudioProcessorParameter *> __linkParameters;
 	virtual void mouseUp(const MouseEvent& event) override;
 public:
-	Linkable(AudioProcessorParameter* param);
-	Linkable(std::vector<AudioProcessorParameter *> params);
+	Linkable(AudioProcessorParameter* param,GLOBAL*global);
+	Linkable(std::vector<AudioProcessorParameter *> params,GLOBAL*global);
 	~Linkable();
 
 	bool isLinked();
@@ -21,6 +21,6 @@ public:
 	virtual void LinkCouldHaveChanged() = 0;
 
 	virtual void changeListenerCallback(ChangeBroadcaster * source) override;
-
+	GLOBAL*Global;
 };
 #endif // !LINKABLE_H

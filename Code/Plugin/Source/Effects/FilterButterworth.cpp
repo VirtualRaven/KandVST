@@ -2,7 +2,7 @@
 #include "LFO.h"
 
 template<typename T>
-FilterButterworth<T>::FilterButterworth(int ID, double sampleRate, String parameterId) :
+FilterButterworth<T>::FilterButterworth(int ID, double sampleRate, String parameterId,GLOBAL*global) :
 	IEffect<T>(sampleRate),
 	IVSTParameters(ID),
 	__enabled(true),
@@ -10,6 +10,7 @@ FilterButterworth<T>::FilterButterworth(int ID, double sampleRate, String parame
 	__upperLimit(20000.0f),
 	__lowerLimit(20.0f)
 {
+	Global = global;
 	__fs = sampleRate;
 	__prevFc = -1;
 	__sqrt2 = sqrt(2);
@@ -22,7 +23,7 @@ FilterButterworth<T>::~FilterButterworth()
 {
 }
 template<typename T>
-void FilterButterworth<T>::RegisterParameters(int ID, String parameterLabel, String parameterId, float defaultValue)
+void FilterButterworth<T>::RegisterParameters(int ID, String parameterLabel, String parameterId, float defaultValue,GLOBAL*Global)
 {
 	Global->paramHandler->RegisterFloat(ID, parameterId, parameterLabel, 20.0f, 20000.0f, defaultValue);
 	Global->paramHandler->RegisterInt(ID, parameterId + "_LFO", parameterLabel + " lfo", 0, 2, 0);
@@ -133,6 +134,11 @@ bool FilterButterworth<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 
 template<typename T>
 void FilterButterworth<T>::ProccessCommand(MidiMessage message)
+{
+}
+
+template<typename T>
+void FilterButterworth<T>::Reset()
 {
 }
 

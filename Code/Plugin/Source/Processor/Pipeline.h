@@ -8,6 +8,7 @@
 #include "LFO.h"
 #include "FilterLP.h"
 #include "FilterHP.h"
+#include "ConvolutionReverb.h"
 #include "DistEffect.h"
 
 #include <tuple>
@@ -25,7 +26,6 @@ private:
 	AudioBuffer<T> tmpBuff;
 	double __rate;
 	int __note;
-	DelayEffect<T> __delay;
 	bool __active;
 	const int __maxBuffHint;
 
@@ -38,14 +38,18 @@ public:
 	void forceMidiCommand(MidiMessage msg);
 
 
-	Pipeline(double rate,int maxBuffHint);
+	Pipeline(double rate,int maxBuffHint,GLOBAL*global);
 	Pipeline(const Pipeline<T>&) = delete;
 	Pipeline(Pipeline<T>&&);
 	int getNoteNumber();
 	void render_block(AudioBuffer<T>& buffer,int len);
 
 	~Pipeline();
-	static void RegisterParameters(int ID);
+	static void RegisterParameters(int ID, GLOBAL*Global);
+
+	void Reset();
+	GLOBAL * Global;
+
 };
 
 #endif

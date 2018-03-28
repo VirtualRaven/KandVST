@@ -4,11 +4,12 @@
 DelayComponent::~DelayComponent() {
 }
 
-DelayComponent::DelayComponent() :
+DelayComponent::DelayComponent(GLOBAL* global) :
 	IVSTParameters(-1)
 {
-	__delaySpeed = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(0, "EX_DELAYLENGTH"));
-	__delaySeconds = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(0, "EX_DELAYMULTI"));
+	Global = global;
+	__delaySpeed = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(-1, "EX_DELAYLENGTH"), Global);
+	__delaySeconds = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(-1, "EX_DELAYMULTI"), Global);
 
 	addAndMakeVisible(__delaySpeed);
 	addAndMakeVisible(__delaySeconds);

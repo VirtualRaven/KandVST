@@ -14,13 +14,14 @@ class OscillatorComponent : public Component, private IVSTParameters, private Ti
 {
 public:
     //==============================================================================
-    OscillatorComponent (int ID);
+    OscillatorComponent (int ID,GLOBAL*global);
     ~OscillatorComponent();
 
     //==============================================================================
 
     void paint (Graphics& g) override;
     void resized() override;
+	GLOBAL * Global;
 private:
 	//==============================================================================
 

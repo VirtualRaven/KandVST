@@ -5,11 +5,11 @@ SettingsComponent::~SettingsComponent()
 
 }
 
-SettingsComponent::SettingsComponent()
+SettingsComponent::SettingsComponent(GLOBAL*global)
 {
-
-	__pitchBendSens = new ParameterSlider(*Global->paramHandler->Get<AudioParameterInt>(-1, "PITCH_BEND_SENS"));
-	__selectKnob = new SelectKnob(*Global->paramHandler->Get<AudioParameterChoice>(-1, "SELECT_KNOB_VALUE"));
+	Global = global;
+	__pitchBendSens = new ParameterSlider(*Global->paramHandler->Get<AudioParameterInt>(-1, "PITCH_BEND_SENS"),global);
+	__selectKnob = new SelectKnob(*Global->paramHandler->Get<AudioParameterChoice>(-1, "SELECT_KNOB_VALUE"),global);
 
 	addAndMakeVisible(__pitchBendSens);
 	addAndMakeVisible(__selectKnob);
@@ -56,7 +56,7 @@ void SettingsComponent::resized()
 
 }
 
-void SettingsComponent::RegisterParameters(int ID)
+void SettingsComponent::RegisterParameters(int ID,GLOBAL*Global)
 {
 	Global->paramHandler->RegisterInt(ID, "PITCH_BEND_SENS", "Pitch bend sensitivity", 1, 12, 2);
         auto tmp = StringArray("1", "2", "3", "4", "5");

@@ -59,6 +59,7 @@ public:
     MidiKeyboardState keyboardState;
 
 	AudioPlayHead::CurrentPositionInfo lastPosInfo;
+	GLOBAL * Global;
 private:
     template <typename FloatType>
     void process (AudioBuffer<FloatType>& buffer, MidiBuffer& midiMessages);

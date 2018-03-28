@@ -3,9 +3,11 @@
 cmake_minimum_required(VERSION 3.4)
 project(KandVST)
 
-set(
-    AudioPlugin_jucer_FILE "${CMAKE_SOURCE_DIR}//AudioPlugin.jucer" 
+set(ALLOW_PARITAL_TEST true 
+	CACHE BOOL "Allow tester to run a subset of tests if python is not available")
+set(AudioPlugin_jucer_FILE "${CMAKE_SOURCE_DIR}//AudioPlugin.jucer" 
     CACHE STRING "Path to project jucere file")
+
 
 find_package(PythonInterp 3)
 if(EXISTS ${PYTHON_EXECUTABLE})
@@ -183,6 +185,8 @@ x         .         .         "Source/Editor/PluginGUI.cpp"
   .         .         .         "Source/Util/Swatch.h"
   x         .         .         "Source/Components/PresetRowModel.cpp"
   .         .         .         "Source/Components/PresetRowModel.h"
+  x         .         .         "Source/Effects/ConvolutionReverb.cpp"
+  .         .         .         "Source/Effects/ConvolutionReverb.h"
 )
 
 jucer_project_module(
@@ -244,6 +248,12 @@ jucer_project_module(
   juce_gui_extra
   PATH "../Juce/modules"
 )
+
+jucer_project_module(
+  juce_dsp
+  PATH "../Juce/modules"
+)
+
 
 jucer_appconfig_header(
   USER_CODE_SECTION

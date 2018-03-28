@@ -2,7 +2,7 @@
 
 
 
-EnvelopeComponent::EnvelopeComponent(int ID):
+EnvelopeComponent::EnvelopeComponent(int ID, GLOBAL * global):
 	IVSTParameters(ID),
 	attackLabel(String(), "Attack"),
 	decayLabel(String(), "Decay"),
@@ -10,52 +10,53 @@ EnvelopeComponent::EnvelopeComponent(int ID):
 	releaseLabel(String(), "Release"),
 	holdLabel(String(),"Hold")
 {
+	Global=global;
 	__envImage = new Image(Image::PixelFormat::RGB, 300, 150, true);
-	addAndMakeVisible(attackTime = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "ENV_ATTACK_TIME")));
+	addAndMakeVisible(attackTime = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "ENV_ATTACK_TIME"), Global));
 	attackTime->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
 	attackTime->setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, true, 50, 15);
 	attackTime->setSkewFactor(0.55);
-	addAndMakeVisible(holdTime = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "ENV_HOLD_TIME")));
+	addAndMakeVisible(holdTime = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "ENV_HOLD_TIME"), Global));
 	holdTime->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
 	holdTime->setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, true, 50, 15);
 	holdTime->setSkewFactor(0.55);
-	addAndMakeVisible(decayTime = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "ENV_DECAY_TIME")));
+	addAndMakeVisible(decayTime = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "ENV_DECAY_TIME"), Global));
 	decayTime->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
 	decayTime->setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, true, 50, 15);
 	decayTime->setSkewFactor(0.55);
-	addAndMakeVisible(sustainTime = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "ENV_SUSTAIN_TIME")));
+	addAndMakeVisible(sustainTime = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "ENV_SUSTAIN_TIME"), Global));
 	sustainTime->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
 	sustainTime->setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, true, 50, 15);
 	sustainTime->setSkewFactor(0.55);
-	addAndMakeVisible(releaseTime = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "ENV_RELEASE_TIME")));
+	addAndMakeVisible(releaseTime = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "ENV_RELEASE_TIME"), Global));
 	releaseTime->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
 	releaseTime->setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, true, 50, 15);
 	releaseTime->setSkewFactor(0.55);
 	
-	addAndMakeVisible(attackCurve = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "ENV_ATTACK_CURVE")));
+	addAndMakeVisible(attackCurve = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "ENV_ATTACK_CURVE"), Global));
 	attackCurve->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
 	attackCurve->setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, true, 50, 15);
 	attackCurve->setSkewFactor(0.25);
-	addAndMakeVisible(decayCurve = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "ENV_DECAY_CURVE")));
+	addAndMakeVisible(decayCurve = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "ENV_DECAY_CURVE"), Global));
 	decayCurve->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
 	decayCurve->setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, true, 50, 15);
 	decayCurve->setSkewFactor(0.25);
-	addAndMakeVisible(sustainCurve = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "ENV_SUSTAIN_CURVE")));
+	addAndMakeVisible(sustainCurve = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "ENV_SUSTAIN_CURVE"), Global));
 	sustainCurve->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
 	sustainCurve->setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, true, 50, 15);
 	sustainCurve->setSkewFactor(0.25);
-	addAndMakeVisible(releaseCurve = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "ENV_RELEASE_CURVE")));
+	addAndMakeVisible(releaseCurve = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "ENV_RELEASE_CURVE"), Global));
 	releaseCurve->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
 	releaseCurve->setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, true, 50, 15);
 	releaseCurve->setSkewFactor(0.25);
 
-	addAndMakeVisible(attackLevel = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "ENV_ATTACK_LEVEL")));
+	addAndMakeVisible(attackLevel = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "ENV_ATTACK_LEVEL"), Global));
 	attackLevel->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
 	attackLevel->setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, true, 50, 15);
-	addAndMakeVisible(decayLevel = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "ENV_DECAY_LEVEL")));
+	addAndMakeVisible(decayLevel = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "ENV_DECAY_LEVEL"), Global));
 	decayLevel->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
 	decayLevel->setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, true, 50, 15);
-	addAndMakeVisible(sustainLevel = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "ENV_SUSTAIN_LEVEL")));
+	addAndMakeVisible(sustainLevel = new ParameterSlider(*Global->paramHandler->Get<AudioParameterFloat>(__ID, "ENV_SUSTAIN_LEVEL"), Global));
 	sustainLevel->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
 	sustainLevel->setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, true, 50, 15);
 
@@ -82,7 +83,7 @@ EnvelopeComponent::EnvelopeComponent(int ID):
 	setSize(400, 100);
 	addAndMakeVisible(__envImageComponent);
 	__envImageComponent.setImage(*__envImage);
-	EnvelopeGenerator::RenderImage(__ID, __envImage);
+	EnvelopeGenerator::RenderImage(__ID, __envImage,Global);
 	__envImageComponent.repaint();
 	Global->paramHandler->addParamaterListener(this, ID, "ENV_ATTACK_TIME");
 	Global->paramHandler->addParamaterListener(this, ID, "ENV_HOLD_TIME");
@@ -102,6 +103,7 @@ EnvelopeComponent::EnvelopeComponent(int ID):
 
 EnvelopeComponent::~EnvelopeComponent()
 {
+	Global->paramHandler->removeParamaterListener(this);
 	delete __envImage;
 	__envImage = nullptr;
 }
@@ -199,7 +201,7 @@ void EnvelopeComponent::resized()
 	delete __envImage;
 	__envImage = nullptr;
 	__envImage = new Image(Image::PixelFormat::RGB, __envImageComponent.getWidth()*2, __envImageComponent.getHeight()*2, true);
-	EnvelopeGenerator::RenderImage(__ID, __envImage);
+	EnvelopeGenerator::RenderImage(__ID, __envImage,Global);
 	__envImageComponent.setImage(*__envImage);
 	__envImageComponent.repaint();
 }
@@ -220,7 +222,7 @@ void EnvelopeComponent::timerCallback()
 		stopTimer();
 		return;
 	}
-		EnvelopeGenerator::RenderImage(__ID, __envImage);
+		EnvelopeGenerator::RenderImage(__ID, __envImage,Global);
 		__envImageComponent.repaint();
 		__envInvalid = false;
 
@@ -229,7 +231,7 @@ void EnvelopeComponent::timerCallback()
 void EnvelopeComponent::componentVisibilityChanged(Component & component)
 {
 	if (__envInvalid && component.isVisible()) {
-		EnvelopeGenerator::RenderImage(__ID, __envImage);
+		EnvelopeGenerator::RenderImage(__ID, __envImage,Global);
 		__envImageComponent.repaint();
 		__envInvalid = false;
 	}

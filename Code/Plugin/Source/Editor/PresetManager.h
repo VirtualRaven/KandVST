@@ -13,9 +13,9 @@ private:
 	int __currentPreset = 0;
 
 public:
-	PresetManager(AudioProcessor* owner);
+	PresetManager(AudioProcessor* owner,GLOBAL* global);
 	~PresetManager();
-
+	
 	void RefreshPresets();
 	void LoadPreset(std::string name);
 	void LoadPreset(int index);
@@ -27,6 +27,7 @@ public:
 	void LoadPreset(XmlElement * xmlState);
 	void SavePreset(XmlElement * xmlState);
 
+	GLOBAL * Global;
 	std::vector<std::string> GetPresetNames();
 	JUCE_LEAK_DETECTOR(PresetManager);
 };

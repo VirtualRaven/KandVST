@@ -10,6 +10,7 @@
 #include "LFO.h"
 #include "FilterHP.h"
 #include "FilterLP.h"
+#include "ConvolutionReverb.h"
 
 template<typename T>
 class PipelineManager
@@ -24,10 +25,14 @@ private:
 	ThreadPool pool;
 	FilterHP<T> __filterHP;
 	FilterLP<T> __filterLP;
+	DelayEffect<T>__delay;
+	ConvolutionReverb<T> __reverb;
 public:
-	PipelineManager(double rate, int maxBuffHint);
+	PipelineManager(double rate, int maxBuffHint,GLOBAL*global);
 	~PipelineManager();	
-	static void RegisterParameters(int ID);
+	static void RegisterParameters(int ID, GLOBAL*Global);
+	void Reset();
+	GLOBAL * Global;
 
 void genSamples(
 		AudioBuffer<T>& buff, 

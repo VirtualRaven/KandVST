@@ -1,12 +1,13 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "PresetRow.h"
 
-PresetRow::PresetRow(int s, bool isSelected, ListBox* owner):
+PresetRow::PresetRow(int s, bool isSelected, ListBox* owner,GLOBAL*global):
 	__isSelected(isSelected),
-	__lbl("", Global->presetManager->GetPresetNames()[s]),
+	__lbl("", global->presetManager->GetPresetNames()[s]),
 	__rowNr(s),
 	__owner(owner)
 {
+	Global = global;
 	__lbl.addMouseListener(this, true);
 	addAndMakeVisible(__lbl);
 	__delete.addListener(this);

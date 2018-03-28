@@ -16,14 +16,14 @@ class OscillatorPageComponent  : public Component, private IVSTParameters
 {
 public:
     //==============================================================================
-    OscillatorPageComponent (int ID);
+    OscillatorPageComponent (int ID,GLOBAL * global);
     ~OscillatorPageComponent();
 
     //==============================================================================
 
     void paint (Graphics& g) override;
     void resized() override;
-
+	GLOBAL * Global;
 private:
     //==============================================================================
 	EnvelopeComponent __envComponent;

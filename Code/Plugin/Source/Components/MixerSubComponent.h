@@ -8,10 +8,10 @@
 class MixerSubComponent : public Component,IVSTParameters
 {
 public:
-	MixerSubComponent(int ID,String  label);
-	MixerSubComponent(int ID, String  label, String overridePanId,String overrideGainId, bool isMaster);
+	MixerSubComponent(int ID,String  label, GLOBAL*global);
+	MixerSubComponent(int ID, String  label, String overridePanId,String overrideGainId, bool isMaster,GLOBAL*global);
 	~MixerSubComponent();
-
+	GLOBAL * Global;
 private: 
 	void paint(Graphics& g) override;
 	void resized() override;

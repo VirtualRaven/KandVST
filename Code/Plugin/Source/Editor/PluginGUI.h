@@ -12,13 +12,13 @@
 class PluginGUI  : public AudioProcessorEditor, private KeyListener, private Timer            
 {
 public:
-	PluginGUI(PluginProcessor& owner);
+	PluginGUI(PluginProcessor& owner,GLOBAL* global);
 	virtual ~PluginGUI();
 
 	void paint(Graphics& g);
 	void resized();
 	void InitializeGui();
-
+	GLOBAL * Global;
 private:
 	OurLookAndFeel ourLookAndFeel; //Must be on top
 	ImageComponent  __loadingImage;

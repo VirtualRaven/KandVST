@@ -13,14 +13,14 @@ class OSCLFOComponent : public Component, private IVSTParameters
 {
 public:
     //==============================================================================
-	OSCLFOComponent(int ID);
+	OSCLFOComponent(int ID,GLOBAL * global);
     ~OSCLFOComponent();
 
     //==============================================================================
 
     void paint (Graphics& g) override;
     void resized() override;
-
+	GLOBAL * Global;
 private:
 	//==============================================================================
 	ScopedPointer<SelectKnob> __freqSelect, __ampSelect;

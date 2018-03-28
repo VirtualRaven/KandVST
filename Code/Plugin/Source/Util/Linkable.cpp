@@ -4,8 +4,9 @@ void Linkable::mouseUp(const MouseEvent & event)
 {
 }
 
-Linkable::Linkable(AudioProcessorParameter* param)
+Linkable::Linkable(AudioProcessorParameter* param, GLOBAL*global)
 {
+	Global = global;
 	__linkParameters = std::vector<AudioProcessorParameter *>();
 	__linkParameters.push_back(param);
 	Global->presetManager->addChangeListener(this);
@@ -19,8 +20,10 @@ Linkable::Linkable(AudioProcessorParameter* param)
 	}
 }
 
-Linkable::Linkable(std::vector<AudioProcessorParameter *> params)
+Linkable::Linkable(std::vector<AudioProcessorParameter *> params,GLOBAL*global)
 {
+	Global = global;
+
 	__linkParameters = std::vector<AudioProcessorParameter *>(params);
 	Global->presetManager->addChangeListener(this);
 	__linkedTo = -1;

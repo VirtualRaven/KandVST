@@ -56,6 +56,7 @@ public:
 	AudioParameterFloat* GetFloat(String id);
 	std::map<String, AudioProcessorParameterWithID*>* GetParameters();
 	void addParamaterListener(ParameterListener*, int intId,std::string id);
+	void removeParamaterListener(ParameterListener* l);
 	void addParamaterListener(ParameterListener*, int intId,std::vector<std::string> id);
 	JUCE_LEAK_DETECTOR(ParameterHandler);
 

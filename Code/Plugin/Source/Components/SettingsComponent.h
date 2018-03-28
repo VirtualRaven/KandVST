@@ -9,10 +9,10 @@
 class SettingsComponent : public Component
 {
 public:
-	SettingsComponent();
+	SettingsComponent(GLOBAL*global);
 	~SettingsComponent();
-	static void RegisterParameters(int ID);
-
+	static void RegisterParameters(int ID, GLOBAL*Global);
+	GLOBAL * Global;
 private:
 	void paint(Graphics& g) override;
 	void resized() override;

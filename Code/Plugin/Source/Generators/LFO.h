@@ -1,7 +1,7 @@
 #ifndef LFO_H
 #define LFO_H
 #include "Wavetable.h"
-
+#include "Global.h"
 const unsigned int LFO_COUNT = 2;
 
 class LFO
@@ -27,12 +27,14 @@ private:
 	LFO(const LFO&) = delete;
 public:
 
-	LFO(int maxSamples, int ID, double sampleRate);
-	static void RegisterParameters(int ID);
+	LFO(int maxSamples, int ID, double sampleRate, GLOBAL*global);
+	static void RegisterParameters(int ID, GLOBAL*Global);
 	void generate(int numSamples, AudioPlayHead::CurrentPositionInfo& posInfo);
 	double* getPointer();
 	float getAmount();
 	bool isActive();
+	GLOBAL* Global;
+
 };
 extern LFO* lfos[LFO_COUNT];
 #endif //!LFO_H

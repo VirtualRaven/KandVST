@@ -28,11 +28,12 @@ public:
 	void RenderBlock(double * buffer, size_t size);
 	void setVelocity(uint8 vel);
 	void setSustain(uint8 sust);
-	static void RegisterParameters(int ID);
-	EnvelopeGenerator(int ID,double sampleRate);
+	static void RegisterParameters(int ID, GLOBAL*Global);
+	EnvelopeGenerator(int ID,double sampleRate,GLOBAL*global);
 	bool isActive() const;
-
-	static void RenderImage(int __ID, Image * image);
+	void Stop();
+	static void RenderImage(int __ID, Image * image, GLOBAL*Global);
+	GLOBAL*Global;
 	~EnvelopeGenerator();
 };
 #endif //ENVELOPE_GENERATOR_H

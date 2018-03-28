@@ -7,13 +7,13 @@
 class PresetRowModel : public ListBoxModel, private KeyListener
 {
 public:
-	PresetRowModel(ListBox* owner);
+	PresetRowModel(ListBox* owner,GLOBAL*global);
 	~PresetRowModel();
 	virtual Component* refreshComponentForRow(int rowNumber, bool isRowSelected, Component * existingComponentToUpdate) override;
 	//virtual void listBoxItemClicked(int row, const MouseEvent & ev) override;
 	//virtual void listBoxItemDoubleClicked(int row, const MouseEvent & ev) override;
 	virtual void paintListBoxItem(int rowNumber, Graphics & g, int width, int height, bool rowIsSelected) override;
-	
+	GLOBAL * Global;
 
 private:
 	ListBox * __owner;

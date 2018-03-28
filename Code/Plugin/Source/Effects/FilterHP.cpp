@@ -2,10 +2,10 @@
 #include "FilterButterworth.h"
 #include "TemplateHelper.h"
 template<typename T>
-FilterHP<T>::FilterHP(int ID, double sampleRate, String parameterId) :
-	FilterButterworth<T>(ID, sampleRate, parameterId)
+FilterHP<T>::FilterHP(int ID, double sampleRate, String parameterId,GLOBAL*global) :
+	FilterButterworth<T>(ID, sampleRate, parameterId,global)
 {
-	
+	Global = global;
 }
 
 template<typename T>
@@ -14,9 +14,9 @@ FilterHP<T>::~FilterHP()
 
 }
 template<typename T>
-void FilterHP<T>::RegisterParameters(int ID)
+void FilterHP<T>::RegisterParameters(int ID,GLOBAL*Global)
 {
-	FilterButterworth<T>::RegisterParameters(ID, "HP Frequency", "FILTER_HP", 21.0f);
+	FilterButterworth<T>::RegisterParameters(ID, "HP Frequency", "FILTER_HP", 21.0f,Global);
 }
 template<typename T>
 void FilterHP<T>::CalculateCoefficients()

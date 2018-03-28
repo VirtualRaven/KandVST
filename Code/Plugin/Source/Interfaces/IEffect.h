@@ -13,6 +13,7 @@ public:
 	IEffect(double sampleRate) : __sampleRate(sampleRate) {};
 	virtual bool RenderBlock(AudioBuffer<T>& buffer, int len, bool empty) = 0;
 	virtual void ProccessCommand(MidiMessage message) = 0;
+	virtual void Reset()=0;
 };
 
 #endif //IEFFECT_H

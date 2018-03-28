@@ -36,14 +36,14 @@ private:
 
 
 public:
-	WavetableOsc(int ID,double sampleRate,int __maxBuffHint);
+	WavetableOsc(int ID,double sampleRate,int __maxBuffHint,GLOBAL*global);
 	WavetableOsc(const WavetableOsc&) = delete;
 	WavetableOsc(WavetableOsc&& ref);
 	virtual ~WavetableOsc();
 
 	// Inherited via Generator
 	virtual void ProccessCommand(MidiMessage msg) override;
-	static void RegisterParameters(int ID);
+	static void RegisterParameters(int ID, GLOBAL*Global);
 	virtual bool RenderBlock(AudioBuffer<float>& buffer,int len) override
 	{
 		return __RenderBlock(buffer, len);
@@ -57,6 +57,10 @@ public:
 		return "Wavetable osc";
 	}
 	void renderImage(Image* image);
+
+	virtual void Reset() override;
+	GLOBAL* Global;
+
 	JUCE_LEAK_DETECTOR(WavetableOsc);
 };
 

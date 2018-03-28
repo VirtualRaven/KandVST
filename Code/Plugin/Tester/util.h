@@ -2,7 +2,7 @@
 #include <functional>
 namespace util {
 	void red(std::function<void()> f);
-	
+	void yellow(std::function<void()>f);
 	void cyan(std::function<void()> f);
 	void init_colour();
 }

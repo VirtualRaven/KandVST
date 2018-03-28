@@ -5,15 +5,16 @@ MasterComponent::~MasterComponent()
 {
 }
 
-MasterComponent::MasterComponent() :
-	__infoComponent(),
-	__lfoComponent1(0),
-	__lfoComponent2(1),
-	__filterComponent(-1),
-	__settingsComponent(),
-	__delayComponent()
+MasterComponent::MasterComponent(GLOBAL*global) :
+	__infoComponent(global),
+	__lfoComponent1(0,global),
+	__lfoComponent2(1, global),
+	__filterComponent(-1, global),
+	__settingsComponent(global),
+	__delayComponent(global),
+	__mixerComponent(global)
 {
-	
+	Global = global;
 	addAndMakeVisible(__infoComponent);
 	addAndMakeVisible(__mixerComponent);
 	addAndMakeVisible(__filterComponent);

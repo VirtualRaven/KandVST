@@ -213,6 +213,24 @@ void ParameterHandler::addParamaterListener(ParameterListener * listener, int in
 	__parameterListeners[idString].push_back(listener);
 }
 
+void ParameterHandler::removeParamaterListener(ParameterListener * l)
+{
+	for (auto& p  : __parameterListeners)
+	{
+		bool remove = true;
+		while (remove) {
+			remove = false;
+			for (auto it = p.second.begin(); it < p.second.end(); it++) {
+				if (*it == l) {
+					p.second.erase(it);
+					remove = true;
+					break;
+				}
+			}
+		}
+	}
+}
+
 void ParameterHandler::addParamaterListener(ParameterListener * listener, int intId, std::vector<std::string> ids)
 {
 	

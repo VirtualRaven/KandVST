@@ -131,6 +131,8 @@ void EnvelopeGenerator::RenderBlock(double * buffer, size_t size)
 					__counter = 0;
 					__state++;
 				}
+				if (!isfinite(__amplitude)) 
+					__amplitude = a_level;
 				break;
 			case 1://Hold
 				__amplitude = a_level;
@@ -216,7 +218,7 @@ void EnvelopeGenerator::recalculateParameters()
 {
 }
 
-EnvelopeGenerator::EnvelopeGenerator(int ID,double sampleRate):
+EnvelopeGenerator::EnvelopeGenerator(int ID,double sampleRate,GLOBAL*global):
 	IVSTParameters(ID),
 	__sampleRate(sampleRate),
 
@@ -227,6 +229,7 @@ EnvelopeGenerator::EnvelopeGenerator(int ID,double sampleRate):
 	__velMulti(1.0),
 	__counter(0)
 {
+	Global = global;
 	__a_time = Global->paramHandler->Get<AudioParameterFloat>(__ID, "ENV_ATTACK_TIME");
 	__a_level = Global->paramHandler->Get<AudioParameterFloat>(__ID, "ENV_ATTACK_LEVEL");
 	__a_curve = Global->paramHandler->Get<AudioParameterFloat>(__ID, "ENV_ATTACK_CURVE");
@@ -250,8 +253,15 @@ bool EnvelopeGenerator::isActive() const {
 	return __state != 5;
 }
 
+void EnvelopeGenerator::Stop()
+{
+	__amplitude = 0.0;
+	__sustain = 0;
+	__state = 5;
+}
 
-void EnvelopeGenerator::RenderImage(int __ID, Image * image)
+
+void EnvelopeGenerator::RenderImage(int __ID, Image * image, GLOBAL*Global)
 {
 	ScopedPointer<Graphics> g = new Graphics(*image);
 	g->setImageResamplingQuality(Graphics::ResamplingQuality::highResamplingQuality);
@@ -476,7 +486,7 @@ void EnvelopeGenerator::RenderImage(int __ID, Image * image)
 	
 }
 
-void EnvelopeGenerator::RegisterParameters(int ID)
+void EnvelopeGenerator::RegisterParameters(int ID,GLOBAL*Global)
 {
 	Global->paramHandler->RegisterFloat(ID, "ENV_ATTACK_LEVEL", "Attack level", 0.01f, 1.0f, 1.0f);
 	Global->paramHandler->RegisterFloat(ID, "ENV_ATTACK_TIME", "Attack time", 0.0f, 2.0f, 0.2f);
