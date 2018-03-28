@@ -1,10 +1,10 @@
-#ifndef MOCKUP_H
-#define MOCKUP_H
+#ifndef LOWPASS_FILTER_H
+#define LOWPASS_FILTER_H
 #include "TestHost.h"
-class Mockup : public TestHost::Test {
+class Lowpass_filter : public TestHost::Test {
 	
 	virtual const char * name() const {
-		return "Mockup";
+		return "Lowpass_filter";
 	};
 	
 	virtual bool run(wrapperVST* vst, 
@@ -19,14 +19,17 @@ class Mockup : public TestHost::Test {
 				e.type = Steinberg::Vst::Event::kNoteOnEvent;
 				e.noteOn = {
 					0,
-					42,
+					57, //A5
 					0.0,
 					1.0,
 					0,
 					-1
 
 				};
-
+				events.addEvent(e);
+				e.noteOn.pitch = 69;
+				events.addEvent(e);
+				e.noteOn.pitch = 117;
 				events.addEvent(e);
 				return this->block.process(vst, &c,&events);
 			}
@@ -36,7 +39,7 @@ class Mockup : public TestHost::Test {
 	}
 			
 	virtual bool hasPythonStep() {
-		return false;
+		return true;
 	}
 			
 	virtual bool hasParameterFile() {

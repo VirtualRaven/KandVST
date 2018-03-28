@@ -20,7 +20,7 @@ public:
 class TestHost {
 
 public:
-	static const size_t TEST_BLOCK_SIZE = 1024;
+	static const size_t TEST_BLOCK_SIZE = 44100;
 	typedef double TEST_TYPE;
 	typedef ProcessBlock<TEST_TYPE, TEST_BLOCK_SIZE> TestBlock;
 	

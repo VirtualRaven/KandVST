@@ -312,7 +312,7 @@ bool TestHost::runTest(size_t i)
 			data1.close();
 			data2.close();
 			if (test->hasPythonStep() ) {
-				const std::string testPyPath = std::string(TEST_PATH) + std::string("verify.py");
+				const std::string testPyPath = std::string(TEST_PATH) + std::string(test->name())+ std::string("/verify.py");
 				//Execute python on test data
 				int ret = system((std::string(PY_PATH) +std::string(" ")+ testPyPath +  std::string(" ") + testPath).c_str());
 				if (ret == 42)

@@ -1,0 +1,9 @@
+#NORMALIZED
+Enable Oscillator 0 = 1.0
+Sine 0 = 1.0
+Saw 0 = 0.0
+Delay -1 = 0.0
+Attack time 0 = 0.0
+Decay level 0 = 1.0
+Decay time 0 = 0.0
+Release time 0 = 0.0
