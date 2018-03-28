@@ -36,7 +36,7 @@ IVSTParameters(ID)
 	addAndMakeVisible(__toggleLfo = new ParameterButton(*Global->paramHandler->Get<AudioParameterBool>(__ID, "LFO_EN")));
 	__toggleLfo->setButtonText("LFO " + std::to_string(__ID+1));
 
-	addAndMakeVisible(__toggleInvert = new ParameterButton(*Global->paramHandler->Get<AudioParameterBool>(__ID, "LFO_EN")));
+	addAndMakeVisible(__toggleInvert = new ParameterButton(*Global->paramHandler->Get<AudioParameterBool>(__ID, "LFO_INV")));
 	__toggleInvert->setButtonText("INVERT");
 	__toggleInvert->setSize(80, 30);
 

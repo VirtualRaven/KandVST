@@ -19,6 +19,7 @@ LFO::LFO(int maxSamples, int ID, double sampleRate, GLOBAL*global):
 	__ratio		 = Global->paramHandler->Get<AudioParameterInt>(ID, "LFO_RATIO");
 	__waveType	 = Global->paramHandler->Get<AudioParameterInt>(ID, "LFO_TYPE");
 	__isActive	 = Global->paramHandler->Get<AudioParameterBool>(ID, "LFO_EN");
+	__invert	 = Global->paramHandler->Get<AudioParameterBool>(ID, "LFO_INV");
 }
 LFO::~LFO()
 {
@@ -37,6 +38,7 @@ double LFO::calcRatio()
 void LFO::RegisterParameters(int ID, GLOBAL*Global)
 {
 	Global->paramHandler->RegisterBool(ID, "LFO_EN", "LFO", 0);
+	Global->paramHandler->RegisterBool(ID, "LFO_INV", "LFO Invert", 0);
 	Global->paramHandler->RegisterInt(ID, "LFO_RATIO", "LFO Ratio", -6, 16, 1); //TEMP!!!
 	Global->paramHandler->RegisterInt(ID, "LFO_TYPE", "LFO Wave type", 0, 3, 0);
 	Global->paramHandler->RegisterFloat(ID, "LFO_AMOUNT", "LFO amount", 0.0, 1.0, 0.5);
@@ -94,34 +96,34 @@ void LFO::generate(int numSamples, AudioPlayHead::CurrentPositionInfo& posInfo)
 		nrLoopsPlayed = 0;
 		prevPos = 0;
 	}
-		
+	int invert = (*__invert) ? -1 : 1;
 		// TMPTMPTMP
 	switch (toWAVE_TYPE(*__waveType)) {
 	case SINE	:
 		for (int i = 0; i < numSamples; i++) {
 			auto tgt = IWavetable::getLoc(__phase, freq);
-			__samples[i] = getSampleFromLoc<SINE>(tgt);
+			__samples[i] = getSampleFromLoc<SINE>(tgt) * invert;
 			__phase = fmod(__phase + inc, IWavetable::getLength());
 		}
 		break;
 	case SQUARE	: 
 		for (int i = 0; i < numSamples; i++) {
 			auto tgt = IWavetable::getLoc(__phase, freq);
-			__samples[i] = getSampleFromLoc<SQUARE>(tgt);
+			__samples[i] = getSampleFromLoc<SQUARE>(tgt) * invert;
 			__phase = fmod(__phase + inc, IWavetable::getLength());
 		}
 		break;
 	case TRI	: 
 		for (int i = 0; i < numSamples; i++) {
 			auto tgt = IWavetable::getLoc(__phase, freq);
-			__samples[i] = getSampleFromLoc<TRI>(tgt);
+			__samples[i] = getSampleFromLoc<TRI>(tgt) * invert;
 			__phase = fmod(__phase + inc, IWavetable::getLength());
 		}
 		break;
 	case SAW	: 
 		for (int i = 0; i < numSamples; i++) {
 			auto tgt = IWavetable::getLoc(__phase, freq);
-			__samples[i] = getSampleFromLoc<SAW>(tgt);
+			__samples[i] = getSampleFromLoc<SAW>(tgt) * invert;
 			__phase = fmod(__phase + inc, IWavetable::getLength());
 		}
 		break;

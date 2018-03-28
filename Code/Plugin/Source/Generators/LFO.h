@@ -20,6 +20,7 @@ private:
 	AudioParameterBool* __isActive;
 	AudioParameterInt* __ratio;
 	AudioParameterInt* __waveType;
+	AudioParameterBool* __invert;
 
 	double calcRatio();
 
