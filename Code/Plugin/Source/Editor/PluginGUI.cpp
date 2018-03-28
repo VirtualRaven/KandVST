@@ -14,7 +14,7 @@ PluginGUI::PluginGUI(PluginProcessor& owner, GLOBAL* global)
 {
 	Global=global;
 	setResizable(false, false);
-	setSize(1000, 720);
+	setSize(1280, 720);
 	__loadingImage.setImage(ImageFileFormat::loadFrom(Resources::Images::loading_png,sizeof(Resources::Images::loading_png)));
 
 	addAndMakeVisible(__loadingImage);
@@ -42,11 +42,14 @@ void PluginGUI::InitializeGui()
 	{
 		__tabComponent.addTab(std::to_string(i + 1), Colour::fromRGB(1,1,1), new OscillatorPageComponent(i, Global), true);
 	}
+	__tabComponent.setCurrentTabIndex(1);
 
 	__tabComponent.addTab("C", Colours::darkgrey, &__cc, true);
 	addAndMakeVisible(__tabComponent);
 	addAndMakeVisible(__keyboard);
-	__keyboard.setKeyWidth(__keyboard.getKeyWidth() + 10.0f);
+	__keyboard.setKeyWidth(__keyboard.getKeyWidth() + 20.0f);
+	__keyboard.setOctaveForMiddleC(6);
+	__keyboard.setKeyPressBaseOctave(3);
 }
 
 bool PluginGUI::keyPressed(const KeyPress & /*key*/, Component * /*originatingComponent*/)
@@ -83,7 +86,7 @@ void PluginGUI::paint (Graphics& g)
 
 	Image titleImage = ImageFileFormat::loadFrom(Resources::Images::Title3_png, sizeof(Resources::Images::Title3_png));
 	g.setOpacity(1.0f);
-	g.drawImageAt(titleImage, 780, 0, false);
+	g.drawImageAt(titleImage, getLocalBounds().getWidth() - titleImage.getBounds().getWidth() - 10, 2, false);
 
 }
 

@@ -197,14 +197,14 @@ void PluginProcessor::prepareToPlay (double newSampleRate, int maxSamplesPerBloc
 		populateWavetable(newSampleRate,__wavePool);
 		keyboardState.reset();
 		freePipelineManager();
-		Thread::launch([this, newSampleRate, maxSamplesPerBlock]() {
+		//Thread::launch([this, newSampleRate, maxSamplesPerBlock]() {
 			while (!wavetableRdy());
 			if ((doublePrecision = isUsingDoublePrecision()) == true)
 				__pipManager.dp = new PipelineManager<double>(newSampleRate, maxSamplesPerBlock,Global);
 			else
 				__pipManager.fp = new PipelineManager<float>(newSampleRate, maxSamplesPerBlock,Global);
 			processorReady = true;
-		});
+		//});
 		
 		
 
@@ -234,8 +234,8 @@ void PluginProcessor::process (AudioBuffer<FloatType>& buffer,
 	getPipeline<FloatType>()->genSamples(buffer, midiMessages, lastPosInfo);
 
 
-    for (int i = getTotalNumInputChannels(); i < getTotalNumOutputChannels(); ++i)
-        buffer.clear (i, 0, numSamples);
+	//for (int i = getTotalNumInputChannels(); i < getTotalNumOutputChannels(); ++i)
+		// buffer.clear (i, 0, numSamples);
 	
 }
 

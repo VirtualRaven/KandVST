@@ -20,7 +20,7 @@ public:
 class TestHost {
 
 public:
-	static const size_t TEST_BLOCK_SIZE = 1024;
+	static const size_t TEST_BLOCK_SIZE = 44100;
 	typedef double TEST_TYPE;
 	typedef ProcessBlock<TEST_TYPE, TEST_BLOCK_SIZE> TestBlock;
 	
@@ -35,7 +35,7 @@ public:
 	public:
 		TestBlock block;
 			//Returns the name of the test
-			//Must be a valid folder name
+			//Must be a valid folder name and same name as the class
 			virtual const char * name() const = 0;
 
 			//Runs the test, returns true if it succeeded runing the test

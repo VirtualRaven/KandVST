@@ -11,6 +11,15 @@ void util::red(std::function<void()> f) {
 	else f();
 }
 
+void util::yellow(std::function<void()>f){
+	if (ourConsole != NULL) {
+		SetConsoleTextAttribute(ourConsole, FOREGROUND_RED | FOREGROUND_GREEN );
+		f();
+		SetConsoleTextAttribute(ourConsole, FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
+	}
+	else f();
+}
+
 void util::cyan(std::function<void()> f) {
 	if (ourConsole != NULL) {
 		SetConsoleTextAttribute(ourConsole, FOREGROUND_BLUE | FOREGROUND_GREEN);

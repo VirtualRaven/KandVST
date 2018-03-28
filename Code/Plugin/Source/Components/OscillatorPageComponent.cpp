@@ -42,7 +42,7 @@ void OscillatorPageComponent::resized(){
 	bounds.removeFromTop(5);
 	__oscillator.setBounds(bounds.removeFromLeft(400));
 	bounds.removeFromLeft(16);
-	__envComponent.setBounds(bounds.removeFromLeft(400-32));
+	__envComponent.setBounds(bounds.removeFromLeft(400));
 	//__lfo.setBounds(getLocalBounds().reduced(8).removeFromRight(200).removeFromTop(250));
 	bounds.removeFromLeft(15);
 	Rectangle<int> filterBounds(bounds.removeFromBottom(105));

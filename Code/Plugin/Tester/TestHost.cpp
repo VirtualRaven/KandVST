@@ -13,7 +13,7 @@
 #include <vst/ivstaudioprocessor.h>
 #include <fstream>
 #include "folders.h"
-
+#include <cstdlib>
 
 void printParameter(const Steinberg::Vst::ParameterInfo& i, bool verbose=false) {
 	using namespace Steinberg::Vst;
@@ -161,12 +161,34 @@ void TestHost::addTest(Test * test)
 bool TestHost::runTests()
 {
 	bool acc = true;
-	for (size_t i = 0; i < tests.size(); i++) {
+	auto test_len = tests.size();
+	for (size_t i = 0; i < test_len; i++) {
+#ifdef NO_PY_FOUND
+		if (tests[i]->hasPythonStep()) {
+			util::yellow([&] {std::cout << "Skipping test (" << i+1 <<"/"<< test_len <<") as it requiers python."  << std::endl; });
+			continue;
+		}
+#endif
+
 		if (!this->resetParameters()) {
-			util::red([&] {std::cerr << "Failed to clear parameters before runing test" << i + 1 << "." << std::endl; });
+			util::red([&] {std::cerr << "Failed to clear parameters before running test" << i + 1 << "." << std::endl; });
 			return false;
 		}
-		acc &= this->runTest(i);
+
+		if (this->vst.proc()->setProcessing(true) != Steinberg::kResultOk) {
+			util::red([&] {std::cerr << "Failed to start processing before running test" << i + 1 << "." << std::endl; });
+			return false;
+		}
+		bool tmp = this->runTest(i);
+		if (this->vst.proc()->setProcessing(false) != Steinberg::kResultOk) {
+			util::red([&] {std::cerr << "Failed to stop processing after running test" << i + 1 << "." << std::endl; });
+			return false;
+		}
+		if (tmp)
+			util::cyan([&] {std::cout << "Test (" << i+1 << "/" << test_len << ") was successful" << std::endl; });
+		else
+			util::red([&] {std::cout << "Test (" << i+1 << "/" << test_len << ") failed" << std::endl; });
+		acc &= tmp;
 
 	}
 	return acc;
@@ -180,6 +202,13 @@ std::wstring trim(const std::wstring& str) {
 	return str.substr(begin, end - begin + 1);
 }
 
+enum PTYPE {
+	UNK,
+	BOOL,
+	DISC,
+	CONT
+};
+
 std::vector<TestHost::PARAM_TUP> TestHost::readParamFile(std::string filename,bool& sucess)
 {
 	std::vector<PARAM_TUP> val;
@@ -191,8 +220,23 @@ std::vector<TestHost::PARAM_TUP> TestHost::readParamFile(std::string filename,bo
 	}
 	std::wstring str;
 	int line = 0;
+	bool unormalised = true;
 	while (++line,std::getline(file, str)) {
-		//Parse the line
+		
+		//Ignore comment
+		{
+			auto res = trim(str);
+			if (str[0] == L'#') {
+				if (str == L"#NORMALIZED")
+					unormalised = false;
+				else if (str == L"#UNNORMALIZED")
+					unormalised = true;
+				continue;
+			}
+			else if (str.size() == 0)
+				continue;
+		}
+		//No comment, parse the line
 		auto res = str.find(L"=");
 		if (res == std::wstring::npos) {
 			util::red([&] {std::cerr << "Syntax error in file " << filename << " at line " << line << std::endl << "Expected equality sign." << std::endl ; });
@@ -207,29 +251,94 @@ std::vector<TestHost::PARAM_TUP> TestHost::readParamFile(std::string filename,bo
 		std::wstring name = trim(str.substr(0, res));
 		std::wstring value = trim(str.substr(res + 1));
 		double fvalue = 0.0;
-		try{
-			fvalue = std::stod(value);
-		}
-		catch (std::invalid_argument& arg) {
-				util::red([&] {std::cerr << "Syntax error in file " << filename << " at line " << line << std::endl << "Value after equality sign is not an valid floating point number." << std::endl; });
-				sucess = false;
-				return val;
-		}
+
 		auto search = this->pdata.ids.find(name);
-		if (search != this->pdata.ids.end())
+		if (search != this->pdata.ids.end()) {
+			PTYPE t = UNK;
+			Steinberg::int32 stepCount = 0;
+			if (unormalised) {
+				for (auto p : this->pdata.params) {
+					if (p.id == search->second) {
+						if (p.stepCount == 0)
+							t = CONT;
+						else if (p.stepCount == 1)
+							t = BOOL;
+						else if (p.stepCount > 1)
+							t = DISC;
+						stepCount = p.stepCount;
+					}
+				}
+			}
+			else {
+				t = CONT;
+			}
+			if (t== UNK) {
+				util::red([&] {std::cerr << "Program error in file " << filename << " at line " << line << std::endl; std::wcerr << name << L"Unknown parameter name" << std::endl; });
+			}
+
+			switch (t) {
+				case CONT:
+					try{
+						fvalue = std::stod(value);
+					}
+					catch (std::invalid_argument& ) {
+						util::red([&] {std::cerr << "Syntax error in file " << filename << " at line " << line << std::endl << "Value after equality sign is not an valid floating point number." << std::endl; });
+						sucess = false;
+						return val;
+					}
+
+					break;
+				case BOOL:
+					if (value == L"On" || value == L"True")
+						fvalue = 1.0;
+					else if (value == L"Off" || value == L"False")
+						fvalue = 0.0;
+					else {
+						util::red([&] {std::cerr << "Syntax error in file " << filename << " at line " << line << std::endl << "Parameter is of type bool, expected On, True, Off or False" << std::endl; });
+						sucess = false;
+						return val;
+					}
+					break;
+				case DISC:
+					try {
+						auto tmp = std::stoi(value);
+						if (tmp < 0) {
+							util::red([&] {std::cerr << "Syntax error in file " << filename << " at line " << line << std::endl << "Parameter is of type integer, expected value larger than zero" << std::endl; });
+							sucess = false;
+							return val;
+						}
+						else if (tmp > stepCount) {
+							util::red([&] {std::cerr << "Syntax error in file " << filename << " at line " << line << std::endl << "Value to large, Parameter is of type integer, with max size "<< stepCount << std::endl; });
+							sucess = false;
+							return val;
+						}
+						fvalue = tmp / stepCount;
+					}
+					catch (std::invalid_argument&) {
+						util::red([&] {std::cerr << "Syntax error in file " << filename << " at line " << line << std::endl << "Value after equality sign is not an valid integer." << std::endl; });
+						sucess = false;
+						return val;
+					}
+					break;
+			}
 			val.push_back(std::make_tuple(search->second, fvalue));
+
+
+		}
 		else {
 			util::red([&] {std::cerr << "Program error in file " << filename << " at line " << line << std::endl; std::wcerr << name << L" is not a valid parameter name." << std::endl; });
-				sucess = false;
-				return val;
+			sucess = false;
+			return val;
 
 		}
-
 	}
+
 	if (line > 0) {
 		sucess = true;
 		return val;
 	}
+	sucess = false;
+	return val;
 
 }
 
@@ -237,6 +346,7 @@ bool TestHost::runTest(size_t i)
 {
 	const auto count = tests.size();
 	auto& test = tests[i];
+	const std::string testPath = std::string(TEST_BUILD_PATH) + std::string(test->name()) + std::string("/");
 	std::string testName = test->name();
 	util::cyan([&] {std::cout << "Running test (" << (i+1) << "/" << count << ") " << testName << std::endl; });
 	if (test->hasParameterFile()) {
@@ -250,21 +360,56 @@ bool TestHost::runTest(size_t i)
 			}
 		}
 		else {
-			util::red([&] {std::cout << "Test " << testName << " failed" << std::endl; });
+			util::red([&] {std::cout << "Test " << testName << " failed" << std::endl << "Could not read test parameters. " << std::endl; });
 			return false;
 		}
 	}
 	std::stringstream ss;
 	if (!test->run(&this->vst, ss, this->pdata)) {
 		
-		util::red([&] {std::cout << "Test process" << testName << " failed with message: " << ss.str() << std::endl; });
+		util::red([&] {std::cout << "Test process" << testName << " failed" << std::endl; });
 		return false;
+	}
+	auto test_msg = ss.str();
+	if (test_msg.size() > 0) {
+		std::ofstream log(testPath + std::string("log.txt"), std::ios_base::trunc);
+		if (log.is_open()) {
+			log << test_msg;
+			log.close();
+		}
+		else {
+			util::red([&] {std::cout << "Test " << testName << " failed" << std::endl << "Could not write test log. " << std::endl; });
+			return false;
+		}
 	}
 
 	if (test->exportTestData()) {
 		//Export the test data
-		if (test->hasPythonStep()) {
-			//Execute python on test data
+		std::ofstream data1(testPath + std::string("data_1.txt"),std::ios_base::trunc);
+		std::ofstream data2(testPath + std::string("data_2.txt"),std::ios_base::trunc);
+		if (data1.is_open() && data2.is_open()) {
+			for (size_t i = 0; i < TestHost::TEST_BLOCK_SIZE-1; i++) {
+				data1 << test->block.left[i] << ',';
+				data2 << test->block.right[i] << ',';
+			}
+			data1 << test->block.left[TestHost::TEST_BLOCK_SIZE-1];
+			data2 << test->block.right[TestHost::TEST_BLOCK_SIZE-1];
+			data1.close();
+			data2.close();
+			if (test->hasPythonStep() ) {
+				const std::string testPyPath = std::string(TEST_PATH) + std::string(test->name())+ std::string("/verify.py");
+				//Execute python on test data
+				int ret = system((std::string(PY_PATH) +std::string(" ")+ testPyPath +  std::string(" ") + testPath).c_str());
+				if (ret == 42)
+					return true;
+				else {
+					util::red([&] {std::cout << "Test " << testName << " failed" << std::endl << "Python verification signaled error" << std::endl; });
+				}
+			}
+		}
+		else {
+			util::red([&] {std::cout << "Test " << testName << " failed" << std::endl << "Could not write test data. " << std::endl; });
+			return false;
 		}
 
 	}
