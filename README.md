@@ -30,7 +30,7 @@ the following components
   If the parameter is of toggle type it must be one of On,Off,True,False.
   If the parameter is discrete the value must be an integer inside the parameters range.
   
-  T left hand side must be a name of parameter that the plugin export.
+  The left hand side must be a name of parameter that the plugin export.
   For example:
   ```
    #Enable all osc
@@ -39,10 +39,11 @@ the following components
    Enable Oscillator 2 = On
    Enable Oscillator 3 = On
   ```
-  To list available parameters, run the tester with the argument `params` or `Params` for a more detailed output.
+  To list available parameters, run the tester with the argument `params` or `Params` for a more detailed output. Or 
+  use the list parameters command in the synth terminal window.
   
-  The comment #NORMALIZED inteprets the file as setting normalized floating point values. This will ignore types.
-  Equaly #UNNORMALIZED reenables type checking for until next #NORMALIZED.
+  Placing the comment `#NORMALIZED`turns off type checking, instead all values are interpreted as normalized floating point   values. This only effects rows after the line which the comment appeared on. 
+  Similarly `#UNNORMALIZED` reenables type checking for the rows following it.
 
 ## Dependencies
 
