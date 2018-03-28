@@ -1,5 +1,6 @@
 #include "ConvolutionReverb.h"
 #include "juce_dsp\juce_dsp.h"
+#include "Resources_files.h"
 
 template<typename T>
 ConvolutionReverb<T>::ConvolutionReverb(int ID, double sampleRate, int maxBuffHint, GLOBAL *global) :
@@ -14,6 +15,7 @@ ConvolutionReverb<T>::ConvolutionReverb(int ID, double sampleRate, int maxBuffHi
 	__isEnabled = global->paramHandler->Get<AudioParameterBool>(ID, "REVERB_EN");
 	__dryGain = global->paramHandler->Get<AudioParameterFloat>(ID, "REVERB_DRY");
 	__wetGain = global->paramHandler->Get<AudioParameterFloat>(ID, "REVERB_WET");
+	__ir = global->paramHandler->Get<AudioParameterChoice>(ID, "REVERB_IR");
 }
 
 template<typename T>
@@ -21,7 +23,8 @@ void ConvolutionReverb<T>::LoadInputResponse(File file)
 {
 	AudioFormatManager manager;
 	manager.registerBasicFormats();
-	ScopedPointer<AudioFormatReader> reader = manager.createReaderFor(file);
+	//ScopedPointer<MemoryInputStream> in = new MemoryInputStream(Resources::IR::living_room1_wav, sizeof(Resources::IR::living_room1_wav), false);
+	ScopedPointer<AudioFormatReader> reader = manager.createReaderFor(new MemoryInputStream(Resources::IR::living_room1_wav, sizeof(Resources::IR::bathtub_wav), false));
 
 	__responseBufferLen = nextPowerOfTwo(reader->lengthInSamples);
 	__responseBuffer.setSize(2, __responseBufferLen, false, false, false);
@@ -67,6 +70,8 @@ void ConvolutionReverb<T>::RegisterParameters(int ID, GLOBAL *global)
 	global->paramHandler->RegisterBool(ID, "REVERB_EN", "REVERB", 0);
 	global->paramHandler->RegisterFloat(ID, "REVERB_DRY", "DRY", 0.0, 1.0, 1.0);
 	global->paramHandler->RegisterFloat(ID, "REVERB_WET", "WET", 0.0, 1.0, 0.6);
+	StringArray ir = StringArray("Living room 1", "Living room 2", "Bathtub");
+	global->paramHandler->RegisterChoice(ID, "REVERB_IR", "TYPE", ir, 0);
 }
 
 template<typename T>

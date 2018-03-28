@@ -7,6 +7,7 @@
 #include "IVSTParameters.h"
 #include <list>
 #include "juce_dsp/juce_dsp.h"
+#include "Resources_files.h"
 
 template<typename T>
 class ConvolutionReverb :
@@ -34,6 +35,7 @@ private:
 	AudioParameterBool *__isEnabled;
 	AudioParameterFloat *__dryGain;
 	AudioParameterFloat *__wetGain;
+	AudioParameterChoice *__ir;
 
 	bool __prevIsEnabled;
 
