@@ -38,6 +38,8 @@ void Pipeline<T>::midiCommand(MidiMessage msg, int offset)
 	{
 		__note = msg.getNoteNumber();
 		__active = true;
+		for (auto lfo : lfos)
+			lfo->keyPressed();
 	}
 	
 	if (__active) {
