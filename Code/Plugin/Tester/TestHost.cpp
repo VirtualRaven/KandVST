@@ -233,6 +233,8 @@ std::vector<TestHost::PARAM_TUP> TestHost::readParamFile(std::string filename,bo
 					unormalised = true;
 				continue;
 			}
+			else if (str.size() == 0)
+				continue;
 		}
 		//No comment, parse the line
 		auto res = str.find(L"=");
