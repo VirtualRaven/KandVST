@@ -28,6 +28,15 @@ void DistComponent::paint(Graphics& g) {
 	int fontHeight = __bounds.getHeight() * 0.2;
 	g.drawRect(Rectangle<int>(0, 0, width, height), 2.0f);
 	g.fillRect(Rectangle<int>(0, 0, width, fontHeight));
+
+	if (!*Global->paramHandler->Get<AudioParameterBool>(__ID, "DIST_EN")) {
+		__threshold->setEnabled(false);
+		__toggleDist->setColour(ParameterButton::textColourOffId, Swatch::disabled);
+	}
+	else {
+		__threshold->setEnabled(true);
+		__toggleDist->setColour(ParameterButton::textColourOnId, Colours::white);
+	}
 }
 
 void DistComponent::resized() {

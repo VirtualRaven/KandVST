@@ -48,11 +48,38 @@ IVSTParameters(ID)
 void LFOComponent::paint(Graphics& g){
 	g.setColour(Colour::fromRGB(60, 60, 60));
 
-	int width = __bounds.getWidth();
-	int height = __bounds.getHeight();
+	int width = getLocalBounds().getWidth();
+	int height = getLocalBounds().getHeight();
 	int fontHeight = __bounds.getHeight() * 0.2;
 	g.drawRect(Rectangle<int>(0, 0, width, height), 2.0f);
 	g.fillRect(Rectangle<int>(0, 0, width, fontHeight));
+
+
+	if (!*Global->paramHandler->Get<AudioParameterBool>(__ID, "LFO_EN")) { //if disabled
+		__ratio->setEnabled(false);
+		__type->setEnabled(false);
+		__amp->setEnabled(false);
+		__toggleInvert->setEnabled(false);
+		__onPress->setEnabled(false);
+
+		__ratioLabel.setColour(Label::textColourId, Swatch::disabled);
+		__typeLabel.setColour(Label::textColourId, Swatch::disabled);
+		__ampLabel.setColour(Label::textColourId, Swatch::disabled);
+		__toggleLfo->setColour(ParameterButton::textColourOffId, Swatch::disabled);
+	}
+	else { //if enabled
+		__ratio->setEnabled(true);
+		__type->setEnabled(true);
+		__amp->setEnabled(true);
+		__toggleInvert->setEnabled(true);
+		__onPress->setEnabled(true);
+
+		__ratioLabel.setColour(Label::textColourId, Colours::white);
+		__typeLabel.setColour(Label::textColourId, Colours::white);
+		__ampLabel.setColour(Label::textColourId, Colours::white);
+		__toggleLfo->setColour(ParameterButton::textColourOnId, Colours::white);
+	}
+
 }
 
 void LFOComponent::resized(){
@@ -72,4 +99,5 @@ void LFOComponent::resized(){
 	__toggleInvert->setBounds(sliders.removeFromTop(20));
 	sliders.removeFromTop(20);
 	__onPress->setBounds(sliders.removeFromTop(20));
+
 }

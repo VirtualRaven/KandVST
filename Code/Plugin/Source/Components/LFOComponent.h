@@ -8,6 +8,7 @@
 #include "ParameterSlider.h"
 #include "ParameterButton.h"
 #include "IVSTParameters.h"
+#include "Swatch.h"
 
 class LFOComponent : public Component, private IVSTParameters
 {
