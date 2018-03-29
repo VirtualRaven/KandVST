@@ -56,7 +56,7 @@ int  main(int argc, char** argv){
 	}
 	if (argc == 3){
 		auto flag = trim(argv[1]);
-		auto value = trim(argv[1]);
+		auto value = trim(argv[2]);
 		if (flag == "-T"){
 			for (auto& t : test_list) {
 				if (t->name()==value){
