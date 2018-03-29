@@ -404,6 +404,7 @@ bool TestHost::runTest(size_t i)
 					return true;
 				else {
 					util::red([&] {std::cout << "Test " << testName << " failed" << std::endl << "Python verification signaled error" << std::endl; });
+					return false;
 				}
 			}
 		}
