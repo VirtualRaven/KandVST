@@ -89,15 +89,15 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 	}
 
 	if (*__isEnabled == false)
-	{
 		return false;
-	}
 
 	if (__responseBlocks.size() == 0)
 		return false;
 
 	// Block size needs to be a power of two
 	int blockSize = nextPowerOfTwo(len);
+
+	auto bufferp = buffer.getArrayOfWritePointers();
 
 	// If len has changed
 	if (__prevBlockSize != len)
@@ -117,15 +117,17 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 	// x: Input of length 2*blockSize
 	AudioSampleBuffer x = AudioSampleBuffer(2, 4*blockSize);
 	x.clear();
+	auto xp = x.getArrayOfWritePointers();
 
 	// in: The actual current input of length len (does not need to be cleaned)
 	AudioSampleBuffer in = AudioSampleBuffer(2, len);
+	auto inp = in.getArrayOfWritePointers();
 
 	for (int i = 0; i < len; i++)
 	{
 		// double -> float
-		in.setSample(0, i, buffer.getSample(0, i));
-		in.setSample(1, i, buffer.getSample(1, i));
+		inp[0][i] = static_cast<float>(bufferp[0][i]);
+		inp[1][i] = static_cast<float>(bufferp[1][i]);
 	}
 
 	// Put the new input block in front of the list, remove the last if nessesary
@@ -137,13 +139,15 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 	int i = 1;
 	for (auto prev : __prevInputs)
 	{
+		auto prevp = prev.getArrayOfReadPointers();
+
 		for (int j = 0; j < len; j++)
 		{
 			if (i*len > 2 * blockSize)
 				continue;
 
-			x.setSample(0, (2 * blockSize - i * len) + j, prev.getSample(0, j));
-			x.setSample(1, (2 * blockSize - i * len) + j, prev.getSample(1, j));
+			xp[0][(2 * blockSize - i * len) + j] = prevp[0][j];
+			xp[1][(2 * blockSize - i * len) + j] = prevp[1][j];
 		}
 
 		i++;
@@ -161,6 +165,7 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 	// Multiply to output
 	AudioSampleBuffer convOutput = AudioSampleBuffer(2, 4*blockSize);
 	convOutput.clear();
+	auto convOutputp = convOutput.getArrayOfWritePointers();
 
 	int b = 0;
 	for (auto currentIn : __inputBlocks)
@@ -168,7 +173,7 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 		// Complex multiplication (stereo)
 		for (int channel = 0; channel < 2; channel++)
 		{
-			float *y = convOutput.getWritePointer(channel);
+			float *y = convOutputp[channel];
 			const float *in = currentIn.getWritePointer(channel);
 			const float *h = __responseBlocks.at(b).getReadPointer(channel);
 
@@ -201,17 +206,17 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 	for (int i = 0; i < len; i++)
 	{
 		// Last len samples are the wet output (float -> double)
-		float wetOutLeft = convOutput.getSample(0, i + 2 * blockSize - len);
-		float wetOutRight = convOutput.getSample(1, i + 2 * blockSize - len);
+		float wetOutLeft = convOutputp[0][i + 2 * blockSize - len];
+		float wetOutRight = convOutputp[1][i + 2 * blockSize - len];
 
-		float dryOutLeft = buffer.getSample(0, i);
-		float dryOutRight = buffer.getSample(1, i);
+		float dryOutLeft = bufferp[0][i];
+		float dryOutRight = bufferp[1][i];
 
 		float outLeft = (wetOutLeft*wet + dryOutLeft*dry) / 2;
 		float outRight = (wetOutRight*wet + dryOutRight*dry) / 2;
 
-		buffer.setSample(0, i, outLeft);
-	    buffer.setSample(1, i, outRight);
+		bufferp[0][i] = outLeft;
+	    bufferp[1][i] = outRight;
 	}
 
 	return true;
