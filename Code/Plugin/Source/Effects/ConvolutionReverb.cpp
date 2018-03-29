@@ -10,8 +10,13 @@ ConvolutionReverb<T>::ConvolutionReverb(int ID, double sampleRate, int maxBuffHi
 	__responseBuffer(),
 	__overlapBufferLen(0),
 	__maxBuffHint(maxBuffHint),
-	__prevIsEnabled(true)
+	__prevIsEnabled(true),
+	__irFromFile(false),
+	__prevIrName(""),
+	__formatManager()
 {
+	__formatManager.registerBasicFormats();
+
 	__isEnabled = global->paramHandler->Get<AudioParameterBool>(ID, "REVERB_EN");
 	__dryGain = global->paramHandler->Get<AudioParameterFloat>(ID, "REVERB_DRY");
 	__wetGain = global->paramHandler->Get<AudioParameterFloat>(ID, "REVERB_WET");
@@ -21,11 +26,37 @@ ConvolutionReverb<T>::ConvolutionReverb(int ID, double sampleRate, int maxBuffHi
 template<typename T>
 void ConvolutionReverb<T>::LoadInputResponse(File file)
 {
-	AudioFormatManager manager;
-	manager.registerBasicFormats();
-	//ScopedPointer<MemoryInputStream> in = new MemoryInputStream(Resources::IR::living_room1_wav, sizeof(Resources::IR::living_room1_wav), false);
-	ScopedPointer<AudioFormatReader> reader = manager.createReaderFor(new MemoryInputStream(Resources::IR::living_room1_wav, sizeof(Resources::IR::bathtub_wav), false));
+	__loadImpulseResponse(__formatManager.createReaderFor(file));
+}
 
+template<typename T>
+void ConvolutionReverb<T>::LoadInputResponse(String irName)
+{
+	MemoryInputStream *mem; // Will be deleted automatically
+
+	if (irName == "Living room 1")
+	{
+		mem = new MemoryInputStream(Resources::IR::living_room1_wav, sizeof(Resources::IR::living_room1_wav), false);
+	}
+	else if (irName == "Living room 2")
+	{
+		mem = new MemoryInputStream(Resources::IR::living_room2_wav, sizeof(Resources::IR::living_room2_wav), false);
+	}
+	else if (irName == "Bathtub")
+	{
+		mem = new MemoryInputStream(Resources::IR::bathtub_wav, sizeof(Resources::IR::bathtub_wav), false);
+	}
+	else
+	{
+		return;
+	}
+
+	__loadImpulseResponse(__formatManager.createReaderFor(mem));
+}
+
+template<typename T>
+void ConvolutionReverb<T>::__loadImpulseResponse(ScopedPointer<AudioFormatReader> reader)
+{
 	__responseBufferLen = nextPowerOfTwo(reader->lengthInSamples);
 	__responseBuffer.setSize(2, __responseBufferLen, false, false, false);
 	__responseBuffer.clear();
@@ -35,6 +66,8 @@ void ConvolutionReverb<T>::LoadInputResponse(File file)
 
 	__createResponseBlocks(__maxBuffHint);
 }
+
+
 
 template<typename T>
 void ConvolutionReverb<T>::__createResponseBlocks(int len)
@@ -58,6 +91,8 @@ void ConvolutionReverb<T>::__createResponseBlocks(int len)
 		__responseBlocks.push_back(nextBlock);
 	}
 }
+
+
 
 template<typename T>
 ConvolutionReverb<T>::~ConvolutionReverb()
@@ -90,6 +125,15 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 
 	if (*__isEnabled == false)
 		return false;
+
+	if (!__irFromFile && __ir->getCurrentChoiceName().compare(__prevIrName) != 0)
+	{
+		// The ir choice has changed
+		LoadInputResponse(__ir->getCurrentChoiceName());
+
+		__prevIrName = __ir->getCurrentChoiceName();
+		return false;
+	}
 
 	if (__responseBlocks.size() == 0)
 		return false;
