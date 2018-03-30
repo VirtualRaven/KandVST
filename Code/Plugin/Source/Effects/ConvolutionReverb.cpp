@@ -10,8 +10,13 @@ ConvolutionReverb<T>::ConvolutionReverb(int ID, double sampleRate, int maxBuffHi
 	__responseBuffer(),
 	__overlapBufferLen(0),
 	__maxBuffHint(maxBuffHint),
-	__prevIsEnabled(true)
+	__prevIsEnabled(true),
+	__irFromFile(false),
+	__prevIrName(""),
+	__formatManager()
 {
+	__formatManager.registerBasicFormats();
+
 	__isEnabled = global->paramHandler->Get<AudioParameterBool>(ID, "REVERB_EN");
 	__dryGain = global->paramHandler->Get<AudioParameterFloat>(ID, "REVERB_DRY");
 	__wetGain = global->paramHandler->Get<AudioParameterFloat>(ID, "REVERB_WET");
@@ -21,11 +26,37 @@ ConvolutionReverb<T>::ConvolutionReverb(int ID, double sampleRate, int maxBuffHi
 template<typename T>
 void ConvolutionReverb<T>::LoadInputResponse(File file)
 {
-	AudioFormatManager manager;
-	manager.registerBasicFormats();
-	//ScopedPointer<MemoryInputStream> in = new MemoryInputStream(Resources::IR::living_room1_wav, sizeof(Resources::IR::living_room1_wav), false);
-	ScopedPointer<AudioFormatReader> reader = manager.createReaderFor(new MemoryInputStream(Resources::IR::living_room1_wav, sizeof(Resources::IR::bathtub_wav), false));
+	__loadImpulseResponse(__formatManager.createReaderFor(file));
+}
 
+template<typename T>
+void ConvolutionReverb<T>::LoadInputResponse(String irName)
+{
+	MemoryInputStream *mem; // Will be deleted automatically
+
+	if (irName == "Living room 1")
+	{
+		mem = new MemoryInputStream(Resources::IR::living_room1_wav, sizeof(Resources::IR::living_room1_wav), false);
+	}
+	else if (irName == "Living room 2")
+	{
+		mem = new MemoryInputStream(Resources::IR::living_room2_wav, sizeof(Resources::IR::living_room2_wav), false);
+	}
+	else if (irName == "Bathtub")
+	{
+		mem = new MemoryInputStream(Resources::IR::bathtub_wav, sizeof(Resources::IR::bathtub_wav), false);
+	}
+	else
+	{
+		return;
+	}
+
+	__loadImpulseResponse(__formatManager.createReaderFor(mem));
+}
+
+template<typename T>
+void ConvolutionReverb<T>::__loadImpulseResponse(ScopedPointer<AudioFormatReader> reader)
+{
 	__responseBufferLen = nextPowerOfTwo(reader->lengthInSamples);
 	__responseBuffer.setSize(2, __responseBufferLen, false, false, false);
 	__responseBuffer.clear();
@@ -35,6 +66,8 @@ void ConvolutionReverb<T>::LoadInputResponse(File file)
 
 	__createResponseBlocks(__maxBuffHint);
 }
+
+
 
 template<typename T>
 void ConvolutionReverb<T>::__createResponseBlocks(int len)
@@ -58,6 +91,8 @@ void ConvolutionReverb<T>::__createResponseBlocks(int len)
 		__responseBlocks.push_back(nextBlock);
 	}
 }
+
+
 
 template<typename T>
 ConvolutionReverb<T>::~ConvolutionReverb()
@@ -89,7 +124,14 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 	}
 
 	if (*__isEnabled == false)
+		return false;
+
+	if (!__irFromFile && __ir->getCurrentChoiceName().compare(__prevIrName) != 0)
 	{
+		// The ir choice has changed
+		LoadInputResponse(__ir->getCurrentChoiceName());
+
+		__prevIrName = __ir->getCurrentChoiceName();
 		return false;
 	}
 
@@ -98,6 +140,8 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 
 	// Block size needs to be a power of two
 	int blockSize = nextPowerOfTwo(len);
+
+	auto bufferp = buffer.getArrayOfWritePointers();
 
 	// If len has changed
 	if (__prevBlockSize != len)
@@ -117,15 +161,17 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 	// x: Input of length 2*blockSize
 	AudioSampleBuffer x = AudioSampleBuffer(2, 4*blockSize);
 	x.clear();
+	auto xp = x.getArrayOfWritePointers();
 
 	// in: The actual current input of length len (does not need to be cleaned)
 	AudioSampleBuffer in = AudioSampleBuffer(2, len);
+	auto inp = in.getArrayOfWritePointers();
 
 	for (int i = 0; i < len; i++)
 	{
 		// double -> float
-		in.setSample(0, i, buffer.getSample(0, i));
-		in.setSample(1, i, buffer.getSample(1, i));
+		inp[0][i] = static_cast<float>(bufferp[0][i]);
+		inp[1][i] = static_cast<float>(bufferp[1][i]);
 	}
 
 	// Put the new input block in front of the list, remove the last if nessesary
@@ -137,13 +183,15 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 	int i = 1;
 	for (auto prev : __prevInputs)
 	{
+		auto prevp = prev.getArrayOfReadPointers();
+
 		for (int j = 0; j < len; j++)
 		{
 			if (i*len > 2 * blockSize)
 				continue;
 
-			x.setSample(0, (2 * blockSize - i * len) + j, prev.getSample(0, j));
-			x.setSample(1, (2 * blockSize - i * len) + j, prev.getSample(1, j));
+			xp[0][(2 * blockSize - i * len) + j] = prevp[0][j];
+			xp[1][(2 * blockSize - i * len) + j] = prevp[1][j];
 		}
 
 		i++;
@@ -161,6 +209,7 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 	// Multiply to output
 	AudioSampleBuffer convOutput = AudioSampleBuffer(2, 4*blockSize);
 	convOutput.clear();
+	auto convOutputp = convOutput.getArrayOfWritePointers();
 
 	int b = 0;
 	for (auto currentIn : __inputBlocks)
@@ -168,7 +217,7 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 		// Complex multiplication (stereo)
 		for (int channel = 0; channel < 2; channel++)
 		{
-			float *y = convOutput.getWritePointer(channel);
+			float *y = convOutputp[channel];
 			const float *in = currentIn.getWritePointer(channel);
 			const float *h = __responseBlocks.at(b).getReadPointer(channel);
 
@@ -201,17 +250,17 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 	for (int i = 0; i < len; i++)
 	{
 		// Last len samples are the wet output (float -> double)
-		float wetOutLeft = convOutput.getSample(0, i + 2 * blockSize - len);
-		float wetOutRight = convOutput.getSample(1, i + 2 * blockSize - len);
+		float wetOutLeft = convOutputp[0][i + 2 * blockSize - len];
+		float wetOutRight = convOutputp[1][i + 2 * blockSize - len];
 
-		float dryOutLeft = buffer.getSample(0, i);
-		float dryOutRight = buffer.getSample(1, i);
+		float dryOutLeft = bufferp[0][i];
+		float dryOutRight = bufferp[1][i];
 
 		float outLeft = (wetOutLeft*wet + dryOutLeft*dry) / 2;
 		float outRight = (wetOutRight*wet + dryOutRight*dry) / 2;
 
-		buffer.setSample(0, i, outLeft);
-	    buffer.setSample(1, i, outRight);
+		bufferp[0][i] = outLeft;
+	    bufferp[1][i] = outRight;
 	}
 
 	return true;

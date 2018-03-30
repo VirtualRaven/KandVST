@@ -18,6 +18,8 @@ class ConvolutionReverb :
 private:
 	int __maxBuffHint;
 
+	AudioFormatManager __formatManager;
+
 	AudioSampleBuffer __responseBuffer;
 	AudioSampleBuffer __prevInput;
 
@@ -38,12 +40,16 @@ private:
 	AudioParameterChoice *__ir;
 
 	bool __prevIsEnabled;
+	bool __irFromFile;
+	String __prevIrName;
 
 	void __createResponseBlocks(int len);
+	void __loadImpulseResponse(ScopedPointer<AudioFormatReader> reader);
 
 public:
 	ConvolutionReverb(int ID,double sampleRate, int maxBuffHint, GLOBAL *global);
 	void LoadInputResponse(File file);
+	void LoadInputResponse(String irName);
 	~ConvolutionReverb();
 	bool RenderBlock(AudioBuffer<T>& buffer, int len, bool empty) override;
 	static void RegisterParameters(int ID, GLOBAL *global);
