@@ -140,12 +140,12 @@ void PipelineManager<T>::genSamples(AudioBuffer<T>& buff, MidiBuffer & midiMessa
 		pipBuff[i].clear(0, buffLen);
 	}
 
-	__reverb.RenderBlock(buff, buff.getNumSamples(), false);
-
 	//Effects
 	__filterLP.RenderBlock(buff, buffLen, false);
 	__filterHP.RenderBlock(buff, buffLen, false);
 	__delay.RenderBlock(buff, buffLen, false);
+
+	__reverb.RenderBlock(buff, buffLen, false);
 }
 
 
