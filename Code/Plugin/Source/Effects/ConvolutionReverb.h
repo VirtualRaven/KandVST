@@ -21,7 +21,6 @@ private:
 	AudioFormatManager __formatManager;
 
 	AudioSampleBuffer __responseBuffer;
-	AudioSampleBuffer __prevInput;
 
 	ScopedPointer<dsp::FFT> __fft;
 	ScopedPointer<dsp::FFT> __ifft;

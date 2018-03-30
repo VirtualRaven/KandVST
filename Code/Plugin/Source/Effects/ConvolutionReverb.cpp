@@ -57,14 +57,17 @@ void ConvolutionReverb<T>::LoadInputResponse(String irName)
 template<typename T>
 void ConvolutionReverb<T>::__loadImpulseResponse(ScopedPointer<AudioFormatReader> reader)
 {
+	__prevInputs.clear();
+	__inputBlocks.clear();
+
 	__responseBufferLen = nextPowerOfTwo(reader->lengthInSamples);
 	__responseBuffer.setSize(2, __responseBufferLen, false, false, false);
 	__responseBuffer.clear();
 	reader->read(&__responseBuffer, 0, reader->lengthInSamples, 0, true, true);
 
-	__responseBufferLen /= 2;
+	//__responseBufferLen /= 2;
 
-	__createResponseBlocks(__maxBuffHint);
+	__createResponseBlocks(__prevBlockSize);
 }
 
 
@@ -72,6 +75,7 @@ void ConvolutionReverb<T>::__loadImpulseResponse(ScopedPointer<AudioFormatReader
 template<typename T>
 void ConvolutionReverb<T>::__createResponseBlocks(int len)
 {
+	__responseBlocks.clear();
 	int blockSize = nextPowerOfTwo(len);
 
 	__fft = new dsp::FFT(roundDoubleToInt(log2(2 * blockSize)));
@@ -116,7 +120,6 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 	if (*__isEnabled == false && __prevIsEnabled)
 	{
 		// Clean everything
-		__prevInput.clear();
 		__prevInputs.clear();
 
 		__prevIsEnabled = *__isEnabled;
@@ -126,12 +129,13 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 	if (*__isEnabled == false)
 		return false;
 
-	if (!__irFromFile && __ir->getCurrentChoiceName().compare(__prevIrName) != 0)
+	// Check if ir has changed
+	auto currentIrName = __ir->getCurrentChoiceName();
+	if (!__irFromFile && currentIrName.compare(__prevIrName) != 0)
 	{
-		// The ir choice has changed
-		LoadInputResponse(__ir->getCurrentChoiceName());
+		LoadInputResponse(currentIrName);
 
-		__prevIrName = __ir->getCurrentChoiceName();
+		__prevIrName = currentIrName;
 		return false;
 	}
 
@@ -148,14 +152,13 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 	{
 		__prevBlockSize = len;
 
-		__prevInput.clear();
 		__prevInputs.clear();
-		__responseBlocks.clear();
 
 		__fft = new dsp::FFT(roundDoubleToInt(log2(2*blockSize)));
 		__ifft = new dsp::FFT(roundDoubleToInt(log2(2*blockSize)));
 
 		__createResponseBlocks(len);
+		__prevBlockSize = len;
 	}
 
 	// x: Input of length 2*blockSize
@@ -202,7 +205,7 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 
 	// Put the new TRANSFORMED input block in front of the list, remove the last if nessesary
 	__inputBlocks.push_front(x);
-	if (__inputBlocks.size() >= __responseBlocks.size())
+	if (__inputBlocks.size() > __responseBlocks.size())
 		__inputBlocks.pop_back();
 
 
