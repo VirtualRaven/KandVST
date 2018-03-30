@@ -30,11 +30,12 @@ int  main(int argc, char** argv){
 		return 2;
 	}
 
-	for (auto& t : test_list) {
-		test.addTest(t);
-	}
+
 
 	if (argc == 1) {
+		for (auto& t : test_list) {
+			test.addTest(t);
+		}
 		return test.runTests() ? 0 : -1;
 	}
 	if (argc == 2) {
@@ -53,7 +54,21 @@ int  main(int argc, char** argv){
 			return 0;
 		}
 	}
-		std::cout << "Unknown command!" << std::endl << "Usage: tester [param|Params|tests]" << std::endl
+	if (argc == 3){
+		auto flag = trim(argv[1]);
+		auto value = trim(argv[2]);
+		if (flag == "-T"){
+			for (auto& t : test_list) {
+				if (t->name()==value){
+					test.addTest(t);
+					break;
+				}
+			}
+			return test.runTests() ? 0 : -1;
+		}
+		
+	}
+		std::cout << "Unknown command!" << std::endl << "Usage: tester [param|Params|tests|-T <test>]" << std::endl
 			<< "Omitting command will run tests." << std::endl
 			<< "Command param, lists plugin parameters." << std::endl
 			<< "Command Param, lists pluing parameters in verbose mode." << std::endl
