@@ -9,10 +9,9 @@ String PresetManager::getPresetPath()
 	return appData.getFullPathName();
 }
 
-PresetManager::PresetManager(AudioProcessor* owner,GLOBAL* global):
+PresetManager::PresetManager(AudioProcessor* owner):
 __owner(owner)
 {
-	Global = global;
 }
 PresetManager::~PresetManager()
 {
@@ -115,18 +114,17 @@ void PresetManager::SavePreset(XmlElement * xmlState)
 	}
 }
 
-void PresetManager::DeletePreset(std::string name) {
-	File preset = File(getPresetPath() + String("/") + name + String(".xml"));
-	if (preset.deleteFile()) {
-		int index = GetPresetIndex(name);
-		if (PresetExists(name)) {
-			__presets.erase(__presets.begin() + index);
-		}
-	}
-}
 
 void PresetManager::SavePreset(std::string name)
 {	
+	for (size_t i = 0; i < __presets.size(); i++)
+	{
+		if (std::get<0>(__presets.at(i)) == name)
+		{
+			delete std::get<1>(__presets.at(i));
+			__presets.erase(__presets.begin() + i);
+		}
+	}
 
 	XmlElement* el = new XmlElement("KandVSTPreset");
 	SavePreset(el);
@@ -135,20 +133,18 @@ void PresetManager::SavePreset(std::string name)
 	
 	if (PresetExists(name))
 	{
-		for (auto& preset : __presets)
+		for (auto preset : __presets)
 		{
 			if (std::get<0>(preset) == name)
 			{
-				auto temp = std::get<1>(preset);
-				preset = std::make_tuple(name, el);
-				delete temp;
+				std::get<1>(preset) = el;
 				continue;
 			}
 		}
 	}
 	else
 	{
-		__presets.push_back(std::make_tuple(name, el));
+		std::make_tuple(name, el);
 	}
 }
 
