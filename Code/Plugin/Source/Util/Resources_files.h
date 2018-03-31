@@ -3,11 +3,13 @@
 namespace Resources{
 namespace Icons{
 extern unsigned char delete_png[542];
+extern unsigned char delete2_png[36088];
 extern unsigned char knobs_png[10266];
 extern unsigned char noise_orange_png[9185];
 extern unsigned char noise_white_png[6419];
 extern unsigned char refresh_png[8494];
 extern unsigned char save_png[1216];
+extern unsigned char save2_png[27808];
 extern unsigned char saw_orange_png[6733];
 extern unsigned char saw_white_png[5171];
 extern unsigned char sine_orange_png[7392];
