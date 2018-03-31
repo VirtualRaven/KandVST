@@ -4,7 +4,6 @@
 #include "Global.h"
 #include "ParameterHandler.h"
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "InformationComponent.h"
 #include "ParameterSlider.h"
 #include "ParameterButton.h"
 #include "IVSTParameters.h"

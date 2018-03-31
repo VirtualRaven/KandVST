@@ -188,6 +188,8 @@ x         .         .         "Source/Editor/PluginGUI.cpp"
   .         .         .         "Source/Components/PresetRowModel.h"
   x         .         .         "Source/Effects/ConvolutionReverb.cpp"
   .         .         .         "Source/Effects/ConvolutionReverb.h"
+  x         .         .         "Source/Components/ReverbComponent.cpp"
+  .         .         .         "Source/Components/ReverbComponent.h"
 )
 
 jucer_project_module(

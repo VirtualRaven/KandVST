@@ -1,6 +1,7 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 #include "../JuceLibraryCode/JuceHeader.h"
+
 class PresetManager;
 class ParameterHandler;
 class Log;

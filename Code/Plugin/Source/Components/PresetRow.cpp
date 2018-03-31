@@ -7,6 +7,7 @@ PresetRow::PresetRow(int s, bool isSelected, ListBox* owner,GLOBAL*global):
 	__rowNr(s),
 	__owner(owner)
 {
+
 	Global = global;
 	__lbl.addMouseListener(this, true);
 	addAndMakeVisible(__lbl);
@@ -20,8 +21,7 @@ PresetRow::PresetRow(int s, bool isSelected, ListBox* owner,GLOBAL*global):
 		addAndMakeVisible(__save);
 		addAndMakeVisible(__delete);
 	}
-	
-	
+
 }
 PresetRow::~PresetRow()
 {
@@ -64,10 +64,6 @@ void PresetRow::mouseDown(const MouseEvent & event)
 	__owner->selectRow(__rowNr, false, true);
 
 }
-
-
-
-
 
 void PresetRow::resized()
 {

@@ -7,12 +7,13 @@ MasterComponent::~MasterComponent()
 
 MasterComponent::MasterComponent(GLOBAL*global) :
 	__infoComponent(global),
-	__lfoComponent1(0,global),
+	__lfoComponent1(0, global),
 	__lfoComponent2(1, global),
 	__filterComponent(-1, global),
 	__settingsComponent(global),
 	__delayComponent(global),
-	__mixerComponent(global)
+	__mixerComponent(global),
+	__reverbComponent(-1, global)
 {
 	Global = global;
 	addAndMakeVisible(__infoComponent);
@@ -23,6 +24,7 @@ MasterComponent::MasterComponent(GLOBAL*global) :
 
 	addAndMakeVisible(__settingsComponent);
 	addAndMakeVisible(__delayComponent);
+	addAndMakeVisible(__reverbComponent);
 }
 
 void MasterComponent::paint(Graphics& g){
@@ -41,17 +43,18 @@ void MasterComponent::resized() {
 	lfoBounds.removeFromTop(8);
 	__lfoComponent2.setBounds(lfoBounds.removeFromTop(lfoH));
 
-	Rectangle<int> rightColumn = bounds.removeFromRight(350);
-	__settingsComponent.setBounds(rightColumn.removeFromLeft(rightColumn.getWidth()*0.40f));
+	Rectangle<int> rightColumnL = bounds.removeFromRight(450);
+	Rectangle<int> rightColumnU = rightColumnL.removeFromTop(rightColumnL.getHeight()* 0.5f);
+	rightColumnL.removeFromTop(8);
 	
-	Rectangle<int> topPart = rightColumn.removeFromTop(rightColumn.getHeight()*0.5f);
-	topPart.removeFromLeft(8);
-	__filterComponent.setBounds(topPart);
+	__settingsComponent.setBounds(rightColumnU.removeFromLeft(rightColumnL.getWidth()* 0.5f));
+	rightColumnU.removeFromLeft(8);
+	__filterComponent.setBounds(rightColumnU);
 
-	rightColumn.removeFromTop(8);
+	__reverbComponent.setBounds(rightColumnL.removeFromLeft(rightColumnL.getWidth()*0.6f));
+	rightColumnL.removeFromLeft(8);
+	__delayComponent.setBounds(rightColumnL);
 	
-	rightColumn.removeFromLeft(8);
-	__delayComponent.setBounds(rightColumn);
 	bounds.reduce(8, 0);
 	__infoComponent.setBounds(bounds);
 
