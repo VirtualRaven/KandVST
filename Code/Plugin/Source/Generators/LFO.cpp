@@ -72,7 +72,11 @@ void LFO::generate(int numSamples, AudioPlayHead::CurrentPositionInfo& posInfo)
 		__samples = new double[numSamples];
 	}
 
+<<<<<<< HEAD
 	if (!(*__isActive) ) {
+=======
+	if (!(*__isActive)) {
+>>>>>>> master
 		if (!posInfo.isPlaying && !(*__onPress)) {
 			__phase = fmod(__phase + (IWavetable::getLength() * ((posInfo.bpm)* calcRatio() / 60.0) / __sampleRate) * numSamples, IWavetable::getLength());
 		}

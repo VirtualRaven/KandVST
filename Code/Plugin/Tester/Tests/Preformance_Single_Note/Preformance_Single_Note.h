@@ -31,7 +31,7 @@ class Preformance_Single_Note : public TestHost::Test {
 		events.addEvent(e);
 
 		auto h = GetCurrentProcess();
-		const size_t TestTimes = 3000;
+		const size_t TestTimes = 100;
 		ULONG64 diff = 0;
 		for (size_t i = 0; i < TestTimes; i++) {
 			ULONG64 pre = 0, post = 0;
