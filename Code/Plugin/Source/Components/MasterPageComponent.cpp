@@ -47,7 +47,7 @@ void MasterComponent::resized() {
 	Rectangle<int> rightColumnU = rightColumnL.removeFromTop(rightColumnL.getHeight()* 0.5f);
 	rightColumnL.removeFromTop(8);
 	
-	__settingsComponent.setBounds(rightColumnU.removeFromLeft(rightColumnL.getWidth()* 0.5f));
+	__settingsComponent.setBounds(rightColumnU.removeFromLeft(rightColumnL.getWidth()* 0.6f));
 	rightColumnU.removeFromLeft(8);
 	__filterComponent.setBounds(rightColumnU);
 

@@ -5,10 +5,12 @@
 #include "Global.h"
 #include "ConvolutionReverb.h"
 #include "ParameterSlider.h"
+#include "ParameterButton.h"
 #include "IVSTParameters.h"
 #include "Swatch.h"
 
-class ReverbComponent : public Component, public ComboBox::Listener {
+class ReverbComponent : public Component, public ComboBox::Listener, private IVSTParameters
+ {
 public:
 	ReverbComponent(int ID, GLOBAL*global);
 	~ReverbComponent();
@@ -19,9 +21,11 @@ public:
 
 private:
 	ScopedPointer<ParameterSlider> __dry, __wet;
+	ScopedPointer<ParameterButton> __toggleReverb;
+	Label __dryLabel, __wetLabel, __boxLabel;
 	ComboBox __cBox;
-	int __ID;
 	GLOBAL * Global;
+	StringArray __ir;
 };
 
 #endif REVERB_COMPONENT_H

@@ -46,7 +46,7 @@ IVSTParameters(ID)
 }
 
 void LFOComponent::paint(Graphics& g){
-	g.setColour(Colour::fromRGB(60, 60, 60));
+	g.setColour(Swatch::outlineColour);
 
 	int width = getLocalBounds().getWidth();
 	int height = getLocalBounds().getHeight();

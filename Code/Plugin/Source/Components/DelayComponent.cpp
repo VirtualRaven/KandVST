@@ -49,9 +49,10 @@ void DelayComponent::resized() {
 	Rectangle<int> __delayBounds(__bounds.reduced(8));
 
 	__delayBounds.removeFromTop(fontHeight);
+
 	__delayBounds.removeFromTop(__secondsLabel.getFont().getHeight());
 
-	int __size = (__bounds.getWidth() / 2);
+	int __size = (__delayBounds.getWidth() * 0.5f);
 	__delaySpeed->setBounds(__delayBounds.removeFromLeft(__size));
-	__delaySeconds->setBounds(__delayBounds.removeFromLeft(__size));
+	__delaySeconds->setBounds(__delayBounds);
 }
