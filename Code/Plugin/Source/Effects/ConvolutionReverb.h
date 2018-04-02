@@ -39,6 +39,7 @@ private:
 	AudioParameterChoice *__ir;
 
 	bool __prevIsEnabled;
+	bool __prevIsEmpty;
 	bool __irFromFile;
 	String __prevIrName;
 
