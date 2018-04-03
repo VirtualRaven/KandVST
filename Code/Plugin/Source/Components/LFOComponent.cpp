@@ -65,7 +65,6 @@ void LFOComponent::paint(Graphics& g){
 		__ratioLabel.setColour(Label::textColourId, Swatch::disabled);
 		__typeLabel.setColour(Label::textColourId, Swatch::disabled);
 		__ampLabel.setColour(Label::textColourId, Swatch::disabled);
-		__toggleLfo->setColour(ParameterButton::textColourOffId, Swatch::disabled);
 	}
 	else { //if enabled
 		__ratio->setEnabled(true);
@@ -77,7 +76,6 @@ void LFOComponent::paint(Graphics& g){
 		__ratioLabel.setColour(Label::textColourId, Colours::white);
 		__typeLabel.setColour(Label::textColourId, Colours::white);
 		__ampLabel.setColour(Label::textColourId, Colours::white);
-		__toggleLfo->setColour(ParameterButton::textColourOnId, Colours::white);
 	}
 
 }

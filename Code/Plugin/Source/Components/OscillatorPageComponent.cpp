@@ -31,7 +31,6 @@ __dist(ID,global)
 void OscillatorPageComponent::paint(Graphics& g){
 	g.setColour(Swatch::background);
 	g.fillAll();
-
 }
 
 void OscillatorPageComponent::resized(){
