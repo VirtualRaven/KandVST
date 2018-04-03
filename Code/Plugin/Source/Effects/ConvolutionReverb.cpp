@@ -35,6 +35,8 @@ void ConvolutionReverb<T>::LoadInputResponse(String irName)
 {
 	MemoryInputStream *mem; // Will be deleted automatically
 
+	//StringArray ir = StringArray("Nuclear reactor", "Cathedral", "Living room 1", "Living room 2", "Empty room", "Bathtub");
+
 	if (irName == "Living room 1")
 	{
 		mem = new MemoryInputStream(Resources::IR::living_room1_wav, sizeof(Resources::IR::living_room1_wav), false);
@@ -46,6 +48,18 @@ void ConvolutionReverb<T>::LoadInputResponse(String irName)
 	else if (irName == "Bathtub")
 	{
 		mem = new MemoryInputStream(Resources::IR::bathtub_wav, sizeof(Resources::IR::bathtub_wav), false);
+	}
+	else if (irName == "Nuclear reactor")
+	{
+		mem = new MemoryInputStream(Resources::IR::r1_nuclear_reactor_cut_wav, sizeof(Resources::IR::r1_nuclear_reactor_cut_wav), false);
+	}
+	else if (irName == "Cathedral")
+	{
+		mem = new MemoryInputStream(Resources::IR::cathedral_minster_york_wav, sizeof(Resources::IR::cathedral_minster_york_wav), false);
+	}
+	else if (irName == "Empty room")
+	{
+		mem = new MemoryInputStream(Resources::IR::empty_apartment_bedroom_wav, sizeof(Resources::IR::empty_apartment_bedroom_wav), false);
 	}
 	else
 	{
@@ -110,7 +124,7 @@ void ConvolutionReverb<T>::RegisterParameters(int ID, GLOBAL *global)
 	global->paramHandler->RegisterBool(ID, "REVERB_EN", "REVERB", 0);
 	global->paramHandler->RegisterFloat(ID, "REVERB_DRY", "DRY", 0.0, 1.0, 1.0);
 	global->paramHandler->RegisterFloat(ID, "REVERB_WET", "WET", 0.0, 1.0, 0.6);
-	StringArray ir = StringArray("Living room 1", "Living room 2", "Bathtub");
+	StringArray ir = StringArray("Nuclear reactor", "Cathedral", "Living room 1", "Living room 2", "Empty room", "Bathtub");
 	global->paramHandler->RegisterChoice(ID, "REVERB_IR", "TYPE", ir, 0);
 }
 

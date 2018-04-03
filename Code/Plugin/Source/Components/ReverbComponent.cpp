@@ -26,8 +26,9 @@ IVSTParameters(-1)
 	__cBox.addListener(this);
 	__cBox.setColour(ComboBox::backgroundColourId, Swatch::background);
 	__cBox.setColour(ComboBox::buttonColourId, Swatch::white);
-	__ir = StringArray("Living Room 1", "Living Room 2", "Bathtub");
+	__ir = StringArray("Nuclear reactor", "Cathedral", "Living room 1", "Living room 2", "Empty room", "Bathtub");
 	__cBox.addItemList(__ir, 1);
+	__cBox.setSelectedId(0, false);
 	
 }
 
