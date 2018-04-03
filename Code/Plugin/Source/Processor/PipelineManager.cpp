@@ -141,9 +141,11 @@ void PipelineManager<T>::genSamples(AudioBuffer<T>& buff, MidiBuffer & midiMessa
 	}
 
 	//Effects
-	__filterLP.RenderBlock(buff, buffLen, false);
-	__filterHP.RenderBlock(buff, buffLen, false);
-	__delay.RenderBlock(buff, buffLen, false);
+	bool empty = buffCount == 0;
+
+	__filterLP.RenderBlock(buff, buffLen, empty);
+	__filterHP.RenderBlock(buff, buffLen, empty);
+	__delay.RenderBlock(buff, buffLen, empty);
 
 	__reverb.RenderBlock(buff, buffLen, false);
 }
