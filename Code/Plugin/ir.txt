@@ -11,7 +11,6 @@ Name:		Cathedral
 File name:	cathedral-minster-york.wav
 License:	CC BY-SA 3.0
 Modified:	Yes, shortened with fade out
-License:	CC BY-SA 3.0
 Attribution:	Dr. Damian T. Murphy - Audiolab, University of York - www.openairlib.net 
 Source:		http://www.openairlib.net/auralizationdb/content/york-minster
 
