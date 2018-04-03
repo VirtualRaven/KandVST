@@ -60,7 +60,6 @@ void ReverbComponent::paint(Graphics & g)
 
 		__dryLabel.setColour(Label::textColourId, Swatch::disabled);
 		__wetLabel.setColour(Label::textColourId, Swatch::disabled);
-		__toggleReverb->setColour(ParameterButton::textColourOffId, Swatch::disabled);
 
 	}
 	else {
@@ -70,7 +69,6 @@ void ReverbComponent::paint(Graphics & g)
 
 		__dryLabel.setColour(Label::textColourId, Swatch::white);
 		__wetLabel.setColour(Label::textColourId, Swatch::white);
-		__toggleReverb->setColour(ParameterButton::textColourOffId, Swatch::white);
 	}
 }
 

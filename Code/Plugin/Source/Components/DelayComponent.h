@@ -4,7 +4,9 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "IVSTParameters.h"
 #include "ParameterSlider.h"
+#include "ParameterButton.h"
 #include "Global.h"
+#include "Swatch.h"
 
 class DelayComponent : public Component, private IVSTParameters {
 public:
@@ -17,6 +19,7 @@ public:
 
 private:
 	ScopedPointer<ParameterSlider> __delaySpeed, __delaySeconds;
+	ScopedPointer<ParameterButton> __toggleDelay;
 	Label __speedLabel, __secondsLabel;
 	Rectangle<int> __bounds;
 	GLOBAL * Global;

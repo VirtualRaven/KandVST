@@ -5,6 +5,7 @@
 #include "Global.h"
 #include "ParameterHandler.h"
 #include "IVSTParameters.h"
+
 template<typename T>
 class DelayEffect :
 	public IEffect<T>,
@@ -20,6 +21,7 @@ private:
 	int __delayPos;
 	AudioParameterFloat* __delayLenMult;
 	AudioParameterFloat* __delayMultiplier;
+	AudioParameterBool* __isEnabled;
 	
 public:
 	DelayEffect(int ID,double sampleRate,GLOBAL*global);
