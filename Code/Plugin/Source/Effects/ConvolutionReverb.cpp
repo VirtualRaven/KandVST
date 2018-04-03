@@ -13,7 +13,8 @@ ConvolutionReverb<T>::ConvolutionReverb(int ID, double sampleRate, int maxBuffHi
 	__prevIsEnabled(true),
 	__irFromFile(false),
 	__prevIrName(""),
-	__formatManager()
+	__formatManager(),
+	__prevIsEmpty(false)
 {
 	__formatManager.registerBasicFormats();
 
@@ -117,16 +118,18 @@ template<typename T>
 bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool empty)
 {
 	//Check if enabled
-	if (*__isEnabled == false && __prevIsEnabled)
+	if ((*__isEnabled == false && __prevIsEnabled) || (empty && !__prevIsEmpty))
 	{
 		// Clean everything
 		__prevInputs.clear();
+		__inputBlocks.clear();
 
 		__prevIsEnabled = *__isEnabled;
+		__prevIsEmpty = empty;
 		return false;
 	}
 
-	if (*__isEnabled == false)
+	if (*__isEnabled == false || empty)
 		return false;
 
 	// Check if ir has changed
@@ -259,8 +262,8 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 		float dryOutLeft = bufferp[0][i];
 		float dryOutRight = bufferp[1][i];
 
-		float outLeft = (wetOutLeft*wet + dryOutLeft*dry) / 2;
-		float outRight = (wetOutRight*wet + dryOutRight*dry) / 2;
+		float outLeft = (wetOutLeft*wet + dryOutLeft*dry);
+		float outRight = (wetOutRight*wet + dryOutRight*dry);
 
 		bufferp[0][i] = outLeft;
 	    bufferp[1][i] = outRight;
