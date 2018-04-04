@@ -20,7 +20,7 @@ DistEffect<T>::~DistEffect()
 template<typename T>
 void DistEffect<T>::RegisterParameters(int ID, GLOBAL*Global)
 {
-	Global->paramHandler->RegisterFloat(ID, "DIST_TRSH", "Distortion threshold",0.0f,1.0f,1.0f);
+	Global->paramHandler->RegisterFloat(ID, "DIST_TRSH", "Distortion threshold",0.0f,0.99f,0.0f);
 	Global->paramHandler->RegisterBool(ID, "DIST_EN", "Distortion enable", false);
 	Global->paramHandler->RegisterInt(ID, "DIST_LFO", "Dist lfo", 0, 2, 0);
 }
@@ -36,6 +36,7 @@ bool DistEffect<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool empty) {
 			t -= amount * t * ((lfos[(*__lfoIndex) - 1]->getPointer()[0] + 1.0) / 2.0);
 		}
 	}
+	
 
 	for (int i = 0; i < len; i++) {
 		double samp0 = buff[0][i];
@@ -44,6 +45,11 @@ bool DistEffect<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool empty) {
 		int mul2 = samp1 < 0 ? -1 : 1;
 		buff[0][i] = std::min(abs(samp0),1.1-t) * mul1;
 		buff[1][i] = std::min(abs(samp1),1.1-t) * mul2;
+		
+		/*double k = 2.0 * t / (1.0 - t);
+		buff[0][i] = (1.0 + k)*samp0 / (1.0 + k*abs(samp0));
+		buff[1][i] = (1.0 + k)*samp1 / (1.0 + k*abs(samp1));
+		*/
 	}
 	return true;
 }
