@@ -145,7 +145,7 @@ void PipelineManager<T>::genSamples(AudioBuffer<T>& buff, MidiBuffer & midiMessa
 
 	__filterLP.RenderBlock(buff, buffLen, empty);
 	__filterHP.RenderBlock(buff, buffLen, empty);
-	bool delayModified = __delay.RenderBlock(buff, buffLen, false);
+	bool delayModified = __delay.RenderBlock(buff, buffLen, empty);
 
 	__reverb.RenderBlock(buff, buffLen, empty && !delayModified);
 }
