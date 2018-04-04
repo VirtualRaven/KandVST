@@ -7,6 +7,7 @@
 #include "Components/ConsoleComponent.h"
 #include "Components/MasterPageComponent.h"
 #include "Components/OscillatorPageComponent.h"
+#include "Components/AboutPageComponent.h"
 #include "OurLookAndFeel.h"
 
 class PluginGUI  : public AudioProcessorEditor, private KeyListener, private Timer            

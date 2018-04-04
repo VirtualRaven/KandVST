@@ -1,7 +1,5 @@
 #include "PresetManager.h"
 
-
-
 String PresetManager::getPresetPath()
 {
 	File appData = File( File::getSpecialLocation(juce::File::SpecialLocationType::userApplicationDataDirectory).getFullPathName()+ String("/KandVST/Presets"));

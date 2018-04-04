@@ -190,6 +190,8 @@ x         .         .         "Source/Editor/PluginGUI.cpp"
   .         .         .         "Source/Effects/ConvolutionReverb.h"
   x         .         .         "Source/Components/ReverbComponent.cpp"
   .         .         .         "Source/Components/ReverbComponent.h"
+  x         .         .         "Source/Components/AboutPageComponent.cpp"
+  .         .         .         "Source/Components/AboutPageComponent.h"
 )
 
 jucer_project_module(
