@@ -22,6 +22,7 @@ public:
 private:
 	ScopedPointer<ParameterSlider> __dry, __wet;
 	ScopedPointer<ParameterButton> __toggleReverb;
+	AudioParameterChoice *__irChoice;
 	Label __dryLabel, __wetLabel, __boxLabel;
 	ComboBox __cBox;
 	GLOBAL * Global;

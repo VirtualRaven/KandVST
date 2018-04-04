@@ -4,6 +4,7 @@ ReverbComponent::ReverbComponent(int ID, GLOBAL *global) :
 IVSTParameters(-1)
 {
 	Global = global;
+	__irChoice = Global->paramHandler->Get<AudioParameterChoice>(__ID, "REVERB_IR");
 
 	addAndMakeVisible(__toggleReverb = new ParameterButton(*Global->paramHandler->Get<AudioParameterBool>(__ID, "REVERB_EN")));
 	__toggleReverb->setButtonText("REVERB");
@@ -28,8 +29,7 @@ IVSTParameters(-1)
 	__cBox.setColour(ComboBox::buttonColourId, Swatch::white);
 	__ir = StringArray("Nuclear reactor", "Cathedral", "Living room 1", "Living room 2", "Empty room", "Bathtub");
 	__cBox.addItemList(__ir, 1);
-	__cBox.setSelectedId(0, false);
-	
+	__cBox.setSelectedItemIndex(__irChoice->getIndex(), true);
 }
 
 ReverbComponent::~ReverbComponent() {
@@ -37,7 +37,8 @@ ReverbComponent::~ReverbComponent() {
 }
 
 void ReverbComponent::comboBoxChanged(ComboBox * cbox) {
-	*Global->paramHandler->Get<AudioParameterChoice>(__ID, "REVERB_IR") = cbox->getSelectedId();
+	// This is actually allowed
+	*__irChoice = cbox->getSelectedItemIndex(); 
 }
 
 void ReverbComponent::paint(Graphics & g)
