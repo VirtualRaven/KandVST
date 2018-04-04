@@ -40,6 +40,7 @@ private:
 
 	bool __prevIsEnabled;
 	bool __prevIsEmpty;
+	int __emptyCounter;
 	bool __irFromFile;
 	String __prevIrName;
 

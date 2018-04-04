@@ -14,7 +14,8 @@ ConvolutionReverb<T>::ConvolutionReverb(int ID, double sampleRate, int maxBuffHi
 	__irFromFile(false),
 	__prevIrName(""),
 	__formatManager(),
-	__prevIsEmpty(false)
+	__prevIsEmpty(false),
+	__emptyCounter(0)
 {
 	__formatManager.registerBasicFormats();
 
@@ -132,19 +133,44 @@ template<typename T>
 bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool empty)
 {
 	//Check if enabled
-	if ((*__isEnabled == false && __prevIsEnabled) || (empty && !__prevIsEmpty))
+	if ((*__isEnabled == false && __prevIsEnabled))
 	{
 		// Clean everything
 		__prevInputs.clear();
 		__inputBlocks.clear();
 
+		// Cancel counter
+		__emptyCounter = 0;
+
 		__prevIsEnabled = *__isEnabled;
-		__prevIsEmpty = empty;
 		return false;
 	}
 
-	if (*__isEnabled == false || empty)
+	if (*__isEnabled == false)
 		return false;
+
+	// If empty == true for the first time, let the reverb run to the end
+	if (empty && !__prevIsEmpty)
+	{
+		// Start counter
+		__emptyCounter = __responseBlocks.size();
+	}
+	else if (!empty && __prevIsEmpty)
+	{
+		// Cancel counter
+		__emptyCounter = 0;
+	}
+	else if (empty && __prevIsEmpty)
+	{
+		if (__emptyCounter > 0)
+			__emptyCounter--;
+
+		// The reverb is completely off
+		if (__emptyCounter == 0)
+			return false;
+	}
+
+	__prevIsEmpty = empty;
 
 	// Check if ir has changed
 	auto currentIrName = __ir->getCurrentChoiceName();
