@@ -1,0 +1,20 @@
+Impulse responses for KandVST:
+
+Name:		Nuclear reactor
+File name: 	r1-nuclear-reactor-cut.wav
+License:	CC BY-SA 3.0
+Modified:	Yes, shortened with fade out
+Attribution:	Dr. Damian T. Murphy - Audiolab, University of York - www.openairlib.net 
+Source:		http://www.openairlib.net/auralizationdb/content/r1-nuclear-reactor-hall
+
+Name:		Cathedral
+File name:	cathedral-minster-york.wav
+License:	CC BY-SA 3.0
+Modified:	Yes, shortened with fade out
+Attribution:	Dr. Damian T. Murphy - Audiolab, University of York - www.openairlib.net 
+Source:		http://www.openairlib.net/auralizationdb/content/york-minster
+
+Name:		Empty room
+File name:	empty_apartment_bedroom.wav
+License:	Public Domain
+Source:		http://www.openairlib.net/auralizationdb/content/empty-apartment-bedroom

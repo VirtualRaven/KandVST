@@ -29,8 +29,11 @@ extern unsigned char Title3_png[12272];
 }
 namespace IR{
 extern unsigned char bathtub_wav[429624];
+extern unsigned char cathedral_minster_york_wav[2596532];
+extern unsigned char empty_apartment_bedroom_wav[1726588];
 extern unsigned char living_room1_wav[189676];
 extern unsigned char living_room2_wav[234836];
+extern unsigned char r1_nuclear_reactor_cut_wav[2302766];
 }
 }
 #endif
