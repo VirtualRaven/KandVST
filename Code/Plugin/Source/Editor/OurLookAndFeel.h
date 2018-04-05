@@ -7,6 +7,7 @@
 #include "Components\ParameterSlider.h"
 class OurLookAndFeel : public LookAndFeel_V4
 {
+
 public:
 	 OurLookAndFeel();
 	~OurLookAndFeel();
@@ -24,7 +25,11 @@ public:
 	
 	void drawButtonText(Graphics&, TextButton&, bool isMouseOverButton, bool isButtonDown) override;
 
+	void setThemeId(int themeID);
+	int getThemeId();
+
 private :
+	int __themeID;
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OurLookAndFeel)
 };
 

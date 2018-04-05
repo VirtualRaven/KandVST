@@ -5,15 +5,35 @@ OurLookAndFeel::~OurLookAndFeel() {
 
 OurLookAndFeel::OurLookAndFeel() {
 	
-	setColour(Slider::backgroundColourId, Colour::fromRGB(30,30,30));
+	setColour(Slider::backgroundColourId, Colour::fromRGB(30, 30, 30));
 	setColour(Slider::thumbColourId, Colour::fromRGB(26, 105, 180));
 	setColour(Slider::trackColourId, Colour::fromRGB(26, 26, 26));
 	setColour(ListBox::backgroundColourId, Colour::fromRGB(25, 45, 75));
 	setColour(TextButton::textColourOnId, Swatch::white);
 	setColour(TextButton::textColourOffId, Swatch::disabled);
-	
+	setColour(1337, Swatch::accentBlue);
 }
 
+void OurLookAndFeel::setThemeId(int themeId) {
+	__themeID = themeId;
+	Colour newColour;
+	switch (themeId) {
+	case 0: newColour = Swatch::accentBlue;
+		break;
+	case 1: newColour = Swatch::accentPink;
+		break;
+	case 2: newColour = Swatch::accentGreen;
+		break;
+	}
+	
+	setColour(1337, newColour);
+	setColour(TextButton::ColourIds::buttonOnColourId, newColour.darker(0.7f).withSaturation(0.5f));
+
+}
+
+int OurLookAndFeel::getThemeId() {
+	return __themeID;
+}
 
 void OurLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int width, int height
 	, float sliderPos, const float rotaryStartAngle, const float rotaryEndAngle, Slider & slider)
@@ -81,7 +101,7 @@ void OurLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int width, int 
 			g.setColour(dotColour);
 			g.fillPath(dots);
 
-			g.setColour(Swatch::accentBlue);
+			g.setColour(findColour(1337));
 			for (int i = 0; i <= intParam->getRange().getLength() + 1; i++)
 			{
 				switch (ps->getDrawProgress())
@@ -161,7 +181,7 @@ void OurLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int width, int 
 			g.setColour(dotColour);
 			g.strokePath(pB, pst);
 
-			g.setColour(Swatch::accentBlue);
+			g.setColour(findColour(1337));
 			g.strokePath(pFill, pst);
 		}
 		Image waveImage;
