@@ -29,7 +29,6 @@ private:
 	std::list<AudioSampleBuffer> __inputBlocks;
 	std::list<AudioSampleBuffer> __prevInputs;
 	
-	int __overlapBufferLen;
 	int __responseBufferLen;
 	int __prevBlockSize;
 

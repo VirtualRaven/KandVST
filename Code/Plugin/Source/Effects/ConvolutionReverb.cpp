@@ -8,7 +8,6 @@ ConvolutionReverb<T>::ConvolutionReverb(int ID, double sampleRate, int maxBuffHi
 	IVSTParameters(ID),
 	__prevBlockSize(maxBuffHint),
 	__responseBuffer(),
-	__overlapBufferLen(0),
 	__maxBuffHint(maxBuffHint),
 	__prevIsEnabled(true),
 	__irFromFile(false),
@@ -132,6 +131,16 @@ void ConvolutionReverb<T>::RegisterParameters(int ID, GLOBAL *global)
 template<typename T>
 bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool empty)
 {
+	// Check if ir has changed (even if disabled)
+	auto currentIrName = __ir->getCurrentChoiceName();
+	if (!__irFromFile && currentIrName.compare(__prevIrName) != 0)
+	{
+		LoadInputResponse(currentIrName);
+
+		__prevIrName = currentIrName;
+		return false;
+	}
+
 	//Check if enabled
 	if ((*__isEnabled == false && __prevIsEnabled))
 	{
@@ -171,16 +180,6 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 	}
 
 	__prevIsEmpty = empty;
-
-	// Check if ir has changed
-	auto currentIrName = __ir->getCurrentChoiceName();
-	if (!__irFromFile && currentIrName.compare(__prevIrName) != 0)
-	{
-		LoadInputResponse(currentIrName);
-
-		__prevIrName = currentIrName;
-		return false;
-	}
 
 	if (__responseBlocks.size() == 0)
 		return false;
@@ -320,6 +319,10 @@ void ConvolutionReverb<T>::ProccessCommand(MidiMessage message)
 template<typename T>
 void ConvolutionReverb<T>::Reset()
 {
+	// Clear all previous values
+	__inputBlocks.clear();
+	__prevInputs.clear();
+	__emptyCounter = 0;
 }
 
 template class ConvolutionReverb<double>;
