@@ -21,7 +21,6 @@ private:
 	AudioFormatManager __formatManager;
 
 	AudioSampleBuffer __responseBuffer;
-	AudioSampleBuffer __prevInput;
 
 	ScopedPointer<dsp::FFT> __fft;
 	ScopedPointer<dsp::FFT> __ifft;
@@ -30,7 +29,6 @@ private:
 	std::list<AudioSampleBuffer> __inputBlocks;
 	std::list<AudioSampleBuffer> __prevInputs;
 	
-	int __overlapBufferLen;
 	int __responseBufferLen;
 	int __prevBlockSize;
 
@@ -40,6 +38,8 @@ private:
 	AudioParameterChoice *__ir;
 
 	bool __prevIsEnabled;
+	bool __prevIsEmpty;
+	int __emptyCounter;
 	bool __irFromFile;
 	String __prevIrName;
 

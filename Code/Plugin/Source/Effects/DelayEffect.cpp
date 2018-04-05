@@ -11,6 +11,7 @@ DelayEffect<T>::DelayEffect(int ID, double sampleRate,GLOBAL*global) :
 	__delayPos(0)
 {
 	Global = global;
+	__isEnabled = global->paramHandler->Get<AudioParameterBool>(ID, "DELAY_EN");
 	__delayMultiplier = Global->paramHandler->Get<AudioParameterFloat>(ID, "EX_DELAYMULTI");
 	__delayLenMult = Global->paramHandler->Get<AudioParameterFloat>(ID, "EX_DELAYLENGTH");
 
@@ -28,6 +29,7 @@ DelayEffect<T>::~DelayEffect()
 template<typename T>
 void DelayEffect<T>::RegisterParameters(int ID,GLOBAL*Global)
 {
+	Global->paramHandler->RegisterBool(ID, "DELAY_EN", "DELAY", 0);
 	Global->paramHandler->RegisterFloat(ID, "EX_DELAYMULTI", "Delay", 0.0f, 1.0f, 0.2f);
 	Global->paramHandler->RegisterFloat(ID, "EX_DELAYLENGTH", "Delay Length", 0.125f, 4.0f, 0.25f);
 }
@@ -35,6 +37,10 @@ void DelayEffect<T>::RegisterParameters(int ID,GLOBAL*Global)
 template<typename T>
 bool DelayEffect<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool empty)
 {
+	// Check if enabled
+	if (*__isEnabled == false)
+		return false;
+
 	float multi =*__delayMultiplier;
 	float lenmult =  *__delayLenMult;
 
@@ -47,8 +53,9 @@ bool DelayEffect<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool empty)
 	}
 	__prevDelayLen = __delayLen;
 
+	// Disable when empty
 	if (empty) {
-		if(__delayBuffer.getMagnitude(0,__delayLen) < 0.01 )
+		if(__delayBuffer.getMagnitude(0,__delayLen) < 0.0001 )
 			return false;
 		else {
 			auto buff = buffer.getArrayOfWritePointers();

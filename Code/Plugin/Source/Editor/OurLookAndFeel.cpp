@@ -9,6 +9,9 @@ OurLookAndFeel::OurLookAndFeel() {
 	setColour(Slider::thumbColourId, Colour::fromRGB(26, 105, 180));
 	setColour(Slider::trackColourId, Colour::fromRGB(26, 26, 26));
 	setColour(ListBox::backgroundColourId, Colour::fromRGB(25, 45, 75));
+	setColour(TextButton::textColourOnId, Swatch::white);
+	setColour(TextButton::textColourOffId, Swatch::disabled);
+	
 }
 
 

@@ -8,12 +8,13 @@ ConvolutionReverb<T>::ConvolutionReverb(int ID, double sampleRate, int maxBuffHi
 	IVSTParameters(ID),
 	__prevBlockSize(maxBuffHint),
 	__responseBuffer(),
-	__overlapBufferLen(0),
 	__maxBuffHint(maxBuffHint),
 	__prevIsEnabled(true),
 	__irFromFile(false),
 	__prevIrName(""),
-	__formatManager()
+	__formatManager(),
+	__prevIsEmpty(false),
+	__emptyCounter(0)
 {
 	__formatManager.registerBasicFormats();
 
@@ -34,6 +35,8 @@ void ConvolutionReverb<T>::LoadInputResponse(String irName)
 {
 	MemoryInputStream *mem; // Will be deleted automatically
 
+	//StringArray ir = StringArray("Nuclear reactor", "Cathedral", "Living room 1", "Living room 2", "Empty room", "Bathtub");
+
 	if (irName == "Living room 1")
 	{
 		mem = new MemoryInputStream(Resources::IR::living_room1_wav, sizeof(Resources::IR::living_room1_wav), false);
@@ -46,6 +49,18 @@ void ConvolutionReverb<T>::LoadInputResponse(String irName)
 	{
 		mem = new MemoryInputStream(Resources::IR::bathtub_wav, sizeof(Resources::IR::bathtub_wav), false);
 	}
+	else if (irName == "Nuclear reactor")
+	{
+		mem = new MemoryInputStream(Resources::IR::r1_nuclear_reactor_cut_wav, sizeof(Resources::IR::r1_nuclear_reactor_cut_wav), false);
+	}
+	else if (irName == "Cathedral")
+	{
+		mem = new MemoryInputStream(Resources::IR::cathedral_minster_york_wav, sizeof(Resources::IR::cathedral_minster_york_wav), false);
+	}
+	else if (irName == "Empty room")
+	{
+		mem = new MemoryInputStream(Resources::IR::empty_apartment_bedroom_wav, sizeof(Resources::IR::empty_apartment_bedroom_wav), false);
+	}
 	else
 	{
 		return;
@@ -57,14 +72,17 @@ void ConvolutionReverb<T>::LoadInputResponse(String irName)
 template<typename T>
 void ConvolutionReverb<T>::__loadImpulseResponse(ScopedPointer<AudioFormatReader> reader)
 {
+	__prevInputs.clear();
+	__inputBlocks.clear();
+
 	__responseBufferLen = nextPowerOfTwo(reader->lengthInSamples);
 	__responseBuffer.setSize(2, __responseBufferLen, false, false, false);
 	__responseBuffer.clear();
 	reader->read(&__responseBuffer, 0, reader->lengthInSamples, 0, true, true);
 
-	__responseBufferLen /= 2;
+	//__responseBufferLen /= 2;
 
-	__createResponseBlocks(__maxBuffHint);
+	__createResponseBlocks(__prevBlockSize);
 }
 
 
@@ -72,6 +90,7 @@ void ConvolutionReverb<T>::__loadImpulseResponse(ScopedPointer<AudioFormatReader
 template<typename T>
 void ConvolutionReverb<T>::__createResponseBlocks(int len)
 {
+	__responseBlocks.clear();
 	int blockSize = nextPowerOfTwo(len);
 
 	__fft = new dsp::FFT(roundDoubleToInt(log2(2 * blockSize)));
@@ -105,19 +124,32 @@ void ConvolutionReverb<T>::RegisterParameters(int ID, GLOBAL *global)
 	global->paramHandler->RegisterBool(ID, "REVERB_EN", "REVERB", 0);
 	global->paramHandler->RegisterFloat(ID, "REVERB_DRY", "DRY", 0.0, 1.0, 1.0);
 	global->paramHandler->RegisterFloat(ID, "REVERB_WET", "WET", 0.0, 1.0, 0.6);
-	StringArray ir = StringArray("Living room 1", "Living room 2", "Bathtub");
+	StringArray ir = StringArray("Nuclear reactor", "Cathedral", "Living room 1", "Living room 2", "Empty room", "Bathtub");
 	global->paramHandler->RegisterChoice(ID, "REVERB_IR", "TYPE", ir, 0);
 }
 
 template<typename T>
 bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool empty)
 {
+	// Check if ir has changed (even if disabled)
+	auto currentIrName = __ir->getCurrentChoiceName();
+	if (!__irFromFile && currentIrName.compare(__prevIrName) != 0)
+	{
+		LoadInputResponse(currentIrName);
+
+		__prevIrName = currentIrName;
+		return false;
+	}
+
 	//Check if enabled
-	if (*__isEnabled == false && __prevIsEnabled)
+	if ((*__isEnabled == false && __prevIsEnabled))
 	{
 		// Clean everything
-		__prevInput.clear();
 		__prevInputs.clear();
+		__inputBlocks.clear();
+
+		// Cancel counter
+		__emptyCounter = 0;
 
 		__prevIsEnabled = *__isEnabled;
 		return false;
@@ -126,14 +158,28 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 	if (*__isEnabled == false)
 		return false;
 
-	if (!__irFromFile && __ir->getCurrentChoiceName().compare(__prevIrName) != 0)
+	// If empty == true for the first time, let the reverb run to the end
+	if (empty && !__prevIsEmpty)
 	{
-		// The ir choice has changed
-		LoadInputResponse(__ir->getCurrentChoiceName());
-
-		__prevIrName = __ir->getCurrentChoiceName();
-		return false;
+		// Start counter
+		__emptyCounter = __responseBlocks.size();
 	}
+	else if (!empty && __prevIsEmpty)
+	{
+		// Cancel counter
+		__emptyCounter = 0;
+	}
+	else if (empty && __prevIsEmpty)
+	{
+		if (__emptyCounter > 0)
+			__emptyCounter--;
+
+		// The reverb is completely off
+		if (__emptyCounter == 0)
+			return false;
+	}
+
+	__prevIsEmpty = empty;
 
 	if (__responseBlocks.size() == 0)
 		return false;
@@ -148,14 +194,13 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 	{
 		__prevBlockSize = len;
 
-		__prevInput.clear();
 		__prevInputs.clear();
-		__responseBlocks.clear();
 
 		__fft = new dsp::FFT(roundDoubleToInt(log2(2*blockSize)));
 		__ifft = new dsp::FFT(roundDoubleToInt(log2(2*blockSize)));
 
 		__createResponseBlocks(len);
+		__prevBlockSize = len;
 	}
 
 	// x: Input of length 2*blockSize
@@ -202,7 +247,7 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 
 	// Put the new TRANSFORMED input block in front of the list, remove the last if nessesary
 	__inputBlocks.push_front(x);
-	if (__inputBlocks.size() >= __responseBlocks.size())
+	if (__inputBlocks.size() > __responseBlocks.size())
 		__inputBlocks.pop_back();
 
 
@@ -256,8 +301,8 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 		float dryOutLeft = bufferp[0][i];
 		float dryOutRight = bufferp[1][i];
 
-		float outLeft = (wetOutLeft*wet + dryOutLeft*dry) / 2;
-		float outRight = (wetOutRight*wet + dryOutRight*dry) / 2;
+		float outLeft = (wetOutLeft*wet + dryOutLeft*dry);
+		float outRight = (wetOutRight*wet + dryOutRight*dry);
 
 		bufferp[0][i] = outLeft;
 	    bufferp[1][i] = outRight;
@@ -274,6 +319,10 @@ void ConvolutionReverb<T>::ProccessCommand(MidiMessage message)
 template<typename T>
 void ConvolutionReverb<T>::Reset()
 {
+	// Clear all previous values
+	__inputBlocks.clear();
+	__prevInputs.clear();
+	__emptyCounter = 0;
 }
 
 template class ConvolutionReverb<double>;

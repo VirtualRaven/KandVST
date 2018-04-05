@@ -1,4 +1,5 @@
 # KandVST
+[![Build status](https://build.rahmn.net/guestAuth/app/rest/builds/buildType:id:KandVST_Build/statusIcon.svg)]()
 
 
 

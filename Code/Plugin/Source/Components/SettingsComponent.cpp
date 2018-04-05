@@ -22,12 +22,12 @@ SettingsComponent::SettingsComponent(GLOBAL*global)
 
 }
 
-void SettingsComponent::paint(Graphics& g) {
-
+void SettingsComponent::paint(Graphics& g)
+{
 	int width = __bounds.getWidth();
 	int height = __bounds.getHeight();
-	int fontHeight = __bounds.getHeight() * 0.1;
-	int fontSize = __bounds.getHeight() * 0.06;
+	int fontHeight = __bounds.getHeight() * 0.2;
+	int fontSize = __bounds.getHeight() * 0.16;
 
 	g.setColour(Colour::fromRGB(60, 60, 60));
 	g.drawRect(Rectangle<int>(0, 0, width, height), 2.0f);
@@ -44,14 +44,16 @@ void SettingsComponent::resized()
 {
 	
 	__bounds = getLocalBounds();
-	int fontHeight = __bounds.getHeight() * 0.1;
+	int fontHeight = __bounds.getHeight() * 0.2;
 	Rectangle<int> settings(__bounds.reduced(8));
 	settings.removeFromTop(fontHeight);
 	settings.removeFromTop(__pitchBendLabel.getFont().getHeight());
-	int space = settings.getHeight() * 0.4;
-	settings.removeFromBottom(settings.getHeight() * 0.1);
-	__pitchBendSens->setBounds(settings.removeFromBottom(space));
-	settings.removeFromBottom(settings.getHeight() * 0.1);
+	
+	int space = settings.getWidth() * 0.5;
+	
+	__pitchBendSens->setBounds(settings.removeFromLeft(space));
+	
+	
 	__selectKnob->setBounds(settings);
 
 }

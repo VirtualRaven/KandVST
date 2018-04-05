@@ -7,21 +7,21 @@ PresetRow::PresetRow(int s, bool isSelected, ListBox* owner,GLOBAL*global):
 	__rowNr(s),
 	__owner(owner)
 {
+
 	Global = global;
 	__lbl.addMouseListener(this, true);
 	addAndMakeVisible(__lbl);
 	__delete.addListener(this);
 	__save.addListener(this);
-	Image delImage = ImageFileFormat::loadFrom(Resources::Icons::delete_png, sizeof(Resources::Icons::delete_png));
-	Image saveImage = ImageFileFormat::loadFrom(Resources::Icons::save_png, sizeof(Resources::Icons::save_png));
+	Image delImage = ImageFileFormat::loadFrom(Resources::Icons::delete2_png, sizeof(Resources::Icons::delete2_png));
+	Image saveImage = ImageFileFormat::loadFrom(Resources::Icons::save2_png, sizeof(Resources::Icons::save2_png));
 	__delete.setImages(false, true, true, delImage, 1.0f, Colours::transparentBlack, delImage, 0.7f, Colours::transparentBlack, delImage, 0.5f, Colours::transparentBlack);
 	__save.setImages(false, true, true, saveImage, 1.0f, Colours::transparentBlack, saveImage, 0.7f, Colours::transparentBlack, saveImage, 0.5f, Colours::transparentBlack);
 	if (isSelected) {
 		addAndMakeVisible(__save);
 		addAndMakeVisible(__delete);
 	}
-	
-	
+
 }
 PresetRow::~PresetRow()
 {
@@ -41,13 +41,15 @@ PresetRow::~PresetRow()
 }*/
 
 void PresetRow::buttonClicked(Button * btn) {
-	if (btn = &__save)
+	if (btn == &__save)
 	{
 		Global->presetManager->SavePreset(Global->presetManager->GetPresetNames()[__rowNr]);
+		__owner->updateContent();
 	}
-	else if (btn = &__delete)
+	else if (btn == &__delete)
 	{
-		// add deletefunction in presetmanager
+		Global->presetManager->DeletePreset(Global->presetManager->GetPresetNames()[__rowNr]);
+		__owner->updateContent();
 	}
 	
 }
@@ -62,10 +64,6 @@ void PresetRow::mouseDown(const MouseEvent & event)
 	__owner->selectRow(__rowNr, false, true);
 
 }
-
-
-
-
 
 void PresetRow::resized()
 {
