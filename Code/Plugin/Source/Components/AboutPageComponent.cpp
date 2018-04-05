@@ -11,7 +11,7 @@ AboutPageComponent::AboutPageComponent(GLOBAL * global) :
 	Global = global;
 	__info.setReadOnly(true);
 	setLookAndFeel(&ourLookAndFeel);
-	File about = File(juce::File::getCurrentWorkingDirectory().getParentDirectory().getFullPathName() + String("/Resources/about.txt"));
+	File about = File(juce::File::getCurrentWorkingDirectory().getParentDirectory().getFullPathName() + String("/about.txt"));
 	FileInputStream * str = about.createInputStream();
 
 	if (str->openedOk()) {
@@ -25,7 +25,7 @@ AboutPageComponent::AboutPageComponent(GLOBAL * global) :
 	__themes.addListener(this);
 	StringArray themes = { "Default", "Pink is life", "Go Green" };
 	__themes.addItemList(themes, 1);
-	__themes.setSelectedItemIndex(ourLookAndFeel.getThemeId(), false);
+	__themes.setSelectedItemIndex(0, true);
 
 }
 

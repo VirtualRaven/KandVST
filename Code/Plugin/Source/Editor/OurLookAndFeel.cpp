@@ -12,6 +12,7 @@ OurLookAndFeel::OurLookAndFeel() {
 	setColour(TextButton::textColourOnId, Swatch::white);
 	setColour(TextButton::textColourOffId, Swatch::disabled);
 	setColour(1337, Swatch::accentBlue);
+	setThemeId(__themeID);
 }
 
 void OurLookAndFeel::setThemeId(int themeId) {
@@ -25,10 +26,8 @@ void OurLookAndFeel::setThemeId(int themeId) {
 	case 2: newColour = Swatch::accentGreen;
 		break;
 	}
-	
 	setColour(1337, newColour);
 	setColour(TextButton::ColourIds::buttonOnColourId, newColour.darker(0.7f).withSaturation(0.5f));
-
 }
 
 int OurLookAndFeel::getThemeId() {
@@ -100,8 +99,9 @@ void OurLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int width, int 
 
 			g.setColour(dotColour);
 			g.fillPath(dots);
+			
+			g.setColour(Swatch::accentBlue);
 
-			g.setColour(findColour(1337));
 			for (int i = 0; i <= intParam->getRange().getLength() + 1; i++)
 			{
 				switch (ps->getDrawProgress())
@@ -181,7 +181,7 @@ void OurLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int width, int 
 			g.setColour(dotColour);
 			g.strokePath(pB, pst);
 
-			g.setColour(findColour(1337));
+			g.setColour(Swatch::accentBlue);
 			g.strokePath(pFill, pst);
 		}
 		Image waveImage;
