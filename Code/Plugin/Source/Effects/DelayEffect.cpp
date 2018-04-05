@@ -38,7 +38,7 @@ template<typename T>
 bool DelayEffect<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool empty)
 {
 	// Check if enabled
-	if (*__isEnabled == false || empty)
+	if (*__isEnabled == false)
 		return false;
 
 	float multi =*__delayMultiplier;
@@ -53,8 +53,9 @@ bool DelayEffect<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool empty)
 	}
 	__prevDelayLen = __delayLen;
 
+	// Disable when empty
 	if (empty) {
-		if(__delayBuffer.getMagnitude(0,__delayLen) < 0.01 )
+		if(__delayBuffer.getMagnitude(0,__delayLen) < 0.0001 )
 			return false;
 		else {
 			auto buff = buffer.getArrayOfWritePointers();
