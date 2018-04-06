@@ -17,6 +17,7 @@ class ConvolutionReverb :
 
 private:
 	int __maxBuffHint;
+	double __sampleRate;
 
 	AudioFormatManager __formatManager;
 

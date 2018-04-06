@@ -5,6 +5,7 @@
 template<typename T>
 ConvolutionReverb<T>::ConvolutionReverb(int ID, double sampleRate, int maxBuffHint, GLOBAL *global) :
 	IEffect(sampleRate),
+	__sampleRate(sampleRate),
 	IVSTParameters(ID),
 	__prevBlockSize(maxBuffHint),
 	__responseBuffer(),
@@ -113,10 +114,37 @@ void ConvolutionReverb<T>::__loadImpulseResponse(ScopedPointer<AudioFormatReader
 		return;
 	}
 
-	__responseBufferLen = nextPowerOfTwo(reader->lengthInSamples);
-	__responseBuffer.setSize(2, __responseBufferLen, false, false, false);
-	__responseBuffer.clear();
-	reader->read(&__responseBuffer, 0, reader->lengthInSamples, 0, true, true);
+	// Read the ir
+	AudioSampleBuffer readBuff;
+	readBuff.setSize(2, reader->lengthInSamples, false, false, false);
+	readBuff.clear();
+	reader->read(&readBuff, 0, reader->lengthInSamples, 0, true, true);
+
+	double sampleRateRatio = reader->sampleRate / __sampleRate;
+
+	if (sampleRateRatio != 1.0)
+	{
+		// Resample
+		LagrangeInterpolator interpLeft;
+		LagrangeInterpolator interpRight;
+
+		int newLen = roundDoubleToInt(double(reader->lengthInSamples) / sampleRateRatio);
+		__responseBufferLen = nextPowerOfTwo(newLen);
+		__responseBuffer.setSize(2, __responseBufferLen, false, false, false);
+		__responseBuffer.clear();
+		
+		interpLeft.process(sampleRateRatio, readBuff.getWritePointer(0), __responseBuffer.getWritePointer(0), newLen);
+		interpRight.process(sampleRateRatio, readBuff.getWritePointer(1), __responseBuffer.getWritePointer(1), newLen);
+	}
+	else
+	{
+		// Just copy
+		__responseBufferLen = nextPowerOfTwo(reader->lengthInSamples);
+		__responseBuffer.setSize(2, __responseBufferLen, false, false, false);
+		__responseBuffer.clear();
+		__responseBuffer.copyFrom(0, 0, readBuff, 0, 0, reader->lengthInSamples);
+		__responseBuffer.copyFrom(1, 0, readBuff, 1, 0, reader->lengthInSamples);
+	}
 
 	//__responseBufferLen /= 2;
 
