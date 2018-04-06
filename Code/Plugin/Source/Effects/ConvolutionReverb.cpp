@@ -27,53 +27,91 @@ ConvolutionReverb<T>::ConvolutionReverb(int ID, double sampleRate, int maxBuffHi
 template<typename T>
 void ConvolutionReverb<T>::LoadInputResponse(File file)
 {
-	__loadImpulseResponse(__formatManager.createReaderFor(file));
+	// Possible error message
+	String info = String();
+	if (!file.exists())
+	{
+		info = "File " + String(file.getFileName()) + " does not exist.";
+	}
+	else
+	{
+		info = "File: " + String(file.getFileName()) + ", Size: " + String(file.getSize()) + " bytes";
+	}
+		
+	__loadImpulseResponse(__formatManager.createReaderFor(file), info);
 }
 
 template<typename T>
 void ConvolutionReverb<T>::LoadInputResponse(String irName)
 {
-	MemoryInputStream *mem; // Will be deleted automatically
-
 	//StringArray ir = StringArray("Nuclear reactor", "Cathedral", "Living room 1", "Living room 2", "Empty room", "Bathtub");
+
+	const void *data;
+	size_t length = 0;
 
 	if (irName == "Living room 1")
 	{
-		mem = new MemoryInputStream(Resources::IR::living_room1_wav, sizeof(Resources::IR::living_room1_wav), false);
+		data = Resources::IR::living_room1_wav;
+		length = sizeof(Resources::IR::living_room1_wav);
 	}
 	else if (irName == "Living room 2")
 	{
-		mem = new MemoryInputStream(Resources::IR::living_room2_wav, sizeof(Resources::IR::living_room2_wav), false);
+		data = Resources::IR::living_room2_wav;
+		length = sizeof(Resources::IR::living_room2_wav);
 	}
 	else if (irName == "Bathtub")
 	{
-		mem = new MemoryInputStream(Resources::IR::bathtub_wav, sizeof(Resources::IR::bathtub_wav), false);
+		data = Resources::IR::bathtub_wav;
+		length = sizeof(Resources::IR::bathtub_wav);
 	}
 	else if (irName == "Nuclear reactor")
 	{
-		mem = new MemoryInputStream(Resources::IR::r1_nuclear_reactor_cut_wav, sizeof(Resources::IR::r1_nuclear_reactor_cut_wav), false);
+		data = Resources::IR::r1_nuclear_reactor_cut_wav;
+		length = sizeof(Resources::IR::r1_nuclear_reactor_cut_wav);
 	}
 	else if (irName == "Cathedral")
 	{
-		mem = new MemoryInputStream(Resources::IR::cathedral_minster_york_wav, sizeof(Resources::IR::cathedral_minster_york_wav), false);
+		data = Resources::IR::cathedral_minster_york_wav;
+		length = sizeof(Resources::IR::cathedral_minster_york_wav);
 	}
 	else if (irName == "Empty room")
 	{
-		mem = new MemoryInputStream(Resources::IR::empty_apartment_bedroom_wav, sizeof(Resources::IR::empty_apartment_bedroom_wav), false);
+		data = Resources::IR::empty_apartment_bedroom_wav;
+		length = sizeof(Resources::IR::empty_apartment_bedroom_wav);
 	}
 	else
 	{
 		return;
 	}
 
-	__loadImpulseResponse(__formatManager.createReaderFor(mem));
+	MemoryInputStream *mem; // Will be deleted automatically
+	mem = new MemoryInputStream(data, length, false);
+
+	String info = "Internal name: " + irName + ", " + "Size: " + String(length) + " bytes";
+	__loadImpulseResponse(__formatManager.createReaderFor(mem), info);
 }
 
 template<typename T>
-void ConvolutionReverb<T>::__loadImpulseResponse(ScopedPointer<AudioFormatReader> reader)
+void ConvolutionReverb<T>::__loadImpulseResponse(ScopedPointer<AudioFormatReader> reader, String errorInfo = "")
 {
 	__prevInputs.clear();
 	__inputBlocks.clear();
+
+	// Check if reader is null
+	if (reader == nullptr)
+	{
+		NativeMessageBox::showMessageBoxAsync(
+			AlertWindow::AlertIconType::WarningIcon, 
+			"Reverb Error", 
+			"Could not load selected impulse reponse.\n" + errorInfo
+		);
+
+		__responseBlocks.clear();
+		__responseBuffer.clear();
+
+		// Reverb will be disabled until the user selects a different IR
+		return;
+	}
 
 	__responseBufferLen = nextPowerOfTwo(reader->lengthInSamples);
 	__responseBuffer.setSize(2, __responseBufferLen, false, false, false);
