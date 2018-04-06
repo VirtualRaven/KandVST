@@ -54,7 +54,7 @@ void SettingsComponent::resized()
 	__pitchBendSens->setBounds(settings.removeFromLeft(space));
 	
 	
-	__selectKnob->setBounds(settings);
+	__selectKnob->setBounds(settings.removeFromLeft(2*space));
 
 }
 

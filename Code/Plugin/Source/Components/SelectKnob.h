@@ -18,7 +18,7 @@ private:
 	void paint(Graphics& g) override;
 };
 
-class SelectKnob : public Component
+class SelectKnob : public ParameterSlider
 {
 public:
 	SelectKnob(AudioParameterChoice& p,GLOBAL*global);
@@ -26,7 +26,6 @@ public:
 	GLOBAL*Global;
 private:
 	float __angleBetweenPos;
-	SelectKnobSlider __slider;
 	std::vector<float> __snapAngles;
 	AudioParameterChoice& __param;
 	Point<float> angleToPos(float angle, float d);
