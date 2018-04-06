@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.4)
 if(TARGET KandVST_VST3)
-    
+	
+	#List of ignored test, these will not be compiled until removed
+	list(APPEND IGNORED_TESTS "")
+	list(APPEND IGNORED_TESTS "Lowpass_filter")
+	
 	include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
     # VST header files
@@ -24,12 +28,16 @@ if(TARGET KandVST_VST3)
 		STRING(REGEX MATCH ".*\/([^\/\\]*)\/.*\.h" str_match ${item})
 		set(tmp ${CMAKE_MATCH_1})
 		if(${str_match} MATCHES "${CMAKE_MATCH_1}\.h$")
-			add_test(NAME ${tmp} COMMAND tester -T ${tmp})
-			list(APPEND TEST_CLASSES ${tmp})
-			list(APPEND TEST_HEADERS "${tmp}/${tmp}.h")
-			list(APPEND TEST_NEW "new ${tmp}")
-			#Also create the test folder when we are at it
-			file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/Tests/${tmp}/")
+			if(${tmp} IN_LIST IGNORED_TESTS)
+				message(WARNING "Ignoring test ${tmp} due to cmake ignore setting")			
+			else()
+				add_test(NAME ${tmp} COMMAND tester -T ${tmp})
+				list(APPEND TEST_CLASSES ${tmp})
+				list(APPEND TEST_HEADERS "${tmp}/${tmp}.h")
+				list(APPEND TEST_NEW "new ${tmp}")
+				#Also create the test folder when we are at it
+				file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/Tests/${tmp}/")
+			endif()
 		endif()
 	ENDFOREACH()
     
