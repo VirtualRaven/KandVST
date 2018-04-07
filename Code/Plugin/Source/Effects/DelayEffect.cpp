@@ -9,7 +9,8 @@ DelayEffect<T>::DelayEffect(int ID, double sampleRate,GLOBAL*global) :
 	__delayLen(0),	// Actual delay length
 	__prevDelayLen(0),
 	__delayPos(0),
-	__bps(0.0)
+	__bps(0.0),
+	__prevStatus(false)
 {
 	Global = global;
 	__isEnabled = global->paramHandler->Get<AudioParameterBool>(ID, "DELAY_EN");
@@ -29,8 +30,14 @@ DelayEffect<T>::~DelayEffect()
 {
 }
 template<typename T>
-void DelayEffect<T>::setBps(double bpm) {
+void DelayEffect<T>::setStatus(double bpm, bool status) {
 	__bps = bpm / 60.0;
+	if (__prevStatus != status)
+	{
+		//Clear buffer at starting or stopping the track
+		__delayBuffer.clear();
+	}
+	__prevStatus = status;
 }
 template<typename T>
 void DelayEffect<T>::RegisterParameters(int ID,GLOBAL*Global)

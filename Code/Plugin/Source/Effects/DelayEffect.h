@@ -20,6 +20,7 @@ private:
 	int __prevDelayLen;
 	int __delayPos;
 	double __bps; // beats per second
+	bool __prevStatus;
 	AudioParameterFloat* __delayLenMult;
 	AudioParameterFloat* __delayMultiplier;
 	AudioParameterBool* __isEnabled;
@@ -30,7 +31,7 @@ public:
 	~DelayEffect();
 	bool RenderBlock(AudioBuffer<T>& buffer, int len, bool empty) override;
 	static void RegisterParameters(int ID, GLOBAL*Global);
-	void setBps(double bpm);
+	void setStatus(double bpm,bool status);
 
 	virtual void ProccessCommand(MidiMessage message) override;
 	virtual void Reset() override;
