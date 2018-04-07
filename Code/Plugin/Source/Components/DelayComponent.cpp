@@ -68,7 +68,7 @@ void DelayComponent::resized() {
 	__toggleDelay->setBounds(__bounds.removeFromTop(fontHeight));
 
 
-	__toggleSync->setBounds(__bounds.reduced(16).removeFromTop(fontHeight * 0.8).removeFromLeft(__bounds.getWidth()*0.5).removeFromRight(__bounds.getWidth()*0.25));
+	
 
 	Rectangle<int> __delayBounds(__bounds.reduced(8));
 	__delayBounds.removeFromTop(__secondsLabel.getFont().getHeight());
@@ -76,8 +76,11 @@ void DelayComponent::resized() {
 	
 
 	int __size = (__delayBounds.getWidth() * 0.5f);
-	__delaySpeed->setBounds(__delayBounds.removeFromLeft(__size));
-	__delaySeconds->setBounds(__delayBounds);
+	int height = __bounds.getHeight()*0.5;
+	__delaySpeed->setBounds(__delayBounds.removeFromLeft(__size).removeFromTop(height).removeFromBottom(height));
+	__delaySeconds->setBounds(__delayBounds.removeFromTop(height).removeFromBottom(height));
 
+	Rectangle<int> syncBounds = __bounds.reduced(8).removeFromBottom(fontHeight*0.5).removeFromRight(__bounds.reduced(8).getWidth()*0.75);
+	__toggleSync->setBounds(syncBounds.removeFromLeft(syncBounds.getWidth() * (2.0/3.0)));
 	//__toggleSync->setBounds(__delayBounds.removeFromBottom(8));
 }
