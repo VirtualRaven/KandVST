@@ -30,6 +30,9 @@ DelayComponent::DelayComponent(GLOBAL* global) :
 
 	__toggleDelay->setButtonText("DELAY");
 
+	addAndMakeVisible(__toggleSync = new ParameterButton(*Global->paramHandler->Get<AudioParameterBool>(__ID, "DELAY_SYNC")));
+	__toggleSync->setButtonText("SYNC");
+
 }
 
 void DelayComponent::paint(Graphics & g) {
@@ -46,12 +49,14 @@ void DelayComponent::paint(Graphics & g) {
 	if (*Global->paramHandler->Get<AudioParameterBool>(__ID, "DELAY_EN")) {
 		__delaySpeed->setEnabled(true);
 		__delaySeconds->setEnabled(true);
+		__toggleSync->setEnabled(true);
 		
 	}
 	else //disabled
 	{ 
 		__delaySpeed->setEnabled(false);
 		__delaySeconds->setEnabled(false);
+		__toggleSync->setEnabled(false);
 	}
 
 }
@@ -62,10 +67,17 @@ void DelayComponent::resized() {
 	int fontHeight = __bounds.getHeight() * 0.2;
 	__toggleDelay->setBounds(__bounds.removeFromTop(fontHeight));
 
+
+	__toggleSync->setBounds(__bounds.reduced(16).removeFromTop(fontHeight * 0.8).removeFromLeft(__bounds.getWidth()*0.5).removeFromRight(__bounds.getWidth()*0.25));
+
 	Rectangle<int> __delayBounds(__bounds.reduced(8));
 	__delayBounds.removeFromTop(__secondsLabel.getFont().getHeight());
+
+	
 
 	int __size = (__delayBounds.getWidth() * 0.5f);
 	__delaySpeed->setBounds(__delayBounds.removeFromLeft(__size));
 	__delaySeconds->setBounds(__delayBounds);
+
+	//__toggleSync->setBounds(__delayBounds.removeFromBottom(8));
 }
