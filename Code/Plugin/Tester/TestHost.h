@@ -30,6 +30,11 @@ public:
 		std::map<std::wstring, Steinberg::Vst::ParamID> ids;
 	};
 
+	enum TestFlag {
+		PrintTCPerf,
+		Force
+	};
+
 
 	class Test {
 	public:
@@ -60,15 +65,18 @@ public:
 	bool isInitialized();
 
 	
-	void printParams(bool verbose=false);
+	void printParams(bool verbose=false,std::string fileName="");
 	
 	void addTest(Test* test);
 	bool runTests();
 
+	void setTestFlag(TestFlag flag, bool value);
+
+
 private:
 	typedef std::tuple<Steinberg::Vst::ParamID, Steinberg::Vst::ParamValue> PARAM_TUP;
 	std::vector<PARAM_TUP> readParamFile(std::string filename, bool &sucess);
-	
+	std::map<TestFlag, bool> testFlags;
 	bool resetParameters();
 	bool setParameters(const std::vector<PARAM_TUP>& vals);
 	bool runTest(size_t i);
