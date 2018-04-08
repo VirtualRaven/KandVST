@@ -126,6 +126,12 @@ void OurLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int width, int 
 		}
 		if (auto choice = dynamic_cast<AudioParameterChoice*>(&(ps->param))) {
 
+			g.setColour(Colour(255, 100, 100));
+			g.drawRect(ps->getLocalBounds());
+
+			//ps->setSize(100, 100);
+			//ps->setBoundsInset(BorderSize<int>(20));
+
 			Path dots;
 			Path blueDot;
 
@@ -137,6 +143,7 @@ void OurLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int width, int 
 
 			float ang = 0.0f;
 			//float angDelta = (rotaryStartAngle - rotaryEndAngle) / intParam->getRange().getLength();
+			
 			for (int i = 0; i <= choice->choices.size(); i++)
 			{
 				dots.addEllipse(centreX - 2, 0, 4, 4);
@@ -158,6 +165,22 @@ void OurLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int width, int 
 
 			g.setColour(dotColour);
 			g.fillPath(dots);
+
+			// Draw text
+			Font font(10, Font::FontStyleFlags::plain);
+			g.setFont(font);
+			g.setColour(Colour::fromRGB(255, 255, 255));
+			float currentAngle = rotaryStartAngle;
+
+			for (int i = 0; i <= choice->choices.size(); i++)
+			{
+				Point<float> textP = dots.getPointAlongPath((dots.getLength() / static_cast<float>(choice->choices.size())) * static_cast<float>(i));
+				//textP.setX(textP.getX() + 10);
+				textP.setY(textP.getY() - 10);
+
+				g.drawSingleLineText(choice->choices[choice->choices.size() - i], textP.getX(), textP.getY(), Justification::horizontallyCentred);
+				currentAngle += angDelta;
+			}
 
 			// Draw blue dot
 			g.setColour(Swatch::accentBlue);
