@@ -124,6 +124,50 @@ void OurLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int width, int 
 			}
 			
 		}
+		if (auto choice = dynamic_cast<AudioParameterChoice*>(&(ps->param))) {
+
+			Path dots;
+			Path blueDot;
+
+			float angDelta = (float_Pi / 4.0f) * (-0.2f * choice->choices.size() + 1.9f);
+
+			// Set the knob's limits according to __angleBetweenPos
+			float halfMaxAngle = (angDelta * (choice->choices.size() - 1)) / 2.0f;
+			ps->setRotaryParameters((2.0f*float_Pi) - halfMaxAngle, (2.0f*float_Pi) + halfMaxAngle, true);
+
+			float ang = 0.0f;
+			//float angDelta = (rotaryStartAngle - rotaryEndAngle) / intParam->getRange().getLength();
+			for (int i = 0; i <= choice->choices.size(); i++)
+			{
+				dots.addEllipse(centreX - 2, 0, 4, 4);
+				dots.applyTransform(AffineTransform::rotation(angDelta*(i>0), centreX, centreY));
+			}
+
+			dots.applyTransform(AffineTransform::rotation(rotaryStartAngle - angDelta, centreX, centreY));
+			Colour dotColour = Swatch::background.darker(0.2);
+			Path dark = Path(dots);
+			Path light = Path(dots);
+
+			dark.applyTransform(AffineTransform::translation(-1.0f, -1.0f));
+			g.setColour(dotColour.darker().withAlpha(0.4f));
+			g.fillPath(dark);
+
+			light.applyTransform(AffineTransform::translation(1.0f, 1.0f));
+			g.setColour(dotColour.brighter().withAlpha(0.4f));
+			g.fillPath(light);
+
+			g.setColour(dotColour);
+			g.fillPath(dots);
+
+			// Draw blue dot
+			g.setColour(Swatch::accentBlue);
+			int i = choice->getIndex();
+			blueDot.addEllipse(centreX - 2, 0, 4, 4);
+			blueDot.applyTransform(AffineTransform::rotation(i*angDelta + rotaryStartAngle, centreX, centreY));
+			g.fillPath(blueDot);
+			blueDot.clear();
+
+		}
 		else if (auto floatParam = dynamic_cast<AudioParameterFloat*>(&(ps->param)) && ps->getDrawProgress()!=ParameterSlider::ProgressStart::Disabled)
 		{
 			Colour dotColour = Swatch::background.darker(0.2);

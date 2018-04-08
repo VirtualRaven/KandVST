@@ -9,7 +9,9 @@ SettingsComponent::SettingsComponent(GLOBAL*global)
 {
 	Global = global;
 	__pitchBendSens = new ParameterSlider(*Global->paramHandler->Get<AudioParameterInt>(-1, "PITCH_BEND_SENS"),global);
-	__selectKnob = new SelectKnob(*Global->paramHandler->Get<AudioParameterChoice>(-1, "SELECT_KNOB_VALUE"),global);
+	__selectKnob = new ParameterSlider(*Global->paramHandler->Get<AudioParameterChoice>(-1, "SELECT_KNOB_VALUE"),global);
+	__selectKnob->setSliderStyle(Slider::SliderStyle::RotaryVerticalDrag);
+	__selectKnob->setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, false, 0, 0);
 
 	addAndMakeVisible(__pitchBendSens);
 	addAndMakeVisible(__selectKnob);
