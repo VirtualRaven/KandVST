@@ -75,7 +75,6 @@ ParameterSlider::ParameterSlider(AudioProcessorParameter& p,GLOBAL*global):
 {
 	Global = global;
 	setRange(0.0, 1.0, 0.0);
-	
 	startTimerHz(30);
 	updateSliderPos();
 	LinkCouldHaveChanged();

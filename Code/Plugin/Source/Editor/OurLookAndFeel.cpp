@@ -19,9 +19,25 @@ void OurLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int width, int 
 	, float sliderPos, const float rotaryStartAngle, const float rotaryEndAngle, Slider & slider)
 {
 
+	g.setColour(Colour(100, 255, 100));
+	g.drawRect(x, y, width, height);
+
+	if (auto ps = dynamic_cast<ParameterSlider*>(&slider))
+	{
+		if (auto choice = dynamic_cast<AudioParameterChoice*>(&(ps->param)))
+		{
+			height -= 20;
+			width -= 20;
+			y += 25;
+		}
+	}
+
+	g.setColour(Colour(100, 100, 255));
+	g.drawRect(x, y, width, height);
+
 	const float radius = jmin(width / 2, height / 2) - 4.0f;
-	const float centreX = x + width * 0.5f;
-	const float centreY = y + height * 0.5f;
+	const float centreX = x + (width * 0.5f);
+	const float centreY = y + (height * 0.5f);
 	const float rx = centreX - radius;
 	const float ry = centreY - radius;
 	const float rw = radius * 2.0f;
@@ -37,7 +53,9 @@ void OurLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int width, int 
 	if (!slider.isEnabled()) {
 		g.setOpacity(0.5f);
 	}
+	
 	g.drawImage(knobRef, Rectangle<float>(static_cast<float>(x), static_cast<float>(y), static_cast<float>(size), static_cast<float>(size)), RectanglePlacement::stretchToFit, false);
+	g.drawEllipse(centreX, centreY, 1, 1, 1);
 
 	Path p;
 	const float pointerLength = radius * 0.2f;
@@ -137,16 +155,15 @@ void OurLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int width, int 
 
 			float angDelta = (float_Pi / 4.0f) * (-0.2f * choice->choices.size() + 1.9f);
 
-			// Set the knob's limits according to __angleBetweenPos
+			// Set the knob's limits according to angDelta -> should be in ParameterSlider.cpp
 			float halfMaxAngle = (angDelta * (choice->choices.size() - 1)) / 2.0f;
 			ps->setRotaryParameters((2.0f*float_Pi) - halfMaxAngle, (2.0f*float_Pi) + halfMaxAngle, true);
 
 			float ang = 0.0f;
-			//float angDelta = (rotaryStartAngle - rotaryEndAngle) / intParam->getRange().getLength();
 			
 			for (int i = 0; i <= choice->choices.size(); i++)
 			{
-				dots.addEllipse(centreX - 2, 0, 4, 4);
+				dots.addEllipse(centreX - 2, 20, 4, 4);
 				dots.applyTransform(AffineTransform::rotation(angDelta*(i>0), centreX, centreY));
 			}
 
@@ -185,7 +202,7 @@ void OurLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int width, int 
 			// Draw blue dot
 			g.setColour(Swatch::accentBlue);
 			int i = choice->getIndex();
-			blueDot.addEllipse(centreX - 2, 0, 4, 4);
+			blueDot.addEllipse(centreX - 2, 20, 4, 4);
 			blueDot.applyTransform(AffineTransform::rotation(i*angDelta + rotaryStartAngle, centreX, centreY));
 			g.fillPath(blueDot);
 			blueDot.clear();
