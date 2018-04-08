@@ -3,41 +3,26 @@
 OurLookAndFeel::~OurLookAndFeel() {
 }
 
-OurLookAndFeel::OurLookAndFeel() {
-	
+OurLookAndFeel::OurLookAndFeel(GLOBAL * global)
+{
+	Global = global;
 	setColour(Slider::backgroundColourId, Colour::fromRGB(30, 30, 30));
 	setColour(Slider::thumbColourId, Colour::fromRGB(26, 105, 180));
 	setColour(Slider::trackColourId, Colour::fromRGB(26, 26, 26));
 	setColour(ListBox::backgroundColourId, Colour::fromRGB(25, 45, 75));
 	setColour(TextButton::textColourOnId, Swatch::white);
 	setColour(TextButton::textColourOffId, Swatch::disabled);
-	setColour(1337, Swatch::accentBlue);
-	setThemeId(__themeID);
+
+	__themeColour = __themePicker.getColour(Global->paramHandler->Get<AudioParameterChoice>(-1, "THEME")->getIndex());
+	
+
 }
 
-void OurLookAndFeel::setThemeId(int themeId) {
-	__themeID = themeId;
-	Colour newColour;
-	switch (themeId) {
-	case 0: newColour = Swatch::accentBlue;
-		break;
-	case 1: newColour = Swatch::accentPink;
-		break;
-	case 2: newColour = Swatch::accentGreen;
-		break;
-	}
-	setColour(1337, newColour);
-	setColour(TextButton::ColourIds::buttonOnColourId, newColour.darker(0.7f).withSaturation(0.5f));
-}
-
-int OurLookAndFeel::getThemeId() {
-	return __themeID;
-}
 
 void OurLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int width, int height
 	, float sliderPos, const float rotaryStartAngle, const float rotaryEndAngle, Slider & slider)
 {
-
+	__themeColour = __themePicker.getColour(Global->paramHandler->Get<AudioParameterChoice>(-1, "THEME")->getIndex());
 	const float radius = jmin(width / 2, height / 2) - 4.0f;
 	const float centreX = x + width * 0.5f;
 	const float centreY = y + height * 0.5f;
@@ -100,7 +85,8 @@ void OurLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int width, int 
 			g.setColour(dotColour);
 			g.fillPath(dots);
 			
-			g.setColour(Swatch::accentBlue);
+			
+			g.setColour(__themeColour);
 
 			for (int i = 0; i <= intParam->getRange().getLength() + 1; i++)
 			{
@@ -181,7 +167,7 @@ void OurLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int width, int 
 			g.setColour(dotColour);
 			g.strokePath(pB, pst);
 
-			g.setColour(Swatch::accentBlue);
+			g.setColour(__themeColour);
 			g.strokePath(pFill, pst);
 		}
 		Image waveImage;
@@ -225,6 +211,7 @@ void OurLookAndFeel::drawLinearSlider(Graphics& g, int x, int y, int width, int 
 	float maxSliderPos,
 	Slider::SliderStyle style, Slider& slider)
 {
+	__themeColour = __themePicker.getColour(Global->paramHandler->Get<AudioParameterChoice>(-1, "THEME")->getIndex());
 	if (slider.isBar())
 	{
 		g.setColour(slider.findColour(Slider::trackColourId));
@@ -329,6 +316,7 @@ void OurLookAndFeel::drawLinearSlider(Graphics& g, int x, int y, int width, int 
 
 void OurLookAndFeel::drawTabButton(TabBarButton & button, Graphics & g, bool isMouseOver, bool isMouseDown)
 {
+	__themeColour = __themePicker.getColour(Global->paramHandler->Get<AudioParameterChoice>(-1, "THEME")->getIndex());
 	Rectangle<int> activeArea(button.getActiveArea());
 
 	const TabbedButtonBar::Orientation o = button.getTabbedButtonBar().getOrientation();
@@ -370,6 +358,9 @@ void OurLookAndFeel::drawTabButton(TabBarButton & button, Graphics & g, bool isM
 
 void OurLookAndFeel::drawButtonBackground(Graphics& g, Button& button, const Colour& backgroundColour, bool isMouseOverButton, bool isButtonDown)
 {
+	__themeColour = __themePicker.getColour(Global->paramHandler->Get<AudioParameterChoice>(-1, "THEME")->getIndex());
+		setColour(TextButton::ColourIds::buttonOnColourId, __themeColour.darker(0.7f).withSaturation(0.5f));
+
 	auto bounds = button.getLocalBounds().toFloat().reduced(0.5f, 0.5f);
 
 	auto baseColour = backgroundColour.withMultipliedSaturation(button.hasKeyboardFocus(true) ? 1.3f : 0.9f)
@@ -390,6 +381,7 @@ void OurLookAndFeel::drawButtonBackground(Graphics& g, Button& button, const Col
 
 void OurLookAndFeel::createTabTextLayout(const TabBarButton & button, float length, float depth, Colour colour, TextLayout & textLayout)
 {
+
 	Font font(depth * 0.5f, Font::FontStyleFlags::bold);
 	font.setUnderline(button.hasKeyboardFocus(false));
 
@@ -402,6 +394,7 @@ void OurLookAndFeel::createTabTextLayout(const TabBarButton & button, float leng
 
 void OurLookAndFeel::drawButtonText(Graphics & g, TextButton & button, bool isMouseOverButton, bool isButtonDown)
 {
+
 	Font font(button.getHeight() * 0.7, Font::bold);
 	g.setFont(font);
 	g.setColour(button.findColour(button.getToggleState() ? TextButton::textColourOnId

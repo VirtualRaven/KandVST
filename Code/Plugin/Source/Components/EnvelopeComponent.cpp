@@ -243,3 +243,9 @@ void EnvelopeComponent::componentParentHierarchyChanged(Component & component)
 	this->getParentComponent()->addComponentListener(this);
 	this->removeComponentListener(this);
 }
+
+void EnvelopeComponent::lookAndFeelChanged() {
+	EnvelopeGenerator::RenderImage(__ID, __envImage, Global);
+	__envImageComponent.repaint();
+	__envInvalid = false;
+}

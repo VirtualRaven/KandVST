@@ -7,6 +7,8 @@
 #include "IVSTParameters.h"
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "Swatch.h"
+#include "ThemePicker.h"
+#include "OurLookAndFeel.h"
 
 
 class WavetableOsc : public IGenerator, public IVSTParameters
@@ -36,6 +38,7 @@ private:
 
 
 public:
+	OurLookAndFeel ourLookAndFeel;
 	WavetableOsc(int ID,double sampleRate,int __maxBuffHint,GLOBAL*global);
 	WavetableOsc(const WavetableOsc&) = delete;
 	WavetableOsc(WavetableOsc&& ref);
@@ -60,7 +63,7 @@ public:
 
 	virtual void Reset() override;
 	GLOBAL* Global;
-
+	ThemePicker __themePicker;
 	JUCE_LEAK_DETECTOR(WavetableOsc);
 };
 

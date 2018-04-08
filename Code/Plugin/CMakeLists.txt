@@ -192,6 +192,8 @@ x         .         .         "Source/Editor/PluginGUI.cpp"
   .         .         .         "Source/Components/ReverbComponent.h"
   x         .         .         "Source/Components/AboutPageComponent.cpp"
   .         .         .         "Source/Components/AboutPageComponent.h"
+  x         .         .         "Source/Editor/ThemePicker.cpp"
+  .         .         .         "Source/Editor/ThemePicker.h"
 )
 
 jucer_project_module(

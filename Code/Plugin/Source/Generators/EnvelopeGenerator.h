@@ -5,6 +5,7 @@
 #include "Global.h"
 #include <math.h>
 #include "Swatch.h"
+#include "ThemePicker.h"
 class EnvelopeGenerator: public IVSTParameters
 {
 private:
@@ -15,7 +16,7 @@ private:
 	uint8 __sustain;
 	double __velMulti;
 	AudioParameterFloat * __a_time,*__a_level, *__a_curve, *__h_time, *__d_time, *__d_level, *__d_curve, *__r_time, *__r_curve,*__s_level,*__s_time,*__s_curve;
-
+	
 
 	int __counter;
 

@@ -1,4 +1,5 @@
 #include "AboutPageComponent.h"
+#include "ParameterButton.h"
 
 
 AboutPageComponent::~AboutPageComponent() {
@@ -6,9 +7,12 @@ AboutPageComponent::~AboutPageComponent() {
 }
 
 AboutPageComponent::AboutPageComponent(GLOBAL * global) :
-	ourLookAndFeel()
+	ourLookAndFeel(global),
+	__themePicker()
 {
 	Global = global;
+	__themeChoice = Global->paramHandler->Get<AudioParameterChoice>(-1, "THEME");
+
 	__info.setReadOnly(true);
 	setLookAndFeel(&ourLookAndFeel);
 	File about = File(juce::File::getCurrentWorkingDirectory().getParentDirectory().getFullPathName() + String("/about.txt"));
@@ -21,17 +25,17 @@ AboutPageComponent::AboutPageComponent(GLOBAL * global) :
 		}
 	}
 
+	
 	addAndMakeVisible(__themes);
 	__themes.addListener(this);
 	StringArray themes = { "Default", "Pink is life", "Go Green" };
 	__themes.addItemList(themes, 1);
-	__themes.setSelectedItemIndex(0, true);
-
+	__themes.setSelectedItemIndex(__themeChoice->getIndex(), true);
 }
 
 void AboutPageComponent::comboBoxChanged(ComboBox * cbox) {
-	ourLookAndFeel.setThemeId(cbox->getSelectedItemIndex());
-	getParentComponent()->sendLookAndFeelChange();
+	*__themeChoice = cbox->getSelectedItemIndex();
+	getParentComponent()->getParentComponent()->sendLookAndFeelChange();
 }
 
 void AboutPageComponent::lookAndFeelChanged() {
@@ -50,7 +54,7 @@ void AboutPageComponent::paint(Graphics& g) {
 	g.drawRect(getLocalBounds(), 2.f);
 
 	g.setColour(Swatch::background.brighter(0.3f));
-	g.drawVerticalLine(800, 10, getLocalBounds().getHeight());
+	g.drawVerticalLine(800, 10, getLocalBounds().getHeight()-20);
 
 	g.setColour(Swatch::white);
 
@@ -61,7 +65,7 @@ void AboutPageComponent::paint(Graphics& g) {
 	g.setFont(text);
 	g.drawMultiLineText(__about, 8, 70, 800);
 
-	g.setColour(findColour(1337));
+	g.setColour(__themePicker.getColour(__themeChoice->getCurrentChoiceName()));
 	g.fillRect(990, 100, 100, 50);
 }
 
@@ -71,3 +75,9 @@ void AboutPageComponent::resized() {
 	__themes.setBounds(themeBounds.removeFromTop(50).reduced(8));
 
 }
+
+void AboutPageComponent::RegisterParameters(int ID, GLOBAL *global) {
+	StringArray themes = { "Default", "Pink", "Green" };
+	global->paramHandler->RegisterChoice(ID, "THEME", "THEME", themes, 0);
+}
+
