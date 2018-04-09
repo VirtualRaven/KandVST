@@ -159,9 +159,7 @@ void OurLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int width, int 
 
 			float angDelta = (float_Pi / 4.0f) * (-0.2f * choice->choices.size() + 1.9f);
 
-			// Set the knob's limits according to angDelta -> should be in ParameterSlider.cpp
-			float halfMaxAngle = (angDelta * (choice->choices.size() - 1)) / 2.0f;
-			ps->setRotaryParameters((2.0f*float_Pi) - halfMaxAngle, (2.0f*float_Pi) + halfMaxAngle, true);
+			// The knob's limits are set in ParameterSlider.cpp
 
 			float ang = 0.0f;
 			

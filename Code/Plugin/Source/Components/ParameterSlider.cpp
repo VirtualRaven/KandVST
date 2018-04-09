@@ -78,6 +78,19 @@ ParameterSlider::ParameterSlider(AudioProcessorParameter& p,GLOBAL*global):
 	startTimerHz(30);
 	updateSliderPos();
 	LinkCouldHaveChanged();
+
+	// Defaults for AudioParameterChoice
+	if (auto ps = dynamic_cast<AudioParameterChoice*>(&(p)))
+	{
+		// Limits
+		float angDelta = (float_Pi / 4.0f) * (-0.2f * ps->choices.size() + 1.9f);
+		float halfMaxAngle = (angDelta * (ps->choices.size() - 1)) / 2.0f;
+		setRotaryParameters((2.0f*float_Pi) - halfMaxAngle, (2.0f*float_Pi) + halfMaxAngle, true);
+
+		// Style
+		setSliderStyle(Slider::SliderStyle::RotaryVerticalDrag);
+		setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, false, 0, 0);
+	}
 }
 
 
