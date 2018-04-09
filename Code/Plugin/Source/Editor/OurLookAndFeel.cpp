@@ -183,16 +183,19 @@ void OurLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int width, int 
 			Font font(10, Font::FontStyleFlags::plain);
 			g.setFont(font);
 			g.setColour(Colour::fromRGB(255, 255, 255));
-			float currentAngle = rotaryStartAngle;
 
-			for (int i = 0; i <= choice->choices.size(); i++)
+			float currentAngle = rotaryEndAngle - 2*float_Pi;
+
+			for (int i = 1; i <= choice->choices.size(); i++)
 			{
 				Point<float> textP = dots.getPointAlongPath((dots.getLength() / static_cast<float>(choice->choices.size())) * static_cast<float>(i));
-				//textP.setX(textP.getX() + 10);
+				
+				textP.setX(textP.getX() + currentAngle * 6);
 				textP.setY(textP.getY() - 10);
-
+				
+				//choice->choices[choice->choices.size() - i]
 				g.drawSingleLineText(choice->choices[choice->choices.size() - i], textP.getX(), textP.getY(), Justification::horizontallyCentred);
-				currentAngle += angDelta;
+				currentAngle -= angDelta;
 			}
 
 			// Draw blue dot
@@ -275,7 +278,6 @@ void OurLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int width, int 
 
 	g.setColour(Colours::white);
 	g.fillPath(p);
-	//DEBUG
 
 }
 
