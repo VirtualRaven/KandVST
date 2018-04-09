@@ -148,7 +148,7 @@ void OurLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int width, int 
 			// AudioParameterChoice
 
 			g.setColour(Colour(255, 100, 100));
-			g.drawRect(ps->getLocalBounds());
+			//g.drawRect(ps->getLocalBounds());
 
 			Path dots;
 			Path blueDot;
@@ -186,12 +186,13 @@ void OurLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int width, int 
 
 			float currentAngle = rotaryEndAngle - 2*float_Pi;
 
+			// Loop over all dots from right to left
 			for (int i = 1; i <= choice->choices.size(); i++)
 			{
 				Point<float> textP = dots.getPointAlongPath((dots.getLength() / static_cast<float>(choice->choices.size())) * static_cast<float>(i));
 				
-				textP.setX(textP.getX() + currentAngle * 6);
-				textP.setY(textP.getY() - 10);
+				textP.setX(textP.getX() + currentAngle * 8);
+				textP.setY(textP.getY() - 10 + abs(currentAngle) * 2);
 				
 				//choice->choices[choice->choices.size() - i]
 				g.drawSingleLineText(choice->choices[choice->choices.size() - i], textP.getX(), textP.getY(), Justification::horizontallyCentred);
