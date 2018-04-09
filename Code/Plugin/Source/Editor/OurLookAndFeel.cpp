@@ -18,19 +18,21 @@ OurLookAndFeel::OurLookAndFeel() {
 void OurLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int width, int height
 	, float sliderPos, const float rotaryStartAngle, const float rotaryEndAngle, Slider & slider)
 {
+	bool isChoice = false;
+	if (auto ps = dynamic_cast<ParameterSlider*>(&slider))
+	{
+		if (dynamic_cast<AudioParameterChoice*>(&(ps->param)))
+		{
+			isChoice = true;
+			width -= 20;
+			height -= 20;
+			y += 20;
+			x += 20;
+		}
+	}
 
 	g.setColour(Colour(100, 255, 100));
 	g.drawRect(x, y, width, height);
-
-	if (auto ps = dynamic_cast<ParameterSlider*>(&slider))
-	{
-		if (auto choice = dynamic_cast<AudioParameterChoice*>(&(ps->param)))
-		{
-			height -= 20;
-			width -= 20;
-			y += 25;
-		}
-	}
 
 	g.setColour(Colour(100, 100, 255));
 	g.drawRect(x, y, width, height);
@@ -46,8 +48,9 @@ void OurLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int width, int 
 	Image knobRef = ImageFileFormat::loadFrom(Resources::Icons::knobs_png, sizeof(Resources::Icons::knobs_png));
 	int size = jmin<int>(height, width)-12;
 
-	x = jmax<int>(x, (width - size)/2);
-	y = jmax<int>(y, (height - size)/2);
+	x = jmax<int>(x, (width - size) / 2);
+	y = jmax<int>(y, (height - size) / 2);
+
 
 	g.setOpacity(1.0f);
 	if (!slider.isEnabled()) {
@@ -55,6 +58,7 @@ void OurLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int width, int 
 	}
 	
 	g.drawImage(knobRef, Rectangle<float>(static_cast<float>(x), static_cast<float>(y), static_cast<float>(size), static_cast<float>(size)), RectanglePlacement::stretchToFit, false);
+	
 	g.drawEllipse(centreX, centreY, 1, 1, 1);
 
 	Path p;
