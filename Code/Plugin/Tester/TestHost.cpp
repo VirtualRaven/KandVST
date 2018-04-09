@@ -1,6 +1,4 @@
 #include "TestHost.h"
-#include "TestHost.h"
-#include "TestHost.h"
 #include "util.h"
 #include <iostream>
 #include <vector>
@@ -14,30 +12,38 @@
 #include <fstream>
 #include "folders.h"
 #include <cstdlib>
+#include "Windows.h"
 
-void printParameter(const Steinberg::Vst::ParameterInfo& i, bool verbose=false) {
+#undef max
+#undef min
+
+
+void printParameter(const Steinberg::Vst::ParameterInfo& i, bool verbose=false, std::wostream &stream = std::wcout) {
 	using namespace Steinberg::Vst;
-	std::wcout << i.unitId << L" " << std::setfill(L'0') << std::setw(sizeof(decltype(i.id)) * 2) << std::hex << i.id << std::dec << L": " << i.title << L" ";
+
+
+
+	stream << i.unitId << L" " << std::setfill(L'0') << std::setw(sizeof(decltype(i.id)) * 2) << std::hex << i.id << std::dec << L": " << i.title << L" ";
 	
 		if (i.stepCount == 0)
-			std::cout << "R [0,1]"
-			<<  " D: " << i.defaultNormalizedValue << std::endl;
+			stream << L"R [0,1]"
+			<< L" D: " << i.defaultNormalizedValue << std::endl;
 		else if (i.stepCount == 1)
-			std::cout << "On/Off D: "
-			<< (((int)std::min(1.0, 2 * i.defaultNormalizedValue) == 0) ? "Off" : "On") << std::endl;
+			stream << "On/Off D: "
+			<< (((int)std::min(1.0, 2 * i.defaultNormalizedValue) == 0) ? L"Off" : L"On") << std::endl;
 		else
-			std::cout << "N [0," << i.stepCount << "] D: "
+			stream << L"N [0," << i.stepCount << "] D: "
 			<< ((int)std::min(1.0, i.stepCount * i.defaultNormalizedValue) == 0) << std::endl;
 		using Steinberg::Vst::ParameterInfo;
 		if (verbose) {
-#define FLAG_STR(V,F) "\t\t" << #F << (V & F ? ": true" : ": false")
-		std::cout << "\tFlags:\n"
-			<< "\t\t" << FLAG_STR(i.flags, ParameterInfo::kCanAutomate) << std::endl
-			<< "\t\t" << FLAG_STR(i.flags, ParameterInfo::kIsBypass) << std::endl
-			<< "\t\t" << FLAG_STR(i.flags, ParameterInfo::kIsList) << std::endl
-			<< "\t\t" << FLAG_STR(i.flags, ParameterInfo::kIsProgramChange) << std::endl
-			<< "\t\t" << FLAG_STR(i.flags, ParameterInfo::kIsReadOnly) << std::endl
-			<< "\t\t" << FLAG_STR(i.flags, ParameterInfo::kIsWrapAround) << std::endl;
+#define FLAG_STR(V,F) L"\t\t" << #F << (V & F ? L": true" : L": false")
+			stream << L"\tFlags:\n"
+			<< L"\t\t" << FLAG_STR(i.flags, ParameterInfo::kCanAutomate) << std::endl
+			<< L"\t\t" << FLAG_STR(i.flags, ParameterInfo::kIsBypass) << std::endl
+			<< L"\t\t" << FLAG_STR(i.flags, ParameterInfo::kIsList) << std::endl
+			<< L"\t\t" << FLAG_STR(i.flags, ParameterInfo::kIsProgramChange) << std::endl
+			<< L"\t\t" << FLAG_STR(i.flags, ParameterInfo::kIsReadOnly) << std::endl
+			<< L"\t\t" << FLAG_STR(i.flags, ParameterInfo::kIsWrapAround) << std::endl;
 #undef FLAG_STR
 	}
 }
@@ -147,10 +153,29 @@ bool TestHost::setParameters(const std::vector<PARAM_TUP>& vals)
 	return res ;
 }
 
-void TestHost::printParams(bool verbose) {
-	util::cyan([] {std::cout << "### Parameters ###" << std::endl; });
-	for(auto& t : this->pdata.params)
-		printParameter(t, verbose);
+void TestHost::printParams(bool verbose, std::string filename) {
+	if (filename != "")
+	{
+		std::ifstream f(filename);
+		if (!f.good()) {
+			f.close();
+			std::wofstream file(filename, std::ios_base::trunc);
+			for (auto& t : this->pdata.params)
+				printParameter(t, verbose,file);
+			file.close();
+		}
+		else
+		{
+			f.close();
+			std::cout << "Can't write file, file already exists" << std::endl;
+		}
+	}
+	else {
+		util::cyan([] {std::cout << "### Parameters ###" << std::endl; });
+		for (auto& t : this->pdata.params)
+			printParameter(t, verbose);
+	}
+
 }
 
 void TestHost::addTest(Test * test)
@@ -165,6 +190,11 @@ bool TestHost::runTests()
 	for (size_t i = 0; i < test_len; i++) {
 #ifdef NO_PY_FOUND
 		if (tests[i]->hasPythonStep()) {
+			if (testFlags[Force])
+			{
+				util::red([&] {std::cout << "Ttest (" << i + 1 << "/" << test_len << ") failed as it requires python." << std::endl; });
+				return false;
+			}
 			util::yellow([&] {std::cout << "Skipping test (" << i+1 <<"/"<< test_len <<") as it requires python."  << std::endl; });
 			continue;
 		}
@@ -194,6 +224,11 @@ bool TestHost::runTests()
 	return acc;
 }
 
+void TestHost::setTestFlag(TestFlag flag, bool value)
+{
+	testFlags[flag] = value;
+}
+
 std::wstring trim(const std::wstring& str) {
 	auto begin = str.find_first_not_of(L" \t");
 	if (begin == std::wstring::npos)
@@ -204,7 +239,7 @@ std::wstring trim(const std::wstring& str) {
 
 enum PTYPE {
 	UNK,
-	BOOL,
+	ONOFF, //Needed change, strange interaction with Windows.h
 	DISC,
 	CONT
 };
@@ -262,7 +297,7 @@ std::vector<TestHost::PARAM_TUP> TestHost::readParamFile(std::string filename,bo
 						if (p.stepCount == 0)
 							t = CONT;
 						else if (p.stepCount == 1)
-							t = BOOL;
+							t = ONOFF;
 						else if (p.stepCount > 1)
 							t = DISC;
 						stepCount = p.stepCount;
@@ -288,7 +323,7 @@ std::vector<TestHost::PARAM_TUP> TestHost::readParamFile(std::string filename,bo
 					}
 
 					break;
-				case BOOL:
+				case ONOFF:
 					if (value == L"On" || value == L"True")
 						fvalue = 1.0;
 					else if (value == L"Off" || value == L"False")
@@ -344,6 +379,11 @@ std::vector<TestHost::PARAM_TUP> TestHost::readParamFile(std::string filename,bo
 
 bool TestHost::runTest(size_t i)
 {
+	//Setup pref. monitor
+	auto h = GetCurrentProcess();
+	ULONG64 pre = 0, post = 0, diff = -1;
+	bool perfSucc = true;
+
 	const auto count = tests.size();
 	auto& test = tests[i];
 	const std::string testPath = std::string(TEST_BUILD_PATH) + std::string(test->name()) + std::string("/");
@@ -365,7 +405,21 @@ bool TestHost::runTest(size_t i)
 		}
 	}
 	std::stringstream ss;
-	if (!test->run(&this->vst, ss, this->pdata)) {
+	perfSucc &= QueryProcessCycleTime(h, &pre);
+	bool testValid = test->run(&this->vst, ss, this->pdata);
+	perfSucc &= QueryProcessCycleTime(h, &post);
+	if (testValid)
+	{
+		diff = post - pre;
+	}
+	std::ofstream perf(testPath + std::string("perf.txt"), std::ios_base::trunc);
+	perf << diff;
+	if (testFlags[PrintTCPerf])
+	{
+		std::cout << "##teamcity[buildStatisticValue key = '"<< testName << "_perf' value = '"<< diff << "']" << std::endl;
+	}
+
+	if (!testValid) {
 		
 		util::red([&] {std::cout << "Test process" << testName << " failed" << std::endl; });
 		return false;

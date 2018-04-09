@@ -19,9 +19,6 @@ def createResourceFile(fullDir,__fileList,__name,__namespace):
     __namespace += "::" + __name
     if (len(__fileList)==0):
         return
-    print (__name+"\n")
-    
-   
     for __fileName in __fileList:
         __file = open(os.path.join(fullDir,__fileName),'rb')
         data = __file.read()
@@ -42,7 +39,7 @@ def createResourceFile(fullDir,__fileList,__name,__namespace):
                     __writeFile_cpp.write("\n")
         #WriteFooter
         __writeFile_cpp.write("};\n\n")
-        print (__fileName + " : " + str(count) + " bytes\n")
+        print (__fileName + " : " + str(count) + " bytes")
         
         
     return
@@ -51,13 +48,9 @@ def createResourceFile(fullDir,__fileList,__name,__namespace):
 def walkDir(dir,namespace):
     files = [f for f in os.listdir(dir) if path.isfile(path.join(dir,f))]
     dirs = [f for f in os.listdir(dir) if (not f in files)]
-    print (dirs)
-    print (files)
     name= os.path.basename(dir)
     __writeFile_h.write("namespace " + name + "{\n")
     for _dir in dirs:
-
-        print(_dir)
         ns = ""
         if (namespace !=""):
             ns = namespace + "::"
@@ -70,10 +63,6 @@ def walkDir(dir,namespace):
 
     return
 
-
-
-
-print(sys.argv)
 
 walkDir(sys.argv[1],"")
 

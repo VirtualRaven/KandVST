@@ -19,16 +19,19 @@ private:
 	int __delayLen;
 	int __prevDelayLen;
 	int __delayPos;
+	double __bps; // beats per second
+	bool __prevStatus;
 	AudioParameterFloat* __delayLenMult;
 	AudioParameterFloat* __delayMultiplier;
 	AudioParameterBool* __isEnabled;
+	AudioParameterBool* __sync;
 	
 public:
 	DelayEffect(int ID,double sampleRate,GLOBAL*global);
 	~DelayEffect();
 	bool RenderBlock(AudioBuffer<T>& buffer, int len, bool empty) override;
 	static void RegisterParameters(int ID, GLOBAL*Global);
-
+	void setStatus(double bpm,bool status);
 
 	virtual void ProccessCommand(MidiMessage message) override;
 	virtual void Reset() override;
