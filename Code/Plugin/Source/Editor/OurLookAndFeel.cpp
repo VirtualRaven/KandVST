@@ -23,6 +23,7 @@ void OurLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int width, int 
 	{
 		if (dynamic_cast<AudioParameterChoice*>(&(ps->param)))
 		{
+			// Move the slider down to the right to fit dot labels
 			isChoice = true;
 			width -= 20;
 			height -= 20;
