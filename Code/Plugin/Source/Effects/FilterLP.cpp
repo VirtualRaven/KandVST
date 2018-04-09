@@ -34,7 +34,7 @@ void FilterLP<T>::CalculateCoefficients()
 	this->__a[2] = ((wc2) - 2 * this->__sqrt2*wc*this->__fs + 4 * (fs2)) / this->__a[0];
 
 	this->__b[0] = (wc2) / this->__a[0];
-	T gain = (1 + this->__a[1] + this->__a[2]) / (this->__b[0] * 3);
+	T gain = (1 + this->__a[1] + this->__a[2]) / (this->__b[0] * 4);
 	this->__b[0] *= gain;
 	this->__b[1] = this->__b[0] * 2;
 	this->__b[2] = this->__b[0];
