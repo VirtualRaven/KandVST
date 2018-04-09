@@ -27,15 +27,9 @@ void OurLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int width, int 
 			width -= 20;
 			height -= 20;
 			y += 20;
-			x += 20;
+			//x += 20;
 		}
 	}
-
-	g.setColour(Colour(100, 255, 100));
-	g.drawRect(x, y, width, height);
-
-	g.setColour(Colour(100, 100, 255));
-	g.drawRect(x, y, width, height);
 
 	const float radius = jmin(width / 2, height / 2) - 4.0f;
 	const float centreX = x + (width * 0.5f);
@@ -57,9 +51,12 @@ void OurLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int width, int 
 		g.setOpacity(0.5f);
 	}
 	
-	g.drawImage(knobRef, Rectangle<float>(static_cast<float>(x), static_cast<float>(y), static_cast<float>(size), static_cast<float>(size)), RectanglePlacement::stretchToFit, false);
+	if (isChoice) // Magic numbers :S
+		g.drawImage(knobRef, Rectangle<float>(static_cast<float>(x), static_cast<float>(y+7), static_cast<float>(size), static_cast<float>(size)), RectanglePlacement::stretchToFit, false);
+	else
+		g.drawImage(knobRef, Rectangle<float>(static_cast<float>(x), static_cast<float>(y), static_cast<float>(size), static_cast<float>(size)), RectanglePlacement::stretchToFit, false);
 	
-	g.drawEllipse(centreX, centreY, 1, 1, 1);
+	// g.drawEllipse(centreX, centreY, 1, 1, 1);
 
 	Path p;
 	const float pointerLength = radius * 0.2f;
@@ -147,12 +144,10 @@ void OurLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int width, int 
 			
 		}
 		if (auto choice = dynamic_cast<AudioParameterChoice*>(&(ps->param))) {
+			// AudioParameterChoice
 
 			g.setColour(Colour(255, 100, 100));
 			g.drawRect(ps->getLocalBounds());
-
-			//ps->setSize(100, 100);
-			//ps->setBoundsInset(BorderSize<int>(20));
 
 			Path dots;
 			Path blueDot;
@@ -160,8 +155,6 @@ void OurLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int width, int 
 			float angDelta = (float_Pi / 4.0f) * (-0.2f * choice->choices.size() + 1.9f);
 
 			// The knob's limits are set in ParameterSlider.cpp
-
-			float ang = 0.0f;
 			
 			for (int i = 0; i <= choice->choices.size(); i++)
 			{
