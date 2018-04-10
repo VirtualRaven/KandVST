@@ -38,13 +38,13 @@ def doPeakTest(f):
     f =np.array(f)
 
     v1 = findFreqIndex(12544,freq)
-    v2 = findFreqIndex(880,freq)
+    v2 = findFreqIndex(440,freq)
     v1 = f[v1]
     v2 = f[v2]
 
     
     db = 20*math.log10(v2/v1)
-    diff = 3-abs(db)
+    diff = abs(20*math.log10(1/math.sqrt(2)))-abs(db)
 
     print ("v1: " + str(20*math.log10(v1)) + " dB")
     print ("v2: " + str(20*math.log10(v2)) + " dB")

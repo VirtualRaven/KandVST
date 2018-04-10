@@ -44,7 +44,7 @@ def doPeakTest(f):
 
     
     db = 20*math.log10(v2/v1)
-    diff = 3-abs(db)
+    diff = abs(20*math.log10(1/math.sqrt(2)))-abs(db)
 
 
     print (str(db)+" db")
