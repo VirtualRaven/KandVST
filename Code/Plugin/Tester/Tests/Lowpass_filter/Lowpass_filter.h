@@ -19,7 +19,7 @@ class Lowpass_filter : public TestHost::Test {
 				e.type = Steinberg::Vst::Event::kNoteOnEvent;
 				e.noteOn = {
 					0,
-					57, //A5
+					57, //A5 220Hz
 					0.0,
 					1.0,
 					0,
@@ -27,9 +27,9 @@ class Lowpass_filter : public TestHost::Test {
 
 				};
 				events.addEvent(e);
-				e.noteOn.pitch = 69;
+				e.noteOn.pitch = 127; // 12543 Hz (should not be found)
 				events.addEvent(e);
-				e.noteOn.pitch = 117;
+				e.noteOn.pitch = 117; // 7040 Hz
 				events.addEvent(e);
 				return this->block.process(vst, &c,&events);
 			}
@@ -48,3 +48,4 @@ class Lowpass_filter : public TestHost::Test {
 };
 
 #endif
+// https://www.midikits.net/midi_analyser/midi_note_frequency.htm

@@ -38,7 +38,7 @@ def doPeakTest(f):
     f =np.array(f)
 
     v1 = findFreqIndex(220,freq)
-    v2 = findFreqIndex(440,freq)
+    v2 = findFreqIndex(7040,freq)
     v1 = f[v1]
     v2 = f[v2]
 
@@ -60,7 +60,7 @@ def doPeakTest(f):
 
 		
     print("Found: " + str(len(rPeaks)))
-    if len(rPeaks)==exP and (diff<thr*3):
+    if len(rPeaks)==exP and (diff<thr):
         return True
     return False
 
