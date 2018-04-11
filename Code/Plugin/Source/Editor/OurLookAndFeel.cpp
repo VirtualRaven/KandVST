@@ -13,9 +13,6 @@ OurLookAndFeel::OurLookAndFeel(GLOBAL * global)
 	setColour(TextButton::textColourOnId, Swatch::white);
 	setColour(TextButton::textColourOffId, Swatch::disabled);
 
-	__themeColour = __themePicker.getColour(Global->paramHandler->Get<AudioParameterChoice>(-1, "THEME")->getIndex());
-	
-
 }
 
 
@@ -316,7 +313,6 @@ void OurLookAndFeel::drawLinearSlider(Graphics& g, int x, int y, int width, int 
 
 void OurLookAndFeel::drawTabButton(TabBarButton & button, Graphics & g, bool isMouseOver, bool isMouseDown)
 {
-	__themeColour = __themePicker.getColour(Global->paramHandler->Get<AudioParameterChoice>(-1, "THEME")->getIndex());
 	Rectangle<int> activeArea(button.getActiveArea());
 
 	const TabbedButtonBar::Orientation o = button.getTabbedButtonBar().getOrientation();
@@ -359,19 +355,21 @@ void OurLookAndFeel::drawTabButton(TabBarButton & button, Graphics & g, bool isM
 void OurLookAndFeel::drawButtonBackground(Graphics& g, Button& button, const Colour& backgroundColour, bool isMouseOverButton, bool isButtonDown)
 {
 	__themeColour = __themePicker.getColour(Global->paramHandler->Get<AudioParameterChoice>(-1, "THEME")->getIndex());
-		setColour(TextButton::ColourIds::buttonOnColourId, __themeColour.darker(0.7f).withSaturation(0.5f));
-
-	auto bounds = button.getLocalBounds().toFloat().reduced(0.5f, 0.5f);
-
-	auto baseColour = backgroundColour.withMultipliedSaturation(button.hasKeyboardFocus(true) ? 1.3f : 0.9f)
+	//setColour(TextButton::ColourIds::buttonOnColourId, __themeColour.darker(0.7f).withSaturation(0.5f));
+		
+	auto baseColour = backgroundColour.withMultipliedSaturation(button.hasKeyboardFocus(true) ? 1.0f : 1.0f)
 		.withMultipliedAlpha(button.isEnabled() ? 1.0f : 0.5f);
 
 	if (isButtonDown || isMouseOverButton)
 		baseColour = baseColour.contrasting(isButtonDown ? 0.2f : 0.05f);
+	
+	if (button.getToggleState())
+		baseColour = __themeColour.darker(0.7f).withSaturation(0.5f);
 
 	g.setColour(baseColour);
 
 	Path path;
+	auto bounds = button.getLocalBounds().toFloat().reduced(0.5f, 0.5f);
 	path.addRectangle(bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight());
 	g.fillPath(path);
 

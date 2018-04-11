@@ -15,17 +15,8 @@ AboutPageComponent::AboutPageComponent(GLOBAL * global) :
 
 	__info.setReadOnly(true);
 	setLookAndFeel(&ourLookAndFeel);
-	File about = File(juce::File::getCurrentWorkingDirectory().getParentDirectory().getFullPathName() + String("/about.txt"));
-	FileInputStream * str = about.createInputStream();
-
-	if (str->openedOk()) {
-		while (str->getNumBytesRemaining() != 0) {
-			__about.append(str->readNextLine(), 1000);
-			__about.append("\n", 2);
-		}
-	}
-
-	
+	String about = String::createStringFromData(Resources::about_txt, sizeof(Resources::about_txt));
+	__about.append(about, about.length());
 	addAndMakeVisible(__themes);
 	__themes.addListener(this);
 	StringArray themes = { "Default", "Pink is life", "Go Green" };
@@ -54,13 +45,13 @@ void AboutPageComponent::paint(Graphics& g) {
 	g.drawRect(getLocalBounds(), 2.f);
 
 	g.setColour(Swatch::background.brighter(0.3f));
-	g.drawVerticalLine(800, 10, getLocalBounds().getHeight()-20);
+	g.drawVerticalLine(800, 10, getLocalBounds().getHeight() - 20);
 
 	g.setColour(Swatch::white);
 
 	g.setFont(header);
 	g.drawText("ABOUT", 0, 10, 800, 30, Justification::centred, false);
-	g.drawText("THEMES", 800, 20, 480, 30, Justification::centred, false);
+	g.drawText("THEMES", 800, 10, 480, 30, Justification::centred, false);
 
 	g.setFont(text);
 	g.drawMultiLineText(__about, 8, 70, 800);
