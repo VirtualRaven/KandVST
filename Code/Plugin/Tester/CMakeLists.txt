@@ -3,7 +3,6 @@ if(TARGET KandVST_VST3)
 	
 	#List of ignored test, these will not be compiled until removed
 	list(APPEND IGNORED_TESTS "")
-	list(APPEND IGNORED_TESTS "Lowpass_filter")
 	
 	include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 

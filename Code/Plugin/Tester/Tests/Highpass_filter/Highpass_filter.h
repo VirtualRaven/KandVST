@@ -1,10 +1,10 @@
-#ifndef LOWPASS_FILTER_H
-#define LOWPASS_FILTER_H
+#ifndef HIGHPASS_FILTER_H
+#define HIGHPASS_FILTER_H
 #include "TestHost.h"
-class Lowpass_filter : public TestHost::Test {
+class Highpass_filter : public TestHost::Test {
 	
 	virtual const char * name() const {
-		return "Lowpass_filter";
+		return "Highpass_filter";
 	};
 	
 	virtual bool run(wrapperVST* vst, 
@@ -19,7 +19,7 @@ class Lowpass_filter : public TestHost::Test {
 				e.type = Steinberg::Vst::Event::kNoteOnEvent;
 				e.noteOn = {
 					0,
-					57, //A5 220Hz
+					33, //A5 55Hz (should not be found)
 					0.0,
 					1.0,
 					0,
@@ -27,9 +27,9 @@ class Lowpass_filter : public TestHost::Test {
 
 				};
 				events.addEvent(e);
-				e.noteOn.pitch = 127; // 12543 Hz (should not be found)
+				e.noteOn.pitch = 127; // 12543 Hz 
 				events.addEvent(e);
-				e.noteOn.pitch = 117; // 7040 Hz
+				e.noteOn.pitch = 69; // 440 Hz
 				events.addEvent(e);
 				return this->block.process(vst, &c,&events);
 			}

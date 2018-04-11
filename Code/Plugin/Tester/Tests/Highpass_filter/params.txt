@@ -6,4 +6,4 @@ Attack time 0 = 0.001
 Decay level 0 = 1.0
 Decay time 0 = 0.0
 Release time 0 = 0.001
-LP Frequency 0 = 0.352
+HP Frequency 0 = 0.022

@@ -197,6 +197,8 @@ void ConvolutionReverb<T>::RegisterParameters(int ID, GLOBAL *global)
 template<typename T>
 bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool empty)
 {
+	int inLen = len;
+
 	// Check if ir has changed (even if disabled)
 	auto currentIrName = __ir->getCurrentChoiceName();
 	if (!__irFromFile && currentIrName.compare(__prevIrName) != 0)
@@ -250,35 +252,30 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 	if (__responseBlocks.size() == 0)
 		return false;
 
-	// Block size needs to be a power of two
-	int blockSize = nextPowerOfTwo(len);
-
 	auto bufferp = buffer.getArrayOfWritePointers();
 
 	// If len has changed
 	if (__prevBlockSize != len)
 	{
-		__prevBlockSize = len;
-
-		__prevInputs.clear();
-
-		__fft = new dsp::FFT(roundDoubleToInt(log2(2*blockSize)));
-		__ifft = new dsp::FFT(roundDoubleToInt(log2(2*blockSize)));
-
-		__createResponseBlocks(len);
-		__prevBlockSize = len;
+		// This occurs when looping in a DAW
+		// Process as if len hasn't been changed
+		inLen = __prevBlockSize;
 	}
+
+	// Block size needs to be a power of two
+	int blockSize = nextPowerOfTwo(inLen);
 
 	// x: Input of length 2*blockSize
 	AudioSampleBuffer x = AudioSampleBuffer(2, 4*blockSize);
 	x.clear();
 	auto xp = x.getArrayOfWritePointers();
 
-	// in: The actual current input of length len (does not need to be cleaned)
-	AudioSampleBuffer in = AudioSampleBuffer(2, len);
+	// in: The actual current input of length len
+	AudioSampleBuffer in = AudioSampleBuffer(2, inLen);
+	in.clear();
 	auto inp = in.getArrayOfWritePointers();
 
-	for (int i = 0; i < len; i++)
+	for (int i = 0; i < inLen; i++)
 	{
 		// double -> float
 		inp[0][i] = static_cast<float>(bufferp[0][i]);
@@ -287,7 +284,7 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 
 	// Put the new input block in front of the list, remove the last if nessesary
 	__prevInputs.push_front(in);
-	if (__prevInputs.size() > roundDoubleToInt((2 * blockSize) / len))
+	if (__prevInputs.size() > roundDoubleToInt((2 * blockSize) / inLen))
 		__prevInputs.pop_back();
 
 	// Make x contain the current input to the right and previous inputs to the left of it
@@ -296,13 +293,13 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 	{
 		auto prevp = prev.getArrayOfReadPointers();
 
-		for (int j = 0; j < len; j++)
+		for (int j = 0; j < inLen; j++)
 		{
-			if (i*len > 2 * blockSize)
+			if (i*inLen > 2 * blockSize)
 				continue;
 
-			xp[0][(2 * blockSize - i * len) + j] = prevp[0][j];
-			xp[1][(2 * blockSize - i * len) + j] = prevp[1][j];
+			xp[0][(2 * blockSize - i * inLen) + j] = prevp[0][j];
+			xp[1][(2 * blockSize - i * inLen) + j] = prevp[1][j];
 		}
 
 		i++;
@@ -321,6 +318,7 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 	AudioSampleBuffer convOutput = AudioSampleBuffer(2, 4*blockSize);
 	convOutput.clear();
 	auto convOutputp = convOutput.getArrayOfWritePointers();
+
 
 	int b = 0;
 	for (auto currentIn : __inputBlocks)
@@ -361,8 +359,8 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 	for (int i = 0; i < len; i++)
 	{
 		// Last len samples are the wet output (float -> double)
-		float wetOutLeft = convOutputp[0][i + 2 * blockSize - len];
-		float wetOutRight = convOutputp[1][i + 2 * blockSize - len];
+		float wetOutLeft = convOutputp[0][i + 2 * blockSize - inLen];
+		float wetOutRight = convOutputp[1][i + 2 * blockSize - inLen];
 
 		float dryOutLeft = bufferp[0][i];
 		float dryOutRight = bufferp[1][i];
@@ -386,9 +384,9 @@ template<typename T>
 void ConvolutionReverb<T>::Reset()
 {
 	// Clear all previous values
-	__inputBlocks.clear();
-	__prevInputs.clear();
-	__emptyCounter = 0;
+	//__inputBlocks.clear();
+	//__prevInputs.clear();
+	//__emptyCounter = 0;
 }
 
 template class ConvolutionReverb<double>;
