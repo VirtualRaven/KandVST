@@ -9,7 +9,8 @@ SettingsComponent::SettingsComponent(GLOBAL*global)
 {
 	Global = global;
 	__pitchBendSens = new ParameterSlider(*Global->paramHandler->Get<AudioParameterInt>(-1, "PITCH_BEND_SENS"),global);
-	__selectKnob = new SelectKnob(*Global->paramHandler->Get<AudioParameterChoice>(-1, "SELECT_KNOB_VALUE"),global);
+	__selectKnob = new ParameterSlider(*Global->paramHandler->Get<AudioParameterChoice>(-1, "SELECT_KNOB_VALUE"),global);
+	__selectKnob->setSize(50, 50);
 
 	addAndMakeVisible(__pitchBendSens);
 	addAndMakeVisible(__selectKnob);
@@ -54,7 +55,7 @@ void SettingsComponent::resized()
 	__pitchBendSens->setBounds(settings.removeFromLeft(space));
 	
 	
-	__selectKnob->setBounds(settings);
+	__selectKnob->setBounds(settings.removeFromLeft(2*space));
 
 }
 

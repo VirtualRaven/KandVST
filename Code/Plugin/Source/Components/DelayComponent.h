@@ -19,7 +19,7 @@ public:
 
 private:
 	ScopedPointer<ParameterSlider> __delaySpeed, __delaySeconds;
-	ScopedPointer<ParameterButton> __toggleDelay;
+	ScopedPointer<ParameterButton> __toggleDelay, __toggleSync;
 	Label __speedLabel, __secondsLabel;
 	Rectangle<int> __bounds;
 	GLOBAL * Global;

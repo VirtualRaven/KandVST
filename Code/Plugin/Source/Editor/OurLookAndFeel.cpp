@@ -19,10 +19,26 @@ OurLookAndFeel::OurLookAndFeel(GLOBAL * global)
 void OurLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int width, int height
 	, float sliderPos, const float rotaryStartAngle, const float rotaryEndAngle, Slider & slider)
 {
+
 	__themeColour = __themePicker.getColour(Global->paramHandler->Get<AudioParameterChoice>(-1, "THEME")->getIndex());
+
+	bool isChoice = false;
+	if (auto ps = dynamic_cast<ParameterSlider*>(&slider))
+	{
+		if (dynamic_cast<AudioParameterChoice*>(&(ps->param)))
+		{
+			// Move the slider down to the right to fit dot labels
+			isChoice = true;
+			width -= 20;
+			height -= 20;
+			y += 20;
+			//x += 20;
+		}
+	}
+
 	const float radius = jmin(width / 2, height / 2) - 4.0f;
-	const float centreX = x + width * 0.5f;
-	const float centreY = y + height * 0.5f;
+	const float centreX = x + (width * 0.5f);
+	const float centreY = y + (height * 0.5f);
 	const float rx = centreX - radius;
 	const float ry = centreY - radius;
 	const float rw = radius * 2.0f;
@@ -31,14 +47,21 @@ void OurLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int width, int 
 	Image knobRef = ImageFileFormat::loadFrom(Resources::Icons::knobs_png, sizeof(Resources::Icons::knobs_png));
 	int size = jmin<int>(height, width)-12;
 
-	x = jmax<int>(x, (width - size)/2);
-	y = jmax<int>(y, (height - size)/2);
+	x = jmax<int>(x, (width - size) / 2);
+	y = jmax<int>(y, (height - size) / 2);
+
 
 	g.setOpacity(1.0f);
 	if (!slider.isEnabled()) {
 		g.setOpacity(0.5f);
 	}
-	g.drawImage(knobRef, Rectangle<float>(static_cast<float>(x), static_cast<float>(y), static_cast<float>(size), static_cast<float>(size)), RectanglePlacement::stretchToFit, false);
+	
+	if (isChoice) // Magic numbers :S
+		g.drawImage(knobRef, Rectangle<float>(static_cast<float>(x), static_cast<float>(y+7), static_cast<float>(size), static_cast<float>(size)), RectanglePlacement::stretchToFit, false);
+	else
+		g.drawImage(knobRef, Rectangle<float>(static_cast<float>(x), static_cast<float>(y), static_cast<float>(size), static_cast<float>(size)), RectanglePlacement::stretchToFit, false);
+	
+	// g.drawEllipse(centreX, centreY, 1, 1, 1);
 
 	Path p;
 	const float pointerLength = radius * 0.2f;
@@ -127,6 +150,68 @@ void OurLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int width, int 
 			}
 			
 		}
+		if (auto choice = dynamic_cast<AudioParameterChoice*>(&(ps->param))) {
+			// AudioParameterChoice
+
+			g.setColour(Colour(255, 100, 100));
+			//g.drawRect(ps->getLocalBounds());
+
+			Path dots;
+			Path blueDot;
+
+			float angDelta = (float_Pi / 4.0f) * (-0.2f * choice->choices.size() + 1.9f);
+
+			// The knob's limits are set in ParameterSlider.cpp
+			
+			for (int i = 0; i <= choice->choices.size(); i++)
+			{
+				dots.addEllipse(centreX - 2, 20, 4, 4);
+				dots.applyTransform(AffineTransform::rotation(angDelta*(i>0), centreX, centreY));
+			}
+
+			dots.applyTransform(AffineTransform::rotation(rotaryStartAngle - angDelta, centreX, centreY));
+			Colour dotColour = Swatch::background.darker(0.2);
+			Path dark = Path(dots);
+			Path light = Path(dots);
+
+			dark.applyTransform(AffineTransform::translation(-1.0f, -1.0f));
+			g.setColour(dotColour.darker().withAlpha(0.4f));
+			g.fillPath(dark);
+
+			light.applyTransform(AffineTransform::translation(1.0f, 1.0f));
+			g.setColour(dotColour.brighter().withAlpha(0.4f));
+			g.fillPath(light);
+
+			g.setColour(dotColour);
+			g.fillPath(dots);
+
+			// Draw text
+			Font font(10, Font::FontStyleFlags::plain);
+			g.setFont(font);
+			g.setColour(Colour::fromRGB(255, 255, 255));
+
+			float currentAngle = rotaryEndAngle - 2*float_Pi;
+
+			// Loop over all dots from right to left
+			for (int i = 1; i <= choice->choices.size(); i++)
+			{
+				Point<float> textP = dots.getPointAlongPath((dots.getLength() / static_cast<float>(choice->choices.size())) * static_cast<float>(i));
+				
+				textP.setX(textP.getX() + currentAngle * 8);
+				textP.setY(textP.getY() - 10 + abs(currentAngle) * 2);
+				
+				//choice->choices[choice->choices.size() - i]
+				g.drawSingleLineText(choice->choices[choice->choices.size() - i], textP.getX(), textP.getY(), Justification::horizontallyCentred);
+				currentAngle -= angDelta;
+			}
+
+			int i = choice->getIndex();
+			blueDot.addEllipse(centreX - 2, 20, 4, 4);
+			blueDot.applyTransform(AffineTransform::rotation(i*angDelta + rotaryStartAngle, centreX, centreY));
+			g.fillPath(blueDot);
+			blueDot.clear();
+
+		}
 		else if (auto floatParam = dynamic_cast<AudioParameterFloat*>(&(ps->param)) && ps->getDrawProgress()!=ParameterSlider::ProgressStart::Disabled)
 		{
 			Colour dotColour = Swatch::background.darker(0.2);
@@ -198,7 +283,6 @@ void OurLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int width, int 
 
 	g.setColour(Colours::white);
 	g.fillPath(p);
-	//DEBUG
 
 }
 

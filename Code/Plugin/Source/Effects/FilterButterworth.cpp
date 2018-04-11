@@ -141,6 +141,18 @@ void FilterButterworth<T>::ProccessCommand(MidiMessage message)
 template<typename T>
 void FilterButterworth<T>::Reset()
 {
+	// Reset previous values 
+
+	for (int i = 0; i < 2; i++)
+	{
+		__prevX1[i] = 0;
+		__prevX2[i] = 0;
+		__prevY1[i] = 0;
+		__prevY2[i] = 0;
+	}
+
+	__currentLeft = 0;
+	__currentRight = 0;
 }
 
 template class FilterButterworth<double>;

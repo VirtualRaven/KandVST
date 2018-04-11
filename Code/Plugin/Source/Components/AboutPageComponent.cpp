@@ -15,8 +15,10 @@ AboutPageComponent::AboutPageComponent(GLOBAL * global) :
 
 	__info.setReadOnly(true);
 	setLookAndFeel(&ourLookAndFeel);
+
 	String about = String::createStringFromData(Resources::about_txt, sizeof(Resources::about_txt));
 	__about.append(about, about.length());
+
 	addAndMakeVisible(__themes);
 	__themes.addListener(this);
 	StringArray themes = { "Default", "Pink is life", "Go Green" };

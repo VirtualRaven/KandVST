@@ -4,7 +4,6 @@
 #include "Global.h"
 #include "ParameterSlider.h"
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "SelectKnob.h"
 
 class SettingsComponent : public Component
 {
@@ -17,8 +16,7 @@ private:
 	void paint(Graphics& g) override;
 	void resized() override;
 
-	ScopedPointer<ParameterSlider> __pitchBendSens;
-	ScopedPointer<SelectKnob> __selectKnob, __modChoice;
+	ScopedPointer<ParameterSlider> __pitchBendSens, __selectKnob;
 	Label __pitchBendLabel;
 	Rectangle<int> __bounds;
 

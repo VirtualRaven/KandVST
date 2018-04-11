@@ -8,10 +8,13 @@ DelayEffect<T>::DelayEffect(int ID, double sampleRate,GLOBAL*global) :
 	__delayBuffer(2, static_cast<int>(sampleRate * 4)),	// Buffer size is max delay
 	__delayLen(0),	// Actual delay length
 	__prevDelayLen(0),
-	__delayPos(0)
+	__delayPos(0),
+	__bps(0.0),
+	__prevStatus(false)
 {
 	Global = global;
 	__isEnabled = global->paramHandler->Get<AudioParameterBool>(ID, "DELAY_EN");
+	__sync = global->paramHandler->Get<AudioParameterBool>(ID, "DELAY_SYNC");
 	__delayMultiplier = Global->paramHandler->Get<AudioParameterFloat>(ID, "EX_DELAYMULTI");
 	__delayLenMult = Global->paramHandler->Get<AudioParameterFloat>(ID, "EX_DELAYLENGTH");
 
@@ -27,9 +30,20 @@ DelayEffect<T>::~DelayEffect()
 {
 }
 template<typename T>
+void DelayEffect<T>::setStatus(double bpm, bool status) {
+	__bps = bpm / 60.0;
+	if (__prevStatus != status)
+	{
+		//Clear buffer at starting or stopping the track
+		__delayBuffer.clear();
+	}
+	__prevStatus = status;
+}
+template<typename T>
 void DelayEffect<T>::RegisterParameters(int ID,GLOBAL*Global)
 {
 	Global->paramHandler->RegisterBool(ID, "DELAY_EN", "DELAY", 0);
+	Global->paramHandler->RegisterBool(ID, "DELAY_SYNC", "Delay sync", 0);
 	Global->paramHandler->RegisterFloat(ID, "EX_DELAYMULTI", "Delay", 0.0f, 1.0f, 0.2f);
 	Global->paramHandler->RegisterFloat(ID, "EX_DELAYLENGTH", "Delay Length", 0.125f, 4.0f, 0.25f);
 }
@@ -42,7 +56,10 @@ bool DelayEffect<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool empty)
 		return false;
 
 	float multi =*__delayMultiplier;
-	float lenmult =  *__delayLenMult;
+	float lenmult = (*__delayLenMult);
+	
+	if (*__sync)
+		lenmult *= (1.0 / __bps);
 
 	__delayLen = (this->__sampleRate * lenmult);
 

@@ -12,10 +12,10 @@ namespace Swatch
 	static const Colour accentBlue = Colour::fromRGB(26, 105, 180);
 
 	//pink theme
-	static const Colour accentPink = Colour::fromRGB(255, 0, 200);
+	static const Colour accentPink = Colour::fromRGB(200, 0, 145);
 
 	//green theme
-	static const Colour accentGreen = Colour::fromRGB(0, 255, 100);
+	static const Colour accentGreen = Colour::fromRGB(0, 200, 50);
 
 }
 #endif
