@@ -33,9 +33,21 @@ void FilterButterworth<T>::RegisterParameters(int ID, String parameterLabel, Str
 template<typename T>
 bool FilterButterworth<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool empty)
 {
-	__fc = *lpFrequency;
+	int lfoIndx = (*lfoIndex).getIndex();
+	double amount = 0.0;
+	if (lfoIndx > 0) {
+		amount = lfos[lfoIndx - 1]->getAmount();
+		if (amount > 0.0) {
+			double lfoSamp = (lfos[lfoIndx - 1]->getPointer()[0] + 1.0) / 2.0;
+			__fc = (*lpFrequency) - ((*lpFrequency) - __lowerLimit)*lfoSamp*amount;
+			//CalculateCoefficients();
+		}
+	}
+	else {
+		__fc = *lpFrequency;
+	}
 
-	if (!__enabled && ((!empty) && IsEnabled()))
+	if (!__enabled && ((!empty) && (IsEnabled() || ((amount > 0.0) && lfoIndx != 0))))
 	{
 		// Enabled again
 		__enabled = true;
@@ -69,15 +81,7 @@ bool FilterButterworth<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 	}
 
 	// Recalculate coefficients only if fc has changed
-	int lfoIndx = (*lfoIndex).getIndex();
-	if (lfoIndx > 0) {
-		double amount = lfos[lfoIndx - 1]->getAmount();
-		if (amount > 0.0) {
-			double lfoSamp = (lfos[lfoIndx - 1]->getPointer()[0] + 1.0) / 2.0;
-			__fc = (*lpFrequency) - ((*lpFrequency) - __lowerLimit)*lfoSamp*amount;
-			CalculateCoefficients();
-		}
-	}
+	
 	else if (__fc != __prevFc)
 	{
 		CalculateCoefficients();
