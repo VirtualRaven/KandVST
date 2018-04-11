@@ -205,6 +205,8 @@ void OurLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int width, int 
 				currentAngle -= angDelta;
 			}
 
+			// Draw dot progress
+			g.setColour(__themeColour);
 			int i = choice->getIndex();
 			blueDot.addEllipse(centreX - 2, 20, 4, 4);
 			blueDot.applyTransform(AffineTransform::rotation(i*angDelta + rotaryStartAngle, centreX, centreY));
