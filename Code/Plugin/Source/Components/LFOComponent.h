@@ -9,7 +9,7 @@
 #include "IVSTParameters.h"
 #include "Swatch.h"
 
-class LFOComponent : public Component, private IVSTParameters
+class LFOComponent : public Component, private IVSTParameters, public ComboBox::Listener
 {
 public:
     //==============================================================================
@@ -21,6 +21,7 @@ public:
     void paint (Graphics& g) override;
     void resized() override;
 	GLOBAL * Global;
+	virtual void comboBoxChanged(ComboBox* comboBoxThatHasChanged) override;
 private:
 	//==============================================================================
 	ScopedPointer<ParameterSlider> __ratio, __type, __amp;
@@ -28,6 +29,9 @@ private:
 	ScopedPointer<ParameterButton> __toggleLfo, __toggleInvert, __onPress;
 	Rectangle<int> __bounds;
 	int __ID, __width, __height;
+	ComboBox __cBox;
+	StringArray __choices;
+	AudioParameterChoice * __choiceParameter;
 	//==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LFOComponent)
 };

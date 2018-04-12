@@ -19,6 +19,7 @@ private:
 	AudioParameterFloat* __amount;
 	AudioParameterBool* __isActive, *__invert,*__onPress;
 	AudioParameterInt* __ratio, *__waveType;
+	AudioParameterChoice* __choice;
 
 	double calcRatio();
 

@@ -22,6 +22,7 @@ LFO::LFO(int maxSamples, int ID, double sampleRate, GLOBAL*global):
 	__isActive	 = Global->paramHandler->Get<AudioParameterBool>(ID, "LFO_EN");
 	__invert	 = Global->paramHandler->Get<AudioParameterBool>(ID, "LFO_INV");
 	__onPress	 = Global->paramHandler->Get<AudioParameterBool>(ID, "LFO_PRESS");
+	__choice	 = Global->paramHandler->Get <AudioParameterChoice>(ID, "LFO_CHOICE");
 }
 LFO::~LFO()
 {
@@ -30,11 +31,40 @@ LFO::~LFO()
 
 double LFO::calcRatio()
 {
-	if ((*__ratio) > 0) return (*__ratio);
+	int indx = (*__choice).getIndex();
+	switch (indx) {
+	case 0:					// 1/16
+		return 16.0;
+	case 1:					// 1/8
+		return 8.0;
+	case 2:					// 1/6
+		return 6.0;
+	case 3:					// 1/4
+		return 4.0;
+	case 4:					// 1/3
+		return 3.0;
+	case 5:					// 1/2
+		return 2.0;
+	case 6:					// 1
+		return 1.0;
+	case 7:					// 2
+		return 0.5;
+	case 8:					// 3
+		return 1.0/3.0;
+	case 9:					// 4
+		return 0.25;
+	case 10:				// 6
+		return 1.0/6.0;
+	case 11:				// 8
+		return 0.125;
+
+	}
+/*	if ((*__ratio) > 0) return (*__ratio);
 	else
 	{
 		return (1.0 / (abs(*__ratio) + 2.0));
 	};
+	*/
 }
 
 void LFO::RegisterParameters(int ID, GLOBAL*Global)
@@ -45,6 +75,8 @@ void LFO::RegisterParameters(int ID, GLOBAL*Global)
 	Global->paramHandler->RegisterInt(ID, "LFO_RATIO", "LFO Ratio", -6, 16, 1); //TEMP!!!
 	Global->paramHandler->RegisterInt(ID, "LFO_TYPE", "LFO Wave type", 0, 3, 0);
 	Global->paramHandler->RegisterFloat(ID, "LFO_AMOUNT", "LFO amount", 0.0, 1.0, 0.5);
+	StringArray choices = StringArray("1/16", "1/8", "1/6", "1/4", "1/3", "1/2", "1", "2", "3", "4", "6", "8");
+	Global->paramHandler->RegisterChoice(ID, "LFO_CHOICE", "LFO choice", choices, 6);
 }
 
 double* LFO::getPointer()
