@@ -16,6 +16,7 @@ class ConvolutionReverb :
 {
 
 private:
+	GLOBAL *__global;
 	int __maxBuffHint;
 	double __sampleRate;
 
@@ -31,7 +32,7 @@ private:
 	std::list<AudioSampleBuffer> __prevInputs;
 	
 	int __responseBufferLen;
-	int __prevBlockSize;
+	int __maxBlockSize;
 
 	AudioParameterBool *__isEnabled;
 	AudioParameterFloat *__dryGain;
@@ -46,6 +47,7 @@ private:
 
 	void __createResponseBlocks(int len);
 	void __loadImpulseResponse(ScopedPointer<AudioFormatReader> reader, String errorInfo);
+	int __getAudioBufferListSampleCount(std::list<AudioSampleBuffer> list);
 
 public:
 	ConvolutionReverb(int ID,double sampleRate, int maxBuffHint, GLOBAL *global);

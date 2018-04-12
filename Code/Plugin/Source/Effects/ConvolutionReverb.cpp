@@ -1,13 +1,15 @@
 #include "ConvolutionReverb.h"
+#include "ConvolutionReverb.h"
 #include "juce_dsp\juce_dsp.h"
 #include "Resources_files.h"
 
 template<typename T>
 ConvolutionReverb<T>::ConvolutionReverb(int ID, double sampleRate, int maxBuffHint, GLOBAL *global) :
+	__global(global),
 	IEffect(sampleRate),
 	__sampleRate(sampleRate),
 	IVSTParameters(ID),
-	__prevBlockSize(maxBuffHint),
+	__maxBlockSize(maxBuffHint),
 	__responseBuffer(),
 	__maxBuffHint(maxBuffHint),
 	__prevIsEnabled(true),
@@ -148,7 +150,20 @@ void ConvolutionReverb<T>::__loadImpulseResponse(ScopedPointer<AudioFormatReader
 
 	//__responseBufferLen /= 2;
 
-	__createResponseBlocks(__prevBlockSize);
+	__createResponseBlocks(__maxBlockSize);
+}
+
+template<typename T>
+int ConvolutionReverb<T>::__getAudioBufferListSampleCount(std::list<AudioSampleBuffer> list)
+{
+	int ret = 0;
+
+	for (auto buffer : list)
+	{
+		ret += buffer.getNumSamples();
+	}
+
+	return ret;
 }
 
 
@@ -197,8 +212,6 @@ void ConvolutionReverb<T>::RegisterParameters(int ID, GLOBAL *global)
 template<typename T>
 bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool empty)
 {
-	int inLen = len;
-
 	// Check if ir has changed (even if disabled)
 	auto currentIrName = __ir->getCurrentChoiceName();
 	if (!__irFromFile && currentIrName.compare(__prevIrName) != 0)
@@ -255,27 +268,27 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 	auto bufferp = buffer.getArrayOfWritePointers();
 
 	// If len has changed
-	if (__prevBlockSize != len)
+	/*if (__prevBlockSize != len)
 	{
 		// This occurs when looping in a DAW
 		// Process as if len hasn't been changed
-		inLen = __prevBlockSize;
-	}
+		//__global->log->Write("Blocksize: " + std::to_string(inLen) + "\n");
+	}*/
+	__global->log->Write("Blocksize: " + std::to_string(len) + "\n");
 
 	// Block size needs to be a power of two
-	int blockSize = nextPowerOfTwo(inLen);
+	int blockSize = nextPowerOfTwo(__maxBlockSize);
 
-	// x: Input of length 2*blockSize
+	// x: Input buffer 2*blockSize
 	AudioSampleBuffer x = AudioSampleBuffer(2, 4*blockSize);
 	x.clear();
 	auto xp = x.getArrayOfWritePointers();
 
 	// in: The actual current input of length len
-	AudioSampleBuffer in = AudioSampleBuffer(2, inLen);
-	in.clear();
+	AudioSampleBuffer in = AudioSampleBuffer(2, len);
 	auto inp = in.getArrayOfWritePointers();
 
-	for (int i = 0; i < inLen; i++)
+	for (int i = 0; i < len; i++)
 	{
 		// double -> float
 		inp[0][i] = static_cast<float>(bufferp[0][i]);
@@ -284,25 +297,24 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 
 	// Put the new input block in front of the list, remove the last if nessesary
 	__prevInputs.push_front(in);
-	if (__prevInputs.size() > roundDoubleToInt((2 * blockSize) / inLen))
+	if (__getAudioBufferListSampleCount(__prevInputs) > roundDoubleToInt((2 * blockSize)))
 		__prevInputs.pop_back();
 
 	// Make x contain the current input to the right and previous inputs to the left of it
-	int i = 1;
+	int prevLeft = 0;
 	for (auto prev : __prevInputs)
 	{
 		auto prevp = prev.getArrayOfReadPointers();
+		prevLeft += prev.getNumSamples();
 
-		for (int j = 0; j < inLen; j++)
+		for (int j = 0; j < prev.getNumSamples(); j++)
 		{
-			if (i*inLen > 2 * blockSize)
+			if ((2 * blockSize - prevLeft + j) < 0)
 				continue;
 
-			xp[0][(2 * blockSize - i * inLen) + j] = prevp[0][j];
-			xp[1][(2 * blockSize - i * inLen) + j] = prevp[1][j];
+			xp[0][2 * blockSize - prevLeft + j] = prevp[0][j];
+			xp[1][2 * blockSize - prevLeft + j] = prevp[1][j];
 		}
-
-		i++;
 	}
 
 	__fft->performRealOnlyForwardTransform(x.getWritePointer(0));
@@ -359,8 +371,8 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 	for (int i = 0; i < len; i++)
 	{
 		// Last len samples are the wet output (float -> double)
-		float wetOutLeft = convOutputp[0][i + 2 * blockSize - inLen];
-		float wetOutRight = convOutputp[1][i + 2 * blockSize - inLen];
+		float wetOutLeft = convOutputp[0][i + 2 * blockSize - len];
+		float wetOutRight = convOutputp[1][i + 2 * blockSize - len];
 
 		float dryOutLeft = bufferp[0][i];
 		float dryOutRight = bufferp[1][i];
