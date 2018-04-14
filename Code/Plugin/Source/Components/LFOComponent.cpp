@@ -17,7 +17,7 @@ IVSTParameters(ID)
 	__ratioLabel.setText("RATIO", NotificationType::dontSendNotification);
 	addAndMakeVisible(__ratioLabel);
 	//__ratioLabel.attachToComponent(__ratio, false);
-	//__ratioLabel.setJustificationType(Justification::centred);
+	__ratioLabel.setJustificationType(Justification::centred);
 
 	addAndMakeVisible(__type = new ParameterSlider(*Global->paramHandler->Get<AudioParameterInt>(__ID, "LFO_TYPE"), Global));
 	__type->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
@@ -105,8 +105,8 @@ void LFOComponent::resized(){
 	sliders.removeFromTop(__ampLabel.getFont().getHeight());
 	//__ratio->setBounds(sliders.removeFromLeft(size));
 	int heightCombo = sliders.getHeight();
-	__ratioLabel.setBounds(__bounds.removeFromLeft(__bounds.getWidth() * 0.33).removeFromTop(fontHeight*3));
-	__cBox.setBounds(sliders.removeFromLeft(size).removeFromBottom(heightCombo * (2.0/3.0)).removeFromTop(heightCombo * 0.5));
+	__ratioLabel.setBounds(__bounds.removeFromLeft(__bounds.getWidth() * 0.33).removeFromTop(fontHeight*2.9));
+	__cBox.setBounds(sliders.removeFromLeft(size).removeFromBottom(heightCombo * 0.75).removeFromTop(heightCombo * 0.5));
 	__type->setBounds(sliders.removeFromLeft(size));
 	__amp->setBounds(sliders.removeFromLeft(size));
 	__toggleInvert->setBounds(sliders.removeFromTop(20));
