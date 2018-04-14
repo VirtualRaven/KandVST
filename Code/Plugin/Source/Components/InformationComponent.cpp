@@ -38,6 +38,15 @@ void InformationComponent::paint (Graphics& g){
 	w = infoWindow.getWidth();
 	h = infoWindow.getHeight();
 	myPath.addRectangle(infoWindow);
+
+
+	/*
+	ThemePicker tp;
+
+	Colour c = tp.getColour(Global->paramHandler->Get<AudioParameterChoice>(-1, "THEME")->getIndex());
+	g.setColour(c.darker(0.8f).withSaturation(0.5f));
+	*/
+
     g.setColour(Colour::fromRGB(40,60,90));
     g.fillPath(myPath);
 

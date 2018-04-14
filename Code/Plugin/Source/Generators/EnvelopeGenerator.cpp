@@ -221,9 +221,7 @@ void EnvelopeGenerator::recalculateParameters()
 EnvelopeGenerator::EnvelopeGenerator(int ID,double sampleRate,GLOBAL*global):
 	IVSTParameters(ID),
 	__sampleRate(sampleRate),
-
 	__state(5),
-
 	__amplitude(0),
 	__vel(127),
 	__velMulti(1.0),
@@ -263,6 +261,9 @@ void EnvelopeGenerator::Stop()
 
 void EnvelopeGenerator::RenderImage(int __ID, Image * image, GLOBAL*Global)
 {
+	int colourId = Global->paramHandler->Get<AudioParameterChoice>(-1, "THEME")->getIndex();
+	ThemePicker tp;
+	Colour themeColour = tp.getColour(colourId);
 	ScopedPointer<Graphics> g = new Graphics(*image);
 	g->setImageResamplingQuality(Graphics::ResamplingQuality::highResamplingQuality);
 	g->setColour(Swatch::background);
@@ -327,8 +328,8 @@ void EnvelopeGenerator::RenderImage(int __ID, Image * image, GLOBAL*Global)
 
 	Path p = Path();
 	p.startNewSubPath(0, image->getHeight());
-	
-	g->setColour(Swatch::accentBlue);
+
+	g->setColour(themeColour);
 	float lastx = 0,lasty = 0;
 	for (int i = 4; i < image->getWidth()-6; i++)
 	{
@@ -404,7 +405,13 @@ void EnvelopeGenerator::RenderImage(int __ID, Image * image, GLOBAL*Global)
 	//p.addLineSegment(Line<float>(image->getWidth(), image->getHeight(), 0, image->getHeight()), 1.0f);
 	p = p.createPathWithRoundedCorners(12.0f);
 	g->strokePath(p, PathStrokeType(6.0f,PathStrokeType::JointStyle::curved,PathStrokeType::EndCapStyle::rounded));
-	g->setFillType(FillType(ColourGradient(Colour::fromRGBA(26, 105, 180, 80), 0, 0, Colour::fromRGBA(26, 105, 180, 10), 0, image->getHeight(), false)));
+	
+	Colour startGradient = themeColour.darker(0.3f).withAlpha(0.6f);
+	Colour endGradient = themeColour.darker(0.3f).withAlpha(0.05f);
+	
+	g->setFillType(FillType(ColourGradient(startGradient, 0, 0, endGradient, 0, image->getHeight(), false)));
+
+	//g->setFillType(FillType(ColourGradient(Colour::fromRGBA(26, 105, 180, 80), 0, 0, Colour::fromRGBA(26, 105, 180, 10), 0, image->getHeight(), false)));
 	g->fillPath(p);
 
 

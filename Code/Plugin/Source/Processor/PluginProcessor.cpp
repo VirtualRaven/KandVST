@@ -34,6 +34,7 @@ PluginProcessor::PluginProcessor()
 						FilterLP<double>,
 						SettingsComponent,
 						ConvolutionReverb<double>,
+						AboutPageComponent,
 						PipelineManager<double>
 			>({
 			{0,1,2,3},
@@ -44,6 +45,7 @@ PluginProcessor::PluginProcessor()
 			{0,1},
 			{-1,0,1,2,3},
 			{-1,0,1,2,3},
+			{-1},
 			{-1},
 			{-1},
 			{-1} 

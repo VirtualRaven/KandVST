@@ -122,6 +122,13 @@ void OscillatorComponent::paint(Graphics& g){
 	g.restoreState();
 }
 
+void OscillatorComponent::lookAndFeelChanged() {
+	WavetableOsc os = WavetableOsc(__ID, 0, 0, Global);
+	os.renderImage(__oscWaveform);
+	__waveformComp.repaint();
+	__waveformInvalid = false;
+}
+
 
 void OscillatorComponent::resized(){
 	

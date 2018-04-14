@@ -28,6 +28,7 @@ public:
 	~EnvelopeComponent();
 	void resized() override;
 	void paint(Graphics & g) override;
+	virtual void lookAndFeelChanged() override;
 
 	// Inherited via ParameterListener
 	virtual void parametersChanged(std::vector<std::string>) override;

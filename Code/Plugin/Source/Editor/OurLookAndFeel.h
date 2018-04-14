@@ -4,11 +4,14 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "Resources_files.h"
 #include "Swatch.h"
+#include "Global.h"
 #include "Components\ParameterSlider.h"
+#include "ThemePicker.h"
 class OurLookAndFeel : public LookAndFeel_V4
 {
+
 public:
-	 OurLookAndFeel();
+	 OurLookAndFeel(GLOBAL * global);
 	~OurLookAndFeel();
 	void drawRotarySlider(Graphics& g, int x, int y, int width, int height,
 		float sliderPos, float rotaryStartAngle,  float rotaryEndAngle, Slider& slider) override;
@@ -25,6 +28,9 @@ public:
 	void drawButtonText(Graphics&, TextButton&, bool isMouseOverButton, bool isButtonDown) override;
 
 private :
+	GLOBAL * Global;
+	Colour __themeColour;
+	ThemePicker __themePicker;
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OurLookAndFeel)
 };
 

@@ -5,7 +5,7 @@
 //==============================================================================
 PluginGUI::PluginGUI(PluginProcessor& owner, GLOBAL* global)
 	: AudioProcessorEditor(owner),
-	ourLookAndFeel(),
+	ourLookAndFeel(global),
 	__tabComponent(TabbedButtonBar::Orientation::TabsAtTop),
 	__keyboard(owner.keyboardState,MidiKeyboardComponent::Orientation::horizontalKeyboard),
 	__cc(global),
@@ -42,9 +42,12 @@ void PluginGUI::InitializeGui()
 	{
 		__tabComponent.addTab(std::to_string(i + 1), Colour::fromRGB(1,1,1), new OscillatorPageComponent(i, Global), true);
 	}
+	
 	__tabComponent.setCurrentTabIndex(0);
 
 	__tabComponent.addTab("C", Colours::darkgrey, &__cc, true);
+	__tabComponent.addTab("ABOUT", Colours::darkgrey, new AboutPageComponent(Global), true);
+
 	addAndMakeVisible(__tabComponent);
 	addAndMakeVisible(__keyboard);
 	__keyboard.setKeyWidth(__keyboard.getKeyWidth() + 20.0f);
