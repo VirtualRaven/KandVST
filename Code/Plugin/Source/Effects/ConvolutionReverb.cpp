@@ -16,7 +16,8 @@ ConvolutionReverb<T>::ConvolutionReverb(int ID, double sampleRate, int maxBuffHi
 	__prevIrName(""),
 	__formatManager(),
 	__prevIsEmpty(false),
-	__emptyCounter(0)
+	__emptyCounter(0),
+	__overlap()
 {
 	__formatManager.registerBasicFormats();
 
@@ -278,6 +279,12 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 	// Block size needs to be a power of two
 	int blockSize = nextPowerOfTwo(__maxBlockSize);
 
+	if (__overlap.getNumSamples() == 0)
+	{
+		__overlap.setSize(2, blockSize, false, true, true);
+		__overlap.clear();
+	}
+
 	// x: Input buffer 2*blockSize
 	AudioSampleBuffer x = AudioSampleBuffer(2, 4*blockSize);
 	x.clear();
@@ -300,7 +307,7 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 		__prevInputs.pop_back();
 
 	// Make x contain the current input to the right and previous inputs to the left of it
-	int prevLeft = 0;
+	int prevLeft = blockSize - in.getNumSamples();
 	for (auto prev : __prevInputs)
 	{
 		auto prevp = prev.getArrayOfReadPointers();
@@ -322,7 +329,7 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 	// Put the new TRANSFORMED input block in front of the list, remove the last if nessesary
 	__inputBlocks.push_front(x);
 	if (__inputBlocks.size() > __responseBlocks.size()) //TODO FIX
-		//__inputBlocks.pop_back();
+		__inputBlocks.pop_back();
 
 
 	// Multiply to output
@@ -367,11 +374,36 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 	float wet = *__wetGain;
 	float dry = *__dryGain;
 
+	// Add overlap
+	int overlapSize = jmin(blockSize, len);
+	convOutput.addFrom(0, blockSize, __overlap, 0, 0, overlapSize);
+	convOutput.addFrom(1, blockSize, __overlap, 1, 0, overlapSize);
+
+	if (overlapSize < blockSize)
+	{
+		auto overlap = __overlap.getArrayOfWritePointers();
+		for (int i = 0; i < blockSize - overlapSize; i++)
+		{
+			overlap[0][i] = overlap[0][i + overlapSize];
+			overlap[1][i] = overlap[1][i + overlapSize];
+
+			overlap[0][i + overlapSize] = 0;
+			overlap[1][i + overlapSize] = 0;
+		}
+	}
+
+	if (len != __maxBlockSize)
+	{
+		//Save overlap
+		__overlap.addFrom(0, 0, convOutput, 0, 2 * blockSize - len, blockSize - len);
+		__overlap.addFrom(1, 0, convOutput, 1, 2 * blockSize - len, blockSize - len);
+	}
+
 	for (int i = 0; i < len; i++)
 	{
 		// Last len samples are the wet output (float -> double)
-		float wetOutLeft = convOutputp[0][i + 2 * blockSize - len];
-		float wetOutRight = convOutputp[1][i + 2 * blockSize - len];
+		float wetOutLeft = convOutputp[0][i + blockSize];
+		float wetOutRight = convOutputp[1][i + blockSize];
 
 		float dryOutLeft = bufferp[0][i];
 		float dryOutRight = bufferp[1][i];

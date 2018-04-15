@@ -23,6 +23,8 @@ private:
 
 	AudioSampleBuffer __responseBuffer;
 
+	AudioSampleBuffer __overlap;
+
 	ScopedPointer<dsp::FFT> __fft;
 	ScopedPointer<dsp::FFT> __ifft;
 
