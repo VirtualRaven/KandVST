@@ -11,7 +11,6 @@ ConvolutionReverb<T>::ConvolutionReverb(int ID, double sampleRate, int maxBuffHi
 	IVSTParameters(ID),
 	__maxBlockSize(maxBuffHint),
 	__responseBuffer(),
-	__maxBuffHint(maxBuffHint),
 	__prevIsEnabled(true),
 	__irFromFile(false),
 	__prevIrName(""),
@@ -322,8 +321,8 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 
 	// Put the new TRANSFORMED input block in front of the list, remove the last if nessesary
 	__inputBlocks.push_front(x);
-	if (__inputBlocks.size() > __responseBlocks.size())
-		__inputBlocks.pop_back();
+	if (__inputBlocks.size() > __responseBlocks.size()) //TODO FIX
+		//__inputBlocks.pop_back();
 
 
 	// Multiply to output
