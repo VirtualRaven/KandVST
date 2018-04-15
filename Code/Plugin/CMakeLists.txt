@@ -8,7 +8,7 @@ set(ALLOW_PARTIAL_TEST true
 	CACHE BOOL "Allow tester to run a subset of tests if python is not available")
 set(AudioPlugin_jucer_FILE "${CMAKE_SOURCE_DIR}//AudioPlugin.jucer" 
     CACHE STRING "Path to project jucere file")
-
+set(TEAMCITY_TEST_MODE true CACHE BOOL "Make tester exe output information to teamcity")
 
 find_package(PythonInterp 3)
 if(EXISTS ${PYTHON_EXECUTABLE})

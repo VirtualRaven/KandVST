@@ -90,8 +90,12 @@ if(TARGET KandVST_VST3)
                 $<$<CONFIG:Release>:VST_RELEASE>)
 
     add_dependencies(tester KandVST_VST3)
-
-	add_test(NAME TEST_ALL COMMAND tester)
+	if(TEAMCITY_TEST_MODE) 	
+		add_test(NAME TEST_ALL COMMAND tester -TC -F)
+		message(STATUS "Running in teamcity mode")
+	else()
+		add_test(NAME TEST_ALL COMMAND tester)
+	endif()
 
 else(TARGET KandVST_VST3)
     message(WARNING "Skipping tester tool as VST3 is not available")
