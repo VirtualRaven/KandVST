@@ -292,6 +292,7 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 
 	// in: The actual current input of length len
 	AudioSampleBuffer in = AudioSampleBuffer(2, len);
+	in.clear();
 	auto inp = in.getArrayOfWritePointers();
 
 	for (int i = 0; i < len; i++)
@@ -328,7 +329,7 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 
 	// Put the new TRANSFORMED input block in front of the list, remove the last if nessesary
 	__inputBlocks.push_front(x);
-	if (__inputBlocks.size() > __responseBlocks.size()) //TODO FIX
+	if (__inputBlocks.size() > __responseBlocks.size())
 		__inputBlocks.pop_back();
 
 
@@ -375,28 +376,34 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 	float dry = *__dryGain;
 
 	// Add overlap
-	int overlapSize = jmin(blockSize, len);
+	int overlapSize = blockSize - len;
 	convOutput.addFrom(0, blockSize, __overlap, 0, 0, overlapSize);
 	convOutput.addFrom(1, blockSize, __overlap, 1, 0, overlapSize);
 
 	if (overlapSize < blockSize)
 	{
-		auto overlap = __overlap.getArrayOfWritePointers();
+		// Shift the rest of the samples to the beginning
+		/*auto overlap = __overlap.getArrayOfWritePointers();
 		for (int i = 0; i < blockSize - overlapSize; i++)
 		{
 			overlap[0][i] = overlap[0][i + overlapSize];
 			overlap[1][i] = overlap[1][i + overlapSize];
+		}*/
+		AudioSampleBuffer newOverlap = AudioSampleBuffer(2, blockSize);
+		newOverlap.clear();
+		newOverlap.copyFrom(0, 0, __overlap, 0, overlapSize, blockSize - overlapSize);
+		newOverlap.copyFrom(1, 0, __overlap, 1, overlapSize, blockSize - overlapSize);
 
-			overlap[0][i + overlapSize] = 0;
-			overlap[1][i + overlapSize] = 0;
-		}
+		__overlap.makeCopyOf(newOverlap, true);
+		//__overlap.clear(0, overlapSize, blockSize - overlapSize);
+		//__overlap.clear(1, overlapSize, blockSize - overlapSize);
 	}
 
 	if (len != __maxBlockSize)
 	{
 		//Save overlap
-		__overlap.addFrom(0, 0, convOutput, 0, 2 * blockSize - len, blockSize - len);
-		__overlap.addFrom(1, 0, convOutput, 1, 2 * blockSize - len, blockSize - len);
+		__overlap.addFrom(0, 0, convOutput, 0, blockSize + len, blockSize - len);
+		__overlap.addFrom(1, 0, convOutput, 1, blockSize + len, blockSize - len);
 	}
 
 	for (int i = 0; i < len; i++)
