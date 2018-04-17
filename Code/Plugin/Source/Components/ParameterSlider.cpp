@@ -159,6 +159,16 @@ void ParameterSlider::mouseDoubleClick(const MouseEvent & event)
 
 }
 
+void ParameterSlider::Link(int id)
+{
+	Linkable::Link(id);
+}
+
+
+void ParameterSlider::RemoveLink() {
+	Unlink();
+}
+
 void ParameterSlider::LinkCouldHaveChanged()
 {
 		this->setEnabled(!isLinked());
