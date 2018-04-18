@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import peakutils
 import sys
 sampleRate = 44100
-exP = [440,880]
+exP = [880,1760]
 if len(sys.argv) != 2:
     exit(0)
 filePath = sys.argv[1]
