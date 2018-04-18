@@ -1,0 +1,12 @@
+Enable Oscillator 0 = True
+Sine 0 = 1.0
+Saw 0 = 0.0
+Square 0 = 0.0
+Noise 0 = 0.0
+Tri 0 = 0.0
+Offset 0 = 1.0
+Delay -1 = 0.0
+Attack time 0 = 0.001
+Decay level 0 = 1.0
+Decay time 0 = 0.0
+Release time 0 = 0.001
