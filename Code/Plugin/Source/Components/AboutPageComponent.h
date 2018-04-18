@@ -4,7 +4,7 @@
 #include "JuceHeader.h"
 #include "Global.h"
 #include "OurLookAndFeel.h"
-
+#include "MarkdownComponent.h"
 class AboutPageComponent : public Component, public ComboBox::Listener{
 public :
 	AboutPageComponent(GLOBAL * global);
@@ -15,6 +15,7 @@ public :
 	virtual void comboBoxChanged(ComboBox* comboBoxThatHasChanged) override;
 	virtual void lookAndFeelChanged() override;
 private:
+	MarkdownComponent mc;
 	OurLookAndFeel ourLookAndFeel;
 	GLOBAL * Global;
 	TextEditor __info;
