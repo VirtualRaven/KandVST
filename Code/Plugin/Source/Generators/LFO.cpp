@@ -17,7 +17,6 @@ LFO::LFO(int maxSamples, int ID, double sampleRate, GLOBAL*global):
 	Global = global;
 	__samples = new double[maxSamples];
 	__amount	 = Global->paramHandler->Get<AudioParameterFloat>(ID, "LFO_AMOUNT");
-	__ratio		 = Global->paramHandler->Get<AudioParameterInt>(ID, "LFO_RATIO");
 	__waveType	 = Global->paramHandler->Get<AudioParameterInt>(ID, "LFO_TYPE");
 	__isActive	 = Global->paramHandler->Get<AudioParameterBool>(ID, "LFO_EN");
 	__invert	 = Global->paramHandler->Get<AudioParameterBool>(ID, "LFO_INV");
@@ -59,12 +58,6 @@ double LFO::calcRatio()
 		return 0.125;
 
 	}
-/*	if ((*__ratio) > 0) return (*__ratio);
-	else
-	{
-		return (1.0 / (abs(*__ratio) + 2.0));
-	};
-	*/
 }
 
 void LFO::RegisterParameters(int ID, GLOBAL*Global)
@@ -72,7 +65,6 @@ void LFO::RegisterParameters(int ID, GLOBAL*Global)
 	Global->paramHandler->RegisterBool(ID, "LFO_EN", "LFO", 0);
 	Global->paramHandler->RegisterBool(ID, "LFO_INV", "LFO Invert", 0);
 	Global->paramHandler->RegisterBool(ID, "LFO_PRESS", "LFO On Press Sync", 0);
-	Global->paramHandler->RegisterInt(ID, "LFO_RATIO", "LFO Ratio", -6, 16, 1); //TEMP!!!
 	Global->paramHandler->RegisterInt(ID, "LFO_TYPE", "LFO Wave type", 0, 3, 0);
 	Global->paramHandler->RegisterFloat(ID, "LFO_AMOUNT", "LFO amount", 0.0, 1.0, 0.5);
 	StringArray choices = StringArray("1/16", "1/8", "1/6", "1/4", "1/3", "1/2", "1", "2", "3", "4", "6", "8");

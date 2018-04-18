@@ -19,7 +19,7 @@ def doThresholdTest(f):
                     data.append(float(e))
     i = 0
     for samp in data:
-        if(float(samp) < -0.6 or float(samp) > 0.6) :
+        if(float(samp) < -0.5 or float(samp) > 0.5) :
             print("Test faild! samp = "+str(samp))
             return False
 

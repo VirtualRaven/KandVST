@@ -35,19 +35,17 @@ bool FilterButterworth<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 {
 	int lfoIndx = (*lfoIndex).getIndex();
 	double amount = 0.0;
-	if (lfoIndx > 0) {
+	if (lfoIndx > 0 && lfos[lfoIndx-1]->getAmount() > 0.0) {
 		amount = lfos[lfoIndx - 1]->getAmount() * 0.985;
-		if (amount > 0.0) {
-			double lfoSamp = (lfos[lfoIndx - 1]->getPointer()[0] + 1.0) / 2.0;
-			__fc = (*lpFrequency) - ((*lpFrequency) - __lowerLimit)*lfoSamp*amount;
+		double lfoSamp = (lfos[lfoIndx - 1]->getPointer()[0] + 1.0) / 2.0;
+		__fc = (*lpFrequency) - ((*lpFrequency) - __lowerLimit)*lfoSamp*amount;
 			//CalculateCoefficients();
-		}
 	}
 	else {
 		__fc = *lpFrequency;
 	}
 
-	if (!__enabled && ((!empty) && (IsEnabled() || ((amount > 0.0) && lfoIndx != 0))))
+	if (!__enabled && ((!empty) && (IsEnabled() || amount > 0.0)))
 	{
 		// Enabled again
 		__enabled = true;
