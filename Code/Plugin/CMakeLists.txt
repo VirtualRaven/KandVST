@@ -190,6 +190,8 @@ x         .         .         "Source/Editor/PluginGUI.cpp"
   .         .         .         "Source/Components/ReverbComponent.h"
   x         .         .         "Source/Components/AboutPageComponent.cpp"
   .         .         .         "Source/Components/AboutPageComponent.h"
+  x         .         .         "Source/Components/MarkdownComponent.cpp"
+  .         .         .         "Source/Components/MarkdownComponent.h"
   x         .         .         "Source/Editor/ThemePicker.cpp"
   .         .         .         "Source/Editor/ThemePicker.h"
 )

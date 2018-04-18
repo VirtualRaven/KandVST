@@ -9,8 +9,7 @@
 #include "OurLookAndFeel.h"
 #include "EnvelopeGenerator.h"
 #include "ParameterListener.h"
-class EnvelopeComponent : public  Component, private IVSTParameters, private Timer, private ParameterListener,private ComponentListener
-{
+class EnvelopeComponent : public  Component, private IVSTParameters, private Timer, private ParameterListener,private ComponentListener {
 private:
 	ImageComponent __envImageComponent;
 	Image *		   __envImage;
@@ -18,11 +17,17 @@ private:
 	ScopedPointer<ParameterSlider> attackTime, holdTime, decayTime, releaseTime, sustainTime,
 								   attackCurve, decayCurve, releaseCurve, sustainCurve,
 								   attackLevel, decayLevel, sustainLevel;
+
 	bool __envInvalid;
 	virtual void timerCallback() override;
 	virtual void componentVisibilityChanged(Component &component) override;
 	virtual void componentParentHierarchyChanged(Component &component) override;
 	GLOBAL * Global;
+	bool __linked = false;
+	//void Link(int id);
+	//void Unlink();
+	//virtual void mouseUp(const MouseEvent& event) override;
+
 public:
 	EnvelopeComponent(int ID,GLOBAL*global);
 	~EnvelopeComponent();
