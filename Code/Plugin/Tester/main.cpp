@@ -13,9 +13,9 @@ std::string trim(const std::string& str) {
 	return str.substr(pos, end - pos + 1);
 }
 struct CommandDesc {
-	std::string Command="";
-	int			NumArguments = 0;
-	std::string Signature = "";
+	std::string Command;
+	int			NumArguments;
+	std::string Signature;
 };
 
 
@@ -27,7 +27,7 @@ CommandDesc pre_defCommands[] = {
 	{"p",-1,"[file] Prints all registered parameters"},
 	{"t",0, "Prints all registered tests"},
 	{"F",0, "Force test to be run" },
-	{"h",0, "Prints help page" },
+	{"h",0, "Prints help page" }
 };
 
 std::map<std::string,std::vector<std::string>> commands;
