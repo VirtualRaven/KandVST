@@ -1,4 +1,5 @@
-Enable Oscillator 0 = True
+#NORMALIZED
+Enable Oscillator 0 = 1.0
 Sine 0 = 1.0
 Saw 0 = 0.0
 Square 0 = 0.0
