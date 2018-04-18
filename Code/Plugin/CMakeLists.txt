@@ -8,7 +8,7 @@ set(ALLOW_PARTIAL_TEST true
 	CACHE BOOL "Allow tester to run a subset of tests if python is not available")
 set(AudioPlugin_jucer_FILE "${CMAKE_SOURCE_DIR}//AudioPlugin.jucer" 
     CACHE STRING "Path to project jucere file")
-
+set(TEAMCITY_TEST_MODE false CACHE BOOL "Make tester exe output information to teamcity")
 
 find_package(PythonInterp 3)
 if(EXISTS ${PYTHON_EXECUTABLE})
@@ -173,8 +173,6 @@ x         .         .         "Source/Editor/PluginGUI.cpp"
   .         .         .         "Source/Components/DelayComponent.h"
   x         .         .         "Source/Util/Linkable.cpp"
   .         .         .         "Source/Util/Linkable.h"
-  x         .         .         "Source/Components/SelectKnob.cpp"
-  .         .         .         "Source/Components/SelectKnob.h"
   x         .         .         "Source/Components/OSCLFOComponent.cpp"
   .         .         .         "Source/Components/OSCLFOComponent.h"
   x         .         .         "Source/Components/MixerSubComponent.cpp"
@@ -194,7 +192,8 @@ x         .         .         "Source/Editor/PluginGUI.cpp"
   .         .         .         "Source/Components/AboutPageComponent.h"
   x         .         .         "Source/Components/MarkdownComponent.cpp"
   .         .         .         "Source/Components/MarkdownComponent.h"
-  
+  x         .         .         "Source/Editor/ThemePicker.cpp"
+  .         .         .         "Source/Editor/ThemePicker.h"
 )
 
 jucer_project_module(

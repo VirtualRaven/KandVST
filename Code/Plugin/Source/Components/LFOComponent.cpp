@@ -15,7 +15,8 @@ IVSTParameters(ID)
 	__ratio->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
 	__ratio->setTextBoxStyle(Slider::TextEntryBoxPosition::TextBoxBelow, true, boxWidth, 15);
 	__ratioLabel.setText("RATIO", NotificationType::dontSendNotification);
-	__ratioLabel.attachToComponent(__ratio, false);
+	addAndMakeVisible(__ratioLabel);
+	//__ratioLabel.attachToComponent(__ratio, false);
 	__ratioLabel.setJustificationType(Justification::centred);
 
 	addAndMakeVisible(__type = new ParameterSlider(*Global->paramHandler->Get<AudioParameterInt>(__ID, "LFO_TYPE"), Global));
@@ -42,6 +43,17 @@ IVSTParameters(ID)
 	addAndMakeVisible(__onPress = new ParameterButton(*Global->paramHandler->Get<AudioParameterBool>(__ID, "LFO_PRESS")));
 	__onPress->setButtonText("ON PRESS");
 
+	__choiceParameter = Global->paramHandler->Get<AudioParameterChoice>(__ID, "LFO_CHOICE");
+
+	addAndMakeVisible(__cBox);
+	__cBox.addListener(this);
+	__cBox.setColour(ComboBox::backgroundColourId, Swatch::background);
+	__cBox.setColour(ComboBox::buttonColourId, Swatch::white);
+	
+	__cBox.addItemList((*__choiceParameter).choices, 1);
+	__cBox.setSelectedItemIndex(__choiceParameter->getIndex(), true);
+
+	
 	//setSize(260, 140);
 }
 
@@ -91,11 +103,19 @@ void LFOComponent::resized(){
 	int size = sliders.getWidth() / 4;
 	sliders.removeFromTop(fontHeight);
 	sliders.removeFromTop(__ampLabel.getFont().getHeight());
-	__ratio->setBounds(sliders.removeFromLeft(size));
+	//__ratio->setBounds(sliders.removeFromLeft(size));
+	int heightCombo = sliders.getHeight();
+	__ratioLabel.setBounds(__bounds.removeFromLeft(__bounds.getWidth() * 0.33).removeFromTop(fontHeight*2.9));
+	__cBox.setBounds(sliders.removeFromLeft(size).removeFromBottom(heightCombo * 0.75).removeFromTop(heightCombo * 0.5));
 	__type->setBounds(sliders.removeFromLeft(size));
 	__amp->setBounds(sliders.removeFromLeft(size));
 	__toggleInvert->setBounds(sliders.removeFromTop(20));
 	sliders.removeFromTop(20);
 	__onPress->setBounds(sliders.removeFromTop(20));
 
+}
+
+void LFOComponent::comboBoxChanged(ComboBox * cbox)
+{
+	*__choiceParameter = cbox->getSelectedItemIndex();
 }

@@ -15,7 +15,8 @@ WavetableOsc::WavetableOsc(int ID, double sampleRate,int maxBuffHint,GLOBAL*glob
 	__noiseBuffer(static_cast<int>(sampleRate * 2)),
 	__rand(),
 	__rand_index(0),
-	__pitchbend(0)
+	__pitchbend(0),
+	ourLookAndFeel(global)
 {
 	Global = global;
 	__waveType = Global->paramHandler->Get<AudioParameterInt>(__ID, "WAVE_TYPE");
@@ -56,7 +57,8 @@ WavetableOsc::WavetableOsc(WavetableOsc && ref) :
 	__noiseBuffer(static_cast<int>(ref.__sampleRate * 2)),
 	__rand(),
 	__rand_index(ref.__rand_index),
-	__pitchbend(ref.__pitchbend)
+	__pitchbend(ref.__pitchbend),
+	ourLookAndFeel(ref.Global)
 {
 	__waveType = Global->paramHandler->Get<AudioParameterInt>(__ID, "WAVE_TYPE");
 	__octave = Global->paramHandler->Get<AudioParameterInt>(__ID, "OSC_OCTAVE");
@@ -74,6 +76,7 @@ WavetableOsc::WavetableOsc(WavetableOsc && ref) :
 
 	__lfofreq = Global->paramHandler->Get <AudioParameterChoice>(__ID, "OSC_LFO_FREQ");
 	__lfoamp = Global->paramHandler->Get <AudioParameterChoice>(__ID, "OSC_LFO_AMP");
+
 	__envBuff = ref.__envBuff;
 	ref.__envBuff = nullptr;
 }
@@ -123,7 +126,9 @@ void WavetableOsc::renderImage(Image* image)
 	{
 		g.drawLine(0, (image->getHeight() / 10)*i, image->getWidth(), (image->getHeight() / 10)*i);
 	}
-	g.setColour(Swatch::accentBlue);
+
+	int colourIndex = Global->paramHandler->Get<AudioParameterChoice>(-1, "THEME")->getIndex();
+	g.setColour(__themePicker.getColour(colourIndex));
 	g.setImageResamplingQuality(Graphics::highResamplingQuality);
 
 	double hMul = (static_cast<double>(height - 32)/2.0) / (max);

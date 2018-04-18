@@ -24,7 +24,6 @@ public:
 	GLOBAL * Global;
 private:
 	//==============================================================================
-
 	Label __sineLabel, __squareLabel, __sawLabel, __triangleLabel,__noiseLabel;
 	ScopedPointer<ParameterSlider> __sineSlider, __squareSlider, __sawSlider, __triangleSlider,__noiseSlider;
 
@@ -35,6 +34,7 @@ private:
 	bool __waveformInvalid;
 	virtual void componentVisibilityChanged(Component &component) override;
 	virtual void componentParentHierarchyChanged(Component &component) override;
+	virtual void lookAndFeelChanged() override;
 	//==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OscillatorComponent)
 

@@ -5,7 +5,7 @@
 //==============================================================================
 PluginGUI::PluginGUI(PluginProcessor& owner, GLOBAL* global)
 	: AudioProcessorEditor(owner),
-	ourLookAndFeel(),
+	ourLookAndFeel(global),
 	__tabComponent(TabbedButtonBar::Orientation::TabsAtTop),
 	__keyboard(owner.keyboardState,MidiKeyboardComponent::Orientation::horizontalKeyboard),
 	__cc(global),

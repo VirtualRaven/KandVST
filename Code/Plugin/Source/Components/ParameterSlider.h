@@ -73,6 +73,9 @@ public:
 	AudioProcessorParameter& param;
 	virtual void mouseDoubleClick(const MouseEvent& event) override;
 
+	void Link(int id);
+	void RemoveLink();
+
 	// Inherited via Linkable
 	virtual void LinkCouldHaveChanged() override;
 
