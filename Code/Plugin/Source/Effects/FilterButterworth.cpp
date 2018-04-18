@@ -80,7 +80,7 @@ bool FilterButterworth<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 
 	// Recalculate coefficients only if fc has changed
 	
-	else if (__fc != __prevFc)
+	if (__fc != __prevFc)
 	{
 		CalculateCoefficients();
 	}
