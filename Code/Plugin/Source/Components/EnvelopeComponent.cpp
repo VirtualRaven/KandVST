@@ -135,15 +135,15 @@ void EnvelopeComponent::paint(Graphics & g) {
 	
 	Rectangle<int> sideLabels(getLocalBounds().removeFromLeft(500));
 	g.drawText("TIME", 
-		Rectangle<int>(sideLabels.getX()+8, sideLabels.getY(), sideLabels.getWidth(), sideLabels.getHeight()),
+		Rectangle<int>(sideLabels.getX()-5, sideLabels.getY(), sideLabels.getWidth(), sideLabels.getHeight()),
 		Justification::centred, false);
 
-	sideLabels.removeFromRight(125);
+	sideLabels.removeFromRight(145);
 	g.drawText("CURVE",
 		Rectangle<int>(sideLabels.getX(), sideLabels.getY(), sideLabels.getWidth(), sideLabels.getHeight()),
 		Justification::centred, false);
 	
-	sideLabels.removeFromRight(130);
+	sideLabels.removeFromRight(145);
 	g.drawText("LEVEL",
 		Rectangle<int>(sideLabels.getX(), sideLabels.getY(), sideLabels.getWidth(), sideLabels.getHeight()),
 		Justification::centred, false);
