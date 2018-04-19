@@ -17,7 +17,8 @@ ConvolutionReverb<T>::ConvolutionReverb(int ID, double sampleRate, int maxBuffHi
 	__formatManager(),
 	__prevIsEmpty(false),
 	__emptyCounter(0),
-	__overlap()
+	__overlap(),
+	__inputPosInBlock(0)
 {
 	__formatManager.registerBasicFormats();
 
@@ -228,6 +229,7 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 		// Clean everything
 		__prevInputs.clear();
 		__inputBlocks.clear();
+		__inputPosInBlock = 0;
 
 		// Cancel counter
 		__emptyCounter = 0;
@@ -274,7 +276,6 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 		// Process as if len hasn't been changed
 		//__global->log->Write("Blocksize: " + std::to_string(inLen) + "\n");
 	}*/
-	__global->log->Write("Blocksize: " + std::to_string(len) + "\n");
 
 	// Block size needs to be a power of two
 	int blockSize = nextPowerOfTwo(__maxBlockSize);
@@ -308,19 +309,21 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 		__prevInputs.pop_back();
 
 	// Make x contain the current input to the right and previous inputs to the left of it
-	int prevLeft = blockSize - in.getNumSamples();
+	// The current input should be placed at blockSize + inputPosInBlock
+	int prevLeft = blockSize - in.getNumSamples() - __inputPosInBlock; //DODO: __maxBlockSize or blockSize
+	__global->log->Write("Blocksize: " + std::to_string(len) + ", prevLeft: " + std::to_string(prevLeft) + ", posinblock: " + std::to_string(__inputPosInBlock) + "\n");
 	for (auto prev : __prevInputs)
 	{
 		auto prevp = prev.getArrayOfReadPointers();
 		prevLeft += prev.getNumSamples();
 
-		for (int j = 0; j < prev.getNumSamples(); j++)
+		for (int i = 0; i < prev.getNumSamples(); i++)
 		{
-			if ((2 * blockSize - prevLeft + j) < 0)
+			if ((2 * blockSize - prevLeft + i) < 0)
 				continue;
 
-			xp[0][2 * blockSize - prevLeft + j] = prevp[0][j];
-			xp[1][2 * blockSize - prevLeft + j] = prevp[1][j];
+			xp[0][2 * blockSize - prevLeft + i] = prevp[0][i];
+			xp[1][2 * blockSize - prevLeft + i] = prevp[1][i];
 		}
 	}
 
@@ -349,7 +352,7 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 			const float *in = currentIn.getWritePointer(channel);
 			const float *h = __responseBlocks.at(b).getReadPointer(channel);
 
-			for (int i = 0; i < blockSize; i += 2)
+			for (int i = 0; i < 2*blockSize; i += 2)
 			{
 				// (a + bi)(c + di) = (ac - bd) + (bc + ad)i
 				float xr = in[i];
@@ -377,8 +380,8 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 
 	// Add overlap
 	int overlapSize = blockSize - len;
-	convOutput.addFrom(0, blockSize, __overlap, 0, 0, overlapSize);
-	convOutput.addFrom(1, blockSize, __overlap, 1, 0, overlapSize);
+	//convOutput.addFrom(0, blockSize, __overlap, 0, 0, overlapSize);
+	//convOutput.addFrom(1, blockSize, __overlap, 1, 0, overlapSize);
 
 	if (overlapSize < blockSize)
 	{
@@ -388,7 +391,7 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 		{
 			overlap[0][i] = overlap[0][i + overlapSize];
 			overlap[1][i] = overlap[1][i + overlapSize];
-		}*/
+		}
 		AudioSampleBuffer newOverlap = AudioSampleBuffer(2, blockSize);
 		newOverlap.clear();
 		newOverlap.copyFrom(0, 0, __overlap, 0, overlapSize, blockSize - overlapSize);
@@ -396,21 +399,21 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 
 		__overlap.makeCopyOf(newOverlap, true);
 		//__overlap.clear(0, overlapSize, blockSize - overlapSize);
-		//__overlap.clear(1, overlapSize, blockSize - overlapSize);
+		//__overlap.clear(1, overlapSize, blockSize - overlapSize);*/
 	}
 
 	if (len != __maxBlockSize)
 	{
 		//Save overlap
-		__overlap.addFrom(0, 0, convOutput, 0, blockSize + len, blockSize - len);
-		__overlap.addFrom(1, 0, convOutput, 1, blockSize + len, blockSize - len);
+		//__overlap.addFrom(0, 0, convOutput, 0, blockSize + len, blockSize - len);
+		//__overlap.addFrom(1, 0, convOutput, 1, blockSize + len, blockSize - len);
 	}
 
 	for (int i = 0; i < len; i++)
 	{
 		// Last len samples are the wet output (float -> double)
-		float wetOutLeft = convOutputp[0][i + blockSize];
-		float wetOutRight = convOutputp[1][i + blockSize];
+		float wetOutLeft = convOutputp[0][i + blockSize + __inputPosInBlock];
+		float wetOutRight = convOutputp[1][i + blockSize + __inputPosInBlock];
 
 		float dryOutLeft = bufferp[0][i];
 		float dryOutRight = bufferp[1][i];
@@ -420,6 +423,13 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 
 		bufferp[0][i] = outLeft;
 	    bufferp[1][i] = outRight;
+	}
+
+	__inputPosInBlock += len;
+
+	if (__inputPosInBlock >= __maxBlockSize)
+	{
+		__inputPosInBlock = 0;
 	}
 
 	return true;

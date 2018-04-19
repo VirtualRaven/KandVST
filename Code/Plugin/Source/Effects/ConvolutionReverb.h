@@ -34,6 +34,7 @@ private:
 	
 	int __responseBufferLen;
 	int __maxBlockSize;
+	int __inputPosInBlock;
 
 	AudioParameterBool *__isEnabled;
 	AudioParameterFloat *__dryGain;
