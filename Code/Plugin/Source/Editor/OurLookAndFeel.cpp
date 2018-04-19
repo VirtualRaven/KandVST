@@ -1,4 +1,5 @@
 #include "OurLookAndFeel.h"
+#include "Components\PresetRow.h"
 
 OurLookAndFeel::~OurLookAndFeel() {
 }
@@ -9,7 +10,8 @@ OurLookAndFeel::OurLookAndFeel(GLOBAL * global)
 	setColour(Slider::backgroundColourId, Colour::fromRGB(30, 30, 30));
 	setColour(Slider::thumbColourId, Colour::fromRGB(26, 105, 180));
 	setColour(Slider::trackColourId, Colour::fromRGB(26, 26, 26));
-	setColour(ListBox::backgroundColourId, Colour::fromRGB(25, 45, 75));
+	setColour(ListBox::backgroundColourId, Colours::transparentWhite);
+	//setColour(ListBox::backgroundColourId, Colour::fromRGB(25, 45, 75));
 	setColour(TextButton::textColourOnId, Swatch::white);
 	setColour(TextButton::textColourOffId, Swatch::disabled);
 

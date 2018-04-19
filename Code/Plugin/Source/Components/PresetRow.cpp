@@ -1,5 +1,6 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "PresetRow.h"
+#include "ThemePicker.h"
 
 PresetRow::PresetRow(int s, bool isSelected, ListBox* owner,GLOBAL*global):
 	__isSelected(isSelected),
@@ -7,7 +8,6 @@ PresetRow::PresetRow(int s, bool isSelected, ListBox* owner,GLOBAL*global):
 	__rowNr(s),
 	__owner(owner)
 {
-
 	Global = global;
 	__lbl.addMouseListener(this, true);
 	addAndMakeVisible(__lbl);
@@ -21,6 +21,7 @@ PresetRow::PresetRow(int s, bool isSelected, ListBox* owner,GLOBAL*global):
 		addAndMakeVisible(__save);
 		addAndMakeVisible(__delete);
 	}
+	setColour(ListBox::backgroundColourId, Colours::transparentBlack);
 
 }
 PresetRow::~PresetRow()
@@ -72,12 +73,6 @@ void PresetRow::resized()
 	__save.setBounds(localBounds.removeFromRight(localBounds.getHeight()));
 	__lbl.setBounds(localBounds);
 }
-
-
-
-
-
-
 
 /*void PresetRow::listBoxItemClicked(int row, const MouseEvent &) 
 {

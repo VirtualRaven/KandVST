@@ -39,15 +39,13 @@ void InformationComponent::paint (Graphics& g){
 	h = infoWindow.getHeight();
 	myPath.addRectangle(infoWindow);
 
-
-	/*
 	ThemePicker tp;
 
 	Colour c = tp.getColour(Global->paramHandler->Get<AudioParameterChoice>(-1, "THEME")->getIndex());
-	g.setColour(c.darker(0.8f).withSaturation(0.5f));
-	*/
 
-    g.setColour(Colour::fromRGB(40,60,90));
+	g.setColour(c.darker(1.f).darker(0.8f).withSaturation(0.1f));
+
+    //g.setColour(Colour::fromRGB(40,60,90));
     g.fillPath(myPath);
 
 	g.setColour(Colours::white);
@@ -58,26 +56,26 @@ void InformationComponent::paint (Graphics& g){
     // == adding inner shadows using gradients == 
     //shadow for top
     ColourGradient shadowTop(
-		Colours::black.withAlpha(startAlpha), midX, y,Colours::black.withAlpha(endAlpha), midX, y+offset, false);
+		Colours::black.withAlpha(startAlpha), midX, y, Colours::black.withAlpha(endAlpha), midX, y+offset, false);
                     
     g.setGradientFill(shadowTop);
     g.fillPath(myPath);
 
     //shadow for bottom
-    ColourGradient shadowBottom(Colours::black.withAlpha(startAlpha), midX, y+h,
-                    Colours::black.withAlpha(endAlpha), midX, ((y+h)-offset) , false);
+    ColourGradient shadowBottom(
+		Colours::black.withAlpha(startAlpha), midX, y+h, Colours::black.withAlpha(endAlpha), midX, ((y+h)-offset) , false);
     g.setGradientFill(shadowBottom);
     g.fillPath(myPath);
 
     //shadow for left
-    ColourGradient shadowLeft(Colours::black.withAlpha(startAlpha), x, midY,
-                    Colours::black.withAlpha(endAlpha), x+offset, midY, false);
+    ColourGradient shadowLeft(
+		Colours::black.withAlpha(startAlpha), x, midY, Colours::black.withAlpha(endAlpha), x+offset, midY, false);
     g.setGradientFill(shadowLeft);
     g.fillPath(myPath);
 
     //shadow for right
-    ColourGradient shadowRight(Colours::black.withAlpha(startAlpha), x+w, midY,
-                    Colours::black.withAlpha(endAlpha), ((x+w)-offset), midY, false);
+    ColourGradient shadowRight(
+		Colours::black.withAlpha(startAlpha), x+w, midY, Colours::black.withAlpha(endAlpha), ((x+w)-offset), midY, false);
     g.setGradientFill(shadowRight);
     g.fillPath(myPath);
 

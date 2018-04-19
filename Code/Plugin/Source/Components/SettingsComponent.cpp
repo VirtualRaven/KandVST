@@ -25,10 +25,10 @@ SettingsComponent::SettingsComponent(GLOBAL*global)
 
 void SettingsComponent::paint(Graphics& g)
 {
-	int width = __bounds.getWidth();
-	int height = __bounds.getHeight();
-	int fontHeight = __bounds.getHeight() * 0.2;
-	int fontSize = __bounds.getHeight() * 0.16;
+	int width = getLocalBounds().getWidth();
+	int height = getLocalBounds().getHeight();
+	int fontHeight = getLocalBounds().getHeight() * 0.2;
+	int fontSize = getLocalBounds().getHeight() * 0.14;
 
 	g.setColour(Colour::fromRGB(60, 60, 60));
 	g.drawRect(Rectangle<int>(0, 0, width, height), 2.0f);
@@ -37,7 +37,7 @@ void SettingsComponent::paint(Graphics& g)
 	g.setColour(Colours::white);
 	Font filter(fontSize, Font::FontStyleFlags::bold);
 	g.setFont(filter);
-	g.drawText("SETTINGS", Rectangle<int>(0, 0, width, fontHeight), Justification::centred, false);
+	g.drawText("HARDWARE SETTINGS", Rectangle<int>(0, 0, width, fontHeight), Justification::centred, false);
 	
 }
 
@@ -53,7 +53,6 @@ void SettingsComponent::resized()
 	int space = settings.getWidth() * 0.5;
 	
 	__pitchBendSens->setBounds(settings.removeFromLeft(space));
-	
 	
 	__selectKnob->setBounds(settings.removeFromLeft(2*space));
 

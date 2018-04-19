@@ -1,5 +1,6 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "PresetRowModel.h"
+
 PresetRowModel::PresetRowModel(ListBox* owner,GLOBAL*global):
 	__owner(owner)
 {
