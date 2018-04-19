@@ -11,12 +11,8 @@ IVSTParameters(ID)
 	Global=global;
 	__ID = ID;
 	int boxWidth = 50;
-	addAndMakeVisible(__ratio = new ParameterSlider(*Global->paramHandler->Get<AudioParameterInt>(__ID, "LFO_RATIO"),Global));
-	__ratio->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
-	__ratio->setTextBoxStyle(Slider::TextEntryBoxPosition::TextBoxBelow, true, boxWidth, 15);
 	__ratioLabel.setText("RATIO", NotificationType::dontSendNotification);
 	addAndMakeVisible(__ratioLabel);
-	//__ratioLabel.attachToComponent(__ratio, false);
 	__ratioLabel.setJustificationType(Justification::centred);
 
 	addAndMakeVisible(__type = new ParameterSlider(*Global->paramHandler->Get<AudioParameterInt>(__ID, "LFO_TYPE"), Global));
@@ -68,7 +64,6 @@ void LFOComponent::paint(Graphics& g){
 
 
 	if (!*Global->paramHandler->Get<AudioParameterBool>(__ID, "LFO_EN")) { //if disabled
-		__ratio->setEnabled(false);
 		__type->setEnabled(false);
 		__amp->setEnabled(false);
 		__toggleInvert->setEnabled(false);
@@ -79,7 +74,6 @@ void LFOComponent::paint(Graphics& g){
 		__ampLabel.setColour(Label::textColourId, Swatch::disabled);
 	}
 	else { //if enabled
-		__ratio->setEnabled(true);
 		__type->setEnabled(true);
 		__amp->setEnabled(true);
 		__toggleInvert->setEnabled(true);

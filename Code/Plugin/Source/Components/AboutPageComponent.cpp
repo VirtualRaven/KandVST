@@ -7,6 +7,7 @@ AboutPageComponent::~AboutPageComponent() {
 }
 
 AboutPageComponent::AboutPageComponent(GLOBAL * global) :
+	mc(global),
 	ourLookAndFeel(global),
 	__themePicker()
 {
@@ -15,9 +16,25 @@ AboutPageComponent::AboutPageComponent(GLOBAL * global) :
 
 	__info.setReadOnly(true);
 	setLookAndFeel(&ourLookAndFeel);
+	addAndMakeVisible(mc);
 
-	String about = String::createStringFromData(Resources::about_txt, sizeof(Resources::about_txt));
-	__about.append(about, about.length());
+
+	std::string about = String::createStringFromData(Resources::about_txt, sizeof(Resources::about_txt)).toStdString();
+	int c = 0;
+	while (true)
+	{
+		int line = about.find('\n', c);
+		if (line != -1)
+		{
+			mc.addLine(about.substr(c, line - c));
+			c = line + 1;
+		}
+		else 
+		{
+			mc.addLine(about.substr(c));
+			break;
+		}
+	}
 
 	addAndMakeVisible(__themes);
 	__themes.addListener(this);
@@ -52,11 +69,8 @@ void AboutPageComponent::paint(Graphics& g) {
 	g.setColour(Swatch::white);
 
 	g.setFont(header);
-	g.drawText("ABOUT", 0, 10, 800, 30, Justification::centred, false);
-	g.drawText("THEMES", 800, 10, 480, 30, Justification::centred, false);
 
-	g.setFont(text);
-	g.drawMultiLineText(__about, 8, 70, 800);
+	g.drawText("THEMES", 800, 10, 480, 30, Justification::centred, false);
 
 	g.setColour(__themePicker.getColour(__themeChoice->getCurrentChoiceName()));
 	g.fillRect(990, 100, 100, 50);
@@ -66,7 +80,7 @@ void AboutPageComponent::resized() {
 	Rectangle<int> themeBounds(getLocalBounds().removeFromRight(450));
 	themeBounds.removeFromTop(50);
 	__themes.setBounds(themeBounds.removeFromTop(50).reduced(8));
-
+	mc.setBounds(getLocalBounds().removeFromLeft(getLocalBounds().getWidth() - 450));
 }
 
 void AboutPageComponent::RegisterParameters(int ID, GLOBAL *global) {

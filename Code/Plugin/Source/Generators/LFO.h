@@ -11,14 +11,13 @@ private:
 	double __sampleRate;
 	int __ID;
 	double* __samples;
-	double __squareTable[4096];
 	int __nrOfSamples;
 	bool __activeCheck, __phaseCheck;
 	//double* __parameter; // TEMPORARY
 	const IWavetable* __wavetable;
 	AudioParameterFloat* __amount;
 	AudioParameterBool* __isActive, *__invert,*__onPress;
-	AudioParameterInt* __ratio, *__waveType;
+	AudioParameterInt *__waveType;
 	AudioParameterChoice* __choice;
 
 	double calcRatio();

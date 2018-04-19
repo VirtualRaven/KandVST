@@ -5,7 +5,7 @@
 #include "Global.h"
 #include "ThemePicker.h"
 #include "OurLookAndFeel.h"
-
+#include "MarkdownComponent.h"
 class AboutPageComponent : public Component, public ComboBox::Listener{
 public :
 	AboutPageComponent(GLOBAL * global);
@@ -18,6 +18,7 @@ public :
 
 	static void RegisterParameters(int id, GLOBAL *global);
 private:
+	MarkdownComponent mc;
 	OurLookAndFeel ourLookAndFeel;
 	GLOBAL * Global;
 	TextEditor __info;
