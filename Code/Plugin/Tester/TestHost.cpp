@@ -314,7 +314,14 @@ std::vector<TestHost::PARAM_TUP> TestHost::readParamFile(std::string filename,bo
 			switch (t) {
 				case CONT:
 					try{
+						if (value.find(L'.') == std::string::npos)
+							throw std::invalid_argument("Floating point value must contain a dot");
 						fvalue = std::stod(value);
+						if (fvalue > 1.0 || fvalue < 0) {
+							util::red([&] {std::cerr << "Value error in file " << filename << " at line " << line << std::endl << "A value after a floating point parameter must be between 0.0 and 1.0" << std::endl; });
+							sucess = false;
+							return val;
+						}
 					}
 					catch (std::invalid_argument& ) {
 						util::red([&] {std::cerr << "Syntax error in file " << filename << " at line " << line << std::endl << "Value after equality sign is not an valid floating point number." << std::endl; });
