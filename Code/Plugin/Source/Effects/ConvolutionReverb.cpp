@@ -18,7 +18,8 @@ ConvolutionReverb<T>::ConvolutionReverb(int ID, double sampleRate, int maxBuffHi
 	__prevIsEmpty(false),
 	__emptyCounter(0),
 	__overlap(),
-	__inputPosInBlock(0)
+	__inputPosInBlock(0),
+	__log()
 {
 	__formatManager.registerBasicFormats();
 
@@ -198,6 +199,7 @@ void ConvolutionReverb<T>::__createResponseBlocks(int len)
 template<typename T>
 ConvolutionReverb<T>::~ConvolutionReverb()
 {
+	__global->log->Write(__log);
 }
 
 template<typename T>
@@ -213,6 +215,8 @@ void ConvolutionReverb<T>::RegisterParameters(int ID, GLOBAL *global)
 template<typename T>
 bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool empty)
 {
+	int64 start = Time::currentTimeMillis();
+
 	// Check if ir has changed (even if disabled)
 	auto currentIrName = __ir->getCurrentChoiceName();
 	if (!__irFromFile && currentIrName.compare(__prevIrName) != 0)
@@ -311,7 +315,7 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 	// Make x contain the current input to the right and previous inputs to the left of it
 	// The current input should be placed at blockSize + inputPosInBlock
 	int prevLeft = blockSize - in.getNumSamples() - __inputPosInBlock; //DODO: __maxBlockSize or blockSize
-	__global->log->Write("Blocksize: " + std::to_string(len) + ", prevLeft: " + std::to_string(prevLeft) + ", posinblock: " + std::to_string(__inputPosInBlock) + "\n");
+	//__global->log->Write("Blocksize: " + std::to_string(len) + ", prevLeft: " + std::to_string(prevLeft) + ", posinblock: " + std::to_string(__inputPosInBlock) + "\n");
 	for (auto prev : __prevInputs)
 	{
 		auto prevp = prev.getArrayOfReadPointers();
@@ -430,6 +434,13 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 	if (__inputPosInBlock >= __maxBlockSize)
 	{
 		__inputPosInBlock = 0;
+	}
+
+	int time = Time::currentTimeMillis() - start;
+	__log.append("Blocksize: " + std::to_string(len) + ", Time: " + std::to_string(time) + "\n", 256);
+	if (((double)len / __sampleRate) * 1000 < time)
+	{
+		__log.append("SLOW!\n", 20);
 	}
 
 	return true;

@@ -47,6 +47,8 @@ private:
 	bool __irFromFile;
 	String __prevIrName;
 
+	String __log;
+
 	void __createResponseBlocks(int len);
 	void __loadImpulseResponse(ScopedPointer<AudioFormatReader> reader, String errorInfo);
 	int __getAudioBufferListSampleCount(std::list<AudioSampleBuffer> list);
