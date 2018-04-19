@@ -8,11 +8,11 @@ MarkdownComponent::~MarkdownComponent() {
 MarkdownComponent::MarkdownComponent(GLOBAL * global)
 {
 	Global = global;
-	__styles[TokenType::Text] = { Font(Font::getDefaultSansSerifFontName(), 16, Font::plain),Swatch::white};
-	__styles[TokenType::Heading] = { Font(Font::getDefaultSansSerifFontName(), 30, Font::bold),Swatch::white,0.0f,8.0f,Justification::centred };
-	__styles[TokenType::Heading2] = { Font(Font::getDefaultSansSerifFontName(), 23, Font::bold),Swatch::white,0.0f,6.0f,Justification::centred };
-	__styles[TokenType::Heading3] = { Font(Font::getDefaultSansSerifFontName(), 20, Font::bold),Swatch::white,0.0f,4.0f,Justification::centred };
-	__styles[TokenType::ListItem] = { Font(Font::getDefaultSansSerifFontName(), 16, Font::plain),Swatch::white,15.0f };
+	__styles[TokenType::Text] =		Style();
+	__styles[TokenType::Heading] =	Style(Font(Font::getDefaultSansSerifFontName(), 30, Font::bold),Swatch::white,0.0f,8.0f,Justification::centred);
+	__styles[TokenType::Heading2] = Style(Font(Font::getDefaultSansSerifFontName(), 23, Font::bold),Swatch::white,0.0f,6.0f,Justification::centred);
+	__styles[TokenType::Heading3] = Style(Font(Font::getDefaultSansSerifFontName(), 20, Font::bold),Swatch::white,0.0f,4.0f,Justification::centred);
+	__styles[TokenType::ListItem] = Style(Font(Font::getDefaultSansSerifFontName(), 16, Font::plain),Swatch::white,15.0f);
 
 }
 

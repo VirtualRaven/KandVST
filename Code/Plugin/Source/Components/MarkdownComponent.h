@@ -48,9 +48,26 @@ private:
 	struct Style {
 		Font font;
 		Colour colour;
-		float indent = 0.0f;
-		float vPadd = 2.0f;
-		Justification justification = Justification::topLeft;
+		float indent;
+		float vPadd;
+		Justification justification;
+		Style():
+			font(Font::getDefaultSansSerifFontName(), 16, Font::plain),
+			colour(Swatch::white),
+			indent(0.0f),
+			vPadd(2.0f),
+			justification(Justification::topLeft)
+		{
+
+		}
+		Style(Font f, Colour c, float i = 0.0f, float vp = 2.0f, Justification j = Justification::topLeft):
+			font(f),
+			colour(c),
+			indent(i),
+			vPadd(vp),
+			justification(j)
+		{
+		}
 	};
 	struct Env {
 		std::vector<TokenType> controllTokens;
