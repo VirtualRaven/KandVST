@@ -159,6 +159,7 @@ void Pipeline<T>::RegisterParameters(int ID, GLOBAL*Global)
 template<typename T>
 void Pipeline<T>::Reset()
 {
+	__active = false;
 	for (auto e : __effects)
 	{
 		e->Reset();

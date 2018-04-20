@@ -15,6 +15,8 @@ public:
 	T right[S];
 	T* buffs[2] = { left,right };
 	bool process(wrapperVST* vst, IParameterChanges* inParams, IEventList* inEvent = nullptr);
+	bool processZero(wrapperVST* vst, IParameterChanges* inParams, IEventList* inEvent = nullptr);
+
 };
 
 class TestHost {
