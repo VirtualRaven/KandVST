@@ -5,7 +5,6 @@
 #include <list>         
 #include <thread>
 
-
 template<typename T>
 PipelineManager<T>::PipelineManager(double rate, int maxBuffHint,GLOBAL*global) :
 	__sampleRate(rate),
@@ -22,7 +21,7 @@ PipelineManager<T>::PipelineManager(double rate, int maxBuffHint,GLOBAL*global) 
 	for (int i = 0; i < LFO_COUNT; i++) {
 		lfos[i] = new LFO(maxBuffHint, i, rate,Global);
 	}
-	for (size_t i = 0; i < 16; i++)
+	for (size_t i = 0; i < NUM_PIPELINES; i++)
 	{
 		pipList.emplace_back(rate,maxBuffHint, Global);
 		
@@ -40,6 +39,8 @@ PipelineManager<T>::~PipelineManager()
 template<typename T>
 void PipelineManager<T>::genSamples(AudioBuffer<T>& buff, MidiBuffer & midiMessages, AudioPlayHead::CurrentPositionInfo & posInfo)
 {
+
+
 	// Return if wavetables are not ready
 	if (!wavetableRdy()) 	//Why do we do this check?
 		return;
@@ -53,7 +54,7 @@ void PipelineManager<T>::genSamples(AudioBuffer<T>& buff, MidiBuffer & midiMessa
 	//Did they lie?
 	if (__maybeMaxBuff < buffLen) {
 		//Yes, and things will probably start to crumble down the line
-		for (size_t i = 0; i < 16; i++)
+		for (size_t i = 0; i < NUM_PIPELINES; i++)
 		{
 			pipBuff[i].setSize(2, buffLen);
 			pipBuff[i].applyGain(0.0);
@@ -130,7 +131,11 @@ void PipelineManager<T>::genSamples(AudioBuffer<T>& buff, MidiBuffer & midiMessa
 		lastjob->render_block(pipBuff[buffCount],buffLen);
 		buffCount++;
 	}
-	while (pool.getNumJobs()>0);
+
+	volatile int numJobs = 0;
+	do {
+		numJobs = pool.getNumJobs();
+	} while (numJobs > 0);
 	
 	buff.clear();
 	for (int i = 0; i < buffCount; i++)

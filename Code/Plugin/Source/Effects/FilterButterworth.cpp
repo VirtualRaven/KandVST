@@ -8,7 +8,7 @@ FilterButterworth<T>::FilterButterworth(int ID, double sampleRate, String parame
 	__enabled(true),
 	__firstSampleIndex(0),
 	__upperLimit(20000.0f),
-	__lowerLimit(20.0f)
+	__lowerLimit(21.0f)
 {
 	Global = global;
 	__fs = sampleRate;
@@ -45,11 +45,17 @@ bool FilterButterworth<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 		__fc = *lpFrequency;
 	}
 
+	if ((empty || !IsEnabled()) && __enabled)
+	{
+		__enabled = false;
+	}
+
+
 	if (!__enabled && ((!empty) && (IsEnabled() || amount > 0.0)))
 	{
 		// Enabled again
 		__enabled = true;
-
+		
 		// Set the previous values
 		if (len >= 2)
 		{
@@ -78,8 +84,6 @@ bool FilterButterworth<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 		return false;
 	}
 
-	// Recalculate coefficients only if fc has changed
-	
 	if (__fc != __prevFc)
 	{
 		CalculateCoefficients();
@@ -87,9 +91,6 @@ bool FilterButterworth<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 	__prevFc = __fc;
 
 	auto buff = buffer.getArrayOfWritePointers();
-	
-
-		 
 
 	for (int i = __firstSampleIndex; i < len; i++)
 	{
@@ -123,11 +124,6 @@ bool FilterButterworth<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 		buff[0][i]=  static_cast<T>(__currentLeft);
 		buff[1][i] = static_cast<T>(__currentRight);
 
-	}
-
-	if ((empty || !IsEnabled()) && __enabled)
-	{
-		__enabled = false;
 	}
 
 	return true;
