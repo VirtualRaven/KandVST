@@ -16,7 +16,7 @@ FilterHP<T>::~FilterHP()
 template<typename T>
 void FilterHP<T>::RegisterParameters(int ID,GLOBAL*Global)
 {
-	FilterButterworth<T>::RegisterParameters(ID, "HP Frequency", "FILTER_HP", 21.0f,Global);
+	FilterButterworth<T>::RegisterParameters(ID, "HP Frequency", "FILTER_HP", 20.0f,Global);
 }
 template<typename T>
 void FilterHP<T>::CalculateCoefficients()
