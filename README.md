@@ -46,19 +46,25 @@ the following components
   Placing the comment `#NORMALIZED`turns off type checking, instead all values are interpreted as normalized floating point   values. This only effects rows after the line which the comment appeared on. 
   Similarly `#UNNORMALIZED` reenables type checking for the rows following it.
 
-## Dependencies
+## Build dependencies
+The project uses cmake as the build system, so a cmake i required
 
-### Linux packages ### 
-    * libasound2-dev
-    * libfreetype6-dev
-    * libcurl-dev
-    * libxinerama-dev
-    * libxrandr-dev
-    * libxcursor-dev
-    * freeglut3-dev  
-    * libxcomposite-dev
-    * mesa-common-dev
-    * libxrender-dev
-### Windows ###
+### Linux packages 
+  * libasound2-dev
+  * libfreetype6-dev
+  * libcurl-dev
+  * libxinerama-dev
+  * libxrandr-dev
+  * libxcursor-dev
+  * freeglut3-dev  
+  * libxcomposite-dev
+  * mesa-common-dev
+  * libxrender-dev
+### Windows 
    Don't know?
-   
+
+### Tester dependencies ###
+  To be able to run all tests python3 is required and the following python modules
+  * numpy
+  * matplotlib
+  * peakutils
