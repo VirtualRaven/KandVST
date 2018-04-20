@@ -137,6 +137,13 @@ include_directories("${CMAKE_SOURCE_DIR}//Source//Util//")
 include_directories("${CMAKE_SOURCE_DIR}//Source//Processor//")
 include_directories("${CMAKE_SOURCE_DIR}//Source//Effects//")
 
+file(WRITE "${CMAKE_BINARY_DIR}/cmake_versions.cpp" 
+	"#include <string>\n"
+	"#include <array>\n"
+	"namespace CMAKE {\n"
+	"std::array<std::string> VERSION_INFO= {\"JUCE_VERSION\", \"${JUCE_VERSION}\" , \"VST_VERSION\", \"${VST_VERSION}\" };\n}\n"
+)
+
 jucer_project_begin(
   JUCER_VERSION "5.2.0"
   PROJECT_FILE "${AudioPlugin_jucer_FILE}"
