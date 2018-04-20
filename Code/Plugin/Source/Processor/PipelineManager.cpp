@@ -130,7 +130,11 @@ void PipelineManager<T>::genSamples(AudioBuffer<T>& buff, MidiBuffer & midiMessa
 		lastjob->render_block(pipBuff[buffCount],buffLen);
 		buffCount++;
 	}
-	while (pool.getNumJobs()>0);
+
+	volatile int numJobs = 0;
+	do {
+		numJobs = pool.getNumJobs();
+	} while (numJobs > 0);
 	
 	buff.clear();
 	for (int i = 0; i < buffCount; i++)

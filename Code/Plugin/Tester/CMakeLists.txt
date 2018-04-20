@@ -7,8 +7,10 @@ if(TARGET KandVST_VST3)
 	include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
     # VST header files
-    include_directories(${CMAKE_SOURCE_DIR}/../VST/)
-    include_directories(${CMAKE_SOURCE_DIR}/../VST/pluginterfaces/)
+    #include_directories(${CMAKE_SOURCE_DIR}/../VST/)
+    #include_directories(${CMAKE_SOURCE_DIR}/../VST/pluginterfaces/)
+	include_directories(${VST_PATH})
+	include_directories("${VST_PATH}/pluginterfaces")
     
     #To include folders_*.h  
     include_directories(${CMAKE_CURRENT_BINARY_DIR})

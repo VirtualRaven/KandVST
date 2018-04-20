@@ -2,7 +2,7 @@
 #include "util.h"
 #include "TestHost.h"
 #include <array>
-
+#include <memory>
 #include "Tests.h"
 
 std::string trim(const std::string& str) {

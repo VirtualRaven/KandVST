@@ -4,7 +4,7 @@
 #include "Global.h"
 #include "PresetManager.h"
 #include "Resources_files.h"
-class PresetRow : public Component, private ButtonListener
+class PresetRow : public Component, private Button::Listener
 
 {
 private:
