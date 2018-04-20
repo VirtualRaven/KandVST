@@ -168,7 +168,6 @@ void PluginProcessor::setStateInformation(const void * data, int sizeInBytes)
 	//this needs rewrite
 	Global->log->Write("Set state\n");
 	ScopedPointer<XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
-	xmlState->writeToFile(File("D:\\text.xml"), "");
 	Global->presetManager->LoadPreset(xmlState);
 
 }
@@ -226,6 +225,8 @@ template <typename FloatType>
 void PluginProcessor::process (AudioBuffer<FloatType>& buffer,
                                             MidiBuffer& midiMessages)
 {
+	if (buffer.getNumSamples() == 0)
+		return;
 
 	if (!processorReady)
 		return;

@@ -107,12 +107,6 @@ TestHost::TestHost() : initialized(false)
 	}
 
 	initialized = true;
-	vst.proc()->setProcessing(true);
-		HParameterChanges c;
-		ProcessBlock<double,1024> block;
-		block.process(&vst, &c);
-
-	vst.proc()->setProcessing(false);
 }
 
 bool TestHost::isInitialized()
@@ -123,7 +117,7 @@ bool TestHost::isInitialized()
 bool TestHost::resetParameters()
 {
 	vst.proc()->setProcessing(true);
-	TestBlock block;
+	ProcessBlock<double,1U> block;
 	HParameterChanges changes;
 	for (auto p : pdata.params) {
 		int32 i;
@@ -132,7 +126,7 @@ bool TestHost::resetParameters()
 		q->release();
 	}
 
-	auto res = block.process(&vst, &changes);
+	auto res = block.processZero(&vst, &changes);
 	vst.proc()->setProcessing(false);
 	return res ;
 }
@@ -140,7 +134,7 @@ bool TestHost::resetParameters()
 bool TestHost::setParameters(const std::vector<PARAM_TUP>& vals)
 {
 	vst.proc()->setProcessing(true);
-	TestBlock block;
+	ProcessBlock<double, 1U> block;
 	HParameterChanges changes;
 	for (auto p : vals) {
 		int32 i;
@@ -148,7 +142,7 @@ bool TestHost::setParameters(const std::vector<PARAM_TUP>& vals)
 		q->addPoint(0, std::get<1>(p), i);
 		q->release();
 	}
-	auto res = block.process(&vst, &changes);
+	auto res = block.processZero(&vst, &changes);
 	vst.proc()->setProcessing(false);
 	return res ;
 }
@@ -490,6 +484,29 @@ bool ProcessBlock<T, S>::process(wrapperVST* vst, IParameterChanges* inParams, I
 	data.processMode = Steinberg::Vst::kRealtime;
 	data.symbolicSampleSize = dPrec ? Steinberg::Vst::kSample64 : Steinberg::Vst::kSample32;
 	data.numSamples = size;
+	data.numInputs = 0;
+	data.numOutputs = 1;
+	data.inputs = nullptr;
+	Steinberg::Vst::AudioBusBuffers buffOut;
+	buffOut.numChannels = 2;
+	buffOut.silenceFlags = 0;
+	ptrHelper<T>(buffOut) = buffs;
+	data.outputs = &buffOut;
+	data.inputParameterChanges = inParams;
+	data.outputParameterChanges = nullptr;
+	data.inputEvents = inEvent;
+	data.outputEvents = nullptr;
+	data.processContext = nullptr;
+
+	return vst->proc()->process(data) == Steinberg::kResultOk;
+}
+
+template<typename T, size_t S>
+bool ProcessBlock<T, S>::processZero(wrapperVST* vst, IParameterChanges* inParams, IEventList* inEvent) {
+	Steinberg::Vst::ProcessData data;
+	data.processMode = Steinberg::Vst::kRealtime;
+	data.symbolicSampleSize = dPrec ? Steinberg::Vst::kSample64 : Steinberg::Vst::kSample32;
+	data.numSamples = 0;
 	data.numInputs = 0;
 	data.numOutputs = 1;
 	data.inputs = nullptr;
