@@ -118,6 +118,7 @@ void PresetManager::DeletePreset(std::string name) {
 	if (preset.deleteFile()) {
 		int index = GetPresetIndex(name);
 		if (PresetExists(name)) {
+			delete std::get<1>(__presets[index]);
 			__presets.erase(__presets.begin() + index);
 		}
 	}
