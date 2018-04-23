@@ -60,7 +60,7 @@ AboutPageComponent::AboutPageComponent(GLOBAL * global) :
 
 	addAndMakeVisible(__themes);
 	__themes.addListener(this);
-	StringArray themes = { "Default", "Pink is life", "Go Green" };
+	StringArray themes = { "Default", "Pink is life", "Go Green", "Orange Juice", "Red" };
 	__themes.addItemList(themes, 1);
 	__themes.setSelectedItemIndex(__themeChoice->getIndex(), true);
 }
@@ -106,7 +106,7 @@ void AboutPageComponent::resized() {
 }
 
 void AboutPageComponent::RegisterParameters(int ID, GLOBAL *global) {
-	StringArray themes = { "Default", "Pink", "Green" };
+	StringArray themes = { "Default", "Pink", "Green", "Orange", "Red" };
 	global->paramHandler->RegisterChoice(ID, "THEME", "THEME", themes, 0);
 }
 

@@ -314,6 +314,8 @@ x         .         .         "Source/Editor/PluginGUI.cpp"
   .         .         .         "Source/Components/MarkdownComponent.h"
   x         .         .         "Source/Editor/ThemePicker.cpp"
   .         .         .         "Source/Editor/ThemePicker.h"
+  x         .         .         "Source/Components/VolumeMeterComponent.cpp"
+  .         .         .         "Source/Components/VolumeMeterComponent.h"
 )
 
 jucer_project_module(

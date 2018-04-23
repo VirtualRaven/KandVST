@@ -37,6 +37,10 @@ Colour ThemePicker::getColour(int themeId) {
 		break;
 	case 2: return Swatch::accentGreen;
 		break;
+	case 3: return Swatch::accentOrange;
+		break;
+	case 4: return Swatch::accentRed;
+		break;
 	default: return Swatch::accentBlue;
 		break;
 	}
@@ -52,6 +56,12 @@ Colour ThemePicker::getColour(String themeName) {
 	}
 	if (themeName == "Green") {
 		return Swatch::accentGreen;
+	}
+	if (themeName == "Orange") {
+		return Swatch::accentOrange;
+	}
+	if (themeName == "Red") {
+		return Swatch::accentRed;
 	}
 	return Swatch::accentBlue;
 }

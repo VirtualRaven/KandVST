@@ -27,7 +27,7 @@
 #include "ParameterSlider.h"
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "IVSTParameters.h"
-class MixerSubComponent : public Component,IVSTParameters
+class MixerSubComponent : public Component ,IVSTParameters
 {
 public:
 	MixerSubComponent(int ID,String  label, GLOBAL*global);

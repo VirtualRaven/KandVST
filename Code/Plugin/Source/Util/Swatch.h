@@ -28,7 +28,7 @@ namespace Swatch
 	static const Colour background = Colour::fromRGB(36,36,36);
 	static const Colour disabled = Colour::fromRGB(150, 150, 150);
 	static const Colour outlineColour = Colour::fromRGB(60, 60, 60);
-	static const Colour white = Colours::white;
+	static const Colour white = Colour::fromRGB(255, 255, 255);
 
 	//default theme 
 	static const Colour accentBlue = Colour::fromRGB(26, 105, 180);
@@ -38,6 +38,12 @@ namespace Swatch
 
 	//green theme
 	static const Colour accentGreen = Colour::fromRGB(0, 200, 50);
+
+	//orange theme
+	static const Colour accentOrange = Colour::fromRGB(255,102,0);
+
+	//red theme
+	static const Colour accentRed = Colour::fromRGB(220, 0, 0);
 
 }
 #endif

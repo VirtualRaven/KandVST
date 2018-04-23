@@ -65,7 +65,7 @@ void InformationComponent::paint (Graphics& g){
 
 	Colour c = tp.getColour(Global->paramHandler->Get<AudioParameterChoice>(-1, "THEME")->getIndex());
 
-	g.setColour(c.darker(1.f).darker(0.8f).withSaturation(0.1f));
+	g.setColour(c.darker(1.f).darker(0.7f).withSaturation(0.2f));
 
     //g.setColour(Colour::fromRGB(40,60,90));
     g.fillPath(myPath);
