@@ -63,6 +63,7 @@ private:
 	bool __prevIsEnabled;
 	bool __prevIsEmpty;
 	int __emptyCounter;
+	int __blockSizeChangeCounter;
 	bool __irFromFile;
 	String __prevIrName;
 
