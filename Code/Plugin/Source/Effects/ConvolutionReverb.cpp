@@ -1,3 +1,25 @@
+/*
+ * This file is part of the KandVST synthesizer.
+ *
+ * Copyright (c) 2018   Lukas Rahmn, Anton Fredriksson,
+ *                      Sarosh Nasir, Stanisław Zwierzchowski,
+ *                      Klas Ludvigsson and Andreas Kuszli
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
 #include "ConvolutionReverb.h"
 #include "juce_dsp\juce_dsp.h"
 #include "Resources_files.h"
@@ -15,7 +37,8 @@ ConvolutionReverb<T>::ConvolutionReverb(int ID, double sampleRate, int maxBuffHi
 	__prevIrName(""),
 	__formatManager(),
 	__prevIsEmpty(false),
-	__emptyCounter(0)
+	__emptyCounter(0),
+	__blockSizeChangeCounter(0)
 {
 	__formatManager.registerBasicFormats();
 
@@ -260,6 +283,24 @@ bool ConvolutionReverb<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool emp
 		// This occurs when looping in a DAW
 		// Process as if len hasn't been changed
 		inLen = __prevBlockSize;
+		__blockSizeChangeCounter++;
+	}
+	else
+	{
+		__blockSizeChangeCounter = 0;
+	}
+
+	if (__blockSizeChangeCounter == 5)
+	{
+		NativeMessageBox::showMessageBoxAsync(
+			AlertWindow::AlertIconType::WarningIcon,
+			"Reverb Error",
+			"Your VST host is using a variable buffer size which is not supported by the reverb effect. Please set your host to use a fixed buffer size or disable the reverb effect."
+		);
+
+		__blockSizeChangeCounter = 0;
+		*__isEnabled = false;
+		return false;
 	}
 
 	// Block size needs to be a power of two
