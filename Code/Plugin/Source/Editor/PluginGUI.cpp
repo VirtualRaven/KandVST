@@ -32,10 +32,10 @@ PluginGUI::PluginGUI(PluginProcessor& owner, GLOBAL* global)
 	__keyboard(owner.keyboardState,MidiKeyboardComponent::Orientation::horizontalKeyboard),
 	__owner(&owner),
 	__guiInit(false)
-{
 #ifdef CONSOLE
-	__cc(global);
+	,__cc(global)
 #endif
+{
 	Global=global;
 	setResizable(false, false);
 	setSize(1280, 720);

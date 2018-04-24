@@ -140,7 +140,6 @@ Point<float> MarkdownComponent::PaintToken(Point<float> p, MarkdownComponent::To
 
 void MarkdownComponent::resized() 
 {
-	repaint();
 }
 
 //https://stackoverflow.com/questions/3418231/replace-part-of-a-string-with-another-string/3418285
