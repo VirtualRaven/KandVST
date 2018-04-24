@@ -60,7 +60,23 @@ void MarkdownComponent::paint(Graphics& g) {
 }
 Point<float> MarkdownComponent::PaintToken(Point<float> p, MarkdownComponent::Token t,MarkdownComponent::Env e, Graphics &g)
 {
-	if (t.tt != TokenType::Text)
+	
+	if (t.tt == Link)
+	{
+		Font f = __styles[Text].font;
+		if (e.isBold())
+			f.setBold(true);
+		if (e.isItalic())
+			f.setItalic(true);
+		HyperlinkButton* hpb = new HyperlinkButton(String(t.data), String(t.data2));
+		addAndMakeVisible(hpb);
+		hpb->setColour(HyperlinkButton::ColourIds::textColourId, Swatch::white);
+		hpb->setBounds(p.x, p.y - 4, f.getStringWidthFloat(t.data) + 2, f.getHeightInPoints() + 8);
+		f.setUnderline(true);
+		hpb->setFont(f, false);
+		
+		p.x += f.getStringWidthFloat(t.data);
+	}else if (t.tt != TokenType::Text)
 	{
 		e.addControl(t.tt);
 		for (auto token : t.SubTokens)
@@ -113,6 +129,7 @@ Point<float> MarkdownComponent::PaintToken(Point<float> p, MarkdownComponent::To
 		if (e.isItalic())
 			f.setItalic(true);
 		g.setFont(f);
+
 		g.drawText(t.data, p.x, p.y, getLocalBounds().getWidth() - p.x, f.getHeight(), j);
 		p.x += f.getStringWidthFloat(t.data);
 		g.setFont(back);
@@ -123,7 +140,7 @@ Point<float> MarkdownComponent::PaintToken(Point<float> p, MarkdownComponent::To
 
 void MarkdownComponent::resized() 
 {
-	
+	repaint();
 }
 
 //https://stackoverflow.com/questions/3418231/replace-part-of-a-string-with-another-string/3418285
@@ -250,6 +267,41 @@ void MarkdownComponent::parseLine(MarkdownComponent::Token &p , std::string str,
 			parseLine(p, str.substr(i + 1));
 		}
 
+	}
+	else if (str.find("[") != std::string::npos)
+	{
+		size_t i = str.find("[");
+		std::string begin, middle, end;
+		begin = str.substr(0, i);
+		parseLine(p, begin);
+		middle = str.substr(i + 1);
+		if (middle.find("]") != std::string::npos && middle[middle.find("]")+1]=='(' && middle.find(")")>middle.find("]") + 1)
+		{
+			size_t j = middle.find("]");
+
+			Token b;
+			b.tt = TokenType::Link;
+			end = middle.substr(j + 1);
+			middle = middle.substr(0, j);
+			b.data = middle;
+
+			j = end.find("(");
+			middle = end.substr(j + 1, end.find(")")-(j+1));
+			end = end.substr(end.find(")")+1);
+			b.data2 = middle;
+
+			p.SubTokens.push_back(b);
+			parseLine(p, end);
+
+		}
+		else
+		{
+			Token star;
+			star.tt = TokenType::Text;
+			star.data = "[";
+			p.SubTokens.push_back(star);
+			parseLine(p, str.substr(i + 1));
+		}
 	}
 	else
 	{

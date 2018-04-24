@@ -47,10 +47,12 @@ private:
 		Bold,
 		Italic,
 		ListItem,
+		Link,
 		Empty
 	};
 	struct Token {
 		std::string data;
+		std::string data2;
 		std::vector<Token> SubTokens;
 		Token* parent=nullptr;
 		TokenType tt = Empty;
