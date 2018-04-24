@@ -68,8 +68,6 @@ void ConvolutionReverb<T>::LoadInputResponse(File file)
 template<typename T>
 void ConvolutionReverb<T>::LoadInputResponse(String irName)
 {
-	//StringArray ir = StringArray("Nuclear reactor", "Cathedral", "Living room 1", "Living room 2", "Empty room", "Bathtub");
-
 	const void *data;
 	size_t length = 0;
 
@@ -105,6 +103,10 @@ void ConvolutionReverb<T>::LoadInputResponse(String irName)
 	}
 	else
 	{
+		// External IR:
+		File extIr = File(String(__getExternalIrDir() + File::separatorString + irName + ".wav"));
+		LoadInputResponse(extIr);
+
 		return;
 	}
 
@@ -174,6 +176,11 @@ void ConvolutionReverb<T>::__loadImpulseResponse(ScopedPointer<AudioFormatReader
 	__createResponseBlocks(__prevBlockSize);
 }
 
+template<typename T>
+String ConvolutionReverb<T>::__getExternalIrDir()
+{
+	return File::getSpecialLocation(juce::File::SpecialLocationType::userApplicationDataDirectory).getFullPathName() + String("/KandVST/IR");
+}
 
 
 template<typename T>
@@ -213,7 +220,21 @@ void ConvolutionReverb<T>::RegisterParameters(int ID, GLOBAL *global)
 	global->paramHandler->RegisterBool(ID, "REVERB_EN", "REVERB", 0);
 	global->paramHandler->RegisterFloat(ID, "REVERB_DRY", "DRY", 0.0, 1.0, 1.0);
 	global->paramHandler->RegisterFloat(ID, "REVERB_WET", "WET", 0.0, 1.0, 0.6);
+
+	// Internal IR:
 	StringArray ir = StringArray("Nuclear reactor", "Cathedral", "Living room 1", "Living room 2", "Empty room", "Bathtub");
+
+	// External IR:
+	File irFolder = File(__getExternalIrDir());
+
+	if (irFolder.exists() == false)
+		irFolder.createDirectory();
+
+	for (auto s : irFolder.findChildFiles(File::TypesOfFileToFind::findFiles, false, "*.wav"))
+	{
+		ir.add(s.getFileNameWithoutExtension());
+	}
+
 	global->paramHandler->RegisterChoice(ID, "REVERB_IR", "TYPE", ir, 0);
 }
 

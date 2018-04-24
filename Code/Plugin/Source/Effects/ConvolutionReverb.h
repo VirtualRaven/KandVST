@@ -70,6 +70,8 @@ private:
 	void __createResponseBlocks(int len);
 	void __loadImpulseResponse(ScopedPointer<AudioFormatReader> reader, String errorInfo);
 
+	static String __getExternalIrDir();
+
 public:
 	ConvolutionReverb(int ID,double sampleRate, int maxBuffHint, GLOBAL *global);
 	void LoadInputResponse(File file);
