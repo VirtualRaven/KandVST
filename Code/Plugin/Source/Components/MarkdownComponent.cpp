@@ -48,6 +48,10 @@ void MarkdownComponent::paint(Graphics& g) {
 	p.x = b.getX();
 	p.y = b.getX();
 	Env e;
+	if (getNumChildComponents() != 0)
+		e.renderLinks = false;
+	else
+		e.renderLinks = true;
 	for (auto l : __lines) {
 		PaintToken(p, l,e, g);
 		TokenType h = l.getHeading();
@@ -64,16 +68,19 @@ Point<float> MarkdownComponent::PaintToken(Point<float> p, MarkdownComponent::To
 	if (t.tt == Link)
 	{
 		Font f = __styles[Text].font;
-		if (e.isBold())
-			f.setBold(true);
-		if (e.isItalic())
-			f.setItalic(true);
-		HyperlinkButton* hpb = new HyperlinkButton(String(t.data), String(t.data2));
-		addAndMakeVisible(hpb);
-		hpb->setColour(HyperlinkButton::ColourIds::textColourId, Swatch::white);
-		hpb->setBounds(p.x, p.y - 4, f.getStringWidthFloat(t.data) + 2, f.getHeightInPoints() + 8);
-		f.setUnderline(true);
-		hpb->setFont(f, false);
+		if (e.renderLinks) {
+			
+			if (e.isBold())
+				f.setBold(true);
+			if (e.isItalic())
+				f.setItalic(true);
+			HyperlinkButton* hpb = new HyperlinkButton(String(t.data), String(t.data2));
+			addAndMakeVisible(hpb);
+			hpb->setColour(HyperlinkButton::ColourIds::textColourId, Swatch::white);
+			hpb->setBounds(p.x - 1, p.y - 3, f.getStringWidthFloat(t.data) + 2, f.getHeightInPoints() + 8);
+			f.setUnderline(true);
+			hpb->setFont(f, false);
+		}
 		
 		p.x += f.getStringWidthFloat(t.data);
 	}else if (t.tt != TokenType::Text)

@@ -93,6 +93,7 @@ private:
 		}
 	};
 	struct Env {
+		bool renderLinks;
 		std::vector<TokenType> controllTokens;
 		void addControl(TokenType t) {
 			controllTokens.push_back(t);
