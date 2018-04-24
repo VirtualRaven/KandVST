@@ -40,7 +40,8 @@ public :
 
 	static void RegisterParameters(int id, GLOBAL *global);
 private:
-	MarkdownComponent mc;
+	Viewport vp;
+	MarkdownComponent* mc;
 	OurLookAndFeel ourLookAndFeel;
 	GLOBAL * Global;
 	TextEditor __info;

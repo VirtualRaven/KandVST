@@ -29,16 +29,18 @@ AboutPageComponent::~AboutPageComponent() {
 }
 
 AboutPageComponent::AboutPageComponent(GLOBAL * global) :
-	mc(global),
 	ourLookAndFeel(global),
 	__themePicker()
 {
+	mc = new MarkdownComponent(Global);
 	Global = global;
 	__themeChoice = Global->paramHandler->Get<AudioParameterChoice>(-1, "THEME");
 
 	__info.setReadOnly(true);
 	setLookAndFeel(&ourLookAndFeel);
-	addAndMakeVisible(mc);
+	addAndMakeVisible(vp);
+	
+	vp.setViewedComponent(mc,true);
 
 
 	std::string about = String::createStringFromData(Resources::about_txt, sizeof(Resources::about_txt)).toStdString();
@@ -48,12 +50,12 @@ AboutPageComponent::AboutPageComponent(GLOBAL * global) :
 		int line = about.find('\n', c);
 		if (line != -1)
 		{
-			mc.addLine(about.substr(c, line - c));
+			mc->addLine(about.substr(c, line - c));
 			c = line + 1;
 		}
 		else 
 		{
-			mc.addLine(about.substr(c));
+			mc->addLine(about.substr(c));
 			break;
 		}
 	}
@@ -86,23 +88,25 @@ void AboutPageComponent::paint(Graphics& g) {
 	g.drawRect(getLocalBounds(), 2.f);
 
 	g.setColour(Swatch::background.brighter(0.3f));
-	g.drawVerticalLine(800, 10, getLocalBounds().getHeight() - 20);
+	g.drawVerticalLine(getWidth()-450-16, 10, getLocalBounds().getHeight() - 20);
 
 	g.setColour(Swatch::white);
 
 	g.setFont(header);
-
-	g.drawText("THEMES", 800, 10, 480, 30, Justification::centred, false);
+	g.drawText("THEMES", getWidth() - 450, 10, 450, 30, Justification::centred, false);
 
 	g.setColour(__themePicker.getColour(__themeChoice->getCurrentChoiceName()));
-	g.fillRect(990, 100, 100, 50);
+	g.fillRect(990, 108, 100, 50);
 }
 
 void AboutPageComponent::resized() {
-	Rectangle<int> themeBounds(getLocalBounds().removeFromRight(450));
+	Rectangle<int> bounds = getLocalBounds().reduced(8);
+	Rectangle<int> themeBounds(bounds.removeFromRight(450));
 	themeBounds.removeFromTop(50);
 	__themes.setBounds(themeBounds.removeFromTop(50).reduced(8));
-	mc.setBounds(getLocalBounds().removeFromLeft(getLocalBounds().getWidth() - 450));
+	bounds.removeFromRight(8);
+	vp.setBounds(bounds);
+	mc->setSize(vp.getWidth()-50, mc->measureHeight());
 }
 
 void AboutPageComponent::RegisterParameters(int ID, GLOBAL *global) {

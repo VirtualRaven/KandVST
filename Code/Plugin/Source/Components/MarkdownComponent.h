@@ -36,7 +36,7 @@ public :
 	void paint(Graphics& g) override;
 	void resized() override;
 	void addLine(std::string str);
-
+	int	 measureHeight();
 private:
 	enum TokenType {
 		Text,

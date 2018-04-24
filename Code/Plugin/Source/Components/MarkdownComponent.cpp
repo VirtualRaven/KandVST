@@ -178,6 +178,25 @@ void MarkdownComponent::addLine(std::string str)
 
 }
 
+int MarkdownComponent::measureHeight()
+{
+	float height = 16.0f;
+
+	float lineHeight = __styles[Text].font.getHeightInPoints();
+
+	for (auto l : __lines) {
+		TokenType h = l.getHeading();
+		if (h == Heading || h == Heading2 || h == Heading3) {
+			height += __styles[h].font.getHeightInPoints() + __styles[h].vPadd;
+		}
+		else
+			height += lineHeight + 2.0f;
+
+	}
+
+	return height;
+}
+
 void MarkdownComponent::parseLine(MarkdownComponent::Token &p , std::string str, bool first)
 {
 	if (str == "")
