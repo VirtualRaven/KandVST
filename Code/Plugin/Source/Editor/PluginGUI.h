@@ -47,7 +47,10 @@ private:
 	ImageComponent  __loadingImage;
 	TabbedComponent __tabComponent;
 	MidiKeyboardComponent __keyboard;
+#ifdef CONSOLE
 	ConsoleComponent __cc;
+#endif
+
 	PluginProcessor* __owner;
     //==============================================================================
 	PluginProcessor& getProcessor() const
