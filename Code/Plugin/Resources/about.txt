@@ -3,7 +3,8 @@
 ###Heading3
 **Bold**
 *Italic*
-
+Juce Version: **${JUCE_VERSION}**
+VST_SDK:	**${VST_VERSION}**
 * List
 * * List
 * * * List hloo

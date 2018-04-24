@@ -21,7 +21,7 @@
  */
 
 #include "MarkdownComponent.h"
-
+#include "cmake_versions.cpp"
 
 MarkdownComponent::~MarkdownComponent() {
 
@@ -125,21 +125,34 @@ void MarkdownComponent::resized()
 {
 	
 }
+
+//https://stackoverflow.com/questions/3418231/replace-part-of-a-string-with-another-string/3418285
+void replaceAll(std::string& str, const std::string& from, const std::string& to) {
+	if (from.empty())
+		return;
+	size_t start_pos = 0;
+	while ((start_pos = str.find(from, start_pos)) != std::string::npos) {
+		str.replace(start_pos, from.length(), to);
+		start_pos += to.length(); // In case 'to' contains 'from', like replacing 'x' with 'yx'
+	}
+}
+
 void MarkdownComponent::addLine(std::string str)
 {
 	//if (str[str.length() - 1] == '\n')
 	//	str = str.substr(0, str.length());
+
+	if (CMAKE::VERSION_INFO.size() % 2 == 0) {
+		for (size_t i = 0; i < CMAKE::VERSION_INFO.size(); i+=2)
+		{
+			std::string var = std::string("${") + CMAKE::VERSION_INFO[i] + std::string("}");
+			replaceAll(str, var, CMAKE::VERSION_INFO[i + 1]);
+		}
+	}
 	Token t;
 	parseLine(t, str, true);
 	__lines.push_back(t);
 
-}
-
-void MarkdownComponent::setText(std::string str) 
-{
-	Token t;
-	parseLine(t,str,true);
-	__lines.push_back(t);
 }
 
 void MarkdownComponent::parseLine(MarkdownComponent::Token &p , std::string str, bool first)

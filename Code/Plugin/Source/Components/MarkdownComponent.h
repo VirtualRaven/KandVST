@@ -35,7 +35,6 @@ public :
 
 	void paint(Graphics& g) override;
 	void resized() override;
-	void setText(std::string str);
 	void addLine(std::string str);
 
 private:

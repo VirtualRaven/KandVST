@@ -151,6 +151,7 @@ get_filename_component(AudioPlugin_jucer_FILE
 )
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+include_directories(${CMAKE_BINARY_DIR})
 include_directories("${CMAKE_SOURCE_DIR}//Source//")
 include_directories("${CMAKE_SOURCE_DIR}//Source//Generators//")
 include_directories("${CMAKE_SOURCE_DIR}//Source//Interfaces//")
@@ -163,7 +164,7 @@ file(WRITE "${CMAKE_BINARY_DIR}/cmake_versions.cpp"
 	"#include <string>\n"
 	"#include <array>\n"
 	"namespace CMAKE {\n"
-	"std::array<std::string> VERSION_INFO= {\"JUCE_VERSION\", \"${JUCE_VERSION}\" , \"VST_VERSION\", \"${VST_VERSION}\" };\n}\n"
+	"std::array<std::string,4> VERSION_INFO= {\"JUCE_VERSION\", \"${JUCE_VERSION}\" , \"VST_VERSION\", \"${VST_VERSION}\" };\n}\n"
 )
 
 jucer_project_begin(
