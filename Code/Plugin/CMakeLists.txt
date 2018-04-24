@@ -524,4 +524,8 @@ jucer_export_target_configuration(
 
 jucer_project_end()
 
+#Enable console for debug builds
+ target_compile_definitions("KandVST_Shared_Code"
+        PRIVATE $<$<CONFIG:Debug>:CONSOLE> )
+
 add_subdirectory("./Tester")
