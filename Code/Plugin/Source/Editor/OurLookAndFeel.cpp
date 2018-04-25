@@ -334,13 +334,66 @@ void OurLookAndFeel::drawLinearSlider(Graphics& g, int x, int y, int width, int 
 			slider.isHorizontal() ? y + height * 0.5f : height + y);
 
 		Point<float> endPoint(slider.isHorizontal() ? width + x : startPoint.x,
-			slider.isHorizontal() ? startPoint.y : y);
+			slider.isHorizontal() ? height : y);
+
+		//Draw lines
+		const size_t numLines = 7;
+		const size_t longEvery = 3;
+		double lineStep = (static_cast<double>((height)) / static_cast<double>((numLines-1)));
+		for (size_t i = 0; i < numLines; i++)
+		{
+			if (i % longEvery == 0)
+			{
+				//Draw long
+				Path line;
+				line.startNewSubPath(startPoint.x + 10.0f, round(i*lineStep + y - (trackWidth / 12.0f)));
+				line.lineTo(startPoint.x + 10.0f + 20.0f, round(i*lineStep + y - (trackWidth / 12.0f)));
+				line.startNewSubPath(startPoint.x - 10.0f, round(i*lineStep + y - (trackWidth / 12.0f)));
+				line.lineTo(startPoint.x - 10.0f - 20.0f, round(i*lineStep + y - (trackWidth / 12.0f)));
+				g.setColour(Swatch::background.brighter());
+
+				g.strokePath(line, { trackWidth / 6.0f, PathStrokeType::curved, PathStrokeType::rounded });
+			}
+			else
+			{
+				//Draw short
+				Path line;
+				line.startNewSubPath(startPoint.x + 10.0f, round(i*lineStep + y - (trackWidth / 12.0f)));
+				line.lineTo(startPoint.x + 10.0f + 10.0f, round(i*lineStep + y - (trackWidth / 12.0f)));
+				line.startNewSubPath(startPoint.x - 10.0f, round(i*lineStep + y - (trackWidth / 12.0f)));
+				line.lineTo(startPoint.x - 10.0f - 10.0f, round(i*lineStep + y - (trackWidth / 12.0f)));
+				g.setColour(Swatch::background.brighter());
+
+				g.strokePath(line, { trackWidth / 6.0f, PathStrokeType::curved, PathStrokeType::rounded });
+			}
+		}
+
+		
+
+
 
 		Path backgroundTrack;
 		backgroundTrack.startNewSubPath(startPoint);
 		backgroundTrack.lineTo(endPoint);
-		g.setColour(slider.findColour(Slider::backgroundColourId));
+		
+
+		Path backgroundTrack_light(backgroundTrack);
+		Path backgroundTrack_dark(backgroundTrack);
+		backgroundTrack_dark.applyTransform(AffineTransform::translation(-1, -1));
+		backgroundTrack_light.applyTransform(AffineTransform::translation(1, 1));
+
+		Colour dotColour = Swatch::background.darker(0.2);
+
+		g.setColour(dotColour.darker().withAlpha(0.2f));
+
+		g.strokePath(backgroundTrack_dark, { trackWidth, PathStrokeType::curved, PathStrokeType::rounded });
+		g.setColour(dotColour.brighter().withAlpha(0.2f));
+
+		g.strokePath(backgroundTrack_light, { trackWidth, PathStrokeType::curved, PathStrokeType::rounded });
+		g.setColour(dotColour);
+
 		g.strokePath(backgroundTrack, { trackWidth, PathStrokeType::curved, PathStrokeType::rounded });
+
 
 		Path valueTrack;
 		Point<float> minPoint, maxPoint, thumbPoint;
@@ -366,11 +419,17 @@ void OurLookAndFeel::drawLinearSlider(Graphics& g, int x, int y, int width, int 
 			maxPoint = { kx, ky };
 		}
 
+
+
+		
+
+
+
 		auto thumbWidth = LookAndFeel_V4::getSliderThumbRadius(slider);
 
 		valueTrack.startNewSubPath(minPoint);
 		valueTrack.lineTo(isThreeVal ? thumbPoint : maxPoint);
-		g.setColour(slider.findColour(Slider::trackColourId));
+		g.setColour(__themeColour);
 		g.strokePath(valueTrack, { trackWidth, PathStrokeType::curved, PathStrokeType::rounded });
 
 		if (!isTwoVal)
@@ -384,8 +443,8 @@ void OurLookAndFeel::drawLinearSlider(Graphics& g, int x, int y, int width, int 
 			if (!slider.isEnabled()) {
 				g.setOpacity(0.5f);
 			}
-			g.drawImage(verticalSlider, Rectangle<float>(static_cast<float>(thumbWidth * 5), static_cast<float>(thumbWidth * 5)).withCentre(isThreeVal ? thumbPoint : maxPoint), RectanglePlacement::centred, false);
-			
+			g.drawImage(verticalSlider, Rectangle<float>(static_cast<float>(thumbWidth * 3.5), static_cast<float>(thumbWidth * 3.5)).withCentre(isThreeVal ? thumbPoint : maxPoint), RectanglePlacement::centred, false);
+
 		}
 
 		if (isTwoVal || isThreeVal)
