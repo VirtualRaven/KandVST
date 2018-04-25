@@ -30,9 +30,14 @@ String PresetManager::getPresetPath()
 }
 
 PresetManager::PresetManager(AudioProcessor* owner,GLOBAL* global):
-__owner(owner)
+__owner(owner),
+__resetPreset(nullptr)
 {
 	Global = global;
+
+
+	
+
 }
 PresetManager::~PresetManager()
 {
@@ -60,6 +65,22 @@ void PresetManager::RefreshPresets()
 		}
 		
 	}
+	delete __resetPreset;
+	__resetPreset = new XmlElement("KandVSTPreset");
+	// Create Reset preset
+	for (auto&& param : __owner->getParameters())
+	{
+		if (auto* p = dynamic_cast<AudioProcessorParameterWithID*> (param)) {
+			XmlElement* paramEl = new XmlElement(String("_") + p->paramID);
+			paramEl->setAttribute("value", p->getDefaultValue());
+			__resetPreset->addChildElement(paramEl);
+		}
+	}
+
+	__resetPreset->setAttribute("name", "Reset");
+	__presets.push_back(std::make_tuple(std::string("Reset"), __resetPreset));
+
+
 
 }
 

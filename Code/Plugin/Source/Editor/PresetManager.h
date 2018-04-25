@@ -33,7 +33,7 @@ private:
 	std::vector<std::tuple<std::string, XmlElement*>> __presets;
 	String getPresetPath();
 	int __currentPreset = 0;
-
+	XmlElement* __resetPreset;
 public:
 	PresetManager(AudioProcessor* owner,GLOBAL* global);
 	~PresetManager();
