@@ -158,7 +158,8 @@ void PresetManager::SavePreset(XmlElement * xmlState)
 
 void PresetManager::DeletePreset(std::string name) {
 	File preset = File(getPresetPath() + String("/") + name + String(".xml"));
-	if (preset.deleteFile()) {
+
+	if (preset.exists() && preset.deleteFile()) {
 		int index = GetPresetIndex(name);
 		if (PresetExists(name)) {
 			delete std::get<1>(__presets[index]);
