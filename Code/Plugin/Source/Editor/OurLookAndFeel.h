@@ -27,7 +27,7 @@
 #include "Resources_files.h"
 #include "Swatch.h"
 #include "Global.h"
-#include "Components\ParameterSlider.h"
+#include "Components/ParameterSlider.h"
 #include "ThemePicker.h"
 class OurLookAndFeel : public LookAndFeel_V4
 {
