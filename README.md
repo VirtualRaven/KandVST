@@ -1,9 +1,28 @@
 # KandVST
 [![Build status](https://build.rahmn.net/guestAuth/app/rest/builds/buildType:id:KandVST_Build/statusIcon.svg)]()
+## Download ##
+Prebuilt binaries for windows are available at [releases](https://github.com/VirtualRaven/KandVST/releases)
+## Building ##
 
+The project is tested on linux and windows and can be built using cmake.
+On linux the project has been tested with the gcc compiler and makefile generator. And on windows
+it has been confirmed to work with Visual Studio 2017.
 
+To build open a terminal in folder `KandVst/Code/Plugin` and execute the following sequence of 
+commands 
 
-### Testing ###
+`mkdir build`  
+`cd build`  
+`cmake ..`  
+
+This will configure the project, to then build the project run  
+`cmake --build .`
+
+### Visual Studio 2017 ###
+If you are using Visual Studio 2017 with cmake support one can open the project directly in VS. 
+Select File/Open/CMake and select the file `KandVST/Code/Plugin/CMakeLists.txt`.
+
+## Testing ##
 The project includes an automatic tester tool aptly named tester.
 Tests are defined in `Code/Plugin/Tester/Tests/TestName/` and made from
 the following components

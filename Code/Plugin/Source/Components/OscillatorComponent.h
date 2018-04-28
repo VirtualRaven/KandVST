@@ -53,6 +53,7 @@ private:
 	ScopedPointer<ParameterSlider> __delaySlider, __octaveSlider, __detuneSlider, __offsetSlider, __overtoneSlider;
 	Image* __oscWaveform;
 	ImageComponent __waveformComp;
+	WavetableOsc __waveos;
 	bool __waveformInvalid;
 	virtual void componentVisibilityChanged(Component &component) override;
 	virtual void componentParentHierarchyChanged(Component &component) override;

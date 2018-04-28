@@ -63,6 +63,11 @@ WavetableOsc::WavetableOsc(int ID, double sampleRate,int maxBuffHint,GLOBAL*glob
 	// Don't Generate wavetable
 	//for (auto&& samp : __noiseBuffer)
 		//samp = (__rand.nextDouble() - 0.5f) * 2.0f;
+	for (size_t i = 0; i < __noiseData.size(); i++)
+	{
+		__noiseData[i] = (__rand.nextDouble() - 0.5f) * 2.0f;
+
+	}
 }
 
 
@@ -101,6 +106,10 @@ WavetableOsc::WavetableOsc(WavetableOsc && ref) :
 
 	__envBuff = ref.__envBuff;
 	ref.__envBuff = nullptr;
+
+
+
+	
 }
 
 WavetableOsc::~WavetableOsc()
@@ -125,7 +134,7 @@ void WavetableOsc::renderImage(Image* image)
 		samp += tables[WAVE_TYPE::SQUARE]->__tables[0][ind] * (*__sqAmp);
 		samp += tables[WAVE_TYPE::SAW]->__tables[0][ind] * (*__sawAmp);
 		samp += tables[WAVE_TYPE::TRI]->__tables[0][ind] * (*__triAmp);
-
+		samp += __noiseData[ind] * *__noiseAmp;
 		data[i] = samp;
 
 		max = jmax<double>(max, samp);

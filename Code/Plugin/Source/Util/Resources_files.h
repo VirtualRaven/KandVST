@@ -35,6 +35,6 @@ extern unsigned char living_room1_wav[189676];
 extern unsigned char living_room2_wav[234836];
 extern unsigned char r1_nuclear_reactor_cut_wav[2302766];
 }
-extern unsigned char about_txt[98];
+extern unsigned char about_txt[1093];
 }
 #endif

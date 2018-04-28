@@ -21,7 +21,7 @@
  */
 
 #include "MarkdownComponent.h"
-
+#include "cmake_versions.cpp"
 
 MarkdownComponent::~MarkdownComponent() {
 
@@ -48,6 +48,10 @@ void MarkdownComponent::paint(Graphics& g) {
 	p.x = b.getX();
 	p.y = b.getX();
 	Env e;
+	if (getNumChildComponents() != 0)
+		e.renderLinks = false;
+	else
+		e.renderLinks = true;
 	for (auto l : __lines) {
 		PaintToken(p, l,e, g);
 		TokenType h = l.getHeading();
@@ -60,7 +64,26 @@ void MarkdownComponent::paint(Graphics& g) {
 }
 Point<float> MarkdownComponent::PaintToken(Point<float> p, MarkdownComponent::Token t,MarkdownComponent::Env e, Graphics &g)
 {
-	if (t.tt != TokenType::Text)
+	
+	if (t.tt == Link)
+	{
+		Font f = __styles[Text].font;
+		if (e.renderLinks) {
+			
+			if (e.isBold())
+				f.setBold(true);
+			if (e.isItalic())
+				f.setItalic(true);
+			HyperlinkButton* hpb = new HyperlinkButton(String(t.data), String(t.data2));
+			addAndMakeVisible(hpb);
+			hpb->setColour(HyperlinkButton::ColourIds::textColourId, Swatch::white);
+			hpb->setBounds(p.x - 1, p.y - 3, f.getStringWidthFloat(t.data) + 2, f.getHeightInPoints() + 8);
+			f.setUnderline(true);
+			hpb->setFont(f, false);
+		}
+		
+		p.x += f.getStringWidthFloat(t.data);
+	}else if (t.tt != TokenType::Text)
 	{
 		e.addControl(t.tt);
 		for (auto token : t.SubTokens)
@@ -113,6 +136,7 @@ Point<float> MarkdownComponent::PaintToken(Point<float> p, MarkdownComponent::To
 		if (e.isItalic())
 			f.setItalic(true);
 		g.setFont(f);
+
 		g.drawText(t.data, p.x, p.y, getLocalBounds().getWidth() - p.x, f.getHeight(), j);
 		p.x += f.getStringWidthFloat(t.data);
 		g.setFont(back);
@@ -123,23 +147,54 @@ Point<float> MarkdownComponent::PaintToken(Point<float> p, MarkdownComponent::To
 
 void MarkdownComponent::resized() 
 {
-	
 }
+
+//https://stackoverflow.com/questions/3418231/replace-part-of-a-string-with-another-string/3418285
+void replaceAll(std::string& str, const std::string& from, const std::string& to) {
+	if (from.empty())
+		return;
+	size_t start_pos = 0;
+	while ((start_pos = str.find(from, start_pos)) != std::string::npos) {
+		str.replace(start_pos, from.length(), to);
+		start_pos += to.length(); // In case 'to' contains 'from', like replacing 'x' with 'yx'
+	}
+}
+
 void MarkdownComponent::addLine(std::string str)
 {
 	//if (str[str.length() - 1] == '\n')
 	//	str = str.substr(0, str.length());
+
+	if (CMAKE::VERSION_INFO.size() % 2 == 0) {
+		for (size_t i = 0; i < CMAKE::VERSION_INFO.size(); i+=2)
+		{
+			std::string var = std::string("${") + CMAKE::VERSION_INFO[i] + std::string("}");
+			replaceAll(str, var, CMAKE::VERSION_INFO[i + 1]);
+		}
+	}
 	Token t;
 	parseLine(t, str, true);
 	__lines.push_back(t);
 
 }
 
-void MarkdownComponent::setText(std::string str) 
+int MarkdownComponent::measureHeight()
 {
-	Token t;
-	parseLine(t,str,true);
-	__lines.push_back(t);
+	float height = 16.0f;
+
+	float lineHeight = __styles[Text].font.getHeightInPoints();
+
+	for (auto l : __lines) {
+		TokenType h = l.getHeading();
+		if (h == Heading || h == Heading2 || h == Heading3) {
+			height += __styles[h].font.getHeightInPoints() + __styles[h].vPadd;
+		}
+		else
+			height += lineHeight + 2.0f;
+
+	}
+
+	return height;
 }
 
 void MarkdownComponent::parseLine(MarkdownComponent::Token &p , std::string str, bool first)
@@ -237,6 +292,41 @@ void MarkdownComponent::parseLine(MarkdownComponent::Token &p , std::string str,
 			parseLine(p, str.substr(i + 1));
 		}
 
+	}
+	else if (str.find("[") != std::string::npos)
+	{
+		size_t i = str.find("[");
+		std::string begin, middle, end;
+		begin = str.substr(0, i);
+		parseLine(p, begin);
+		middle = str.substr(i + 1);
+		if (middle.find("]") != std::string::npos && middle[middle.find("]")+1]=='(' && middle.find(")")>middle.find("]") + 1)
+		{
+			size_t j = middle.find("]");
+
+			Token b;
+			b.tt = TokenType::Link;
+			end = middle.substr(j + 1);
+			middle = middle.substr(0, j);
+			b.data = middle;
+
+			j = end.find("(");
+			middle = end.substr(j + 1, end.find(")")-(j+1));
+			end = end.substr(end.find(")")+1);
+			b.data2 = middle;
+
+			p.SubTokens.push_back(b);
+			parseLine(p, end);
+
+		}
+		else
+		{
+			Token star;
+			star.tt = TokenType::Text;
+			star.data = "[";
+			p.SubTokens.push_back(star);
+			parseLine(p, str.substr(i + 1));
+		}
 	}
 	else
 	{

@@ -33,7 +33,8 @@ OscillatorComponent::~OscillatorComponent()
 
 OscillatorComponent::OscillatorComponent(int ID,GLOBAL*global):
 IVSTParameters(ID),
-__waveformInvalid(false)
+__waveformInvalid(false),
+__waveos(__ID, 0, 0, global)
 {
 	__ID = ID;
 	Global = global;
@@ -105,14 +106,16 @@ __waveformInvalid(false)
 	Global->paramHandler->addParamaterListener(this, __ID, "OSC_SAW");
 	Global->paramHandler->addParamaterListener(this, __ID, "OSC_SQUARE");
 	Global->paramHandler->addParamaterListener(this, __ID, "OSC_TRI");
+	Global->paramHandler->addParamaterListener(this, __ID, "OSC_NOISE");
+
 
 	//=======
 	__oscWaveform = new Image(Image::PixelFormat::RGB, 300, 200, true);
 
 	__waveformComp.setImage(*__oscWaveform);
 
-	WavetableOsc os = WavetableOsc(__ID, 0,0,Global);
-	os.renderImage(__oscWaveform);
+	
+	__waveos.renderImage(__oscWaveform);
 	__waveformComp.repaint();
 
 	addAndMakeVisible(__waveformComp);
@@ -145,8 +148,8 @@ void OscillatorComponent::paint(Graphics& g){
 }
 
 void OscillatorComponent::lookAndFeelChanged() {
-	WavetableOsc os = WavetableOsc(__ID, 0, 0, Global);
-	os.renderImage(__oscWaveform);
+	
+	__waveos.renderImage(__oscWaveform);
 	__waveformComp.repaint();
 	__waveformInvalid = false;
 }
@@ -159,8 +162,8 @@ void OscillatorComponent::resized(){
 	delete __oscWaveform;
 	__oscWaveform = nullptr;
 	__oscWaveform = new Image(Image::PixelFormat::RGB, __waveformComp.getWidth()*2, __waveformComp.getHeight()*2, true);
-	WavetableOsc os = WavetableOsc(__ID, 0,0, Global);
-	os.renderImage(__oscWaveform);
+
+	__waveos.renderImage(__oscWaveform);
 	__waveformComp.setImage(*__oscWaveform);
 	__waveformComp.repaint();
 
@@ -204,8 +207,8 @@ void OscillatorComponent::resized(){
 void OscillatorComponent::componentVisibilityChanged(Component & component)
 {
 	if (component.isVisible() && __waveformInvalid) {
-		WavetableOsc os = WavetableOsc(__ID, 0, 0, Global);
-		os.renderImage(__oscWaveform);
+		
+		__waveos.renderImage(__oscWaveform);
 		__waveformComp.repaint();
 		__waveformInvalid = false;
 	}
@@ -226,8 +229,8 @@ void OscillatorComponent::timerCallback()
 		stopTimer();
 		return;
 	}
-	WavetableOsc os = WavetableOsc(__ID, 0, 0, Global);
-	os.renderImage(__oscWaveform);
+
+	__waveos.renderImage(__oscWaveform);
 	__waveformComp.repaint();
 	__waveformInvalid = false;
 }

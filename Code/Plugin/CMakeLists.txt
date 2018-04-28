@@ -35,6 +35,8 @@ set(VST_SDK_URL "https://download.steinberg.net/sdk_downloads/vstsdk369_01_03_20
 	CACHE STRING "Url to the Steinberg VST sdk")
 set(JUCE_SDK_URL "https://github.com/WeAreROLI/JUCE/archive/5.3.1.zip" 
 	CACHE STRING "Url to the JUCE sdk")
+set(FORCE_GIT_INFO false
+	CACHE BOOL "Is it required that we find the git sha?")
 
 add_definitions(-DJUCE_WEB_BROWSER=0)
 
@@ -49,7 +51,32 @@ else()
     message(STATUS "Python not found! Skipping update of resources")
 endif()
 
-  
+macro(NO_GIT_INFO_FOUND)
+	if(FORCE_GIT_INFO)
+		message(FATAL_ERROR "Could not find git info, but cache option forces us to find it")
+	else()
+		message(STATUS "Found no git information")
+		set(GIT_LONG_SHA "unk")
+		set(GIT_SHORT_SHA "unk")
+	endif()
+endmacro(NO_GIT_INFO_FOUND)
+
+find_program(GIT_EXE NAMES "git" "Git" )
+if(GIT_EXE)
+	execute_process(COMMAND ${GIT_EXE} "log" "--pretty=format:%H" "-n 1" RESULT_VARIABLE LONG_SHA_RES OUTPUT_VARIABLE GIT_LONG_SHA)
+	execute_process(COMMAND ${GIT_EXE} "log" "--pretty=format:%h" "-n 1" RESULT_VARIABLE SHORT_SHA_RES OUTPUT_VARIABLE GIT_SHORT_SHA)
+	if( (NOT (LONG_SHA_RES EQUAL 0)) OR (NOT (SHORT_SHA_RES EQUAL 0) ) )
+		NO_GIT_INFO_FOUND()
+	else()
+		message(STATUS "Building version ${GIT_LONG_SHA}")
+	endif()
+else()
+	message(STATUS "exe: ${GIT_EXE}")
+	message(STATUS "Could not find the git executable")
+	NO_GIT_INFO_FOUND()
+endif()
+
+
 
 
 macro(SELECT_VST_SDK_VERSION)
@@ -151,6 +178,7 @@ get_filename_component(AudioPlugin_jucer_FILE
 )
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+include_directories(${CMAKE_BINARY_DIR})
 include_directories("${CMAKE_SOURCE_DIR}//Source//")
 include_directories("${CMAKE_SOURCE_DIR}//Source//Generators//")
 include_directories("${CMAKE_SOURCE_DIR}//Source//Interfaces//")
@@ -163,7 +191,7 @@ file(WRITE "${CMAKE_BINARY_DIR}/cmake_versions.cpp"
 	"#include <string>\n"
 	"#include <array>\n"
 	"namespace CMAKE {\n"
-	"std::array<std::string> VERSION_INFO= {\"JUCE_VERSION\", \"${JUCE_VERSION}\" , \"VST_VERSION\", \"${VST_VERSION}\" };\n}\n"
+	"std::array<std::string,8> VERSION_INFO= {\"JUCE_VERSION\", \"${JUCE_VERSION}\" , \"VST_VERSION\", \"${VST_VERSION}\", \"GIT_LONG\", \"${GIT_LONG_SHA}\", \"GIT_SHORT\", \"${GIT_SHORT_SHA}\" };\n}\n"
 )
 
 jucer_project_begin(
@@ -497,5 +525,9 @@ jucer_export_target_configuration(
 )
 
 jucer_project_end()
+
+#Enable console for debug builds
+ target_compile_definitions("KandVST_Shared_Code"
+        PRIVATE $<$<CONFIG:Debug>:CONSOLE> )
 
 add_subdirectory("./Tester")

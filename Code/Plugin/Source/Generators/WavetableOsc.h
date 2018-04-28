@@ -58,6 +58,7 @@ private:
 	Random __rand;
 	size_t __rand_index;
 
+	std::array<double, IWavetable::__length> __noiseData;
 
 public:
 	OurLookAndFeel ourLookAndFeel;

@@ -30,9 +30,11 @@ PluginGUI::PluginGUI(PluginProcessor& owner, GLOBAL* global)
 	ourLookAndFeel(global),
 	__tabComponent(TabbedButtonBar::Orientation::TabsAtTop),
 	__keyboard(owner.keyboardState,MidiKeyboardComponent::Orientation::horizontalKeyboard),
-	__cc(global),
 	__owner(&owner),
 	__guiInit(false)
+#ifdef CONSOLE
+	,__cc(global)
+#endif
 {
 	Global=global;
 	setResizable(false, false);
@@ -66,8 +68,9 @@ void PluginGUI::InitializeGui()
 	}
 	
 	__tabComponent.setCurrentTabIndex(0);
-
+#ifdef CONSOLE
 	__tabComponent.addTab("C", Colours::darkgrey, &__cc, true);
+#endif
 	__tabComponent.addTab("ABOUT", Colours::darkgrey, new AboutPageComponent(Global), true);
 
 	addAndMakeVisible(__tabComponent);

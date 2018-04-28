@@ -35,9 +35,8 @@ public :
 
 	void paint(Graphics& g) override;
 	void resized() override;
-	void setText(std::string str);
 	void addLine(std::string str);
-
+	int	 measureHeight();
 private:
 	enum TokenType {
 		Text,
@@ -48,10 +47,12 @@ private:
 		Bold,
 		Italic,
 		ListItem,
+		Link,
 		Empty
 	};
 	struct Token {
 		std::string data;
+		std::string data2;
 		std::vector<Token> SubTokens;
 		Token* parent=nullptr;
 		TokenType tt = Empty;
@@ -92,6 +93,7 @@ private:
 		}
 	};
 	struct Env {
+		bool renderLinks;
 		std::vector<TokenType> controllTokens;
 		void addControl(TokenType t) {
 			controllTokens.push_back(t);
