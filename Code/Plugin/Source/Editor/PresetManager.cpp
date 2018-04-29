@@ -35,9 +35,9 @@ __resetPreset(nullptr)
 {
 	Global = global;
 
-
-	
-
+	__precompiledPresets["Reset"] = nullptr;
+	//Add here to add preCompiled presets
+	AddPrecompiledPreset(Resources::Presets::church_xml,sizeof(Resources::Presets::church_xml));
 }
 PresetManager::~PresetManager()
 {
@@ -65,7 +65,7 @@ void PresetManager::RefreshPresets()
 		}
 		
 	}
-	delete __resetPreset;
+	delete __precompiledPresets["Reset"];
 	__resetPreset = new XmlElement("KandVSTPreset");
 	// Create Reset preset
 	for (auto&& param : __owner->getParameters())
@@ -78,10 +78,12 @@ void PresetManager::RefreshPresets()
 	}
 
 	__resetPreset->setAttribute("name", "Reset");
-	__presets.push_back(std::make_tuple(std::string("Reset"), __resetPreset));
+	__precompiledPresets["Reset"] = __resetPreset;
 
-
-
+	for (auto kvp : __precompiledPresets)
+	{
+		__presets.push_back(std::make_tuple(kvp.first, kvp.second));
+	}
 }
 
 void PresetManager::LoadPreset(std::string name)
@@ -157,6 +159,8 @@ void PresetManager::SavePreset(XmlElement * xmlState)
 }
 
 void PresetManager::DeletePreset(std::string name) {
+	if (isPrecompiled(name))
+		return;
 	File preset = File(getPresetPath() + String("/") + name + String(".xml"));
 
 	if (preset.exists() && preset.deleteFile()) {
@@ -170,6 +174,8 @@ void PresetManager::DeletePreset(std::string name) {
 
 void PresetManager::SavePreset(std::string name)
 {	
+	if (isPrecompiled(name))
+		return;
 
 	XmlElement* el = new XmlElement("KandVSTPreset");
 	SavePreset(el);
@@ -228,6 +234,20 @@ bool PresetManager::PresetExists(std::string name)
 		}
 	}
 	return false;
+}
+
+bool PresetManager::isPrecompiled(std::string name)
+{
+	return __precompiledPresets.count(name)==1;
+}
+
+void PresetManager::AddPrecompiledPreset(unsigned char * data, size_t size)
+{
+	XmlElement*el = XmlDocument::parse(String::createStringFromData(data,size));
+	if (el != nullptr && el->hasTagName("KandVSTPreset") && el->hasAttribute("name"))
+	{
+		__precompiledPresets[el->getStringAttribute("name").toStdString()] = el;
+	}
 }
 
 
