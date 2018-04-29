@@ -62,7 +62,7 @@ template<typename T>
 bool FilterHP<T>::IsEnabled()
 {
 	// Disable under 20Hz
-	return this->__fc >= __lowerLimit;
+	return this->__fc >= this->__lowerLimit;
 }
 
 template class FilterHP<double>;

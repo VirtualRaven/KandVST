@@ -26,7 +26,7 @@
 #include <stdlib.h>
 
 template<typename T>
-DistEffect<T>::DistEffect(int ID, double samplerate,GLOBAL*global) : IEffect(samplerate)
+DistEffect<T>::DistEffect(int ID, double samplerate,GLOBAL*global) : IEffect<T>(samplerate)
 {
 	Global = global;
 	__threshold = Global->paramHandler->Get<AudioParameterFloat>(ID, "DIST_TRSH");

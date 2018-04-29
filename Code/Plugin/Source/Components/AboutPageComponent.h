@@ -54,4 +54,4 @@ private:
 
 
 
-#endif ABOUT_PAGE_COMPONENT_H
+#endif //ABOUT_PAGE_COMPONENT_H

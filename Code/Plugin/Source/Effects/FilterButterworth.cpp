@@ -30,7 +30,7 @@ FilterButterworth<T>::FilterButterworth(int ID, double sampleRate, String parame
 	__enabled(true),
 	__firstSampleIndex(0),
 	__upperLimit(20000.0f),
-	__lowerLimit(21.0f)
+	__lowerLimit(20.0f)
 {
 	Global = global;
 	__fs = sampleRate;

@@ -1,7 +1,7 @@
 # KandVST
 [![Build status](https://build.rahmn.net/guestAuth/app/rest/builds/buildType:id:KandVST_Build/statusIcon.svg)]()
 ## Download ##
-Prebuilt binaries for windows are available at [releases](https://github.com/VirtualRaven/KandVST/releases)
+Prebuilt binaries for windows/linux are available at [releases](https://github.com/VirtualRaven/KandVST/releases)
 ## Building ##
 
 The project is tested on linux and windows and can be built using cmake.
@@ -79,6 +79,7 @@ The project uses cmake as the build system, so a cmake i required
   * libxcomposite-dev
   * mesa-common-dev
   * libxrender-dev
+  * PkgConfig
 ### Windows 
    Don't know?
 

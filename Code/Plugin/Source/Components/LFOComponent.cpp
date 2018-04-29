@@ -90,7 +90,7 @@ void LFOComponent::paint(Graphics& g){
 		__amp->setEnabled(false);
 		__toggleInvert->setEnabled(false);
 		__onPress->setEnabled(false);
-
+		__cBox.setEnabled(false);
 		__ratioLabel.setColour(Label::textColourId, Swatch::disabled);
 		__typeLabel.setColour(Label::textColourId, Swatch::disabled);
 		__ampLabel.setColour(Label::textColourId, Swatch::disabled);
@@ -100,7 +100,7 @@ void LFOComponent::paint(Graphics& g){
 		__amp->setEnabled(true);
 		__toggleInvert->setEnabled(true);
 		__onPress->setEnabled(true);
-
+		__cBox.setEnabled(true);
 		__ratioLabel.setColour(Label::textColourId, Colours::white);
 		__typeLabel.setColour(Label::textColourId, Colours::white);
 		__ampLabel.setColour(Label::textColourId, Colours::white);
