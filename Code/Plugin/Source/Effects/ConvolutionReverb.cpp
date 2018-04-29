@@ -21,12 +21,12 @@
  */
 
 #include "ConvolutionReverb.h"
-#include "juce_dsp\juce_dsp.h"
+#include "juce_dsp/juce_dsp.h"
 #include "Resources_files.h"
 
 template<typename T>
 ConvolutionReverb<T>::ConvolutionReverb(int ID, double sampleRate, int maxBuffHint, GLOBAL *global) :
-	IEffect(sampleRate),
+	IEffect<T>(sampleRate),
 	__sampleRate(sampleRate),
 	IVSTParameters(ID),
 	__prevBlockSize(maxBuffHint),
@@ -104,7 +104,7 @@ void ConvolutionReverb<T>::LoadInputResponse(String irName)
 	else
 	{
 		// External IR:
-		File extIr = File(String(__getExternalIrDir() + File::separatorString + irName + ".wav"));
+		File extIr = File(String(__getExternalIrDir() + File::getSeparatorString() + irName + ".wav"));
 		LoadInputResponse(extIr);
 
 		return;
@@ -118,7 +118,7 @@ void ConvolutionReverb<T>::LoadInputResponse(String irName)
 }
 
 template<typename T>
-void ConvolutionReverb<T>::__loadImpulseResponse(ScopedPointer<AudioFormatReader> reader, String errorInfo = "")
+void ConvolutionReverb<T>::__loadImpulseResponse(ScopedPointer<AudioFormatReader> reader, String errorInfo )
 {
 	__prevInputs.clear();
 	__inputBlocks.clear();

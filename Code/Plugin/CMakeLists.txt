@@ -504,6 +504,7 @@ jucer_export_target(
   "Linux Makefile"
   VST_SDK_FOLDER "../VST"
   EXTRA_COMPILER_FLAGS "-fPIC"
+  CXX_STANDARD_TO_USE "C++14"
 )
 
 jucer_export_target_configuration(
@@ -529,5 +530,5 @@ jucer_project_end()
 #Enable console for debug builds
  target_compile_definitions("KandVST_Shared_Code"
         PRIVATE $<$<CONFIG:Debug>:CONSOLE> )
-
+    
 add_subdirectory("./Tester")

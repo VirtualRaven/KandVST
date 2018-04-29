@@ -51,4 +51,4 @@ private:
 	StringArray __ir;
 };
 
-#endif REVERB_COMPONENT_H
+#endif //REVERB_COMPONENT_H

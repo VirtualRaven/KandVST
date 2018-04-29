@@ -36,4 +36,4 @@ private:
 
 };
 
-#endif THEME_PICKER_H
+#endif //THEME_PICKER_H
