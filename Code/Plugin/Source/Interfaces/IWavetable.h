@@ -41,6 +41,7 @@ public:
 	virtual float getSample(double phase, float frequency) const = 0 ;
 	
 
+        virtual ~IWavetable()=0;
 
 	struct tableSampleLocation{
 		int tableNr;

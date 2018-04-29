@@ -197,7 +197,7 @@ void WavetableOsc::renderImage(Image* image)
 
 	g.setColour(Colour::fromRGB(26, 26, 26));
 	g.drawRect(0, 0, width, height, 6);
-	delete data;
+	delete[] data;
 
 }
 void WavetableOsc::Reset()
