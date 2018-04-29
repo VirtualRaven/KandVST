@@ -35,7 +35,7 @@ __resetPreset(nullptr)
 {
 	Global = global;
 
-	__precompiledPresets["Reset"] = nullptr;
+	__precompiledPresets["Default"] = nullptr;
 	//Add here to add preCompiled presets
 	AddPrecompiledPreset(Resources::Presets::church_xml,sizeof(Resources::Presets::church_xml));
 }
@@ -65,7 +65,7 @@ void PresetManager::RefreshPresets()
 		}
 		
 	}
-	if (__precompiledPresets["Reset"] == nullptr) {
+	if (__precompiledPresets["Default"] == nullptr) {
 		__resetPreset = new XmlElement("KandVSTPreset");
 		// Create Reset preset
 		for (auto&& param : __owner->getParameters())
@@ -77,8 +77,8 @@ void PresetManager::RefreshPresets()
 			}
 		}
 
-		__resetPreset->setAttribute("name", "Reset");
-		__precompiledPresets["Reset"] = __resetPreset;
+		__resetPreset->setAttribute("name", "Default");
+		__precompiledPresets["Default"] = __resetPreset;
 	}
 
 	for (auto kvp : __precompiledPresets)
