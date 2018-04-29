@@ -26,11 +26,13 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "Global.h"
 #include "ParameterHandler.h"
+#include "Resources_files.h"
 class PresetManager : public ChangeBroadcaster
 {
 private:
 	AudioProcessor* __owner;
 	std::vector<std::tuple<std::string, XmlElement*>> __presets;
+	std::map<std::string, XmlElement*> __precompiledPresets;
 	String getPresetPath();
 	int __currentPreset = 0;
 	XmlElement* __resetPreset;
@@ -47,6 +49,8 @@ public:
 	int GetPresetIndex(std::string name);
 	int GetCurrentPreset();
 	bool PresetExists(std::string name);
+	bool isPrecompiled(std::string name);
+	void AddPrecompiledPreset(unsigned char* data, size_t size);
 	void LoadPreset(XmlElement * xmlState);
 	void SavePreset(XmlElement * xmlState);
 	void DeletePreset(XmlElement * xmlState);
