@@ -65,20 +65,21 @@ void PresetManager::RefreshPresets()
 		}
 		
 	}
-	delete __precompiledPresets["Reset"];
-	__resetPreset = new XmlElement("KandVSTPreset");
-	// Create Reset preset
-	for (auto&& param : __owner->getParameters())
-	{
-		if (auto* p = dynamic_cast<AudioProcessorParameterWithID*> (param)) {
-			XmlElement* paramEl = new XmlElement(String("_") + p->paramID);
-			paramEl->setAttribute("value", p->getDefaultValue());
-			__resetPreset->addChildElement(paramEl);
+	if (__precompiledPresets["Reset"] == nullptr) {
+		__resetPreset = new XmlElement("KandVSTPreset");
+		// Create Reset preset
+		for (auto&& param : __owner->getParameters())
+		{
+			if (auto* p = dynamic_cast<AudioProcessorParameterWithID*> (param)) {
+				XmlElement* paramEl = new XmlElement(String("_") + p->paramID);
+				paramEl->setAttribute("value", p->getDefaultValue());
+				__resetPreset->addChildElement(paramEl);
+			}
 		}
-	}
 
-	__resetPreset->setAttribute("name", "Reset");
-	__precompiledPresets["Reset"] = __resetPreset;
+		__resetPreset->setAttribute("name", "Reset");
+		__precompiledPresets["Reset"] = __resetPreset;
+	}
 
 	for (auto kvp : __precompiledPresets)
 	{
