@@ -21,7 +21,8 @@
  */
 
 #include "IGenerator.h"
-
+#include "IWavetable.h"
+#include "IEffect.h"
 
 void IGenerator::AddCommand(MidiMessage msg, int offset) {
 	this->__messages.push(midiCommand(msg, offset));
@@ -56,3 +57,6 @@ void IGenerator::clearMidi() {
 	while (!this->__messages.empty())
 		this->__messages.pop();
 }
+
+IWavetable::~IWavetable() {}
+

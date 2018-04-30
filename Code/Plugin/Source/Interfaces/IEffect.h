@@ -36,6 +36,7 @@ public:
 	virtual bool RenderBlock(AudioBuffer<T>& buffer, int len, bool empty) = 0;
 	virtual void ProccessCommand(MidiMessage message) = 0;
 	virtual void Reset()=0;
+        virtual ~IEffect() {};
 };
 
 #endif //IEFFECT_H
