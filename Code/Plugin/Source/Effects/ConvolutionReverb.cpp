@@ -86,16 +86,6 @@ void ConvolutionReverb<T>::LoadInputResponse(String irName)
 		data = Resources::IR::bathtub_wav;
 		length = sizeof(Resources::IR::bathtub_wav);
 	}
-	else if (irName == "Nuclear reactor")
-	{
-		data = Resources::IR::r1_nuclear_reactor_cut_wav;
-		length = sizeof(Resources::IR::r1_nuclear_reactor_cut_wav);
-	}
-	else if (irName == "Cathedral")
-	{
-		data = Resources::IR::cathedral_minster_york_wav;
-		length = sizeof(Resources::IR::cathedral_minster_york_wav);
-	}
 	else if (irName == "Empty room")
 	{
 		data = Resources::IR::empty_apartment_bedroom_wav;
@@ -222,7 +212,7 @@ void ConvolutionReverb<T>::RegisterParameters(int ID, GLOBAL *global)
 	global->paramHandler->RegisterFloat(ID, "REVERB_WET", "WET", 0.0, 1.0, 0.6);
 
 	// Internal IR:
-	StringArray ir = StringArray("Nuclear reactor", "Cathedral", "Living room 1", "Living room 2", "Empty room", "Bathtub");
+	StringArray ir = StringArray("Living room 1", "Living room 2", "Empty room", "Bathtub");
 
 	// External IR:
 	File irFolder = File(__getExternalIrDir());
