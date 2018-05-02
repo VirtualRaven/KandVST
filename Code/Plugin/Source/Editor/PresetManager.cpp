@@ -21,6 +21,7 @@
  */
 
 #include "PresetManager.h"
+#include <algorithm>
 
 String PresetManager::getPresetPath()
 {
@@ -65,6 +66,7 @@ void PresetManager::RefreshPresets()
 		}
 		
 	}
+
 	if (__precompiledPresets["Default"] == nullptr) {
 		__resetPreset = new XmlElement("KandVSTPreset");
 		// Create Reset preset
@@ -85,6 +87,31 @@ void PresetManager::RefreshPresets()
 	{
 		__presets.push_back(std::make_tuple(kvp.first, kvp.second));
 	}
+
+	// Sort presets alphabetically, not case sensitive
+	std::sort(__presets.begin(), __presets.end(), [](const std::tuple<std::string, XmlElement*>& first, const std::tuple<std::string, XmlElement*>& second)
+	{
+		// return first < second
+		std::string firstName = std::get<0>(first);
+		for (auto c : firstName)
+			c = static_cast<char>(toupper(c));
+
+		std::string secondName = std::get<0>(second);
+		for (auto c : secondName)
+			c = static_cast<char>(toupper(c));
+
+		// Default should always be on top
+		if (firstName == "Default")
+		{
+			return true;
+		}
+		else if (secondName == "Default")
+		{
+			return false;
+		}
+
+		return firstName.compare(secondName) < 0;
+	});
 }
 
 void PresetManager::LoadPreset(std::string name)
