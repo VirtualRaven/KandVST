@@ -53,7 +53,7 @@ DelayEffect<T>::~DelayEffect()
 }
 template<typename T>
 void DelayEffect<T>::setStatus(double bpm, bool status) {
-	__bps = bpm / 60.0;
+	__bps = bpm >= 60.0 ? bpm / 60.0 : 1.0;
 	if (__prevStatus != status)
 	{
 		//Clear buffer at starting or stopping the track
