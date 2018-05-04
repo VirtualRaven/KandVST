@@ -29,6 +29,8 @@ extern unsigned char Title3_png[12272];
 }
 namespace IR{
 extern unsigned char bathtub_wav[429624];
+extern unsigned char chabo1_wav[582788];
+extern unsigned char chabo2_wav[615760];
 extern unsigned char church1_close_wav[864044];
 extern unsigned char church1_far_wav[864044];
 extern unsigned char church2_close_wav[864044];

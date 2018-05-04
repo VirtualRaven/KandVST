@@ -70,9 +70,19 @@ void ConvolutionReverb<T>::LoadInputResponse(String irName)
 {
 	const void *data;
 	size_t length = 0;
-	//"Church 1 close", "Church 1 far", "Church 2 close", "Church 2 far"
+	//"Staircase 1 (chabo)", "Staircase 2 (chabo)"
 
-	if (irName == "Church 1 close")
+	if (irName == "Staircase 1 (chabo)")
+	{
+		data = Resources::IR::chabo1_wav;
+		length = sizeof(Resources::IR::chabo1_wav);
+	}
+	else if (irName == "Staircase 2 (chabo)")
+	{
+		data = Resources::IR::chabo2_wav;
+		length = sizeof(Resources::IR::chabo2_wav);
+	}
+	else if (irName == "Church 1 close")
 	{
 		data = Resources::IR::church1_close_wav;
 		length = sizeof(Resources::IR::church1_close_wav);
@@ -233,7 +243,9 @@ void ConvolutionReverb<T>::RegisterParameters(int ID, GLOBAL *global)
 	global->paramHandler->RegisterFloat(ID, "REVERB_WET", "WET", 0.0, 1.0, 0.6);
 
 	// Internal IR:
-	StringArray ir = StringArray("Church 1 close", "Church 1 far", "Church 2 close", "Church 2 far", "Living room 1", "Living room 2", "Empty room", "Bathtub");
+	StringArray ir = StringArray("Church 1 close", "Church 1 far", "Church 2 close", "Church 2 far", 
+		"Living room 1", "Living room 2", "Empty room", "Bathtub",
+		"Staircase 1 (chabo)", "Staircase 2 (chabo)");
 
 	// External IR:
 	File irFolder = File(__getExternalIrDir());
