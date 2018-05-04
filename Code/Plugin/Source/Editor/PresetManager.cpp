@@ -39,6 +39,11 @@ __resetPreset(nullptr)
 	__precompiledPresets["Default"] = nullptr;
 	//Add here to add preCompiled presets
 	AddPrecompiledPreset(Resources::Presets::church_xml,sizeof(Resources::Presets::church_xml));
+	AddPrecompiledPreset(Resources::Presets::bird_simulator_2019_xml, sizeof(Resources::Presets::bird_simulator_2019_xml));
+	AddPrecompiledPreset(Resources::Presets::chip_pluck_xml, sizeof(Resources::Presets::chip_pluck_xml));
+	AddPrecompiledPreset(Resources::Presets::chip_pluck_lfo_xml, sizeof(Resources::Presets::chip_pluck_lfo_xml));
+	AddPrecompiledPreset(Resources::Presets::chip_pluck_lfo_fast_xml, sizeof(Resources::Presets::chip_pluck_lfo_fast_xml));
+	AddPrecompiledPreset(Resources::Presets::chip_stereo_hihat_xml, sizeof(Resources::Presets::chip_stereo_hihat_xml));
 }
 PresetManager::~PresetManager()
 {

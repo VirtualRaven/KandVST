@@ -40,6 +40,11 @@ extern unsigned char living_room1_wav[189676];
 extern unsigned char living_room2_wav[234836];
 }
 namespace Presets{
+extern unsigned char bird_simulator_2019_xml[8711];
+extern unsigned char chip_pluck_xml[9033];
+extern unsigned char chip_pluck_lfo_xml[9037];
+extern unsigned char chip_pluck_lfo_fast_xml[9042];
+extern unsigned char chip_stereo_hihat_xml[9040];
 extern unsigned char church_xml[6378];
 }
 extern unsigned char about_txt[1170];
