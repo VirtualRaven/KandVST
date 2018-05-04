@@ -14,7 +14,7 @@ extern unsigned char saw_orange_png[6733];
 extern unsigned char saw_white_png[5171];
 extern unsigned char sine_orange_png[7392];
 extern unsigned char sine_white_png[5729];
-extern unsigned char sliderthumb_png[10575];
+extern unsigned char sliderthumb_png[4783];
 extern unsigned char square_orange_png[5530];
 extern unsigned char square_white_png[4476];
 extern unsigned char tb_active_png[4316];
@@ -29,12 +29,24 @@ extern unsigned char Title3_png[12272];
 }
 namespace IR{
 extern unsigned char bathtub_wav[429624];
-extern unsigned char cathedral_minster_york_wav[2596532];
-extern unsigned char empty_apartment_bedroom_wav[1726588];
+extern unsigned char chabo1_wav[582788];
+extern unsigned char chabo2_wav[615760];
+extern unsigned char church1_close_wav[864044];
+extern unsigned char church1_far_wav[864044];
+extern unsigned char church2_close_wav[864044];
+extern unsigned char church2_far_wav[1008044];
+extern unsigned char empty_apartment_bedroom_wav[863276];
 extern unsigned char living_room1_wav[189676];
 extern unsigned char living_room2_wav[234836];
-extern unsigned char r1_nuclear_reactor_cut_wav[2302766];
 }
-extern unsigned char about_txt[1093];
+namespace Presets{
+extern unsigned char bird_simulator_2019_xml[8711];
+extern unsigned char chip_pluck_xml[9033];
+extern unsigned char chip_pluck_lfo_xml[9037];
+extern unsigned char chip_pluck_lfo_fast_xml[9042];
+extern unsigned char chip_stereo_hihat_xml[9040];
+extern unsigned char church_xml[6378];
+}
+extern unsigned char about_txt[1170];
 }
 #endif

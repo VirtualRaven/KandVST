@@ -1,11 +1,16 @@
 # KandVST
-[![Build status](https://build.rahmn.net/guestAuth/app/rest/builds/buildType:id:KandVST_Build/statusIcon.svg)]()
+[![Build status](https://build.rahmn.net/guestAuth/app/rest/builds/buildType:id:KandVST_Build/statusIcon.svg)](https://build.rahmn.net/)
 ## Download ##
 Prebuilt binaries for windows/linux are available at [releases](https://github.com/VirtualRaven/KandVST/releases)
+## Cloning ##
+Please note that git lfs is required and should be installed before cloning, see [lfs](https://git-lfs.github.com/).
+After git lfs is installed clone the repo using:  
+`git clone https://github.com/VirtualRaven/KandVST.git`
+
 ## Building ##
 
 The project is tested on linux and windows and can be built using cmake.
-On linux the project has been tested with the gcc compiler and makefile generator. And on windows
+On linux the project has been tested with both gcc and clang and both the makefile and ninja generators. On windows
 it has been confirmed to work with Visual Studio 2017.
 
 To build open a terminal in folder `KandVst/Code/Plugin` and execute the following sequence of 
@@ -17,6 +22,9 @@ commands
 
 This will configure the project, to then build the project run  
 `cmake --build .`
+
+To test the build run (Windows only)   
+`ctest -C Debug`
 
 ### Visual Studio 2017 ###
 If you are using Visual Studio 2017 with cmake support one can open the project directly in VS. 
@@ -34,6 +42,9 @@ the following components
  
  As long as the test is placed in the correct folder, it is automatically registerd by cmake at generation time, 
  no changes are needed to the testers code.
+ 
+ Unfortunately the tester tool is not supported on linux as it uses the VST3 api, which JUCE (project dependency)
+ does not support on linux platforms.
  
  #### Test output ####
  All tests output is found in `BUILD_FOLDER/Tests/TestName/`. If the test writes anything to the msg buffer, 
@@ -66,7 +77,7 @@ the following components
   Similarly `#UNNORMALIZED` reenables type checking for the rows following it.
 
 ## Build dependencies
-The project uses cmake as the build system, so a cmake i required
+The project uses cmake as the build system, so cmake is required
 
 ### Linux packages 
   * libasound2-dev
@@ -81,10 +92,10 @@ The project uses cmake as the build system, so a cmake i required
   * libxrender-dev
   * PkgConfig
 ### Windows 
-   Don't know?
+   Visual studio 2017
 
-### Tester dependencies ###
-  To be able to run all tests python3 is required and the following python modules
+### Additional dependencies ###
+  To be able to run all tests and/or to rebuild binary resources python3 is required together with the following python modules
   * numpy
   * matplotlib
   * peakutils

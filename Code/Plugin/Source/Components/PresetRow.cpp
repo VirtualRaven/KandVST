@@ -33,15 +33,20 @@ PresetRow::PresetRow(int s, bool isSelected, ListBox* owner,GLOBAL*global):
 	Global = global;
 	__lbl.addMouseListener(this, true);
 	addAndMakeVisible(__lbl);
-	__delete.addListener(this);
-	__save.addListener(this);
-	Image delImage = ImageFileFormat::loadFrom(Resources::Icons::delete2_png, sizeof(Resources::Icons::delete2_png));
-	Image saveImage = ImageFileFormat::loadFrom(Resources::Icons::save2_png, sizeof(Resources::Icons::save2_png));
-	__delete.setImages(false, true, true, delImage, 1.0f, Colours::transparentBlack, delImage, 0.7f, Colours::transparentBlack, delImage, 0.5f, Colours::transparentBlack);
-	__save.setImages(false, true, true, saveImage, 1.0f, Colours::transparentBlack, saveImage, 0.7f, Colours::transparentBlack, saveImage, 0.5f, Colours::transparentBlack);
-	if (isSelected) {
-		addAndMakeVisible(__save);
-		addAndMakeVisible(__delete);
+
+	// No save/del buttons for the Default preset
+	if (__lbl.getText() != "Default")
+	{
+		__delete.addListener(this);
+		__save.addListener(this);
+		Image delImage = ImageFileFormat::loadFrom(Resources::Icons::delete2_png, sizeof(Resources::Icons::delete2_png));
+		Image saveImage = ImageFileFormat::loadFrom(Resources::Icons::save2_png, sizeof(Resources::Icons::save2_png));
+		__delete.setImages(false, true, true, delImage, 1.0f, Colours::transparentBlack, delImage, 0.7f, Colours::transparentBlack, delImage, 0.5f, Colours::transparentBlack);
+		__save.setImages(false, true, true, saveImage, 1.0f, Colours::transparentBlack, saveImage, 0.7f, Colours::transparentBlack, saveImage, 0.5f, Colours::transparentBlack);
+		if (isSelected) {
+			addAndMakeVisible(__save);
+			addAndMakeVisible(__delete);
+		}
 	}
 	setColour(ListBox::backgroundColourId, Colours::transparentBlack);
 
@@ -71,7 +76,19 @@ void PresetRow::buttonClicked(Button * btn) {
 	}
 	else if (btn == &__delete)
 	{
-		Global->presetManager->DeletePreset(Global->presetManager->GetPresetNames()[__rowNr]);
+		std::string presetName = Global->presetManager->GetPresetNames()[__rowNr];
+
+		// Make sure the user wants to delete this preset
+		if (NativeMessageBox::showYesNoCancelBox(
+			AlertWindow::AlertIconType::WarningIcon,
+			"Deleting a preset",
+			"Are you sure you want to delete \"" + presetName + "\"?")
+			!= 1)
+		{
+			return;
+		}
+
+		Global->presetManager->DeletePreset(presetName);
 		__owner->updateContent();
 	}
 	
