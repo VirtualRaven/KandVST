@@ -75,7 +75,19 @@ void PresetRow::buttonClicked(Button * btn) {
 	}
 	else if (btn == &__delete)
 	{
-		Global->presetManager->DeletePreset(Global->presetManager->GetPresetNames()[__rowNr]);
+		std::string presetName = Global->presetManager->GetPresetNames()[__rowNr];
+
+		// Make sure the user wants to delete this preset
+		if (NativeMessageBox::showYesNoCancelBox(
+			AlertWindow::AlertIconType::WarningIcon,
+			"Deleting a preset",
+			"Are you sure you want to delete \"" + presetName + "\"?")
+			!= 1)
+		{
+			return;
+		}
+
+		Global->presetManager->DeletePreset(presetName);
 		__owner->updateContent();
 	}
 	
