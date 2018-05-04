@@ -29,11 +29,11 @@ extern unsigned char Title3_png[12272];
 }
 namespace IR{
 extern unsigned char bathtub_wav[429624];
-extern unsigned char church1_close_wav[1757758];
-extern unsigned char church1_far_wav[1757758];
-extern unsigned char church2_close_wav[1757758];
-extern unsigned char church2_far_wav[2050318];
-extern unsigned char empty_apartment_bedroom_wav[1726588];
+extern unsigned char church1_close_wav[864044];
+extern unsigned char church1_far_wav[864044];
+extern unsigned char church2_close_wav[864044];
+extern unsigned char church2_far_wav[1008044];
+extern unsigned char empty_apartment_bedroom_wav[863276];
 extern unsigned char living_room1_wav[189676];
 extern unsigned char living_room2_wav[234836];
 }
