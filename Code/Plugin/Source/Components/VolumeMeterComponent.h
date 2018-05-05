@@ -63,4 +63,4 @@ private:
 	virtual void setStateInformation(const void * data, int sizeInBytes) override;
 
 };
-#endif VOLUME_METER_COMPONENT_H
+#endif //VOLUME_METER_COMPONENT_H

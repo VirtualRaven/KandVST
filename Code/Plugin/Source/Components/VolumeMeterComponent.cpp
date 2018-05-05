@@ -28,7 +28,7 @@ void VolumeMeterComponent::paint(Graphics & g)
 		int y = 185;
 		int x = getLocalBounds().reduced(5).getX();
 		int i = 0;
-		for each(Rectangle<int> rec in rects) {
+		for(Rectangle<int> rec :  rects) {
 			rec.setX(x);
 			rec.setY(y);
 
@@ -75,7 +75,7 @@ void VolumeMeterComponent::processBlock(AudioSampleBuffer & buffer, MidiBuffer &
 
 
 void VolumeMeterComponent::drawVolume(float db) {
-	Graphics g();
+	Graphics g;
 
 
 }
