@@ -45,3 +45,6 @@ Code/Plugin/Tester/CMakeFiles
 
 #vim
 .*.swp
+genBuild.bat
+genBuildx64.bat
+buildProject.bat

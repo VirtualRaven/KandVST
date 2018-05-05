@@ -1,5 +1,5 @@
 # KandVST
-[![Build status](https://build.rahmn.net/guestAuth/app/rest/builds/buildType:id:KandVST_Build/statusIcon.svg)]()
+[![Build status](https://build.rahmn.net/guestAuth/app/rest/builds/buildType:id:KandVST_Build/statusIcon.svg)](https://build.rahmn.net/)
 ## Download ##
 Prebuilt binaries for windows/linux are available at [releases](https://github.com/VirtualRaven/KandVST/releases)
 ## Cloning ##
