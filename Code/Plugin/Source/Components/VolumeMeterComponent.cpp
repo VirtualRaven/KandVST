@@ -75,7 +75,7 @@ void VolumeMeterComponent::processBlock(AudioSampleBuffer & buffer, MidiBuffer &
 
 
 void VolumeMeterComponent::drawVolume(float db) {
-	Graphics g;
+	//Graphics g;
 
 
 }
