@@ -25,7 +25,7 @@
 #include "Global.h"
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "Resources_files.h"
-#include "../Plugin/Source/Components/PresetRow.h"
+#include "Components/PresetRow.h"
 class PresetRowModel : public ListBoxModel, private KeyListener
 {
 public:

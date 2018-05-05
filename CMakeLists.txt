@@ -164,7 +164,7 @@ else()
 	endif()
 endif()
 	
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/../FRUT/cmake")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/third_party/FRUT/cmake")
 include(Reprojucer)
 
 
