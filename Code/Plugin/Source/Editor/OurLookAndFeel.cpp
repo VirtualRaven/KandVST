@@ -21,7 +21,7 @@
  */
 
 #include "OurLookAndFeel.h"
-#include "Components\PresetRow.h"
+#include "Components/PresetRow.h"
 
 OurLookAndFeel::~OurLookAndFeel() {
 }
