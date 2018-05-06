@@ -57,6 +57,12 @@ void PresetManager::RefreshPresets()
 	File folder(getPresetPath());
 	Array<File> presets;
 	folder.findChildFiles(presets, File::findFiles, true, "*.xml");
+
+	for (auto a : __presets) {
+		if (!isPrecompiled(std::get<0>(a)))
+			delete (std::get<1>(a));
+	}
+
 	__presets.clear();
 
 	for (auto&& f : presets) 
