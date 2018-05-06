@@ -27,7 +27,8 @@
 
 void GLOBAL::ShowMessageBox(MessageBoxInfo info)
 {
-	__messageBoxQueue.push_front(info);
+	if(__messageBoxQueue.size() < 100)
+		__messageBoxQueue.push_back(info);
 }
 
 // Must be checked before GetMessageBoxInfo
