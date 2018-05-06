@@ -32,6 +32,7 @@ class PresetManager : public ChangeBroadcaster
 private:
 	AudioProcessor* __owner;
 	std::vector<std::tuple<std::string, XmlElement*>> __presets;
+	std::vector<XmlElement*> __filePresets;
 	std::map<std::string, XmlElement*> __precompiledPresets;
 	String getPresetPath();
 	int __currentPreset = 0;

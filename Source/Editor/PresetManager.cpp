@@ -58,11 +58,10 @@ void PresetManager::RefreshPresets()
 	Array<File> presets;
 	folder.findChildFiles(presets, File::findFiles, true, "*.xml");
 
-	for (auto a : __presets) {
-		if (!isPrecompiled(std::get<0>(a)))
-			delete (std::get<1>(a));
+	for (auto a : __filePresets) {
+		delete (a);
 	}
-
+	__filePresets.clear();
 	__presets.clear();
 
 	for (auto&& f : presets) 
@@ -73,6 +72,7 @@ void PresetManager::RefreshPresets()
 			continue;
 		if (el->hasTagName("KandVSTPreset")&& el->hasAttribute("name"))
 		{
+			__filePresets.push_back(el);
 			__presets.push_back(std::make_tuple(el->getStringAttribute("name").toStdString(), el));
 		}
 		
