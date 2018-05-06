@@ -33,9 +33,7 @@ PresetRow::PresetRow(int s, bool isSelected, ListBox* owner,GLOBAL*global):
 	Global = global;
 	__lbl.addMouseListener(this, true);
 	addAndMakeVisible(__lbl);
-
-	// No save/del buttons for the Default preset
-	if (__lbl.getText() != "Default")
+	if (!Global->presetManager->isPrecompiled(__lbl.getText().toStdString()))
 	{
 		__delete.addListener(this);
 		__save.addListener(this);
@@ -48,8 +46,9 @@ PresetRow::PresetRow(int s, bool isSelected, ListBox* owner,GLOBAL*global):
 			addAndMakeVisible(__delete);
 		}
 	}
+	
+	
 	setColour(ListBox::backgroundColourId, Colours::transparentBlack);
-
 }
 PresetRow::~PresetRow()
 {
@@ -103,6 +102,17 @@ void PresetRow::mouseDown(const MouseEvent & event)
 {
 	__owner->selectRow(__rowNr, false, true);
 
+}
+
+void PresetRow::paint(Graphics & g)
+{
+	if (__isSelected) {
+		ThemePicker tp;
+		Colour c = tp.getColour(Global->paramHandler->Get<AudioParameterChoice>(-1, "THEME")->getIndex());
+
+		g.setColour(c.darker(1.f).darker(0.5f).withSaturation(0.2f));
+		g.fillAll();
+	}
 }
 
 void PresetRow::resized()

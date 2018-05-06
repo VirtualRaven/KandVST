@@ -38,7 +38,9 @@ private:
 	// Inherited via MouseListener
 	virtual void mouseDoubleClick(const MouseEvent& event) override;
 	virtual void mouseDown(const MouseEvent& event) override;
+	void paint(Graphics& g) override;
 	ListBox* __owner;
+
 public:
 	Label __lbl;
 	ImageButton __save;
