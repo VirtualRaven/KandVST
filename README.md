@@ -13,7 +13,7 @@ The project is tested on linux and windows and can be built using cmake.
 On linux the project has been tested with both gcc and clang and both the makefile and ninja generators. On windows
 it has been confirmed to work with Visual Studio 2017.
 
-To build open a terminal in folder `KandVst/Code/Plugin` and execute the following sequence of 
+To build open a terminal in the root of the project folder and execute the following sequence of 
 commands 
 
 `mkdir build`  
@@ -28,11 +28,11 @@ To test the build run (Windows only)
 
 ### Visual Studio 2017 ###
 If you are using Visual Studio 2017 with cmake support one can open the project directly in VS. 
-Select File/Open/CMake and select the file `KandVST/Code/Plugin/CMakeLists.txt`.
+Select File/Open/CMake and select the file `KandVST/CMakeLists.txt`.
 
 ## Testing ##
 The project includes an automatic tester tool aptly named tester.
-Tests are defined in `Code/Plugin/Tester/Tests/TestName/` and made from
+Tests are defined in `Tester/Tests/TestName/` and made from
 the following components
    * __TestName.h__ - This class contains an implementation of `TestHost::Test` named TestName
    * __params.txt__ - Contains a list of default values for parameters. The synth parameters are set to these before 
