@@ -39,9 +39,9 @@
 
 .vs/
 
-Code/Plugin/build
-Code/.vscode/c_cpp_properties.json
-Code/Plugin/Tester/CMakeFiles
+build
+_cpp_properties.json
+Tester/CMakeFiles
 
 #vim
 .*.swp
