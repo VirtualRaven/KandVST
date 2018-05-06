@@ -74,6 +74,7 @@ PluginProcessor::PluginProcessor()
 			}, Global);
 
 	Global->presetManager->RefreshPresets();
+	__db = 0.f;
 	
 	*(Global->paramHandler->Get<AudioParameterBool>(0, "OSC_MIX_EN")) = 1; //Enable default oscillator
 }
@@ -259,8 +260,24 @@ void PluginProcessor::process (AudioBuffer<FloatType>& buffer,
 	getPipeline<FloatType>()->genSamples(buffer, midiMessages, lastPosInfo);
 
 
+	const int totalNumInputChannels = getTotalNumInputChannels();
+	const int totalNumOutputChannels = getTotalNumOutputChannels();
+
 	//for (int i = getTotalNumInputChannels(); i < getTotalNumOutputChannels(); ++i)
-		// buffer.clear (i, 0, numSamples);
+	// buffer.clear (i, 0, numSamples);
+
+	for (int channel = 0; channel < totalNumInputChannels; ++channel) {
+
+		float samples = buffer.getNumSamples();
+		float deci = 0.f;
+		for (int sample = 0; sample < samples; ++sample) {
+			deci += buffer.getSample(channel, sample);
+		}
+		__db = deci / samples;
+		*Global->paramHandler->Get<AudioParameterFloat>(-1, "DECIBEL") = __db;
+	}
+
+
 	
 }
 
@@ -289,4 +306,9 @@ void PluginProcessor::updateCurrentTimeInfoFromHost()
 
 	// If the host fails to provide the current time, we'll just reset our copy to a default..
 	lastPosInfo.resetToDefault();
+}
+
+void PluginProcessor::RegisterParameters(int ID, GLOBAL*Global)
+{
+	Global->paramHandler->RegisterFloat(-1, "DECIBEL", "DECIBEL", 0, 100, 0);
 }

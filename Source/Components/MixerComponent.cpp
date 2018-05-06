@@ -32,6 +32,7 @@ MixerComponent::~MixerComponent()
 
 
 MixerComponent::MixerComponent(GLOBAL* global)
+	: __vuComp(global)
 {
 	Global = global;
 	__mixers.push_back(new MixerSubComponent(-1, "MASTER", "MASTER_GAIN", "MASTER_GAIN", true, Global));
@@ -44,6 +45,8 @@ MixerComponent::MixerComponent(GLOBAL* global)
 	{
 		addAndMakeVisible(msc);
 	}
+
+	addAndMakeVisible(__vuComp);
 }
 
 void MixerComponent::paint(Graphics& g) {
@@ -71,7 +74,9 @@ void MixerComponent::resized() {
 	int gap = jmax<int>(0, (__bounds.getWidth() - mixW * __mixers.size()) / (__mixers.size()+1));
 	Rectangle<int> mix = __bounds.reduced(8);
 	mix.removeFromTop(fontHeight);
-	for (size_t i = 0; i < __mixers.size(); i++)
+	__vuComp.setBounds(mix.removeFromLeft(gap));
+	__mixers[0]->setBounds(mix.removeFromLeft(mixW));
+	for (size_t i = 1; i < __mixers.size(); i++)
 	{
 		mix.removeFromLeft(gap);
 		__mixers[i]->setBounds(mix.removeFromLeft(mixW));

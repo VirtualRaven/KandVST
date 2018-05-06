@@ -83,6 +83,7 @@ public:
 	AudioPlayHead::CurrentPositionInfo lastPosInfo;
 	GLOBAL * Global;
 private:
+	void RegisterParameters(int ID, GLOBAL* global);
     template <typename FloatType>
     void process (AudioBuffer<FloatType>& buffer, MidiBuffer& midiMessages);
 
@@ -100,6 +101,8 @@ private:
 	PipUnion __pipManager;
 	
 	int __currentPreset = 0;
+
+	float __db;
 
     Synthesiser synth;
     static BusesProperties getBusesProperties();

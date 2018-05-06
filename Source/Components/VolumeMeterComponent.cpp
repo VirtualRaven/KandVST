@@ -2,10 +2,9 @@
 
 VolumeMeterComponent::~VolumeMeterComponent()
 {
-	stopTimer();
+
 }
 VolumeMeterComponent::VolumeMeterComponent(GLOBAL * global)
-	: AudioProcessor(getBusesProperties())
 {
 	Global = global;
 	rects.reserve(8);
@@ -17,10 +16,7 @@ VolumeMeterComponent::VolumeMeterComponent(GLOBAL * global)
 	rects.push_back(__4 = Rectangle<int>(__0));
 	rects.push_back(__5 = Rectangle<int>(__0));
 	rects.push_back(__6 = Rectangle<int>(__0));
-	
-	__meterDrawn = false;
-	__db = 0.f;
-
+	startTimerHz(40);
 }
 
 void VolumeMeterComponent::paint(Graphics & g) 
@@ -44,44 +40,13 @@ void VolumeMeterComponent::paint(Graphics & g)
 			y -= 30;
 			i++;
 		}
-		__meterDrawn = true;
 	}
 
-void VolumeMeterComponent::resized() {
-	
-}
-
-void VolumeMeterComponent::processBlock(AudioSampleBuffer & buffer, MidiBuffer &)
+void VolumeMeterComponent::timerCallback()
 {
-	
-	const int totalNumInputChannels = getTotalNumInputChannels();
-	const int totalNumOutputChannels = getTotalNumOutputChannels();
-
-	//for (int i = totalNumInputChannels; i < totalNumOutputChannels; i++) 
-	//	buffer.clear(i, 0, buffer.getNumSamples());
-
-
-	for (int channel = 0; channel < totalNumInputChannels; ++channel) {
-
-		float* channelData = buffer.getWritePointer(channel);
-
-		for (int sample = 0; sample < buffer.getNumSamples(); ++sample) {
-			__db = buffer.getSample(channel, sample);
-			repaint();
-		}
+	if (Global->paramHandler->Get<AudioParameterFloat>(-1, "DECIBEL") != nullptr) {
+		__db = *Global->paramHandler->Get<AudioParameterFloat>(-1, "DECIBEL");
+		repaint();
 	}
-	
 }
 
-
-void VolumeMeterComponent::drawVolume(float db) {
-	//Graphics g;
-
-
-}
-
-AudioProcessor::BusesProperties VolumeMeterComponent::getBusesProperties()
-{
-	return BusesProperties().withInput("Input", AudioChannelSet::stereo(), true)
-		.withOutput("Output", AudioChannelSet::stereo(), true);
-}

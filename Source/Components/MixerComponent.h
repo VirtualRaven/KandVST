@@ -27,6 +27,7 @@
 #include "ParameterSlider.h"
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "MixerSubComponent.h"
+#include "VolumeMeterComponent.h"
 class MixerComponent : public Component
 {
 public:
@@ -37,6 +38,7 @@ private:
 	void paint(Graphics& g) override;
 	void resized() override;
 	std::vector<MixerSubComponent*> __mixers;
+	VolumeMeterComponent __vuComp;
 	Rectangle<int> __bounds;
 	GLOBAL * Global;
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MixerComponent)
