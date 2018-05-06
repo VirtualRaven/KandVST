@@ -41,7 +41,8 @@ PipelineManager<T>::PipelineManager(double rate, int maxBuffHint,GLOBAL*global) 
 
 
 	for (int i = 0; i < LFO_COUNT; i++) {
-		lfos[i] = new LFO(maxBuffHint, i, rate,Global);
+		lfos[i] = std::unique_ptr<LFO>(new LFO(maxBuffHint, i, rate,Global));
+		global->lfos[i] = lfos[i].get();
 	}
 	for (size_t i = 0; i < NUM_PIPELINES; i++)
 	{

@@ -53,9 +53,9 @@ bool DistEffect<T>::RenderBlock(AudioBuffer<T>& buffer, int len, bool empty) {
 	double t = (*__threshold);
 	auto buff = buffer.getArrayOfWritePointers();
 	if ((*__lfoIndex) > 0) {
-		double amount = lfos[(*__lfoIndex)-1]->getAmount();
+		double amount = Global->lfos[(*__lfoIndex)-1]->getAmount();
 		if (amount > 0.0) {
-			t -= amount * t * ((lfos[(*__lfoIndex) - 1]->getPointer()[0] + 1.0) / 2.0);
+			t -= amount * t * ((Global->lfos[(*__lfoIndex) - 1]->getPointer()[0] + 1.0) / 2.0);
 		}
 	}
 	

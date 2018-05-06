@@ -33,6 +33,7 @@
 #include "FilterHP.h"
 #include "FilterLP.h"
 #include "ConvolutionReverb.h"
+#include <memory>
 
 template<typename T>
 class PipelineManager
@@ -43,6 +44,7 @@ private:
 	int   __maybeMaxBuff;
 	std::vector<Pipeline<T>> pipList;
 	std::array<AudioBuffer<T>,NUM_PIPELINES> pipBuff;
+	std::array<std::unique_ptr<LFO>, 2> lfos;
 	AudioParameterFloat* __masterGain;
 	ThreadPool pool;
 	FilterHP<T> __filterHP;
