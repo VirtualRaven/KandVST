@@ -33,7 +33,8 @@ class Convolution : public TestHost::Test {
 		std::stringstream& msg, 
 		const TestHost::ParamsData& d) {
 				HParameterChanges c;
-				HEventList events;
+				HEventList events1;
+				HEventList events2;
 				//Create a single note on
 				Steinberg::Vst::Event e;
 				e.busIndex = 0;
@@ -49,13 +50,21 @@ class Convolution : public TestHost::Test {
 				};
 
 				// Convolution off
-				events.addEvent(e);
-				block.process(vst, &c, &events);
+				events1.addEvent(e);
+				block.process(vst, &c, &events1);
 				block.printBlock("conv_off");
 
 				// Convolution on
-				//events.addEvent(e);
-				return this->block.process(vst, &c,&events);
+				//events2.addEvent(e);
+
+				// Turn on reverb
+				auto id = d.ids.at(L"REVERB -1");
+				int32 i;
+				auto q = c.addParameterData(id, i);
+				q->addPoint(0, 1.0, i);
+				q->release();
+
+				return this->block.process(vst, &c, &events2);
 			}
 			
 	virtual bool exportTestData() {

@@ -470,9 +470,9 @@ template<typename T>
 void ConvolutionReverb<T>::Reset()
 {
 	// Clear all previous values
-	//__inputBlocks.clear();
-	//__prevInputs.clear();
-	//__emptyCounter = 0;
+	__inputBlocks.clear();
+	__prevInputs.clear();
+	__emptyCounter = 0;
 }
 
 template class ConvolutionReverb<double>;
