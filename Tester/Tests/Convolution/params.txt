@@ -1,0 +1,15 @@
+#NORMALIZED
+Enable Oscillator 0 = 1.0
+Sine 0 = 0.0
+Saw 0 = 1.0
+Delay -1 = 0.0
+Attack time 0 = 0.001
+Decay level 0 = 0.0
+Hold time 0 = 0.1
+Decay time 0 = 0.0
+Sustain time 0 = 0.0
+Release time 0 = 0.001
+REVERB -1 = 0.0
+DRY -1 = 0.0
+WET -1 = 1.0
+TYPE -1 = 0.0
