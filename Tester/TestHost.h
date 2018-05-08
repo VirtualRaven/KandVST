@@ -27,9 +27,13 @@
 #include <sstream>
 #include <string>
 #include <map>
+
+class TestHost;
+
 template<typename T,size_t S>
 class ProcessBlock {
-
+	std::string testPath;
+	friend TestHost;
 public:
 	static const bool dPrec = std::is_same<T, double>();
 	static const size_t size = S;
@@ -38,7 +42,12 @@ public:
 	T* buffs[2] = { left,right };
 	bool process(wrapperVST* vst, IParameterChanges* inParams, IEventList* inEvent = nullptr);
 	bool processZero(wrapperVST* vst, IParameterChanges* inParams, IEventList* inEvent = nullptr);
-
+	
+	//Prints the content of the block to a file. Filename will be prepended with the path to the test folder
+	//and appended will be "_1.txt" and "_2.txt" depending on channel.
+	//Note that this will automatecaly be called by the test host on the last block, so it is only necessary to call this
+	//if the test runs process several times.
+	bool printBlock(std::string name);
 };
 
 class TestHost {
