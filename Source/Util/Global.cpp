@@ -25,6 +25,26 @@
 #include "PresetManager.h"
 #include "Log.h"
 
+void GLOBAL::ShowMessageBox(MessageBoxInfo info)
+{
+	if(__messageBoxQueue.size() < 100)
+		__messageBoxQueue.push_back(info);
+}
+
+// Must be checked before GetMessageBoxInfo
+bool GLOBAL::IsMessageBoxInQueue()
+{
+	return __messageBoxQueue.size() > 0;
+}
+
+// IsMessageBoxInQueue must be checked before
+GLOBAL::MessageBoxInfo GLOBAL::GetMessageBoxInfo()
+{
+	MessageBoxInfo ret = __messageBoxQueue.front();
+	__messageBoxQueue.pop_front();
+	return ret;
+}
+
 GLOBAL::GLOBAL(AudioProcessor* owner)
 {
 	presetManager = new PresetManager(owner, this);

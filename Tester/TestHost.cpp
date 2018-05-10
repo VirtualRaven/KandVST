@@ -410,6 +410,7 @@ bool TestHost::runTest(size_t i)
 	const auto count = tests.size();
 	auto& test = tests[i];
 	const std::string testPath = std::string(TEST_BUILD_PATH) + std::string(test->name()) + std::string("/");
+	test->block.testPath = testPath;
 	std::string testName = test->name();
 	util::cyan([&] {std::cout << "Running test (" << (i+1) << "/" << count << ") " << testName << std::endl; });
 	if (test->hasParameterFile()) {
@@ -461,18 +462,7 @@ bool TestHost::runTest(size_t i)
 	}
 
 	if (test->exportTestData()) {
-		//Export the test data
-		std::ofstream data1(testPath + std::string("data_1.txt"),std::ios_base::trunc);
-		std::ofstream data2(testPath + std::string("data_2.txt"),std::ios_base::trunc);
-		if (data1.is_open() && data2.is_open()) {
-			for (size_t i = 0; i < TestHost::TEST_BLOCK_SIZE-1; i++) {
-				data1 << test->block.left[i] << ',';
-				data2 << test->block.right[i] << ',';
-			}
-			data1 << test->block.left[TestHost::TEST_BLOCK_SIZE-1];
-			data2 << test->block.right[TestHost::TEST_BLOCK_SIZE-1];
-			data1.close();
-			data2.close();
+		if(test->block.printBlock("data")){
 			if (test->hasPythonStep() ) {
 				const std::string testPyPath = std::string(TEST_PATH) + std::string(test->name())+ std::string("/verify.py");
 				//Execute python on test data
@@ -544,6 +534,28 @@ bool ProcessBlock<T, S>::processZero(wrapperVST* vst, IParameterChanges* inParam
 	data.processContext = nullptr;
 
 	return vst->proc()->process(data) == Steinberg::kResultOk;
+}
+
+template<typename T, size_t S>
+bool ProcessBlock<T, S>::printBlock(std::string name)
+{
+		//Export the test data
+		std::ofstream data1(testPath +  name + std::string("_1.txt"),std::ios_base::trunc);
+		std::ofstream data2(testPath +  name + std::string("_2.txt"),std::ios_base::trunc);
+		if (data1.is_open() && data2.is_open()) {
+			for (size_t i = 0; i < S - 1; i++) {
+				data1 << left[i] << ',';
+				data2 << right[i] << ',';
+			}
+			data1 << left[S - 1];
+			data2 << right[S - 1];
+			data1.close();
+			data2.close();
+			return true;
+		}
+		else
+			return false;
+	
 }
 
 template class ProcessBlock<TestHost::TEST_TYPE, TestHost::TEST_BLOCK_SIZE>;

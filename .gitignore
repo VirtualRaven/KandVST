@@ -39,7 +39,7 @@
 
 .vs/
 
-build
+build/
 _cpp_properties.json
 Tester/CMakeFiles
 

@@ -38,6 +38,7 @@ class ConvolutionReverb :
 {
 
 private:
+	GLOBAL* __global;
 	int __maxBuffHint;
 	double __sampleRate;
 

@@ -27,9 +27,9 @@ template<typename T>
 Pipeline<T>::Pipeline(double rate,int maxBuffHint,GLOBAL*global) :
 	__rate(rate),
 	__active(false),
-	__maxBuffHint(maxBuffHint)
+	__maxBuffHint(maxBuffHint),
+	Global(global)
 {
-	Global = global;
 	for (int i = 0; i < this->__num_osc; i++) {
 		__oscs[i] = std::make_tuple(
 				new WavetableOsc(i, rate,maxBuffHint,Global),
@@ -60,7 +60,7 @@ void Pipeline<T>::midiCommand(MidiMessage msg, int offset)
 	{
 		__note = msg.getNoteNumber();
 		__active = true;
-		for (auto lfo : lfos)
+		for (auto lfo : Global->lfos)
 			lfo->keyPressed();
 	}
 	
@@ -92,6 +92,7 @@ template<typename T>
 Pipeline<T>::Pipeline(Pipeline<T>&& ref) :
 __rate(ref.__rate),
 __active(ref.__active),
+Global(ref.Global),
 __maxBuffHint(ref.__maxBuffHint){
 	for (size_t i = 0; i < this->__num_osc; i++) {
 		__oscs[i] = ref.__oscs[i];
