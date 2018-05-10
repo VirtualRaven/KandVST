@@ -76,8 +76,9 @@ void PluginGUI::InitializeGui()
 	addAndMakeVisible(__tabComponent);
 	addAndMakeVisible(__keyboard);
 	__keyboard.setKeyWidth(__keyboard.getKeyWidth() + 20.0f);
-	__keyboard.setOctaveForMiddleC(6);
-	__keyboard.setKeyPressBaseOctave(3);
+	__keyboard.setLowestVisibleKey(48);
+	__keyboard.setOctaveForMiddleC(4);
+	__keyboard.setKeyPressBaseOctave(5);
 }
 
 bool PluginGUI::keyPressed(const KeyPress & /*key*/, Component * /*originatingComponent*/)
