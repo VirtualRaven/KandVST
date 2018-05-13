@@ -202,22 +202,8 @@ void PresetManager::SavePreset(XmlElement * xmlState)
 	}
 }
 
-void PresetManager::DeletePreset(std::string name) {
-	if (isPrecompiled(name))
-		return;
-	File preset = File(getPresetPath() + String("/") + name + String(".xml"));
-
-	if (preset.exists() && preset.deleteFile()) {
-		int index = GetPresetIndex(name);
-		if (PresetExists(name)) {
-			delete std::get<1>(__presets[index]);
-			__presets.erase(__presets.begin() + index);
-		}
-	}
-}
-
 void PresetManager::SavePreset(std::string name)
-{	
+{
 	if (isPrecompiled(name))
 		return;
 
@@ -225,7 +211,7 @@ void PresetManager::SavePreset(std::string name)
 	SavePreset(el);
 	el->setAttribute("name", name);
 	el->writeToFile(File(getPresetPath() + String("/") + name + String(".xml")), "");
-	
+	/*
 	if (PresetExists(name))
 	{
 		for (auto& preset : __presets)
@@ -242,8 +228,33 @@ void PresetManager::SavePreset(std::string name)
 	else
 	{
 		__presets.push_back(std::make_tuple(name, el));
+	}*/
+	delete el;
+}
+
+void PresetManager::DeletePreset(std::string name) {
+	if (isPrecompiled(name))
+		return;
+	File preset = File(getPresetPath() + String("/") + name + String(".xml"));
+
+	if (preset.exists() && preset.deleteFile()) {
+		int index = GetPresetIndex(name);
+		if (PresetExists(name)) {
+			for (size_t i = 0; i < __filePresets.size();i++) {
+				if (__filePresets[i]== std::get<1>(__presets[index]))
+				{
+					__filePresets.erase(__filePresets.begin() + i);
+					break;
+				}
+			}
+			delete std::get<1>(__presets[index]);
+			__presets.erase(__presets.begin() + index);
+		}
+		
 	}
 }
+
+
 
 int PresetManager::GetPresetCount()
 {
