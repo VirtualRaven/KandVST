@@ -26,9 +26,11 @@
 
  *KandVST version string: ${GIT_LONG}*
 
+
+
    
 
-## Impulse responces
+## Impulse responses
 
   Church 1 close, Church 1 far, Church 2 close and Church 2 far by 
   Adam Townsell ([http://openairlib.net](http://openairlib.net)), licensed under the Public Domain 
