@@ -75,6 +75,7 @@ Point<float> MarkdownComponent::PaintToken(Point<float> p, MarkdownComponent::To
 			if (e.isItalic())
 				f.setItalic(true);
 			HyperlinkButton* hpb = new HyperlinkButton(String(t.data), String(t.data2));
+			this->__hbutts.push_back(std::unique_ptr<HyperlinkButton>(hpb));
 			addAndMakeVisible(hpb);
 			hpb->setColour(HyperlinkButton::ColourIds::textColourId, Swatch::white);
 			hpb->setBounds(p.x - 1, p.y - 3, f.getStringWidthFloat(t.data) + 2, f.getHeightInPoints() + 8);

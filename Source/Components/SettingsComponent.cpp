@@ -31,11 +31,8 @@ SettingsComponent::SettingsComponent(GLOBAL*global)
 {
 	Global = global;
 	__pitchBendSens = new ParameterSlider(*Global->paramHandler->Get<AudioParameterInt>(-1, "PITCH_BEND_SENS"),global);
-	__selectKnob = new ParameterSlider(*Global->paramHandler->Get<AudioParameterChoice>(-1, "SELECT_KNOB_VALUE"),global);
-	__selectKnob->setSize(50, 50);
 
 	addAndMakeVisible(__pitchBendSens);
-	addAndMakeVisible(__selectKnob);
 
 	__pitchBendSens->setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
 	__pitchBendSens->setTextBoxStyle(Slider::TextEntryBoxPosition::TextBoxBelow, true, 50, 15);
@@ -72,11 +69,9 @@ void SettingsComponent::resized()
 	settings.removeFromTop(fontHeight);
 	settings.removeFromTop(__pitchBendLabel.getFont().getHeight());
 	
-	int space = settings.getWidth() * 0.5;
+	int space = settings.getWidth() ;
 	
 	__pitchBendSens->setBounds(settings.removeFromLeft(space));
-	
-	__selectKnob->setBounds(settings.removeFromLeft(2*space));
 
 }
 
