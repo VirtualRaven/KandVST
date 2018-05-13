@@ -38,7 +38,7 @@ private:
 	void paint(Graphics& g) override;
 	void resized() override;
 
-	ScopedPointer<ParameterSlider> __pitchBendSens, __selectKnob;
+	ScopedPointer<ParameterSlider> __pitchBendSens;
 	Label __pitchBendLabel;
 	Rectangle<int> __bounds;
 
