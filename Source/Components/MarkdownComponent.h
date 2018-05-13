@@ -27,6 +27,8 @@
 #include "Global.h"
 #include "Swatch.h"
 #include <map>
+#include <vector>
+#include <memory>
 class MarkdownComponent : public Component{
 
 public :
@@ -139,6 +141,7 @@ private:
 	};
 	std::map<TokenType,Style> __styles;
 	std::vector<Token> __lines;
+	std::vector<std::unique_ptr<HyperlinkButton>> __hbutts;
 	GLOBAL * Global;
 
 	void parseLine(MarkdownComponent::Token &p,std::string str,bool first = false);
