@@ -23,19 +23,43 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 #include "../JuceLibraryCode/JuceHeader.h"
+#include <memory>
+#include <array>
+#include <list>
 
 class PresetManager;
 class ParameterHandler;
 class Log;
+class LFO;
 
 class GLOBAL {
 public:
 	PresetManager* presetManager;
 	ParameterHandler* paramHandler;
 	Log* log;
+
+	//These pointers are not owned by us
+	//and will be deleted elsewhere
+	std::array<LFO*,2> lfos;
+	
+	struct MessageBoxInfo
+	{
+		AlertWindow::AlertIconType icon = AlertWindow::AlertIconType::NoIcon;
+		String title = "Error";
+		String message;
+		String buttonText = "Ok";
+	};
+
+	void ShowMessageBox(MessageBoxInfo info);
+	bool IsMessageBoxInQueue();
+	MessageBoxInfo GetMessageBoxInfo();
+
 	GLOBAL(AudioProcessor* owner);
 	~GLOBAL();
 	JUCE_LEAK_DETECTOR(GLOBAL);
+
+private:
+	std::list<MessageBoxInfo> __messageBoxQueue;
 };
 
 #endif // !GLOBAL_H

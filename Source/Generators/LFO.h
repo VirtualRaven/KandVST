@@ -44,10 +44,9 @@ private:
 
 	double calcRatio();
 
-	~LFO();
 	LFO(const LFO&) = delete;
 public:
-
+	~LFO();
 	LFO(int maxSamples, int ID, double sampleRate, GLOBAL*global);
 	static void RegisterParameters(int ID, GLOBAL*Global);
 	void generate(int numSamples, AudioPlayHead::CurrentPositionInfo& posInfo);
@@ -56,7 +55,5 @@ public:
 	bool isActive();
 	void keyPressed();
 	GLOBAL* Global;
-
 };
-extern LFO* lfos[LFO_COUNT];
 #endif //!LFO_H

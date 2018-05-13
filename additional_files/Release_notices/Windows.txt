@@ -1,0 +1,16 @@
+Thank you for downloading KandVST!
+
+
+ 
+If you have any questions or problems visit the 
+ project page at https://github.com/VirtualRaven/KandVST.
+
+
+
+Installation:
+ 
+ This folder includes two files KandVST.dll and KandVST.vst3 and you can choose to use either one of them.
+
+ KandVST.dll is a vst2 plugin and should be moved to your DAW vst2 folder.
+ 
+ KandVST.vst3 is a vst3 plugin and  should be installed under the folder C:\Program Files\Common Files\VST3\

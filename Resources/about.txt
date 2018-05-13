@@ -24,11 +24,147 @@
   You should have received a copy of the GNU General Public License
   along with this program.  If not, see <[http://www.gnu.org/licenses/](http://www.gnu.org/licenses/)>
 
+ *KandVST version string: ${GIT_LONG}*
 
- *KandVST version: ${GIT_LONG}*
+
 
    
-### External dependencies 
 
- JUCE, version ${JUCE_VERSION}
- VST, version ${VST_VERSION}
+## Impulse responses
+
+  Church 1 close, Church 1 far, Church 2 close and Church 2 far by 
+  Adam Townsell ([http://openairlib.net](http://openairlib.net)), licensed under the Public Domain 
+  Creative Commons license [https://creativecommons.org/licenses/publicdomain/](https://creativecommons.org/licenses/publicdomain/).
+
+  Empty room by Unknown ([http://openairlib.net](http://openairlib.net)) licensed under the 
+  Public Domain Creative Commons license [https://creativecommons.org/licenses/publicdomain/](https://creativecommons.org/licenses/publicdomain/).
+
+  Staircase 1 (chabo), Staircase 2 (chabo), Living room 1, Living room 2 
+  and Bathtub by Stanisław Zwierzchowski.
+
+
+
+## External dependencies 
+
+
+###JUCE
+ 
+ [JUCE webpage](https://juce.com/)
+ version: ${JUCE_VERSION}
+
+ 
+ **BY DOWNLOADING, INSTALLING OR USING ANY PART OF THE JUCE LIBRARY, YOU AGREE
+ TO THE [JUCE 5 END-USER LICENSE AGREEMENT](https://www.juce.com/juce-5-licence)
+ AND [JUCE 5 PRIVACY POLICY](https://www.juce.com/juce-5-privacy-policy), WHICH
+ ARE BINDING AGREEMENTS BETWEEN YOU AND ROLI, LTD. IF YOU DO NOT AGREE TO THE
+ TERMS, DO NOT USE THE JUCE LIBRARY.**
+
+ JUCE is an all-encompassing C++ framework for developing cross-platform
+ software. JUCE is used by hundreds of companies to develop powerful,
+ cross-platform audio, interactive, embedded or graphic applications.
+
+ We now have tier-leveled license terms for JUCE 5, with different terms for
+ each available license: JUCE Personal (for developers or startup businesses
+ with revenue under 50K USD "Revenue Limit"; free), JUCE Indie (for small
+ businesses with under 200K Revenue Limit; $35/month), JUCE Pro (no Revenue
+ Limit; $65/month), and JUCE Educational (no Revenue Limit; free for bona fide
+ educational institutes). All licenses allow you to commercially release
+ applications so long as you do not exceed the Revenue Limit and pay applicable
+ Fees. Once your business hits the Revenue Limit for your JUCE license, you will
+ either have to upgrade your JUCE license or release your Applications under the
+ [GNU General Public License v.3](https://www.gnu.org/licenses/gpl-3.0.en.html),
+ which means, among other things, that your code can be freely copied and
+ distributed.
+
+ You agree to give notice to the end-users of your Applications that we may
+ track the IP addresses associated with their use of the Applications using JUCE
+ solely for our internal purposes in providing JUCE, unless you are a paying
+ JUCE customer and opt-out of such tracking. You agree to fully comply with all
+ laws, including relating to the collection of information from children and the
+ [Children’s Online Privacy Protection Act](https://www.ftc.gov/enforcement/rules/rulemaking-regulatory-reform-proceedings/childrens-online-privacy-protection-rule).
+
+ JUCE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
+ EXPRESSED OR IMPLIED, INCLUDING WARRANTY OF MERCHANTABILITY AND FITNESS FOR A
+ PARTICULAR PURPOSE, ARE DISCLAIMED.
+
+ The juce_audio_basics, juce_audio_devices, juce_blocks_basics, juce_core and
+ juce_events modules are permissively licensed under the terms of the [ISC
+ license](http://www.isc.org/downloads/software-support-policy/isc-license).
+
+ For more information, visit the website:
+ [www.juce.com](https://www.juce.com)
+
+ FULL JUCE TERMS:
+ - [JUCE 5 END-USER LICENSE AGREEMENT](https://www.juce.com/juce-5-licence)
+ - [JUCE 5 PRIVACY POLICY](https://www.juce.com/juce-5-privacy-policy)
+
+
+
+
+###VST
+ 
+ [VST webpage](https://www.steinberg.net/en/company/developers.html)
+ version: ${VST_VERSION}
+
+ (c) 2018, Steinberg Media Technologies GmbH, All Rights Reserved
+ This license applies only to files referencing this license,
+ for other files of the Software Development Kit the respective embedded license text
+ is applicable. The license can be found at: www.steinberg.net/sdklicenses_vst3
+
+ This Software Development Kit is licensed under the terms of the Steinberg VST3 License,
+ or alternatively under the terms of the General Public License (GPL) Version 3.
+ You may use the Software Development Kit according to either of these licenses as it is
+ most appropriate for your project on a case-by-case basis (commercial or not).
+
+ a) Proprietary Steinberg VST3 License
+ The Software Development Kit may not be distributed in parts or its entirety
+ without prior written agreement by Steinberg Media Technologies GmbH.
+ The SDK must not be used to re-engineer or manipulate any technology used
+ in any Steinberg or Third-party application or software module,
+ unless permitted by law.
+ Neither the name of the Steinberg Media Technologies GmbH nor the names of its
+ contributors may be used to endorse or promote products derived from this
+ software without specific prior written permission.
+ Before publishing a software under the proprietary license, you need to obtain a copy
+ of the License Agreement signed by Steinberg Media Technologies GmbH.
+ The Steinberg VST SDK License Agreement can be found at:
+ [www.steinberg.net/en/company/developers.html](www.steinberg.net/en/company/developers.html)
+
+ THE SDK IS PROVIDED BY STEINBERG MEDIA TECHNOLOGIES GMBH "AS IS" AND
+ ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ IN NO EVENT SHALL STEINBERG MEDIA TECHNOLOGIES GMBH BE LIABLE FOR ANY DIRECT,
+ INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+ OF THE POSSIBILITY OF SUCH DAMAGE.
+
+ b) General Public License (GPL) Version 3
+ Details of these licenses can be found at: [www.gnu.org/licenses/gpl-3.0.html](www.gnu.org/licenses/gpl-3.0.html)
+
+
+
+
+###FRUT
+
+ [FRUT's Github](https://github.com/McMartin/FRUT)
+ 
+ 
+ Copyright (c) 2016 Alain Martin
+
+ This file is part of FRUT.
+
+ FRUT is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ FRUT is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with FRUT.  If not, see <[http://www.gnu.org/licenses/](http://www.gnu.org/licenses/)>.

@@ -26,7 +26,6 @@
 #include "ParameterHandler.h"
 #include <sstream>
 
-LFO* lfos[LFO_COUNT] = {};
 LFO::LFO(int maxSamples, int ID, double sampleRate, GLOBAL*global):
 	__wavetable(tables[WAVE_TYPE::SINE]),
 	__phase(0.0),

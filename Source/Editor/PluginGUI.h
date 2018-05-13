@@ -42,6 +42,7 @@ public:
 	void resized();
 	void InitializeGui();
 	GLOBAL * Global;
+
 private:
 	OurLookAndFeel ourLookAndFeel; //Must be on top
 	ImageComponent  __loadingImage;
@@ -52,6 +53,8 @@ private:
 #endif
 
 	PluginProcessor* __owner;
+	bool __initialized;
+
     //==============================================================================
 	PluginProcessor& getProcessor() const
     {

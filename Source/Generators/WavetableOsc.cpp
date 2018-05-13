@@ -295,14 +295,14 @@ bool WavetableOsc::__RenderBlock(AudioBuffer<T>& buffer,int len) {
 	int lfoFreqIndx = (*__lfofreq).getIndex();
 	float lfoFreqAmount = 0.0f;
 	if (lfoFreqIndx != 0) {
-		lfofreq = lfos[lfoFreqIndx - 1]->getPointer();
-		lfoFreqAmount = lfos[lfoFreqIndx-1]->getAmount();
+		lfofreq = Global->lfos[lfoFreqIndx - 1]->getPointer();
+		lfoFreqAmount = Global->lfos[lfoFreqIndx-1]->getAmount();
 	}
 	int lfoAmpIndx = (*__lfoamp).getIndex();
 	float lfoAmpAmount = 0.0f;
 	if (lfoAmpIndx != 0) {
-		lfoamp = lfos[lfoAmpIndx - 1]->getPointer();
-		lfoAmpAmount = lfos[lfoAmpIndx-1]->getAmount();
+		lfoamp = Global->lfos[lfoAmpIndx - 1]->getPointer();
+		lfoAmpAmount = Global->lfos[lfoAmpIndx-1]->getAmount();
 	}
 	
 	int envValidUntil = -1;

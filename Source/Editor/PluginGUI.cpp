@@ -24,6 +24,7 @@
 
 #include "PluginProcessor.h"
 #include "PluginGUI.h"
+#include "../Util/Global.h"
 //==============================================================================
 PluginGUI::PluginGUI(PluginProcessor& owner, GLOBAL* global)
 	: AudioProcessorEditor(owner),
@@ -31,6 +32,7 @@ PluginGUI::PluginGUI(PluginProcessor& owner, GLOBAL* global)
 	__tabComponent(TabbedButtonBar::Orientation::TabsAtTop),
 	__keyboard(owner.keyboardState,MidiKeyboardComponent::Orientation::horizontalKeyboard),
 	__owner(&owner),
+	__initialized(false),
 	__guiInit(false)
 #ifdef CONSOLE
 	,__cc(global)
@@ -76,8 +78,9 @@ void PluginGUI::InitializeGui()
 	addAndMakeVisible(__tabComponent);
 	addAndMakeVisible(__keyboard);
 	__keyboard.setKeyWidth(__keyboard.getKeyWidth() + 20.0f);
-	__keyboard.setOctaveForMiddleC(6);
-	__keyboard.setKeyPressBaseOctave(3);
+	__keyboard.setLowestVisibleKey(48);
+	__keyboard.setOctaveForMiddleC(4);
+	__keyboard.setKeyPressBaseOctave(5);
 }
 
 bool PluginGUI::keyPressed(const KeyPress & /*key*/, Component * /*originatingComponent*/)
@@ -92,9 +95,16 @@ bool PluginGUI::keyStateChanged(bool isKeyDown, Component * /*originatingCompone
 
 void PluginGUI::timerCallback()
 {
-	if (!__guiInit&&__owner->isReady()) {
+	if (!__guiInit&&__owner->isReady() && !__initialized) {
 		InitializeGui();
-		stopTimer();
+		__initialized = true;
+	}
+
+	// Messagebox queue:
+	if (Global->IsMessageBoxInQueue())
+	{
+		GLOBAL::MessageBoxInfo info = Global->GetMessageBoxInfo();
+		NativeMessageBox::showMessageBox(info.icon, info.title, info.message);
 	}
 }
 

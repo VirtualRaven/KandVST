@@ -38,7 +38,8 @@ ConvolutionReverb<T>::ConvolutionReverb(int ID, double sampleRate, int maxBuffHi
 	__formatManager(),
 	__prevIsEmpty(false),
 	__emptyCounter(0),
-	__blockSizeChangeCounter(0)
+	__blockSizeChangeCounter(0),
+	__global(global)
 {
 	__formatManager.registerBasicFormats();
 
@@ -147,11 +148,11 @@ void ConvolutionReverb<T>::__loadImpulseResponse(ScopedPointer<AudioFormatReader
 	// Check if reader is null
 	if (reader == nullptr)
 	{
-		NativeMessageBox::showMessageBoxAsync(
-			AlertWindow::AlertIconType::WarningIcon, 
-			"Reverb Error", 
-			"Could not load selected impulse reponse.\n" + errorInfo
-		);
+		GLOBAL::MessageBoxInfo info;
+		info.icon = AlertWindow::AlertIconType::WarningIcon;
+		info.title = "Reverb Error";
+		info.message = "Could not load selected impulse reponse.\n" + errorInfo;
+		__global->ShowMessageBox(info);
 
 		__responseBlocks.clear();
 		__responseBuffer.clear();
