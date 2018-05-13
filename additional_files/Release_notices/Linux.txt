@@ -1,0 +1,14 @@
+Thank you for downloading KandVST!
+
+
+ 
+ If you have any questions or problems visit the project page 
+ at https://github.com/VirtualRaven/KandVST.
+
+
+
+Installation:
+ 
+ On linux only VST2 is supported at this time. To install the VST2 version
+ move 
+ KandVST.so to your DAW's vst2 folder.
