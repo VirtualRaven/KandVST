@@ -50,6 +50,6 @@ extern unsigned char saw_lead_xml[8727];
 extern unsigned char saw_lr_xml[8698];
 extern unsigned char warm_pad_xml[8700];
 }
-extern unsigned char about_txt[7239];
+extern unsigned char about_txt[7973];
 }
 #endif
