@@ -47,6 +47,6 @@ extern unsigned char chip_pluck_lfo_fast_xml[9042];
 extern unsigned char chip_stereo_hihat_xml[9040];
 extern unsigned char church_xml[6378];
 }
-extern unsigned char about_txt[1170];
+extern unsigned char about_txt[7239];
 }
 #endif
