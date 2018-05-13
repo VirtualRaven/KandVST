@@ -46,6 +46,9 @@ extern unsigned char chip_pluck_lfo_xml[9037];
 extern unsigned char chip_pluck_lfo_fast_xml[9042];
 extern unsigned char chip_stereo_hihat_xml[9040];
 extern unsigned char church_xml[6378];
+extern unsigned char saw_lead_xml[8727];
+extern unsigned char saw_lr_xml[8698];
+extern unsigned char warm_pad_xml[8700];
 }
 extern unsigned char about_txt[1170];
 }
