@@ -48,7 +48,12 @@ __resetPreset(nullptr)
 
 	AddPrecompiledPreset(Resources::Presets::saw_lead_xml, sizeof(Resources::Presets::saw_lead_xml));
 	AddPrecompiledPreset(Resources::Presets::saw_lr_xml, sizeof(Resources::Presets::saw_lr_xml));
-	AddPrecompiledPreset(Resources::Presets::warm_pad_xml, sizeof(Resources::Presets::warm_pad_xml));
+	AddPrecompiledPreset(Resources::Presets::warm_pad_xml, sizeof(Resources::Presets::warm_pad_xml));	
+
+	AddPrecompiledPreset(Resources::Presets::sista_test_xml, sizeof(Resources::Presets::sista_test_xml));
+	AddPrecompiledPreset(Resources::Presets::plickplock_xml, sizeof(Resources::Presets::plickplock_xml));
+	AddPrecompiledPreset(Resources::Presets::asshole_xml, sizeof(Resources::Presets::asshole_xml));
+	AddPrecompiledPreset(Resources::Presets::fermats_xml, sizeof(Resources::Presets::fermats_xml));
 }
 PresetManager::~PresetManager()
 {
