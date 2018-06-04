@@ -1,7 +1,17 @@
 # KandVST
 [![Build status](https://build.rahmn.net/guestAuth/app/rest/builds/buildType:id:KandVST_Build/statusIcon.svg)](https://build.rahmn.net/)
+## Features ##
+* 4 oscillators capable of generating sine, square, triangle and saw waves simultaneously
+* Volume envelope for each oscillator
+* Multithreaded 16 note polyphony
+* 5 low and high pass filters (one for each oscillator and one master)
+* Delay and distortion effects
+* Convolution reverb with support for custom impulse responces
+* 2 LFOs assignable to multiple parameters
 ## Download ##
-Prebuilt binaries for windows/linux are available at [releases](https://github.com/VirtualRaven/KandVST/releases)
+Pre-built binaries for Windows and Linux are available at [releases](https://github.com/VirtualRaven/KandVST/releases)
+## Usage notes ##
+Copy the pre-built .dll (Windows VST2) or .vst3 file into your DAW's plugin directory or simply run the standalone version. Custom impulse responces, preset files and settings are stored in `%appdata%\KandVST` on Windows and `~/.config/KandVST` on Linux. Custom impulse responces can be placed in the IR folder. Only wave files are supported and longer files will cause more CPU usage. Maximum recommended length is ~10s. The current reverb implementation only supports fixed sized blocks. DAWs that use variable block sizes, such as FL Studio, need to be configured to use fixed block sizes in order for the reverb effect to work (everything else works with variable block sizes).
 ## Cloning ##
 Please note that git lfs is required and should be installed before cloning, see [lfs](https://git-lfs.github.com/).
 After git lfs is installed clone the repo using:  
