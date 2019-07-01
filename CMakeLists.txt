@@ -31,9 +31,9 @@ set(AudioPlugin_jucer_FILE "${CMAKE_SOURCE_DIR}//AudioPlugin.jucer"
     CACHE STRING "Path to project jucere file")
 set(TEAMCITY_TEST_MODE false 
 	CACHE BOOL "Make tester exe output information to teamcity")
-set(VST_SDK_URL "https://download.steinberg.net/sdk_downloads/vstsdk369_01_03_2018_build_132.zip" 
+set(VST_SDK_URL "https://download.steinberg.net/sdk_downloads/vstsdk3613_08_04_2019_build_81.zip" 
 	CACHE STRING "Url to the Steinberg VST sdk")
-set(JUCE_SDK_URL "https://github.com/WeAreROLI/JUCE/archive/5.3.1.zip" 
+set(JUCE_SDK_URL "https://github.com/WeAreROLI/JUCE/archive/5.4.3.zip" 
 	CACHE STRING "Url to the JUCE sdk")
 set(FORCE_GIT_INFO false
 	CACHE BOOL "Is it required that we find the git sha?")
