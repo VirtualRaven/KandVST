@@ -34,7 +34,8 @@ PipelineManager<T>::PipelineManager(double rate, int maxBuffHint,GLOBAL*global) 
 	__reverb(-1, rate, maxBuffHint, global),
 	__filterLP(-1, rate, "FILTER_LP",global),
 	__filterHP(-1, rate, "FILTER_HP",global),
-	__delay(-1,rate,global)
+	__delay(-1,rate,global),
+	__bitcrush(-1, rate, global)
 {
 	Global = global;
 	__masterGain = Global->paramHandler->Get<AudioParameterFloat>(-1, "MASTER_GAIN");
@@ -170,12 +171,11 @@ void PipelineManager<T>::genSamples(AudioBuffer<T>& buff, MidiBuffer & midiMessa
 
 	//Effects
 	bool empty = buffCount == 0;
-
+	__bitcrush.RenderBlock(buff, buffLen, empty);
 	__filterLP.RenderBlock(buff, buffLen, empty);
 	__filterHP.RenderBlock(buff, buffLen, empty);
 	__delay.setStatus(posInfo.bpm, posInfo.isPlaying);
 	bool delayModified = __delay.RenderBlock(buff, buffLen, empty);
-
 	__reverb.RenderBlock(buff, buffLen, empty && !delayModified);
 }
 
@@ -196,4 +196,3 @@ void PipelineManager<T>::Reset()
 
 template class PipelineManager<double>;
 template class PipelineManager<float>;
-

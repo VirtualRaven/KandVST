@@ -33,6 +33,7 @@
 #include "FilterHP.h"
 #include "FilterLP.h"
 #include "ConvolutionReverb.h"
+#include "BitcrushEffect.h"
 #include <memory>
 
 template<typename T>
@@ -50,6 +51,7 @@ private:
 	FilterHP<T> __filterHP;
 	FilterLP<T> __filterLP;
 	DelayEffect<T>__delay;
+	BitcrushEffect<T> __bitcrush;
 	ConvolutionReverb<T> __reverb;
 public:
 	PipelineManager(double rate, int maxBuffHint,GLOBAL*global);

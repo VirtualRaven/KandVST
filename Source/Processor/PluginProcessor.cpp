@@ -57,7 +57,8 @@ PluginProcessor::PluginProcessor()
 						SettingsComponent,
 						ConvolutionReverb<double>,
 						AboutPageComponent,
-						PipelineManager<double>
+						PipelineManager<double>,
+						BitcrushEffect<double>
 			>({
 			{0,1,2,3},
 			{-1},
@@ -70,7 +71,8 @@ PluginProcessor::PluginProcessor()
 			{-1},
 			{-1},
 			{-1},
-			{-1} 
+			{-1},
+			{-1}
 			}, Global);
 
 	Global->presetManager->RefreshPresets();
