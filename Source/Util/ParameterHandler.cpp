@@ -321,19 +321,19 @@ std::string ParameterHandler::createParameterId(int intId, std::string id)
 
 template<> AudioParameterFloat * ParameterHandler::Get(int iid, String id)
 {
-	return __floatParams[std::to_string(iid) + std::string("_") + id];
+	return __floatParams[String(iid) + String("_") + id];
 }
 template<> AudioParameterInt * ParameterHandler::Get(int iid, String id)
 {
-	return __intParams[std::to_string(iid) + std::string("_") + id];
+	return __intParams[String(iid) + String("_") + id];
 }
 template<> AudioParameterBool * ParameterHandler::Get(int iid, String id)
 {
-	return __boolParams[std::to_string(iid) + std::string("_") + id];
+	return __boolParams[String(iid) + String("_") + id];
 }
 template<> AudioParameterChoice * ParameterHandler::Get(int iid, String id)
 {
-	return __choiceParams[std::to_string(iid) + std::string("_") + id];
+	return __choiceParams[String(iid) + String("_") + id];
 }
 template<> std::map<String,AudioParameterFloat*> * ParameterHandler::GetAll()
 {
